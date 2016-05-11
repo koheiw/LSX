@@ -1,1 +1,3 @@
+useDynLib(LSS)
 exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)

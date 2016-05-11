@@ -16,3 +16,8 @@ removeShortTokens <- function(tokens, min=3, spacer=FALSE){
 removeSpacers <- function(tokens){
   return(removeTokens(tokens, '', FALSE))
 }
+
+#' @export
+tokenize <- function(...){
+  quanteda::tokenize(...)
+}

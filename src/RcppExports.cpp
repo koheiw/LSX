@@ -5,9 +5,22 @@
 
 using namespace Rcpp;
 
+// get_colflag_cpp
+LogicalVector get_colflag_cpp(NumericVector& indices, const int& window, const int& len);
+RcppExport SEXP LSS_get_colflag_cpp(SEXP indicesSEXP, SEXP windowSEXP, SEXP lenSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector& >::type indices(indicesSEXP);
+    Rcpp::traits::input_parameter< const int& >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< const int& >::type len(lenSEXP);
+    __result = Rcpp::wrap(get_colflag_cpp(indices, window, len));
+    return __result;
+END_RCPP
+}
 // select_tokens_cppl
 Rcpp::List select_tokens_cppl(SEXP x, const std::vector< std::string >& types, const bool& remove, const bool& spacer);
-RcppExport SEXP lss_select_tokens_cppl(SEXP xSEXP, SEXP typesSEXP, SEXP removeSEXP, SEXP spacerSEXP) {
+RcppExport SEXP LSS_select_tokens_cppl(SEXP xSEXP, SEXP typesSEXP, SEXP removeSEXP, SEXP spacerSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
