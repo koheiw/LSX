@@ -1,0 +1,15 @@
+Package: lss
+Type: Package
+Title: Computerized dictionary making (Latent Semantic Scaling)
+Version: 0.1.0
+Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre"))
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+LazyData: TRUE
+SystemRequirements: C++11
+LinkingTo: Rcpp
+Imports:
+    Matrix,
+    irlba,
+    stringi,
+    digest

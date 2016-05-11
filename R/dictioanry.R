@@ -1,0 +1,55 @@
+#' @export
+makeDictionary <- function(mx, words, seeds){
+  mx_sim <- similarity(mx, words, names(seeds))
+  #print(dim(mx_sim))
+  mx_wsum <- rowsum_weighted(mx_sim, names(seeds), seeds)
+  mx_wsum <- mx_wsum[rownames(mx_wsum) %in% words,,drop=FALSE]
+  df_dic <- as.data.frame.matrix(mx_wsum)
+  colnames(df_dic) <- 'score'
+  df_dic <- df_dic[order(-df_dic$score),,drop=FALSE]
+  return(df_dic)
+}
+
+#' @export
+readDictionary <-function(file){
+  if(file.exists(file)){
+    df <- read.csv(file=file,  header=FALSE, sep='\t', col.names=c('word', 'score'))
+    dupli <- duplicated(df$word)
+    if(sum(dupli) > 0){
+      warning('Dupicated entiry word in dicitonary:\n', paste(df_dic$word[dupli], '\n'))
+    }
+    df2 <- subset(df, dupli==FALSE)
+    df3 <- data.frame(score=df2$score, row.names=df2$word)
+    return(df3)
+  }else{
+    stop(paste('Dictionary file is not found:', file))
+  }
+}
+
+
+#' @export
+calc_scores <- function(mx, df_dic, se=TRUE){
+
+  mx <- Matrix(mx, sparse=FALSE)
+  common <- intersect(rownames(df_dic), colnames(mx))
+  mx <- mx[,match(common, colnames(mx))] # Ignore words not in the dictionary
+  mx_dic <- as.matrix(df_dic[match(common,rownames(df_dic)),,drop=TRUE], row=1)
+
+  # Based on Wordscore
+  mx_tf <- sweep(mx, 1, rowSums(mx), FUN="/")
+  mns <- as.matrix(mx_tf) %*% mx_dic # Mean scores of documents
+
+  if(se){
+    mns <- as.matrix(mx_tf) %*% mx_dic # Mean scores of documents
+    mx_binary <- mx > 0
+    mx_score <- mx_binary * t(mx_dic[,rep(1,nrow(mx_tf))])
+    mx_dev <- mx_score - mns[,rep(1,ncol(mx_binary))] # Difference from the mean
+    mx_error <- (mx_dev ** 2) * mx_tf # Square of deviation weighted by frequency
+    vars <- rowSums(mx_error) # Variances
+    sds <- sqrt(vars) # Standard diviaitons
+    ses <- sds / sqrt(rowSums(mx)) # SD divided by sqrt of total number of words
+    return(list('lss_mn'=mns[,1], 'lss_se'=ses))
+  }else{
+    return(list('lss_mn'=mns[,1]))
+  }
+}
