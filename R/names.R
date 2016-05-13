@@ -30,7 +30,6 @@ findNames <- function(tokens, min=5){
   df_name <- merge(df_upper[,c('match', 'word', 'count')],
                    df_lower_unique, by="match", all.x=TRUE)
   colnames(df_name) <- c('match', 'word', 'upper', 'lower')
-  rownames(df_name) <- df_name$word
   df_name$upper[is.na(df_name$upper)] <- 0
   df_name$lower[is.na(df_name$lower)] <- 0
   df_name <- df_name[df_name$upper > min,]
@@ -39,6 +38,8 @@ findNames <- function(tokens, min=5){
   df_name$chisq <- apply(df_name[,c('upper', 'lower')], 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_upper, sum_lower)
   df_name <- df_name[df_name$chisq > 10.83,]
   df_name <- df_name[order(-df_name$chisq),]
-  return(df_name[,c('chisq'),drop=FALSE])
-
+  #return(df_name[,c('chisq'),drop=FALSE])
+  retunr(list(name=df_name$word,
+              chisq=df_name$chisq
+         ))
 }
