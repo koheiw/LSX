@@ -5,16 +5,17 @@
 
 using namespace Rcpp;
 
-// get_colflag_cpp
-LogicalVector get_colflag_cpp(NumericVector& indices, const int& window, const int& len);
-RcppExport SEXP LSS_get_colflag_cpp(SEXP indicesSEXP, SEXP windowSEXP, SEXP lenSEXP) {
+// flag_window_cpp
+LogicalVector flag_window_cpp(NumericVector& centers, const int& window, const int& len, const bool& flag_center);
+RcppExport SEXP LSS_flag_window_cpp(SEXP centersSEXP, SEXP windowSEXP, SEXP lenSEXP, SEXP flag_centerSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector& >::type indices(indicesSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type centers(centersSEXP);
     Rcpp::traits::input_parameter< const int& >::type window(windowSEXP);
     Rcpp::traits::input_parameter< const int& >::type len(lenSEXP);
-    __result = Rcpp::wrap(get_colflag_cpp(indices, window, len));
+    Rcpp::traits::input_parameter< const bool& >::type flag_center(flag_centerSEXP);
+    __result = Rcpp::wrap(flag_window_cpp(centers, window, len, flag_center));
     return __result;
 END_RCPP
 }
