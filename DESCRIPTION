@@ -15,4 +15,5 @@ Imports:
     stringi,
     digest,
     quanteda,
-    Rcpp (>= 0.12.4)
+    Rcpp (>= 0.12.4),
+    Newsmap
