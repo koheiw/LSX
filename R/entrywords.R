@@ -6,7 +6,7 @@ flag_collocates <- function(tokens, targets, window=10){
   cols <- rep(FALSE, len)
   if(sum(flag_target) > 0){
     index_target <- which(flag_target)
-    index_col <- get_colflag_cpp(index_target, window, len)
+    index_col <- flag_window_cpp(index_target, window, len, FALSE)
     cols[index_col] <- TRUE
   }
   names(cols) <- tokens
