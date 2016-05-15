@@ -1,16 +1,18 @@
 
-flag_collocates <- function(tokens, targets, window=10){
+flag_collocates <- function(tokens, targets, targets_negative, window=10){
 
-  flag_target <- tokens %in% targets
   len <- length(tokens)
-  cols <- rep(FALSE, len)
   if(sum(flag_target) > 0){
-    index_target <- which(flag_target)
-    index_col <- flag_window_cpp(index_target, window, len, FALSE)
-    cols[index_col] <- TRUE
+    index_target <- which(tokens %in% targets)
+    flag <- flag_window_cpp(index_target, window, len, FALSE)
   }
-  names(cols) <- tokens
-  return(cols)
+  if(!missing(targets_negative)){
+    flag_target_negative <- tokens %in% targets_negative
+    flag_negative <- flag_window_cpp(index_target, window, len, FALSE)
+    flag <- flag & !flag_negative # exclude window from negative targets
+  }
+  names(flag) <- tokens
+  return(flag)
 }
 
 # Old version (not used)
@@ -20,12 +22,18 @@ get_colindex <- function(index, window, len){
   return(index_col)
 }
 
-count_collocates <- function(units, target){
-  tokens_unique <- unique(unlist(units, use.names = FALSE))
-  tokens_target <- tokens_unique[stringi::stri_detect_regex(tokens_unique, target)]
+count_collocates <- function(units, target, target_negative){
+  types <- unique(unlist(units, use.names = FALSE))
+  targets <- regex2fix(types, target)
+  targets_negative <- regex2fix(types, target_negative)
   #print(tokens_target)
-  cols <- unlist(lapply(units, function(x, y) flag_collocates(x, y), tokens_target)) # Name is needed
+  cols <- unlist(lapply(units, function(x, y, z) flag_collocates(x, y, z), targets, targets_negative))
   return(as.matrix(table(names(cols), cols)))
+}
+
+regex2fix <- function(types, regex){
+  types_match <- types[stringi::stri_detect_regex(types, regex)]
+  return(types_match)
 }
 
 

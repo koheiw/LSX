@@ -27,7 +27,6 @@ LogicalVector flag_window_cpp(NumericVector &centers,
 
 /*** R
 microbenchmark::microbenchmark(
-  get_colindex(c(5, 10), 3, 20),
   flag_window_cpp(c(5, 10), 3, 20, FALSE)
 )
 */
