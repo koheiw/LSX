@@ -5,7 +5,3 @@ flag_window_cpp <- function(centers, window, len, flag_center) {
     .Call('LSS_flag_window_cpp', PACKAGE = 'LSS', centers, window, len, flag_center)
 }
 
-select_tokens_cppl <- function(x, types, remove, spacer) {
-    .Call('LSS_select_tokens_cppl', PACKAGE = 'LSS', x, types, remove, spacer)
-}
-

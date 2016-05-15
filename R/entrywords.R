@@ -1,40 +1,37 @@
-
-flag_collocates <- function(tokens, targets, targets_negative, window=10){
-
+#' @examples
+#' lapply(list(LETTERS, letters), flag_collocates, c('C', 'J', 'o' ,'w'), FALSE, 2)
+flag_collocates <- function(tokens, targets, flag_targets=FALSE, window=10){
   len <- length(tokens)
-  if(sum(flag_target) > 0){
-    index_target <- which(tokens %in% targets)
-    flag <- flag_window_cpp(index_target, window, len, FALSE)
-  }
-  if(!missing(targets_negative)){
-    flag_target_negative <- tokens %in% targets_negative
-    flag_negative <- flag_window_cpp(index_target, window, len, FALSE)
-    flag <- flag & !flag_negative # exclude window from negative targets
+  index <- which(tokens %in% targets)
+  if(length(index) > 0){
+    flag <- flag_window_cpp(index, window, len, flag_targets)
+  }else{
+    flag <- rep(FALSE, len)
   }
   names(flag) <- tokens
   return(flag)
 }
 
-# Old version (not used)
-get_colindex <- function(index, window, len){
-  index_col <- unique(unlist(lapply(index, FUN=function(x) x + seq(window * -1, window)), use.names = FALSE))
-  index_col <- index_col[1 <= index_col & index_col <= max(len)]
-  return(index_col)
-}
-
-count_collocates <- function(units, target, target_negative){
-  types <- unique(unlist(units, use.names = FALSE))
-  targets <- regex2fix(types, target)
-  if(missing(target_negative)){
-    cols <- unlist(lapply(units, function(x, y) flag_collocates(x, y), targets))
-  }else{
-    targets_negative <- regex2fix(types, target_negative)
-    cols <- unlist(lapply(units, function(x, y, z) flag_collocates(x, y, z), targets, targets_negative))
+#' @examples
+#' count_collocates(list(LETTERS, letters), 'C|J|o|w', window=2)
+#' count_collocates(list(LETTERS, letters), 'C|J|o|w', 'A|z', window=2)
+count_collocates <- function(tokens, target, target_negative, window=10){
+  types <- unique(unlist(tokens, use.names = FALSE))
+  targets <- regex2fixed(target, types)
+  cols <- unlist(lapply(tokens, flag_collocates, targets=targets, flag_targets=TRUE, window=window))
+  if(!missing(target_negative)){
+    # Exclude collocations of negative targets
+    targets_negative <- regex2fixed(target_negative, types)
+    cols_negative <- unlist(lapply(tokens, flag_collocates, targets_negative, FALSE, window))
+    cols <- cols & !cols_negative
   }
-  return(as.matrix(table(names(cols), cols)))
+  tb <- table(names(cols), factor(cols, levels=c(TRUE, FALSE)))
+  mx <- as.matrix(tb)
+  mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
+  return(mx)
 }
 
-regex2fix <- function(types, regex){
+regex2fixed <- function(regex, types){
   types_match <- types[stringi::stri_detect_regex(types, regex)]
   return(types_match)
 }
@@ -48,24 +45,31 @@ regex2fix <- function(types, regex){
 #'
 #'
 #' @export
-selectEntrywords <- function(units, target, target_negative, count_min=5, ...){
+selectEntrywords <- function(tokens, target, target_negative, count_min=5, ...){
 
   cat("Finding collocations...\n")
   if(missing(target_negative)){
-    mx_col <- count_collocates(units, target, ...)
+    mx <- count_collocates(tokens, target, ...)
   }else{
-    mx_col <- count_collocates(units, target, target_negative, ...)
+    mx <- count_collocates(tokens, target, target_negative, ...)
   }
-  mx_col <- mx_col[,c(2,1)]
-  sum_col <- sum(mx_col[,1])
-  sum_non <- sum(mx_col[,2])
-  mx_col <- mx_col[mx_col[,1] >= min,] # Exclude infrequent words
-  df_col <- as.data.frame.matrix(mx_col)
+  if(sum(mx[,1])==0) stop("No words within windows\n")
 
+  sum_true <- sum(mx[,1])
+  sum_false <- sum(mx[,2])
+  mx <- mx[mx[,1] >= count_min,] # Exclude rare words
+  print(head(mx, 100))
+  df <- as.data.frame.matrix(mx)
   cat("Calculating g-score...\n")
-  df_col$chisq <- apply(mx_col, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_col, sum_non)
-  df_col <- df_col[df_col$chisq > 10.84,]
-  df_col <- df_col[order(-df_col$chisq),]
-  df_col <- df_col[rownames(df_col)!='',]
-  return(df_col)
+  df$gscore <- apply(mx, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_true, sum_false)
+
+
+  df <- df[df$gscore > 10.84,]
+  df <- df[order(-df$gscore),]
+  df <- df[rownames(df)!='',]
+
+  gscore <- df$gscore
+  names(gscore) <- rownames(df)
+
+  return(gscore)
 }
