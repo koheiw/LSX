@@ -25,9 +25,12 @@ get_colindex <- function(index, window, len){
 count_collocates <- function(units, target, target_negative){
   types <- unique(unlist(units, use.names = FALSE))
   targets <- regex2fix(types, target)
-  targets_negative <- regex2fix(types, target_negative)
-  #print(tokens_target)
-  cols <- unlist(lapply(units, function(x, y, z) flag_collocates(x, y, z), targets, targets_negative))
+  if(missing(target_negative)){
+    cols <- unlist(lapply(units, function(x, y) flag_collocates(x, y), targets))
+  }else{
+    targets_negative <- regex2fix(types, target_negative)
+    cols <- unlist(lapply(units, function(x, y, z) flag_collocates(x, y, z), targets, targets_negative))
+  }
   return(as.matrix(table(names(cols), cols)))
 }
 
@@ -45,10 +48,14 @@ regex2fix <- function(types, regex){
 #'
 #'
 #' @export
-selectEntrywords <- function(units, target, min=5){
+selectEntrywords <- function(units, target, target_negative, count_min=5){
 
   cat("Finding collocations...\n")
-  mx_col <- count_collocates(units, target)
+  if(missing(target_negative)){
+    mx_col <- count_collocates(units, target)
+  }else{
+    mx_col <- count_collocates(units, target, target_negative)
+  }
   mx_col <- mx_col[,c(2,1)]
   sum_col <- sum(mx_col[,1])
   sum_non <- sum(mx_col[,2])
