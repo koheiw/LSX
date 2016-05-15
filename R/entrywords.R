@@ -3,11 +3,15 @@
 flag_collocates <- function(tokens, targets, flag_targets=FALSE, window=10){
   len <- length(tokens)
   index <- which(tokens %in% targets)
+<<<<<<< HEAD
   if(length(index) > 0){
     flag <- flag_window_cpp(index, window, len, flag_targets)
   }else{
     flag <- rep(FALSE, len)
   }
+=======
+  flag <- flag_window_cpp(index, window, len, flag_targets)
+>>>>>>> b46cbd524115475f2414ff1a1b304f97475988bc
   names(flag) <- tokens
   return(flag)
 }
