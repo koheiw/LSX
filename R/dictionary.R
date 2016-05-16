@@ -39,9 +39,9 @@ decompose <- function(mx, nv=300, cache=TRUE, ...){
     cat('Reading cache file:', file_cache, '\n')
     mx2 <- readRDS(file_cache)
   }else{
-    cat('Starting SVD ...\n')
+    cat('Starting singular value decompositiono of dfm...\n')
     set.seed(1) # Important for replicable results
-    S <- irlba::irlba(mx, nv=300, center=colMeans(mx), verbose=TRUE, right_only=TRUE, ...)
+    S <- irlba::irlba(mx, nv=300, center=Matrix::colMeans(mx), verbose=TRUE, right_only=TRUE, ...)
     mx2 <- S$v * S$d
     rownames(mx2) <- colnames(mx)
     if(cache){

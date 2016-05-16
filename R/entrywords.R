@@ -25,6 +25,7 @@ count_collocates <- function(tokens, target, target_negative, window=10){
     cols_negative <- unlist(lapply(tokens, flag_collocates, targets_negative, TRUE, window))
     cols <- cols & !cols_negative
   }
+  cat("Counting collocations...\n")
   tb <- table(names(cols), factor(cols, levels=c(TRUE, FALSE)))
   mx <- as.matrix(tb)
   mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
@@ -53,10 +54,10 @@ selectEntrywords <- function(tokens, target, target_negative, count_min=5, word_
   }else{
     mx <- count_collocates(tokens, target, target_negative, ...)
   }
-  if(sum(mx[,1])==0) stop("No words within windows\n")
 
   sum_true <- sum(mx[,1])
   sum_false <- sum(mx[,2])
+  if(sum(mx[,1])==0) warning("No words within collocation windows\n")
   mx <- mx[mx[,1] >= count_min,] # Exclude rare words
   df <- as.data.frame.matrix(mx)
   cat("Calculating g-score...\n")
