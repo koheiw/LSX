@@ -71,6 +71,7 @@ cosine <- function(v1, v2){
   return(sum(v1*v2) / sqrt(sum(v1^2)*sum(v2^2)))
 }
 
+#' Caluclate weighted row sums of a matrix
 rowsum_weighted <- function(mx, words, weights){
   common <- intersect(colnames(mx), words)
   mx2 <- mx[,match(common, colnames(mx))]

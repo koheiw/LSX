@@ -45,7 +45,7 @@ regex2fixed <- function(regex, types){
 #'
 #'
 #' @export
-selectEntrywords <- function(tokens, target, target_negative, count_min=5, ...){
+selectEntrywords <- function(tokens, target, target_negative, count_min=5, word_only=TRUE, ...){
 
   cat("Finding collocations...\n")
   if(missing(target_negative)){
@@ -61,13 +61,13 @@ selectEntrywords <- function(tokens, target, target_negative, count_min=5, ...){
   df <- as.data.frame.matrix(mx)
   cat("Calculating g-score...\n")
   df$gscore <- apply(mx, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_true, sum_false)
-
+  
   df <- df[df$gscore > 10.84,]
   df <- df[order(-df$gscore),]
   df <- df[rownames(df)!='',]
-
-  gscore <- df$gscore
-  names(gscore) <- rownames(df)
-
-  return(gscore)
+  if(word_only){
+    return(df)
+  }else{
+    return(rownames(df))
+  }
 }

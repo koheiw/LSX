@@ -1,5 +1,8 @@
 #' @export
-makeDictionary <- function(mx, words, seeds){
+makeDictionary <- function(mx, words, seeds, valueType='fixed'){
+  if(valueType=='glob'){
+    seeds <- get_fixed_seeds(seeds, rownames(mx))
+  }
   mx_sim <- similarity(mx, words, names(seeds))
   #print(dim(mx_sim))
   mx_wsum <- rowsum_weighted(mx_sim, names(seeds), seeds)
@@ -52,4 +55,23 @@ calc_scores <- function(mx, df_dic, se=TRUE){
   }else{
     return(list('lss_mn'=mns[,1]))
   }
+}
+
+
+get_fixed_seeds <- function(seeds, types){
+  seeds_score <- c()
+  for(i in 1:length(seeds)){
+    seed <- seeds[i]
+    #print(seeds)
+    #print(types)
+    seed_regex <- utils::glob2rx(names(seed))
+    seed_fixed <- regex2fixed(seed_regex, types)
+    if(length(seed_fixed)){
+      len <- length(seed_fixed)
+      seed_score <- rep(seed / len, len)
+      names(seed_score) <- seed_fixed
+      seeds_score <- c(seeds_score, seed_score)
+    }
+  }
+  return(seeds_score)
 }
