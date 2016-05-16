@@ -18,11 +18,11 @@ flag_collocates <- function(tokens, targets, flag_targets=FALSE, window=10){
 count_collocates <- function(tokens, target, target_negative, window=10){
   types <- unique(unlist(tokens, use.names = FALSE))
   targets <- regex2fixed(target, types)
-  cols <- unlist(lapply(tokens, flag_collocates, targets=targets, flag_targets=TRUE, window=window))
+  cols <- unlist(lapply(tokens, flag_collocates, targets=targets, FALSE, window=window))
   if(!missing(target_negative)){
     # Exclude collocations of negative targets
     targets_negative <- regex2fixed(target_negative, types)
-    cols_negative <- unlist(lapply(tokens, flag_collocates, targets_negative, FALSE, window))
+    cols_negative <- unlist(lapply(tokens, flag_collocates, targets_negative, TRUE, window))
     cols <- cols & !cols_negative
   }
   tb <- table(names(cols), factor(cols, levels=c(TRUE, FALSE)))
