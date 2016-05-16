@@ -9,7 +9,7 @@ removeShortFeatures <- function(tokens, min=3, ...){
 
 #' @export
 removePadding <- function(tokens){
-  return(quanteda::selectFeatures2(tokens, '', padding=FALSE,
+  return(quanteda::selectFeatures2(tokens, '', selection='remove', padding=FALSE,
                                    valueType='fixed', case_insensitive=FALSE))
 }
 

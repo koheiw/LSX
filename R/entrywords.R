@@ -58,11 +58,9 @@ selectEntrywords <- function(tokens, target, target_negative, count_min=5, ...){
   sum_true <- sum(mx[,1])
   sum_false <- sum(mx[,2])
   mx <- mx[mx[,1] >= count_min,] # Exclude rare words
-  print(head(mx, 100))
   df <- as.data.frame.matrix(mx)
   cat("Calculating g-score...\n")
   df$gscore <- apply(mx, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_true, sum_false)
-
 
   df <- df[df$gscore > 10.84,]
   df <- df[order(-df$gscore),]
