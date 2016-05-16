@@ -3,42 +3,6 @@ library(digest)
 library(irlba)
 library(stringi)
 
-
-
-gscore <- function(col, non, sum_col, sum_non){
-  tb <- as.table(rbind(c(col, non), c(sum_col - col, sum_non - non)))
-  suppressWarnings(
-    chi <- chisq.test(tb)
-  )
-  #print(tb)
-  #print(chi$expected)
-  col_exp <- chi$expected[1,1]
-  if(col > col_exp){
-    return(unname(chi$statistic))
-  }else{
-    return(unname(chi$statistic) * -1)
-  }
-}
-
-decompose <- function(mx, nv=300, cache=TRUE, ...){
-  file_cache <- paste0('lss_svd_', digest::digest(mx, algo='xxhash64'), '.RDS')
-  if(cache & file.exists(file_cache)){
-    cat('Reading cache file:', file_cache, '\n')
-    mx2 <- readRDS(file_cache)
-  }else{
-    cat('Starting SVD ...\n')
-    set.seed(1) # Important for replicable results
-    S <- irlba::irlba(mx, nv=300, center=colMeans(mx), verbose=TRUE, right_only=TRUE, ...)
-    mx2 <- S$v * S$d
-    rownames(mx2) <- colnames(mx)
-    if(cache){
-      cat('Writing cache file:', file_cache, '\n')
-      saveRDS(mx2, file_cache)
-    }
-  }
-  return(mx2)
-}
-
 similarity <- function(mx, words, seeds, cache=TRUE){
 
   if(missing(seeds)){

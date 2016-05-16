@@ -61,13 +61,29 @@ selectEntrywords <- function(tokens, target, target_negative, count_min=5, word_
   df <- as.data.frame.matrix(mx)
   cat("Calculating g-score...\n")
   df$gscore <- apply(mx, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_true, sum_false)
-  
+
   df <- df[df$gscore > 10.84,]
   df <- df[order(-df$gscore),]
   df <- df[rownames(df)!='',]
   if(word_only){
-    return(df)
-  }else{
     return(rownames(df))
+  }else{
+    return(df)
+  }
+}
+
+#' Internal function to calcualte g-score
+gscore <- function(col, non, sum_col, sum_non){
+  tb <- as.table(rbind(c(col, non), c(sum_col - col, sum_non - non)))
+  suppressWarnings(
+    chi <- chisq.test(tb)
+  )
+  #print(tb)
+  #print(chi$expected)
+  col_exp <- chi$expected[1,1]
+  if(col > col_exp){
+    return(unname(chi$statistic))
+  }else{
+    return(unname(chi$statistic) * -1)
   }
 }

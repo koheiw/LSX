@@ -1,3 +1,4 @@
+#' Make a LSS dicitonary with seed words
 #' @export
 makeDictionary <- function(mx, words, seeds, valueType='fixed'){
   if(valueType=='glob'){
@@ -13,6 +14,7 @@ makeDictionary <- function(mx, words, seeds, valueType='fixed'){
   return(df_dic)
 }
 
+#' Read LSS dicitonary in text format
 #' @export
 readDictionary <-function(file){
   if(file.exists(file)){
@@ -29,8 +31,34 @@ readDictionary <-function(file){
   }
 }
 
-
+#' Perform singular value decomposition by irlba
 #' @export
+decompose <- function(mx, nv=300, cache=TRUE, ...){
+  file_cache <- paste0('lss_svd_', digest::digest(mx, algo='xxhash64'), '.RDS')
+  if(cache & file.exists(file_cache)){
+    cat('Reading cache file:', file_cache, '\n')
+    mx2 <- readRDS(file_cache)
+  }else{
+    cat('Starting SVD ...\n')
+    set.seed(1) # Important for replicable results
+    S <- irlba::irlba(mx, nv=300, center=colMeans(mx), verbose=TRUE, right_only=TRUE, ...)
+    mx2 <- S$v * S$d
+    rownames(mx2) <- colnames(mx)
+    if(cache){
+      cat('Writing cache file:', file_cache, '\n')
+      saveRDS(mx2, file_cache)
+    }
+  }
+  return(mx2)
+}
+
+#' Calculate document score by LSS dictionary
+#' @export
+scoreDocument <- function(...){
+  calc_scores(...)
+}
+
+#' Internal function to calculate document score
 calc_scores <- function(mx, df_dic, se=TRUE){
 
   mx <- Matrix(mx, sparse=FALSE)
@@ -57,7 +85,7 @@ calc_scores <- function(mx, df_dic, se=TRUE){
   }
 }
 
-
+#' Internal function to convert seed words from glob to fiexd format
 get_fixed_seeds <- function(seeds, types){
   seeds_score <- c()
   for(i in 1:length(seeds)){
