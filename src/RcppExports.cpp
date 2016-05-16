@@ -5,17 +5,17 @@
 
 using namespace Rcpp;
 
-// flag_window_cpp
-LogicalVector flag_window_cpp(NumericVector& centers, const int& window, const int& len, const bool& flag_center);
-RcppExport SEXP LSS_flag_window_cpp(SEXP centersSEXP, SEXP windowSEXP, SEXP lenSEXP, SEXP flag_centerSEXP) {
+// flag_collocates_cppl
+List flag_collocates_cppl(List texts, const std::vector<std::string>& targets, const int& window, const int& n);
+RcppExport SEXP LSS_flag_collocates_cppl(SEXP textsSEXP, SEXP targetsSEXP, SEXP windowSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector& >::type centers(centersSEXP);
+    Rcpp::traits::input_parameter< List >::type texts(textsSEXP);
+    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type targets(targetsSEXP);
     Rcpp::traits::input_parameter< const int& >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< const int& >::type len(lenSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type flag_center(flag_centerSEXP);
-    __result = Rcpp::wrap(flag_window_cpp(centers, window, len, flag_center));
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    __result = Rcpp::wrap(flag_collocates_cppl(texts, targets, window, n));
     return __result;
 END_RCPP
 }

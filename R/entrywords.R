@@ -1,32 +1,33 @@
-#' @examples
-#' lapply(list(LETTERS, letters), flag_collocates, c('C', 'J', 'o' ,'w'), FALSE, 2)
-flag_collocates <- function(tokens, targets, flag_targets=FALSE, window=10){
-  len <- length(tokens)
-  index <- which(tokens %in% targets)
-  if(length(index) > 0){
-    flag <- flag_window_cpp(index, window, len, flag_targets)
+
+flag_collocates <- function(tokens, targets, window, len, negative=FALSE){
+
+  flag <- flag_collocates_cppl(tokens, targets, window, len)
+  if(negative){
+    cols <- flag$col | flag$target
   }else{
-    flag <- rep(FALSE, len)
+    cols <- flag$col & !flag$target
   }
-  names(flag) <- tokens
-  return(flag)
+  return(cols)
 }
 
 #' @examples
 #' count_collocates(list(LETTERS, letters), 'C|J|o|w', window=2)
 #' count_collocates(list(LETTERS, letters), 'C|J|o|w', 'A|z', window=2)
+#'
 count_collocates <- function(tokens, target, target_negative, window=10){
-  types <- unique(unlist(tokens, use.names = FALSE))
+  tokens_unlist <- unlist(tokens, use.names = FALSE)
+  len <- length(tokens_unlist)
+  types <- unique(tokens_unlist)
   targets <- regex2fixed(target, types)
-  cols <- unlist(lapply(tokens, flag_collocates, targets=targets, FALSE, window=window))
+  cols <- flag_collocates(tokens, targets, window, len)
+
   if(!missing(target_negative)){
-    # Exclude collocations of negative targets
     targets_negative <- regex2fixed(target_negative, types)
-    cols_negative <- unlist(lapply(tokens, flag_collocates, targets_negative, TRUE, window))
+    cols_negative <- flag_collocates(tokens, targets_negative, window, len)
     cols <- cols & !cols_negative
   }
   cat("Counting collocations...\n")
-  tb <- table(names(cols), factor(cols, levels=c(TRUE, FALSE)))
+  tb <- table(tokens_unlist, factor(cols, levels=c(TRUE, FALSE)))
   mx <- as.matrix(tb)
   mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
   return(mx)
