@@ -10,6 +10,7 @@ flag_collocates <- function(tokens, targets, window, len, negative=FALSE){
   return(cols)
 }
 
+
 #' @examples
 #' count_collocates(list(LETTERS, letters), 'C|J|o|w', window=2)
 #' count_collocates(list(LETTERS, letters), 'C|J|o|w', 'A|z', window=2)
@@ -24,6 +25,43 @@ count_collocates <- function(tokens, target, target_negative, window=10){
   if(!missing(target_negative)){
     targets_negative <- regex2fixed(target_negative, types)
     cols_negative <- flag_collocates(tokens, targets_negative, window, len)
+    cols <- cols & !cols_negative
+  }
+  cat("Counting collocations...\n")
+  tb <- table(tokens_unlist, factor(cols, levels=c(TRUE, FALSE)))
+  mx <- as.matrix(tb)
+  mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
+  return(mx)
+}
+
+flag_collocates2 <- function(tokens, targets, window, len, negative=FALSE){
+
+  flag <- flag_collocates_cppl(tokens, targets, window, len)
+  if(negative){
+    cols <- flag$col | flag$target
+  }else{
+    cols <- flag$col & !flag$target
+  }
+  return(cols)
+}
+
+#' @examples
+#' count_collocates2(list(LETTERS, letters), 'C|J|o|w', window=2)
+#' count_collocates2(list(LETTERS, letters), 'C|J|o|w', 'A|z', window=2)
+#'
+#' microbenchmark::microbenchmark(
+#' count_collocates2(list(LETTERS, letters), 'C|J|o|w', window=2),
+#' count_collocates(list(LETTERS, letters), 'C|J|o|w', window=2))
+count_collocates2 <- function(tokens, target, target_negative, window=10){
+  tokens_unlist <- unlist(tokens, use.names = FALSE)
+  len <- length(tokens_unlist)
+  types <- unique(tokens_unlist)
+  targets <- regex2fixed(target, types)
+  cols <- flag_collocates2(tokens, targets, window, len)
+
+  if(!missing(target_negative)){
+    targets_negative <- regex2fixed(target_negative, types)
+    cols_negative <- flag_collocates2(tokens, targets_negative, window, len)
     cols <- cols & !cols_negative
   }
   cat("Counting collocations...\n")
