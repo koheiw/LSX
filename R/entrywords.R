@@ -26,7 +26,7 @@ count_collocates <- function(tokens, target, target_negative, window=10){
 
   if(!missing(target_negative)){
     targets_negative <- regex2fixed(target_negative, types)
-    cols_negative <- flag_collocates2(tokens, targets_negative, window, len)
+    cols_negative <- flag_collocates(tokens, targets_negative, window, len)
     cols <- cols & !cols_negative
   }
   cat("Counting collocations...\n")
