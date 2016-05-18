@@ -30,9 +30,8 @@ count_collocates <- function(tokens, target, target_negative, window=10){
     cols <- cols & !cols_negative
   }
   cat("Counting collocations...\n")
-  tb <- table(tokens_unlist, factor(cols, levels=c(TRUE, FALSE)))
-  mx <- as.matrix(tb)
-  mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
+  mx <- as.matrix(table(tokens_unlist, factor(cols, levels=c(TRUE, FALSE))))
+  #mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
   return(mx)
 }
 
@@ -50,7 +49,8 @@ regex2fixed <- function(regex, types){
 #'
 #'
 #' @export
-selectEntrywords <- function(tokens, target, target_negative, count_min=5, word_only=TRUE, ...){
+selectEntrywords <- function(tokens, target, target_negative, count_min=5,
+                             word_only=TRUE, g=10.84, ...){
 
   cat("Finding collocations...\n")
   if(missing(target_negative)){
@@ -58,7 +58,6 @@ selectEntrywords <- function(tokens, target, target_negative, count_min=5, word_
   }else{
     mx <- count_collocates(tokens, target, target_negative, ...)
   }
-
   sum_true <- sum(mx[,1])
   sum_false <- sum(mx[,2])
   if(sum(mx[,1])==0) warning("No words within collocation windows\n")
@@ -67,7 +66,7 @@ selectEntrywords <- function(tokens, target, target_negative, count_min=5, word_
   cat("Calculating g-score...\n")
   df$gscore <- apply(mx, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_true, sum_false)
 
-  df <- df[df$gscore > 10.84,]
+  df <- df[df$gscore > g,]
   df <- df[order(-df$gscore),]
   df <- df[rownames(df)!='',]
   if(word_only){
@@ -78,8 +77,9 @@ selectEntrywords <- function(tokens, target, target_negative, count_min=5, word_
 }
 
 #' Internal function to calcualte g-score
-gscore <- function(col, non, sum_col, sum_non){
+gscore <- function(col, non, sum_col, sum_non, smooth=1){
   tb <- as.table(rbind(c(col, non), c(sum_col - col, sum_non - non)))
+  tb <- tb + smooth
   suppressWarnings(
     chi <- chisq.test(tb)
   )

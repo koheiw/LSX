@@ -5,8 +5,9 @@
 
 using namespace Rcpp;
 
-void flag_collocates_cpp(const std::vector<std::string> &text,
-                         const std::unordered_set<std::string> &set_targets,
+void flag_collocates_cpp(const CharacterVector &text,
+                         //const std::unordered_set<std::string> &set_targets,
+                         const std::unordered_set<String> &set_targets,
                          const int &window,
                          std::vector<bool> &flags_target,
                          std::vector<bool> &flags_col,
@@ -14,18 +15,19 @@ void flag_collocates_cpp(const std::vector<std::string> &text,
 
     int len = text.size();
     for(int i=0; i < len; i++){
-      std::string token = text[i];
+      String token = text[i];
       bool is_in = set_targets.find(token) != set_targets.end();
 
       if(is_in){
         //Rcout << "Match " << token << " " << i<< "\n";
-        for(int j = std::max(0, i - window); j < std::min(i + window + 1, len); j++){
+        int j_int = std::max(0, i - window);
+        int j_lim = std::min(i + window + 1, len);
+        for(int j = j_int; j < j_lim; j++){
           //Rcout << "Flag " << token << " " << j << "\n";
           flags_col[g + j] = flags_col[g + j] || TRUE;
         }
         flags_target[g + i] = TRUE;
       }else{
-        flags_col[g + i] = flags_col[g + i] || FALSE;
         flags_target[g + i] = FALSE;
       }
     }
@@ -34,13 +36,14 @@ void flag_collocates_cpp(const std::vector<std::string> &text,
 
 // [[Rcpp::export]]
 List flag_collocates_cppl(List texts,
-                          const std::vector<std::string> &targets,
+                          const CharacterVector &targets,
                           const int &window,
                           const int &n) {
 
   int g = 0; // global index;
   int len = texts.size();
-  std::unordered_set<std::string> set_targets (targets.begin(), targets.end());
+  //std::unordered_set<std::string> set_targets (targets.begin(), targets.end());
+  std::unordered_set<String> set_targets (targets.begin(), targets.end());
   std::vector<bool> flags_target(n);
   std::vector<bool> flags_col(n);
   for (int h = 0; h < len; h++){
