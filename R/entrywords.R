@@ -49,20 +49,21 @@ regex2fixed <- function(regex, types){
 #'
 #'
 #' @export
-selectEntrywords <- function(tokens, target, target_negative, count_min=5,
+selectEntrywords <- function(tokens, target, target_negative, window=10, count_min=5,
                              word_only=TRUE, g=10.84, ...){
 
   cat("Finding collocations...\n")
   if(missing(target_negative)){
-    mx <- count_collocates(tokens, target, ...)
+    mx <- count_collocates(tokens, target, window=window, ...)
   }else{
-    mx <- count_collocates(tokens, target, target_negative, ...)
+    mx <- count_collocates(tokens, target, target_negative, window=window, ...)
   }
   sum_true <- sum(mx[,1])
   sum_false <- sum(mx[,2])
-  if(sum(mx[,1])==0) warning("No words within collocation windows\n")
+  if(sum(mx[,1]) == 0) warning("No words within collocation windows\n")
   mx <- mx[mx[,1] >= count_min,] # Exclude rare words
   df <- as.data.frame.matrix(mx)
+  print(dim(df))
   cat("Calculating g-score...\n")
   df$gscore <- apply(mx, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_true, sum_false)
 
