@@ -1,11 +1,9 @@
 #include <Rcpp.h>
 #include <vector>
 // [[Rcpp::plugins(cpp11)]]
-#include <bitset>
 #include <unordered_set>
 
 using namespace Rcpp;
-
 
 void flag_collocates_cpp(const std::vector<std::string> &text,
                          const std::unordered_set<std::string> &set_targets,
