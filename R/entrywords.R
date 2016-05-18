@@ -37,7 +37,7 @@ count_collocates <- function(tokens, target, target_negative, window=10){
 }
 
 regex2fixed <- function(regex, types){
-  types_match <- types[stringi::stri_detect_regex(types, regex)]
+  types_match <- types[stringi::stri_detect_regex(types, paste0(regex, collapse='|'))]
   return(types_match)
 }
 
