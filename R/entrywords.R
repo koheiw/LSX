@@ -61,6 +61,7 @@ selectEntrywords <- function(tokens, target, target_negative, window=10, count_m
   sum_true <- sum(mx[,1])
   sum_false <- sum(mx[,2])
   if(sum(mx[,1]) == 0) warning("No words within collocation windows\n")
+  if(missing(count_min)) count_min <- sum(mx) / 10 ^ 6 # one in million
   mx <- mx[mx[,1] >= count_min,] # Exclude rare words
   df <- as.data.frame.matrix(mx)
   print(dim(df))
