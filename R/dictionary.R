@@ -1,7 +1,7 @@
 #' Make a LSS dicitonary with seed words
 #' @export
-makeDictionary <- function(mx, words, seeds, valueType='fixed'){
-  if(valueType=='glob'){
+makeDictionary <- function(mx, words, seeds, valuetype='fixed'){
+  if(valuetype=='glob'){
     seeds <- get_fixed_seeds(seeds, rownames(mx))
   }
   mx_sim <- similarity(mx, words, names(seeds))
