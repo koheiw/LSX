@@ -54,30 +54,30 @@ decompose <- function(mx, nv=300, cache=TRUE, ...){
 
 #' Calculate document score by LSS dictionary
 #' @export
-scoreDocument <- function(...){
+scoreDocuments <- function(...){
   calc_scores(...)
 }
 
 #' Internal function to calculate document score
 calc_scores <- function(mx, df_dic, se=TRUE){
 
-  mx <- Matrix(mx, sparse=FALSE)
+
   common <- intersect(rownames(df_dic), colnames(mx))
-  mx <- mx[,match(common, colnames(mx))] # Ignore words not in the dictionary
-  mx_dic <- as.matrix(df_dic[match(common,rownames(df_dic)),,drop=TRUE], row=1)
+  mx <- as.matrix(mx[,match(common, colnames(mx))]) # ignore words not in the dictionary
+  mx_dic <- as.matrix(df_dic[match(common, rownames(df_dic)),,drop=TRUE], row=1) # ignore words not in documents
 
   # Based on Wordscore
   mx_tf <- sweep(mx, 1, rowSums(mx), FUN="/")
-  mns <- as.matrix(mx_tf) %*% mx_dic # Mean scores of documents
+  mns <- as.matrix(mx_tf) %*% mx_dic # mean scores of documents
 
   if(se){
-    mns <- as.matrix(mx_tf) %*% mx_dic # Mean scores of documents
+    mns <- as.matrix(mx_tf) %*% mx_dic # mean scores of documents
     mx_binary <- mx > 0
     mx_score <- mx_binary * t(mx_dic[,rep(1,nrow(mx_tf))])
-    mx_dev <- mx_score - mns[,rep(1,ncol(mx_binary))] # Difference from the mean
-    mx_error <- (mx_dev ** 2) * mx_tf # Square of deviation weighted by frequency
-    vars <- rowSums(mx_error) # Variances
-    sds <- sqrt(vars) # Standard diviaitons
+    mx_dev <- mx_score - mns[,rep(1,ncol(mx_binary))] # difference from the mean
+    mx_error <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
+    vars <- rowSums(mx_error) # variances
+    sds <- sqrt(vars) # standard diviaitons
     ses <- sds / sqrt(rowSums(mx)) # SD divided by sqrt of total number of words
     return(list('lss_mn'=mns[,1], 'lss_se'=ses))
   }else{
