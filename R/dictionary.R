@@ -59,7 +59,7 @@ scoreDocuments <- function(...){
 }
 
 #' Internal function to calculate document score
-calc_scores <- function(mx, df_dic, se=TRUE){
+calc_scores <- function(mx, df_dic, score_only=FALSE){
 
 
   common <- intersect(rownames(df_dic), colnames(mx))
@@ -67,21 +67,20 @@ calc_scores <- function(mx, df_dic, se=TRUE){
   mx_dic <- as.matrix(df_dic[match(common, rownames(df_dic)),,drop=TRUE], row=1) # ignore words not in documents
 
   # Based on Wordscore
-  mx_tf <- sweep(mx, 1, rowSums(mx), FUN="/")
-  mns <- as.matrix(mx_tf) %*% mx_dic # mean scores of documents
+  mx_tf <- mx / rowSums(mx)
+  mn <- mx_tf %*% mx_dic # mean scores of documents
 
-  if(se){
-    mns <- as.matrix(mx_tf) %*% mx_dic # mean scores of documents
-    mx_binary <- mx > 0
-    mx_score <- mx_binary * t(mx_dic[,rep(1,nrow(mx_tf))])
-    mx_dev <- mx_score - mns[,rep(1,ncol(mx_binary))] # difference from the mean
-    mx_error <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
-    vars <- rowSums(mx_error) # variances
-    sds <- sqrt(vars) # standard diviaitons
-    ses <- sds / sqrt(rowSums(mx)) # SD divided by sqrt of total number of words
-    return(list('lss_mn'=mns[,1], 'lss_se'=ses))
+  if(score_only){
+    return(as.vector(mn))
   }else{
-    return(list('lss_mn'=mns[,1]))
+    mx_binary <- mx > 0
+    mx_score <- mx_binary * t(mx_dic[, rep(1, nrow(mx_tf))])
+    mx_dev <- mx_score - mn[, rep(1, ncol(mx_binary))] # difference from the mean
+    mx_error <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
+    var <- rowSums(mx_error) # variances
+    sd <- sqrt(var) # standard diviaitons
+    se <- sd / sqrt(rowSums(mx)) # SD divided by sqrt of total number of words
+    return(data.frame(lss_mn=unlist(mn), lss_se=se))
   }
 }
 
