@@ -6,13 +6,13 @@
 using namespace Rcpp;
 
 // flag_collocates_cppl
-List flag_collocates_cppl(List texts, const std::vector<std::string>& targets, const int& window, const int& n);
+List flag_collocates_cppl(List texts, const CharacterVector& targets, const int& window, const int& n);
 RcppExport SEXP LSS_flag_collocates_cppl(SEXP textsSEXP, SEXP targetsSEXP, SEXP windowSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< List >::type texts(textsSEXP);
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type targets(targetsSEXP);
+    Rcpp::traits::input_parameter< const CharacterVector& >::type targets(targetsSEXP);
     Rcpp::traits::input_parameter< const int& >::type window(windowSEXP);
     Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
     __result = Rcpp::wrap(flag_collocates_cppl(texts, targets, window, n));
