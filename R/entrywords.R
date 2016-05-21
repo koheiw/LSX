@@ -22,8 +22,7 @@ count_collocates <- function(tokens, target, target_negative, window=10){
   len <- length(tokens_unlist)
   types <- unique(tokens_unlist)
   targets <- regex2fixed(target, types)
-  cols <- flag_collocates(tokens, targets, window, len)
-
+  cols <- flag_collocates(tokens, targets, window, len, FALSE)
   if(!missing(target_negative)){
     targets_negative <- regex2fixed(target_negative, types)
     cols_negative <- flag_collocates(tokens, targets_negative, window, len, TRUE)
