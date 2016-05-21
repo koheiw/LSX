@@ -26,13 +26,13 @@ count_collocates <- function(tokens, target, target_negative, window=10){
 
   if(!missing(target_negative)){
     targets_negative <- regex2fixed(target_negative, types)
-    cols_negative <- flag_collocates(tokens, targets_negative, window, len)
+    cols_negative <- flag_collocates(tokens, targets_negative, window, len, TRUE)
     cols <- cols & !cols_negative
   }
   cat("Counting collocations...\n")
-  mx <- as.matrix(table(tokens_unlist, factor(cols, levels=c(TRUE, FALSE))))
+  tb <- table(tokens_unlist, factor(cols, levels=c(TRUE, FALSE)))
   #mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
-  return(mx)
+  return(tb)
 }
 
 regex2fixed <- function(regex, types){
@@ -50,27 +50,29 @@ regex2fixed <- function(regex, types){
 #'
 #' @export
 selectEntrywords <- function(tokens, target, target_negative, window=10, count_min=5,
-                             word_only=TRUE, g=10.84, ...){
+                             word_only=TRUE, p=0.001, ...){
 
   cat("Finding collocations...\n")
   if(missing(target_negative)){
-    mx <- count_collocates(tokens, target, window=window, ...)
+    tb <- count_collocates(tokens, target, window=window, ...)
   }else{
-    mx <- count_collocates(tokens, target, target_negative, window=window, ...)
+    tb <- count_collocates(tokens, target, target_negative, window=window, ...)
   }
-  sum_true <- sum(mx[,1])
-  sum_false <- sum(mx[,2])
-  if(sum(mx[,1]) == 0) warning("No words within collocation windows\n")
-  if(missing(count_min)) count_min <- sum(mx) / 10 ^ 6 # one in million
-  mx <- mx[mx[,1] >= count_min,] # Exclude rare words
-  df <- as.data.frame.matrix(mx)
-  print(dim(df))
-  cat("Calculating g-score...\n")
-  df$gscore <- apply(mx, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_true, sum_false)
+  df <- as.data.frame.matrix(tb)
+  colnames(df) <- c('inside', 'outside')
 
-  df <- df[df$gscore > g,]
-  df <- df[order(-df$gscore),]
+  sum_inside <- sum(df$inside)
+  sum_outside <- sum(df$outside)
   df <- df[rownames(df)!='',]
+  if(sum_inside == 0) stop("No words within collocation windows\n")
+  if(missing(count_min)) count_min <- sum(df) / 10 ^ 6 # one in million
+
+  cat("Calculating g-score...\n")
+  g <- qchisq(1 - p, 1) # chisq appariximation to g-score
+  df <- df[df$inside >= count_min,] # Exclude rare words
+  df$gscore <- apply(df, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_inside, sum_outside)
+  df <- df[order(-df$gscore),]
+  df <- df[df$gscore > g,]
   if(word_only){
     return(rownames(df))
   }else{
