@@ -32,7 +32,7 @@ mx <- dfm(tokens)
 dim(mx) # 548,235 sentences and 143,235 types
 
 mx2 <- decompose(mx)
-dim(t(mx2)) # 300 componens and 143,235 types
+dim(t(mx2)) # 300 components and 143,235 types
 
 # Entryword selection
 entwords <-selectEntrywords(tokens, '^(immigra|migra)', '^migraine') # exclude migraine headache
