@@ -20,15 +20,15 @@ docs <- readLines('data/uk_img/2009-2010.txt') # corpus of news stories on immig
 sents <- tokenize(docs, what='sentence', simplify = TRUE)
 tokens <- tokenize(sents, removePunct=TRUE, removeNumbers=TRUE)
 
-# Feature selection
+# Feature selection (padding=TRUE is important for entry word selection)
 tokens <- removeSpecialFeatures(tokens, marks=TRUE, numbers=TRUE)
-tokens <- removeShortFeatures(tokens)
-tokens <- selectFeatures2(tokens, stopwords('english'), 'remove')
-tokens <- selectNames(tokens, 'remove', count_min = 1)
+tokens <- removeShortFeatures(tokens, padding=TRUE)
+tokens <- selectFeatures2(tokens, stopwords('english'), 'remove', padding=TRUE)
+tokens <- selectNames(tokens, 'remove', count_min = 1, padding=TRUE)
 tokens <- toLower(tokens)
 
 # Latent Semantic Analysis
-mx <- dfm(tokens) 
+mx <- dfm(removePadding(tokens2))
 dim(mx) # 548,235 sentences and 143,235 types
 
 mx2 <- decompose(mx)
