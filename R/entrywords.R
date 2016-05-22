@@ -34,10 +34,14 @@ count_collocates <- function(tokens, target, target_negative, window=10){
   return(tb)
 }
 
-regex2fixed <- function(regex, types){
-  types_match <- types[stringi::stri_detect_regex(types, paste0(regex, collapse='|'))]
-  return(types_match)
-}
+# regex2fixed <- function(regex, types){
+#
+#   flag <- stringi::stri_startswith_fixed(regex, '^') & stringi::stri_endswith_fixed(regex, '$') # detect fixed patterns
+#   types_fixed <- regex[flag]
+#   regex <- regex[!flag] # only non-fixed patterns
+#   types_match <- types[types %in% types_fixed | stringi::stri_detect_regex(types, paste0(regex, collapse='|'))]
+#   return(types_match)
+# }
 
 
 #' @examples
