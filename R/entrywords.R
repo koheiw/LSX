@@ -34,6 +34,7 @@ count_collocates <- function(tokens, target, target_negative, window=10){
   return(tb)
 }
 
+
 regex2fixed <- function(regex, types, case_insensitive=TRUE, ...){
   regex_joined <- paste0(regex, collapse = "|")
   types <- unique(unlist(x, use.names=FALSE))
