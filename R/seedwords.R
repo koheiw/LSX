@@ -27,13 +27,14 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
   prox_limit <- quantile(proxs, 1 - dist) # Obtaine threashold for proximity
   mx_sim_sub <- mx_sim[,proxs <= prox_limit,drop = FALSE]
   df_cand <- data.frame(word=colnames(mx_sim_sub), stringsAsFactors=FALSE)
-  df_cand$prox <- proxs[proxs < prox_limit]
+  df_cand$prox <- proxs[proxs <= prox_limit]
+
 
   # Stage 1 (test individula seed words)
   cat("Testing", ncol(mx_sim_sub), "temporary dictionaries ...\n")
   for(h in 1:nrow(df_cand)){
     dic_temp <- mx_sim_sub[, h, drop=FALSE]
-    df_cand$cor[h] <- stats::cor(scores, unlist(calc_scores(mx_doc, dic_temp, se=FALSE)), method=method)
+    df_cand$cor[h] <- stats::cor(scores, unlist(calc_scores(mx_doc, dic_temp, score_only=TRUE)), method=method)
   }
 
   cat('Cor max', max(df_cand$cor, na.rm=TRUE), '\n')
@@ -77,7 +78,7 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
     for(j in 1:nrow(df_spou)){
       seed_temp <- rbind(df_cand[k, c('word', 'score')], df_spou[j, c('word', 'score')])
       dict_temp <- rowsum_weighted(mx_sim, seed_temp$word, seed_temp$score)
-      df_spou[j,]$cor <- stats::cor(unlist(calc_scores(mx_doc, dict_temp, se=FALSE)), scores, method=method)
+      df_spou[j,]$cor <- stats::cor(unlist(calc_scores(mx_doc, dict_temp, score_only=TRUE)), scores, method=method)
     }
 
     # Do not include if correaltion is lower in pairs
@@ -103,19 +104,19 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
     # Dicitonary from current seeds
     seed_current <- pairs[pairs$step==step,]
     dict_current <- rowsum_weighted(mx_sim, seed_current$word, seed_current$score)
-    scores_current <- unlist(calc_scores(mx_doc, dict_current, se=FALSE))
-    cor_current <- stats::cor(unlist(calc_scores(mx_doc, dict_current, se=FALSE)), scores, method=method)
+    scores_current <- unlist(calc_scores(mx_doc, dict_current, score_only=TRUE))
+    cor_current <- stats::cor(unlist(calc_scores(mx_doc, dict_current, score_only=TRUE)), scores, method=method)
     report <- rbind(report, scores_current)
 
     # Dicitonary from all seeds
     dict <- rowsum_weighted(mx_sim, pairs$word, pairs$score)
-    cor <- stats::cor(unlist(calc_scores(mx_doc, dict, se=FALSE)), scores, method=method)
+    cor <- stats::cor(unlist(calc_scores(mx_doc, dict, score_only=TRUE)), scores, method=method)
     #print(pairs)
     #print(head(dict[order(-dict),,drop=FALSE]))
     cat("Step", step, ":", df_cand[k, 'word'], '&', df_cand[l, 'word'], "\n")
     cat('Lone cor:', round(df_cand[k, 'cor'], 3), 'Pair cor:', round(cor_current, 3), 'Set cor:', round(cor, 3), '\n')
 
-    plot(unlist(calc_scores(mx_doc, dict, se=FALSE)),
+    plot(unlist(calc_scores(mx_doc, dict, score_only=TRUE)),
          scores, xlab='LSS score', ylab='True score', main=paste('Step', step))
 
     #plot(c(cors, cor), ylim=c(0.0, 1.0), type='b')
