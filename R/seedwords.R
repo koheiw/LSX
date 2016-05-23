@@ -23,14 +23,15 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
   mx_sim <- similarity(mx, words, cache=cache)
 
   # Stage 0 (select seeds based on average proximity)
-  proxs <- sqrt((colSums(mx_sim * mx_sim) - 1) / (nrow(mx_sim) - 1)) # Exclude proximity to itself
-  prox_limit <- quantile(proxs, 1 - dist) # Obtaine threashold for proximity
-  mx_sim_sub <- mx_sim[,proxs <= prox_limit,drop = FALSE]
-  df_cand <- data.frame(word=colnames(mx_sim_sub), stringsAsFactors=FALSE)
-  df_cand$prox <- proxs[proxs <= prox_limit]
+  prox <- sqrt((colSums(mx_sim * mx_sim) - 1) / (nrow(mx_sim) - 1)) # Exclude proximity to itself
+  limit_prox <- quantile(prox, 1 - dist) # Obtaine threashold for proximity
+  flag_prox <- prox <= limit_prox
+  df_cand <- data.frame(word=colnames(mx_sim)[flag_prox], 
+                        prox=prox[flag_prox], stringsAsFactors=FALSE)
 
 
   # Stage 1 (test individula seed words)
+  mx_sim_sub <- mx_sim[,flag_prox, drop = FALSE]
   cat("Testing", ncol(mx_sim_sub), "temporary dictionaries ...\n")
   for(h in 1:nrow(df_cand)){
     dic_temp <- mx_sim_sub[, h, drop=FALSE]
@@ -101,14 +102,14 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
     # Add pairs
     pairs <- df_cand[!is.na(df_cand$pair_cor), c('word', 'score', 'step')]
 
-    # Dicitonary from current seeds
+    # Dicitonary with current seeds only
     seed_current <- pairs[pairs$step==step,]
     dict_current <- rowsum_weighted(mx_sim, seed_current$word, seed_current$score)
     scores_current <- unlist(calc_scores(mx_doc, dict_current, score_only=TRUE))
     cor_current <- stats::cor(unlist(calc_scores(mx_doc, dict_current, score_only=TRUE)), scores, method=method)
     report <- rbind(report, scores_current)
 
-    # Dicitonary from all seeds
+    # Dicitonary with all seeds
     dict <- rowsum_weighted(mx_sim, pairs$word, pairs$score)
     cor <- stats::cor(unlist(calc_scores(mx_doc, dict, score_only=TRUE)), scores, method=method)
     #print(pairs)
@@ -121,10 +122,9 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
 
     #plot(c(cors, cor), ylim=c(0.0, 1.0), type='b')
     if(length(unique(df_cand[is.na(df_cand$pair_cor), 'sign'])) == 1) exhausted <- TRUE
-    if(exhausted | sum(is.na(df_cand$pair_cor)) < 2 |
-       length(cors) > max | (length(cors) >= min && cor <= max(cors) - tol)){
+    if(exhausted | sum(is.na(df_cand$pair_cor)) < 2 | length(cors) > max | (length(cors) >= min && cor <= max(cors) - tol)){
       matplot(report, ylab='Score', xlab='Step')
-      pairs <- pairs[pairs$step < step, c('step', 'word', 'score')]
+      pairs <- pairs[pairs$step < step, c('step', 'word', 'score')] # Exclude current pair
       pairs <- pairs[order(-pairs$score),]
       if(exhausted){
         cat("Exhausted in", step-1, "steps\n\n")
