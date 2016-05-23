@@ -79,7 +79,7 @@ selectEntrywords <- function(tokens, target, target_negative, window=10, count_m
   if(missing(count_min)) count_min <- sum(df) / 10 ^ 6 # one in million
 
   cat("Calculating g-score...\n")
-  g <- qchisq(1 - p, 1) # chisq appariximation to g-score
+  g <- stats::qchisq(1 - p, 1) # chisq appariximation to g-score
   df <- df[df$inside >= count_min,] # Exclude rare words
   df$gscore <- apply(df, 1, function(x, y, z) gscore(x[1], x[2], y, z), sum_inside, sum_outside)
   df <- df[order(-df$gscore),]
@@ -87,6 +87,7 @@ selectEntrywords <- function(tokens, target, target_negative, window=10, count_m
   if(word_only){
     return(rownames(df))
   }else{
+    df$p <- 1 - stats::pchisq(df$g, 1)
     return(df)
   }
 }
@@ -96,7 +97,7 @@ gscore <- function(col, non, sum_col, sum_non, smooth=1){
   tb <- as.table(rbind(c(col, non), c(sum_col - col, sum_non - non)))
   tb <- tb + smooth
   suppressWarnings(
-    chi <- chisq.test(tb)
+    chi <- stats::chisq.test(tb)
   )
   #print(tb)
   #print(chi$expected)
