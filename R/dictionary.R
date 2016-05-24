@@ -80,7 +80,7 @@ calc_scores <- function(mx, df_dic, score_only=FALSE){
     var <- rowSums(mx_error) # variances
     sd <- sqrt(var) # standard diviaitons
     se <- sd / sqrt(rowSums(mx)) # SD divided by sqrt of total number of words
-    return(data.frame(lss_mn=unlist(mn), lss_se=se))
+    return(data.frame(lss_mn=unlist(mn), lss_se=se, lss_n=rowSums(mx_binary)))
   }
 }
 
