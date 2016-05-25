@@ -15,18 +15,29 @@ seedwords <- function(type){
   return(seeds)
 }
 
+#' Automatically select seed words
+#' @param mx SVD-decomposed dfm
+#' @param words entry words to dictionary
+#' @param mx_doc dfm of training documents
+#' @param score scores for training documents
+#' @param candiates candiate words for seeds (entry words are used if missing)
 #' @export
-findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
-                      top=50, min=10, max=100, tol=0.001, dist=0.5, power=2, cache=TRUE, zigzag=FALSE){
-
-  # Get pariwise consine similarity
-  mx_sim <- similarity(mx, words, cache=cache)
+findSeeds <- function(mx, words, mx_doc, scores, candidates, method='pearson',
+                      top=50, min=10, max=100, tol=0.01, dist=0.0, power=2, cache=TRUE, zigzag=FALSE){
 
   # Stage 0 (select seeds based on average proximity)
-  prox <- sqrt((colSums(mx_sim * mx_sim) - 1) / (nrow(mx_sim) - 1)) # Exclude proximity to itself
-  limit_prox <- quantile(prox, 1 - dist) # Obtaine threashold for proximity
+  if(missing(candidates)){
+    mx_sim <- similarity(mx, words, cache=cache)
+    prox <- sqrt((colSums(mx_sim * mx_sim) - 1) / (nrow(mx_sim) - 1)) # exclude proximity to itself
+    #prox <- (colSums(mx_sim * mx_sim) - 1) / (nrow(mx_sim) - 1) # exclude proximity to itself
+  }else{
+    mx_sim <- similarity(mx, words, candidates, cache=cache)
+    prox <- sqrt(colSums(mx_sim * mx_sim) / nrow(mx_sim))
+    #prox <- colSums(mx_sim * mx_sim) / nrow(mx_sim)
+  }
+  limit_prox <- quantile(prox, 1 - dist, na.rm=TRUE) # obtaine threashold for proximity
   flag_prox <- prox <= limit_prox
-  df_cand <- data.frame(word=colnames(mx_sim)[flag_prox], 
+  df_cand <- data.frame(word=colnames(mx_sim)[flag_prox],
                         prox=prox[flag_prox], stringsAsFactors=FALSE)
 
 
@@ -66,7 +77,7 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
   l_prev <- FALSE # For zigzag search
   report <- matrix(NA, nrow=0, ncol=length(scores))
   for(i in 1:nrow(df_cand)){
-    if(!is.na(df_cand[i,]$pair_cor)) next() # Seed is already paired
+    if(!is.na(df_cand[i,]$pair_cor)) next() # seed is already paired
     if(is.numeric(l_prev) & zigzag){
       k <- l_prev
     }else{
@@ -85,8 +96,8 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
     # Do not include if correaltion is lower in pairs
     if(max(df_spou$cor) < df_cand[k, 'cor_abs']) next
 
-    df_spou <- df_spou[which.max(df_spou$cor),] # Find best partner
-    l <- which(df_cand$word==df_spou$word) # Get index of spaus
+    df_spou <- df_spou[which.max(df_spou$cor),] # find best partner
+    l <- which(df_cand$word==df_spou$word) # get index of spaus
 
     # Save seed info
     df_cand[k, 'word_spou'] <- df_spou[1, 'word']
@@ -124,7 +135,7 @@ findSeeds <- function(mx, words, mx_doc, scores, method='pearson',
     if(length(unique(df_cand[is.na(df_cand$pair_cor), 'sign'])) == 1) exhausted <- TRUE
     if(exhausted | sum(is.na(df_cand$pair_cor)) < 2 | length(cors) > max | (length(cors) >= min && cor <= max(cors) - tol)){
       matplot(report, ylab='Score', xlab='Step')
-      pairs <- pairs[pairs$step < step, c('step', 'word', 'score')] # Exclude current pair
+      pairs <- pairs[pairs$step < step, c('step', 'word', 'score')] # exclude current pair
       pairs <- pairs[order(-pairs$score),]
       if(exhausted){
         cat("Exhausted in", step-1, "steps\n\n")

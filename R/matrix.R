@@ -11,7 +11,7 @@ similarity <- function(mx, words, seeds, cache=TRUE){
       cat('Reading cache file:', file_cache, '\n')
       mx_sim <- readRDS(file_cache)
     }else{
-      cat("Creating similarity matrix ...\n")
+      cat("Creating similarity matrix ..\n")
       mx2 <- mx[rownames(mx) %in% words,]
       n <- nrow(mx2)
       mx_sim <- outer(1:n, 1:n, FUN = Vectorize(function(i,j) cosine(mx2[i,], mx2[j,])))
@@ -22,6 +22,7 @@ similarity <- function(mx, words, seeds, cache=TRUE){
       }
     }
   }else{
+    cat("Creating similarity matrix...\n")
     is <- which(rownames(mx) %in% words)
     js <- which(rownames(mx) %in% seeds)
     mx_sim <- outer(is, js, FUN = Vectorize(function(i,j) cosine(mx[i,], mx[j,])))

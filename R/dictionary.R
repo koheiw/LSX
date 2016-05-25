@@ -5,6 +5,13 @@ makeDictionary <- function(mx, words, seeds, valuetype='fixed'){
     seeds <- get_fixed_seeds(seeds, rownames(mx))
   }
   mx_sim <- similarity(mx, words, names(seeds))
+  
+  # if(power > 0){
+  #   prox <- sqrt(colSums(mx_sim * mx_sim) / nrow(mx_sim))
+  #   seeds <- (1 / prox ** power) * seeds
+  #   print(seeds)
+  # }
+  
   #print(dim(mx_sim))
   mx_wsum <- rowsum_weighted(mx_sim, names(seeds), seeds)
   mx_wsum <- mx_wsum[rownames(mx_wsum) %in% words,,drop=FALSE]
