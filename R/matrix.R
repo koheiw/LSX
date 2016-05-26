@@ -4,30 +4,33 @@ library(irlba)
 library(stringi)
 
 similarity <- function(mx, words, seeds, cache=TRUE){
-
+  
   if(missing(seeds)){
     file_cache <- paste0('lss_sim_', digest::digest(list(mx, words), algo='xxhash64'), '.RDS')
-    if(cache & file.exists(file_cache)){
-      cat('Reading cache file:', file_cache, '\n')
-      mx_sim <- readRDS(file_cache)
-    }else{
-      cat("Creating similarity matrix ..\n")
-      mx2 <- mx[rownames(mx) %in% words,]
-      n <- nrow(mx2)
-      mx_sim <- outer(1:n, 1:n, FUN = Vectorize(function(i,j) cosine(mx2[i,], mx2[j,])))
-      colnames(mx_sim) <- rownames(mx_sim) <- rownames(mx2)
-      if(cache){
-        cat('Writing cache file:', file_cache, '\n')
-        saveRDS(mx_sim, file_cache)
-      }
-    }
   }else{
-    cat("Creating similarity matrix...\n")
-    is <- which(rownames(mx) %in% words)
-    js <- which(rownames(mx) %in% seeds)
-    mx_sim <- outer(is, js, FUN = Vectorize(function(i,j) cosine(mx[i,], mx[j,])))
-    colnames(mx_sim) <- rownames(mx[js,])
-    rownames(mx_sim) <- rownames(mx[is,])
+    file_cache <- paste0('lss_sim_', digest::digest(list(mx, words, seeds), algo='xxhash64'), '.RDS') 
+  }
+  if(cache & file.exists(file_cache)){
+    cat('Reading cache file:', file_cache, '\n')
+    mx_sim <- readRDS(file_cache)
+  }else{
+    cat("Creating similarity matrix ..\n")
+    if(missing(seeds)){
+        mx2 <- mx[rownames(mx) %in% words,]
+        n <- nrow(mx2)
+        mx_sim <- outer(1:n, 1:n, FUN = Vectorize(function(i,j) cosine(mx2[i,], mx2[j,])))
+        colnames(mx_sim) <- rownames(mx_sim) <- rownames(mx2)
+    }else{
+      is <- which(rownames(mx) %in% words)
+      js <- which(rownames(mx) %in% seeds)
+      mx_sim <- outer(is, js, FUN = Vectorize(function(i,j) cosine(mx[i,], mx[j,])))
+      colnames(mx_sim) <- rownames(mx[js,])
+      rownames(mx_sim) <- rownames(mx[is,])
+    }
+    if(cache){
+      cat('Writing cache file:', file_cache, '\n')
+      saveRDS(mx_sim, file_cache)
+    }
   }
   return(mx_sim)
 }

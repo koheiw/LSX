@@ -23,7 +23,8 @@ seedwords <- function(type){
 #' @param candiates candiate words for seeds (entry words are used if missing)
 #' @export
 findSeeds <- function(mx, words, mx_doc, scores, candidates, method='pearson',
-                      top=50, min=10, max=100, tol=0.01, dist=0.0, power=2, cache=TRUE, zigzag=FALSE){
+                      top=50, min=10, max=100, tol=0.01, dist=0.0, power=2, cache=TRUE, zigzag=FALSE,
+                      plot=FALSE){
 
   # Stage 0 (select seeds based on average proximity)
   if(missing(candidates)){
@@ -36,6 +37,7 @@ findSeeds <- function(mx, words, mx_doc, scores, candidates, method='pearson',
     #prox <- colSums(mx_sim * mx_sim) / nrow(mx_sim)
   }
   limit_prox <- quantile(prox, 1 - dist, na.rm=TRUE) # obtaine threashold for proximity
+
   flag_prox <- prox <= limit_prox
   df_cand <- data.frame(word=colnames(mx_sim)[flag_prox],
                         prox=prox[flag_prox], stringsAsFactors=FALSE)
@@ -128,13 +130,12 @@ findSeeds <- function(mx, words, mx_doc, scores, candidates, method='pearson',
     cat("Step", step, ":", df_cand[k, 'word'], '&', df_cand[l, 'word'], "\n")
     cat('Lone cor:', round(df_cand[k, 'cor'], 3), 'Pair cor:', round(cor_current, 3), 'Set cor:', round(cor, 3), '\n')
 
-    plot(unlist(calc_scores(mx_doc, dict, score_only=TRUE)),
-         scores, xlab='LSS score', ylab='True score', main=paste('Step', step))
+    if(plot) plot(unlist(calc_scores(mx_doc, dict, score_only=TRUE)), scores, xlab='LSS score', ylab='True score', main=paste('Step', step))
 
     #plot(c(cors, cor), ylim=c(0.0, 1.0), type='b')
     if(length(unique(df_cand[is.na(df_cand$pair_cor), 'sign'])) == 1) exhausted <- TRUE
     if(exhausted | sum(is.na(df_cand$pair_cor)) < 2 | length(cors) > max | (length(cors) >= min && cor <= max(cors) - tol)){
-      matplot(report, ylab='Score', xlab='Step')
+      if(plot) matplot(report, ylab='Score', xlab='Step')
       pairs <- pairs[pairs$step < step, c('step', 'word', 'score')] # exclude current pair
       pairs <- pairs[order(-pairs$score),]
       if(exhausted){

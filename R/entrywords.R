@@ -17,15 +17,24 @@ flag_collocates <- function(tokens, targets, window, len, negative=FALSE){
 #' microbenchmark::microbenchmark(
 #' count_collocates2(list(LETTERS, letters), 'C|J|o|w', window=2),
 #' count_collocates(list(LETTERS, letters), 'C|J|o|w', window=2))
-count_collocates <- function(tokens, target, target_negative, window=10){
+count_collocates <- function(tokens, target, target_negative, window=10, valuetype='fixed'){
   tokens_unlist <- unlist(tokens, use.names = FALSE)
   len <- length(tokens_unlist)
-  types <- unique(tokens_unlist)
-  targets <- regex2fixed(target, types)
-  cols <- flag_collocates(tokens, targets, window, len, FALSE)
+  if(valuetype == 'glob'){
+    target <- utils::glob2rx(target)
+    if(!missing(target_negative)) target_negative <- utils::glob2rx(target_negative)
+    valuetype <- 'regex'
+  }
+  if(valuetype == 'regex'){
+    types <- unique(tokens_unlist)
+    target <- regex2fixed(target, types)
+    #print(target)
+    if(!missing(target_negative)) target_negative <- regex2fixed(target_negative, types)
+    #print(target_negative)
+  }
+  cols <- flag_collocates(tokens, target, window, len, FALSE)
   if(!missing(target_negative)){
-    targets_negative <- regex2fixed(target_negative, types)
-    cols_negative <- flag_collocates(tokens, targets_negative, window, len, TRUE)
+    cols_negative <- flag_collocates(tokens, target_negative, window, len, TRUE)
     cols <- cols & !cols_negative
   }
   cat("Counting collocations...\n")
@@ -51,6 +60,10 @@ regex2fixed <- function(regex, types, case_insensitive=TRUE, ...){
 #   return(types_match)
 # }
 
+#' @export
+findCollocates <- function(...){
+  selectEntrywords(...)
+}
 
 #' @examples
 #' docs <- readLines('/home/kohei/projects/immigration/data/uk_img/2009-2010.txt')
