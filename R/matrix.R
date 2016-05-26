@@ -4,17 +4,17 @@ library(irlba)
 library(stringi)
 
 similarity <- function(mx, words, seeds, cache=TRUE){
-  
+
   if(missing(seeds)){
     file_cache <- paste0('lss_sim_', digest::digest(list(mx, words), algo='xxhash64'), '.RDS')
   }else{
-    file_cache <- paste0('lss_sim_', digest::digest(list(mx, words, seeds), algo='xxhash64'), '.RDS') 
+    file_cache <- paste0('lss_sim_', digest::digest(list(mx, words, seeds), algo='xxhash64'), '.RDS')
   }
   if(cache & file.exists(file_cache)){
     cat('Reading cache file:', file_cache, '\n')
     mx_sim <- readRDS(file_cache)
   }else{
-    cat("Creating similarity matrix ..\n")
+    cat("Creating similarity matrix...\n")
     if(missing(seeds)){
         mx2 <- mx[rownames(mx) %in% words,]
         n <- nrow(mx2)
