@@ -17,7 +17,7 @@ flag_collocates <- function(tokens, targets, window, len, negative=FALSE){
 #' microbenchmark::microbenchmark(
 #' count_collocates2(list(LETTERS, letters), 'C|J|o|w', window=2),
 #' count_collocates(list(LETTERS, letters), 'C|J|o|w', window=2))
-count_collocates <- function(tokens, target, target_negative, window=10, valuetype='fixed'){
+count_collocates <- function(tokens, target, target_negative, window=10, valuetype='fixed', flag_target=FALSE){
   tokens_unlist <- unlist(tokens, use.names = FALSE)
   len <- length(tokens_unlist)
   if(valuetype == 'glob'){
@@ -32,7 +32,7 @@ count_collocates <- function(tokens, target, target_negative, window=10, valuety
     if(!missing(target_negative)) target_negative <- regex2fixed(target_negative, types)
     #print(target_negative)
   }
-  cols <- flag_collocates(tokens, target, window, len, FALSE)
+  cols <- flag_collocates(tokens, target, window, len, flag_target)
   if(!missing(target_negative)){
     cols_negative <- flag_collocates(tokens, target_negative, window, len, TRUE)
     cols <- cols & !cols_negative
