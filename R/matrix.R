@@ -36,25 +36,22 @@ similarity_old <- function(mx, words, seeds, cache=TRUE){
 }
 
 similarity <- function(mx, words, seeds){
-
+  
   cat("Creating similarity matrix...\n")
   if(missing(seeds)){
-    colls <- words
+    rows <- words
   }else{
     seeds <- seeds[seeds %in% rownames(mx)]
-    colls <- unique(c(words, seeds))
+    rows <- unique(c(words, seeds))
   }
-  mx_sub <- mx[rownames(mx) %in% colls,]
+  mx_sub <- mx[rownames(mx) %in% rows,]
   mx_tmp <- cosine_pairwise(t(mx_sub))
   if(missing(seeds)){
-    mx_sim <- mx_tmp[words, words]
-    colnames(mx_sim) <- rownames(mx_sim) <- words
+    mx_sim <- mx_tmp
   }else{
-    mx_sim <- mx_tmp[words, seeds]
-    colnames(mx_sim) <- seeds
-    rownames(mx_sim) <- words
+    mx_sim <- mx_tmp[, colnames(mx_tmp) %in% seeds]
   }
-
+  gc()
   return(mx_sim)
 }
 
