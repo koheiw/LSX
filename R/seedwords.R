@@ -45,7 +45,7 @@ findSeeds <- function(mx, words, mx_doc, scores, candidates, method='pearson',
 
   # Stage 1 (test individula seed words)
   mx_sim_sub <- mx_sim[,flag_prox, drop = FALSE]
-  cat("Testing", ncol(mx_sim_sub), "temporary dictionaries...\n")
+  cat("Evaluating", ncol(mx_sim_sub), "seed words...\n")
   for(h in 1:nrow(df_cand)){
     dic_temp <- mx_sim_sub[, h, drop=FALSE]
     df_cand$cor[h] <- stats::cor(scores, unlist(calc_scores(mx_doc, dic_temp, score_only=TRUE)), method=method)
