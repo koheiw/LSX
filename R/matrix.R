@@ -3,7 +3,7 @@ library(digest)
 library(irlba)
 library(stringi)
 
-similarity <- function(mx, words, seeds, cache=TRUE){
+similarity_old <- function(mx, words, seeds, cache=TRUE){
 
   if(missing(seeds)){
     file_cache <- paste0('lss_sim_', digest::digest(list(mx, words), algo='xxhash64'), '.RDS')
@@ -35,8 +35,40 @@ similarity <- function(mx, words, seeds, cache=TRUE){
   return(mx_sim)
 }
 
+similarity <- function(mx, words, seeds){
+
+  cat("Creating similarity matrix...\n")
+  if(missing(seeds)){
+    colls <- words
+  }else{
+    seeds <- seeds[seeds %in% rownames(mx)]
+    colls <- unique(c(words, seeds))
+  }
+  mx_sub <- mx[rownames(mx) %in% colls,]
+  mx_tmp <- cosine_pairwise(t(mx_sub))
+  if(missing(seeds)){
+    mx_sim <- mx_tmp[words, words]
+    colnames(mx_sim) <- rownames(mx_sim) <- words
+  }else{
+    mx_sim <- mx_tmp[words, seeds]
+    colnames(mx_sim) <- seeds
+    rownames(mx_sim) <- words
+  }
+
+  return(mx_sim)
+}
+
+
 cosine <- function(v1, v2){
   return(sum(v1*v2) / sqrt(sum(v1^2)*sum(v2^2)))
+}
+
+cosine_pairwise <- function(x)
+{
+  cp <- crossprod(x)
+  rtdg <- sqrt(diag(cp))
+  cos <- cp / tcrossprod(rtdg)
+  return(cos)
 }
 
 #' Caluclate weighted row sums of a matrix
