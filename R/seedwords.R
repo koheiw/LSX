@@ -23,16 +23,16 @@ seedwords <- function(type){
 #' @param candiates candiate words for seeds (entry words are used if missing)
 #' @export
 findSeeds <- function(mx, words, mx_doc, scores, candidates, method='pearson',
-                      top=50, min=10, max=100, tol=0.01, dist=0.0, power=2, cache=TRUE, zigzag=FALSE,
+                      top=50, min=10, max=100, tol=0.01, dist=0.0, power=2, zigzag=FALSE,
                       plot=FALSE){
 
   # Stage 0 (select seeds based on average proximity)
   if(missing(candidates)){
-    mx_sim <- similarity(mx, words, cache=cache)
+    mx_sim <- similarity(mx, words)
     prox <- sqrt((colSums(mx_sim * mx_sim) - 1) / (nrow(mx_sim) - 1)) # exclude proximity to itself
     #prox <- (colSums(mx_sim * mx_sim) - 1) / (nrow(mx_sim) - 1) # exclude proximity to itself
   }else{
-    mx_sim <- similarity(mx, words, candidates, cache=cache)
+    mx_sim <- similarity(mx, words, candidates)
     prox <- sqrt(colSums(mx_sim * mx_sim) / nrow(mx_sim))
     #prox <- colSums(mx_sim * mx_sim) / nrow(mx_sim)
   }

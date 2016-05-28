@@ -61,8 +61,8 @@ regex2fixed <- function(regex, types, case_insensitive=TRUE, ...){
 # }
 
 #' @export
-findCollocates <- function(...){
-  selectEntrywords(...)
+selectEntrywords <- function(...){
+  findCollocates(...)
 }
 
 #' @examples
@@ -73,7 +73,7 @@ findCollocates <- function(...){
 #'
 #'
 #' @export
-selectEntrywords <- function(tokens, target, target_negative, window=10, count_min=5,
+findCollocates <- function(tokens, target, target_negative, window=10, count_min=5,
                              word_only=TRUE, p=0.001, ...){
 
   cat("Finding collocations...\n")
@@ -105,7 +105,7 @@ selectEntrywords <- function(tokens, target, target_negative, window=10, count_m
   }
 }
 
-#' Internal function to calcualte g-score
+#' Internal function to calcualte g-score (Chi-square at the moment)
 gscore <- function(col, non, sum_col, sum_non, smooth=1){
   tb <- as.table(rbind(c(col, non), c(sum_col - col, sum_non - non)))
   tb <- tb + smooth
@@ -120,4 +120,11 @@ gscore <- function(col, non, sum_col, sum_non, smooth=1){
   }else{
     return(unname(chi$statistic) * -1)
   }
+}
+
+#' Internal function to calcualte PMI
+pmi <- function(col, non, sum_col, sum_non, power=1){
+  tb <- as.table(rbind(c(col, non), c(sum_col - col, sum_non - non)))
+  pmi <- log2((sum(tb) * (tb[1,1] ^ power)) / ((tb[1,1] + tb[1,2]) * (tb[1,1] + tb[2,1])))
+  return(pmi)
 }
