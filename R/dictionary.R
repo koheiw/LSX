@@ -5,13 +5,13 @@ makeDictionary <- function(mx, words, seeds, valuetype='fixed'){
     seeds <- get_fixed_seeds(seeds, rownames(mx))
   }
   mx_sim <- similarity(mx, words, names(seeds))
-  
+
   # if(power > 0){
   #   prox <- sqrt(colSums(mx_sim * mx_sim) / nrow(mx_sim))
   #   seeds <- (1 / prox ** power) * seeds
   #   print(seeds)
   # }
-  
+
   #print(dim(mx_sim))
   mx_wsum <- rowsum_weighted(mx_sim, names(seeds), seeds)
   mx_wsum <- mx_wsum[rownames(mx_wsum) %in% words,,drop=FALSE]
@@ -68,19 +68,20 @@ scoreDocuments <- function(...){
 #' Internal function to calculate document score
 calc_scores <- function(mx, df_dic, score_only=FALSE){
 
-
-  common <- intersect(rownames(df_dic), colnames(mx))
-  mx <- as.matrix(mx[,match(common, colnames(mx))]) # ignore words not in the dictionary
-  mx_dic <- as.matrix(df_dic[match(common, rownames(df_dic)),,drop=TRUE], row=1) # ignore words not in documents
-
+  mx_dic <- Matrix::as.matrix(df_dic)
+  common <- intersect(rownames(mx_dic), colnames(mx))
+  mx <- mx[,match(common, colnames(mx))] # ignore words not in the dictionary
+  mx_dic <- mx_dic[match(common, rownames(mx_dic)),] # ignore words not in documents
   # Based on Wordscore
-  mx_tf <- mx / rowSums(mx)
+  #mx_tf <- mx / rowSums(mx)
+  mx_tf <- quanteda::weight(mx, "relFreq")
   mn <- mx_tf %*% mx_dic # mean scores of documents
 
   if(score_only){
     return(as.vector(mn))
   }else{
-    mx_binary <- mx > 0
+    #mx_binary <- mx > 0
+    mx_binary <- Matrix::as(mx, 'nMatrix')
     mx_score <- mx_binary * t(mx_dic[, rep(1, nrow(mx_tf))])
     mx_dev <- mx_score - mn[, rep(1, ncol(mx_binary))] # difference from the mean
     mx_error <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
