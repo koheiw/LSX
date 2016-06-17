@@ -71,7 +71,7 @@ calc_scores <- function(mx, df_dic, score_only=FALSE){
   mx_dic <- Matrix::as.matrix(df_dic)
   common <- intersect(rownames(mx_dic), colnames(mx))
   mx <- mx[,match(common, colnames(mx))] # ignore words not in the dictionary
-  mx_dic <- mx_dic[match(common, rownames(mx_dic)),] # ignore words not in documents
+  mx_dic <- mx_dic[match(common, rownames(mx_dic)),,drop=FALSE] # ignore words not in documents
   # Based on Wordscore
   #mx_tf <- mx / rowSums(mx)
   mx_tf <- quanteda::weight(mx, "relFreq")
@@ -80,15 +80,15 @@ calc_scores <- function(mx, df_dic, score_only=FALSE){
   if(score_only){
     return(as.vector(mn))
   }else{
-    #mx_binary <- mx > 0
-    mx_binary <- Matrix::as(mx, 'nMatrix')
-    mx_score <- mx_binary * t(mx_dic[, rep(1, nrow(mx_tf))])
-    mx_dev <- mx_score - mn[, rep(1, ncol(mx_binary))] # difference from the mean
-    mx_error <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
-    var <- rowSums(mx_error) # variances
+    #mx_bin <- mx > 0
+    mx_bin <- as(mx, 'nMatrix')
+    mx_scr <- mx_bin * t(mx_dic[, rep(1, nrow(mx_tf))]) # repeat the dictionary 
+    mx_dev <- mx_scr - mn[, rep(1, ncol(mx_bin))] # difference from the mean
+    mx_err <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
+    var <- rowSums(mx_err) # variances
     sd <- sqrt(var) # standard diviaitons
     se <- sd / sqrt(rowSums(mx)) # SD divided by sqrt of total number of words
-    return(data.frame(lss_mn=unlist(mn), lss_se=se, lss_n=rowSums(mx_binary)))
+    return(data.frame(lss_mn=mn[,1], lss_se=se, lss_n=rowSums(mx_bin)))
   }
 }
 
