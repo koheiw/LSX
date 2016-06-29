@@ -85,10 +85,10 @@ calc_scores <- function(mx, df_dic, score_only=FALSE){
     mx_scr <- mx_bin * t(mx_dic[, rep(1, nrow(mx_tf))]) # repeat the dictionary 
     mx_dev <- mx_scr - mn[, rep(1, ncol(mx_bin))] # difference from the mean
     mx_err <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
-    var <- rowSums(mx_err) # variances
+    var <- Matrix::rowSums(mx_err) # variances
     sd <- sqrt(var) # standard diviaitons
-    se <- sd / sqrt(rowSums(mx)) # SD divided by sqrt of total number of words
-    return(data.frame(lss_mn=mn[,1], lss_se=se, lss_n=rowSums(mx_bin)))
+    se <- sd / sqrt(Matrix::rowSums(mx)) # SD divided by sqrt of total number of words
+    return(data.frame(lss_mn=mn[,1], lss_se=se, lss_n=Matrix::rowSums(mx_bin)))
   }
 }
 
