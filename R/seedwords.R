@@ -28,7 +28,7 @@ findSeeds <- function(mx, words, mx_doc, scores, candidates, top, method='pearso
 
   # Stage 0 (select seeds based on average proximity)
   if(missing(top)){
-    top <- length(words) / 2 * 0.01 # only top 10% (5% from each polarity)
+    top <- length(words) / 2 * 0.1 # only top 10% (5% from each polarity)
   }
   if(missing(candidates)){
     mx_sim <- similarity(mx, words)
