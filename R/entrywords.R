@@ -10,6 +10,7 @@ flag_collocates <- function(tokens, targets, window, len, negative=FALSE){
   return(cols)
 }
 
+#' Count collocation of target words
 #' @examples
 #' count_collocates2(list(LETTERS, letters), 'C|J|o|w', window=2)
 #' count_collocates2(list(LETTERS, letters), 'C|J|o|w', 'A|z', window=2)
@@ -65,6 +66,7 @@ selectEntrywords <- function(...){
   findCollocates(...)
 }
 
+#' Find significant collocations of targets
 #' @examples
 #' docs <- readLines('/home/kohei/projects/immigration/data/uk_img/2009-2010.txt')
 #' sents <- tokenize(docs, what='sentence', simplify = TRUE)

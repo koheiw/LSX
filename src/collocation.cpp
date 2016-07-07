@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 void flag_collocates_cpp(const Rcpp::CharacterVector &text,
-                         const std::unordered_set<Rcpp::String> set_targets,
+                         const std::unordered_set<Rcpp::String> &set_targets,
                          const int &window,
                          std::vector<bool> &flags_target,
                          std::vector<bool> &flags_col,
@@ -58,5 +58,5 @@ Rcpp::List flag_collocates_cppl(List texts,
 
 
 /*** R
-#flag_collocates_cppl(list(LETTERS, letters), c('E', 'G', 'Z', 'a', 'k'), 3, 52)
+flag_collocates_cppl(list(LETTERS, letters), c('E', 'G', 'Z', 'a', 'k'), 3, 52)
 */
