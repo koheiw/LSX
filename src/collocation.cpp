@@ -5,9 +5,8 @@
 
 using namespace Rcpp;
 
-void flag_collocates_cpp(const CharacterVector &text,
-                         //const std::unordered_set<std::string> &set_targets,
-                         const std::unordered_set<String> &set_targets,
+void flag_collocates_cpp(const Rcpp::CharacterVector &text,
+                         const std::unordered_set<Rcpp::String> set_targets,
                          const int &window,
                          std::vector<bool> &flags_target,
                          std::vector<bool> &flags_col,
@@ -15,7 +14,7 @@ void flag_collocates_cpp(const CharacterVector &text,
 
     int len = text.size();
     for(int i=0; i < len; i++){
-      String token = text[i];
+      Rcpp::String token = text[i];
       bool is_in = set_targets.find(token) != set_targets.end();
 
       if(is_in){
@@ -35,15 +34,18 @@ void flag_collocates_cpp(const CharacterVector &text,
   }
 
 // [[Rcpp::export]]
-List flag_collocates_cppl(List texts,
-                          const CharacterVector &targets,
+Rcpp::List flag_collocates_cppl(List texts,
+                          const Rcpp::CharacterVector &targets,
                           const int &window,
                           const int &n) {
 
   int g = 0; // global index;
   int len = texts.size();
   //std::unordered_set<std::string> set_targets (targets.begin(), targets.end());
-  std::unordered_set<String> set_targets (targets.begin(), targets.end());
+  std::unordered_set<Rcpp::String> set_targets;
+  for (int g = 0; g < targets.size(); g++){
+    set_targets.insert(targets[g]);
+  }
   std::vector<bool> flags_target(n);
   std::vector<bool> flags_col(n);
   for (int h = 0; h < len; h++){
@@ -56,5 +58,5 @@ List flag_collocates_cppl(List texts,
 
 
 /*** R
-flag_collocates_cppl(list(LETTERS, letters), c('E', 'G', 'Z', 'a', 'k'), 3, 52)
+#flag_collocates_cppl(list(LETTERS, letters), c('E', 'G', 'Z', 'a', 'k'), 3, 52)
 */
