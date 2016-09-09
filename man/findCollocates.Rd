@@ -12,10 +12,9 @@ Find significant collocations of targets
 }
 \examples{
 docs <- readLines('/home/kohei/projects/immigration/data/uk_img/2009-2010.txt')
-sents <- tokenize(docs, what='sentence', simplify = TRUE)
-tokens <- tokenize(sents, removePunct=TRUE, removeNumbers=TRUE)
-entries <- selectEntrywords(tokens, '^(immigra|migra)')
-
+sents <- quanteda::tokenize(docs, what='sentence', simplify = TRUE)
+tokens <- quanteda::tokenize(sents, removePunct=TRUE, removeNumbers=TRUE)
+entries <- selectEntrywords(tokens, '^(immigra|migra)', valuetype='regex')
 
 }
 

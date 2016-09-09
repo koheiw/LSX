@@ -1,7 +1,6 @@
 Package: LSS
 Type: Package
-Title: Computer-aided dictionary making for text analysis (Latent Semantic
-    Scaling)
+Title: Computer-aided dictionary making for text analysis (Latent Semantic Scaling)
 Date: 2016-05-11
 Version: 0.1.0
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre"))
