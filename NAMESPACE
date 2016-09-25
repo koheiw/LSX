@@ -8,8 +8,5 @@ export(readDictionary)
 export(scoreDocuments)
 export(seedwords)
 export(selectEntrywords)
-<<<<<<< HEAD
 export(similarity)
-=======
 useDynLib(LSS)
->>>>>>> d740363d24a018fbb91cbdc34a3e07cd7d15f464
