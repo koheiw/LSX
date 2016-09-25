@@ -35,9 +35,19 @@ similarity_old <- function(mx, words, seeds, cache=TRUE){
   return(mx_sim)
 }
 
+#' Calcualte cosine similarities of words
+#' @examples
+#' docs <- readLines('/home/kohei/projects/immigration/data/uk_img/2009-2010.txt')
+#' mx <- quanteda::dfm(docs)
+#' mx_lsa <- decompose(mx)
+#' mx_sim <- similarity(mx_lsa)
+#' @export
 similarity <- function(mx, words, seeds){
-  
+
   cat("Creating similarity matrix...\n")
+  if(missing(words)){
+    words <- rownames(mx)
+  }
   if(missing(seeds)){
     rows <- words
   }else{
