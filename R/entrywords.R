@@ -1,4 +1,4 @@
-
+#' @useDynLib LSS
 flag_collocates <- function(tokens, targets, window, len, negative=FALSE){
 
   flag <- flag_collocates_cppl(tokens, targets, window, len)
@@ -10,14 +10,7 @@ flag_collocates <- function(tokens, targets, window, len, negative=FALSE){
   return(cols)
 }
 
-#' Count collocation of target words
-#' @examples
-#' count_collocates2(list(LETTERS, letters), 'C|J|o|w', window=2)
-#' count_collocates2(list(LETTERS, letters), 'C|J|o|w', 'A|z', window=2)
-#'
-#' microbenchmark::microbenchmark(
-#' count_collocates2(list(LETTERS, letters), 'C|J|o|w', window=2),
-#' count_collocates(list(LETTERS, letters), 'C|J|o|w', window=2))
+
 count_collocates <- function(tokens, target, target_negative, window=10, valuetype='fixed', flag_target=FALSE){
   tokens_unlist <- unlist(tokens, use.names = FALSE)
   len <- length(tokens_unlist)
@@ -40,7 +33,7 @@ count_collocates <- function(tokens, target, target_negative, window=10, valuety
   }
   cat("Counting collocations...\n")
   tb <- table(tokens_unlist, factor(cols, levels=c(TRUE, FALSE)))
-  #mx <- mx[!rownames(mx) %in% targets,] # Exclude target words
+
   return(tb)
 }
 
@@ -69,10 +62,9 @@ selectEntrywords <- function(...){
 #' Find significant collocations of targets
 #' @examples
 #' docs <- readLines('/home/kohei/projects/immigration/data/uk_img/2009-2010.txt')
-#' sents <- tokenize(docs, what='sentence', simplify = TRUE)
-#' tokens <- tokenize(sents, removePunct=TRUE, removeNumbers=TRUE)
-#' entries <- selectEntrywords(tokens, '^(immigra|migra)')
-#'
+#' sents <- quanteda::tokenize(docs, what='sentence', simplify = TRUE)
+#' tokens <- quanteda::tokenize(sents, removePunct=TRUE, removeNumbers=TRUE)
+#' entries <- selectEntrywords(tokens, '^(immigra|migra)', valuetype='regex')
 #'
 #' @export
 findCollocates <- function(tokens, target, target_negative, window=10, count_min=5,
