@@ -54,12 +54,12 @@ similarity <- function(mx, words, seeds){
     seeds <- seeds[seeds %in% rownames(mx)]
     rows <- unique(c(words, seeds))
   }
-  mx_sub <- mx[rownames(mx) %in% rows,]
+  mx_sub <- mx[rownames(mx) %in% rows,,drop = FALSE]
   mx_tmp <- cosine_pairwise(t(mx_sub))
   if(missing(seeds)){
     mx_sim <- mx_tmp
   }else{
-    mx_sim <- mx_tmp[, colnames(mx_tmp) %in% seeds]
+    mx_sim <- mx_tmp[,colnames(mx_tmp) %in% seeds, drop = FALSE]
   }
   gc()
   return(mx_sim)
