@@ -37,18 +37,25 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
     colnames(temp) <- featnames(x)
     temp <- as.dfm(temp)
 
-    if (is.character(y)) {
-        seed <- y
-        weight <- rep(1, length(y))
-    } else {
-        # generalte inflected seed
-        y <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y), MoreArgs = list(featnames(x)),
-                           USE.NAMES = FALSE))
-        seed <- names(y)
-        weight <- unname(y)
+    if (is.dictionary(y)) {
+        y <- unlist(y, use.names = FALSE)
     }
+
+    # give equal weight to characters
+    if (is.character(y)) {
+        y <- structure(rep(1, length(y)), names = y)
+    }
+
+    # generalte inflected seed
+    y <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
+                       MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
+
     if (verbose)
         cat('Calculating term-term similarity...\n')
+
+    seed <- names(y)
+    weight <- unname(y)
+
     seed <- seed[seed %in% featnames(temp)]
     temp <- textstat_simil(temp, selection = seed, margin = 'features')
     if (!is.null(pattern))
