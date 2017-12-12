@@ -43,15 +43,17 @@ lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = eco)
 head(lss_eco$beta) # most positive words
 ```
 
-    ## opportunity    positive     success       force     reasons        bill 
-    ##  0.04726892  0.04640303  0.04397306  0.04192484  0.04082709  0.03781205
+    ##        positive         reasons     opportunity pic.twitter.com 
+    ##      0.06436414      0.04925601      0.04260535      0.04198808 
+    ##        november          strong 
+    ##      0.04095714      0.03822935
 
 ``` r
 tail(lss_eco$beta) # most negative words
 ```
 
-    ##      caused        debt      blamed    negative        poor         bad 
-    ## -0.05297691 -0.05692699 -0.05951016 -0.06556126 -0.06617859 -0.07506342
+    ##      blamed       rates      warned        poor         bad    negative 
+    ## -0.05706067 -0.06038286 -0.06087443 -0.06842289 -0.07496055 -0.08114593
 
 ``` r
 # sentiment model on politics
@@ -61,15 +63,17 @@ lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = pol)
 head(lss_pol$beta) # most positive words
 ```
 
-    ##      views      faith    playing      force    reasons       bill 
-    ## 0.04225050 0.04208257 0.04206229 0.04192484 0.04082709 0.03781205
+    ##       team    reasons   november      faith      force   research 
+    ## 0.05061622 0.04925601 0.04095714 0.03940039 0.03662932 0.03587227
 
 ``` r
 tail(lss_pol$beta) # most negative words
 ```
 
-    ##       power uncertainty     turmoil        lack     happens        talk 
-    ## -0.04075780 -0.04218875 -0.04244589 -0.04791498 -0.04879530 -0.04967138
+    ##   criticised   chancellor increasingly        power      happens 
+    ##  -0.03815973  -0.03833504  -0.04339442  -0.04397653  -0.04523024 
+    ##        rates 
+    ##  -0.06038286
 
 Predict sentiment of news
 -------------------------
