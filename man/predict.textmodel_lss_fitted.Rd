@@ -8,7 +8,11 @@
   confidence.fit = FALSE)
 }
 \arguments{
-\item{object}{textmodel_lss_fitted object}
+\item{object}{a fitted LSS textmodel}
+
+\item{newdata}{dfm on which prediction should be made}
+
+\item{confidence.fit}{if \code{TRUE}, it also returns standard error of document scores.}
 }
 \description{
 prediction method for textmodel_lss

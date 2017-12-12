@@ -72,7 +72,9 @@ weight_seeds <- function(seed, weight, type) {
 }
 
 #' prediction method for textmodel_lss
-#' @param object textmodel_lss_fitted object
+#' @param object a fitted LSS textmodel
+#' @param newdata dfm on which prediction should be made
+#' @param confidence.fit if \code{TRUE}, it also returns standard error of document scores.
 #' @export
 predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit = FALSE){
 
@@ -86,38 +88,22 @@ predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit 
         data <- dfm_select(newdata, model)
     }
 
-    temp <- quanteda::dfm_weight(data, "relFreq")
+    prop <- quanteda::dfm_weight(data, "relFreq")
     model <- as(model, 'dgCMatrix')
-    s <- as.vector(temp %*% Matrix::t(model)) # mean scores of documents
+    mn <- Matrix::rowSums(prop %*% Matrix::t(model)) # mean scores of documents
 
     if (confidence.fit) {
-
-        stop('Not yet implimented\n')
-
-        binary <- as(as(data, 'nMatrix'), 'dgCMatrix')
-
-
-        # se <- numeric(nrow(temp))
-        # for (i in seq_len(nrow(temp))) {
-        #     f <- as.vector(temp[i,])
-        #     dev <- s[i] - f # deviation from the mean
-        #     var <- sum((dev ** 2) * f)
-        #     sd <- c(sd, sqrt(var))
-        #     se[i] <- sqrt(var) / sqrt(sum(f > 0))
-        # }
-
-        mean <- binary * t(model[rep(1, nrow(temp)),])
-        deviation <- mx_scr - s[, rep(1, ncol(binary))] # difference from the mean
-        error <- (deviation ** 2) * temp # square of deviation weighted by frequency
-        var <- Matrix::rowSums(error)
-        sd <- sqrt(var) # standard diviaitons
-        se <- sd / sqrt(Matrix::rowSums(mx)) # SD divided by sqrt of total number of words
-
-        result <- list(mue = s, sigma = se, n = rowSums(binary))
-        return(result)
-
+        binary <- as(data, 'nMatrix') * model[rep(1, nrow(prop)),]
+        dev <- mn - binary # deviation from the mean
+        error <- (dev ** 2) * prop
+        var <- unname(Matrix::rowSums(error))
+        n <- unname(Matrix::rowSums(data))
+        sd <- sqrt(var)
+        se <- sd / sqrt(n)
+        se <- ifelse(is.na(se), 0 , se)
+        return(list(mue = mn, sigma = se, n = n))
     } else {
-        return(s)
+        return(mn)
     }
 }
 
