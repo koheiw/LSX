@@ -4,6 +4,7 @@ Computer-aided dictionary making for text analysis
 ## How to install
 devtools::install_github("koheiw/LSS")
 
+#' https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0
 
 ## Sample code
 ```

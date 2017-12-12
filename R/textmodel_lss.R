@@ -1,82 +1,185 @@
-
-
-mt <- dfm(x, tolower = FALSE, remove = '')
-mt <- dfm_trim(mt, min_count = 10)
-
-textmodel_lss <- function(x, y, features = NULL, nv = 300, verbose = TRUE) {
-
-    package <- match.arg(package)
+#' a vector-space model for subject specific sentiment-analysis
+#'
+#' @param x a dfm created by \code{\link[quanteda]{dfm}}
+#' @param y character vector or named character vector that contains seed words.
+#' @param pattern pattern to select featues to make models only sensitive to
+#'   subject specific words.
+#' @param k the size of semantic space passed to \code{\link[RSpectra]{svd}}
+#' @export
+#' @references Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
+#'   Agency ITAR-TASS’ Coverage of the Ukraine Crisis.” European Journal of
+#'   Communication 32, no. 3 (March 20, 2017): 224–41.
+#'   https://doi.org/10.1177/0267323117695735.
+#' @examples
+#' require(quanteda)
+#'
+#' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+#' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
+#' toks <- tokens(corp)
+#' mt <- dfm(toks, remove = stopwords())
+#' mt <- dfm_trim(mt, min_count = 10)
+#' lss <- textmodel_lss(mt, seedwords('pos-neg'))
+#'
+#' # sentiment model on economy
+#' eco <- char_keyness(toks, 'econom*')
+#' lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), pattern = eco)
+#'
+#' # sentiment model on politics
+#' pol <- char_keyness(toks, 'polti*')
+#' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
+textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE) {
 
     if (verbose)
         cat('Starting singular value decomposition of dfm...\n')
-    s <- RSpectra::svds(x, k = 300, nu = 0, nv = nv, opts = list(tol = 1e-5))
-    temp <- s$v * s$d
-    rownames(temp) <- colnames(x)
-    temp <- as.dfm(t(temp))
+    s <- RSpectra::svds(x, k = k, nu = 0, nv = k, opts = list(tol = 1e-5))
+    temp <- t(s$v * s$d)
+    colnames(temp) <- featnames(x)
+    temp <- as.dfm(temp)
 
     if (is.character(y)) {
         seed <- y
         weight <- rep(1, length(y))
     } else {
-        weight <- weight / length(weight)
-        seed <- unlist(mapply(weight_seeds, seed, weight, MoreArgs = list(featnames(x)),
-                              USE.NAMES = FALSE))
+        # generalte inflected seed
+        y <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y), MoreArgs = list(featnames(x)),
+                           USE.NAMES = FALSE))
         seed <- names(y)
-        weight <- unnname(y)
+        weight <- unname(y)
     }
+    if (verbose)
+        cat('Calculating term-term similarity...\n')
+    seed <- seed[seed %in% featnames(temp)]
+    temp <- textstat_simil(temp, selection = seed, margin = 'features')
+    if (!is.null(pattern))
+        temp <- temp[unlist(quanteda:::regex2fixed(pattern, rownames(temp), 'glob', FALSE)),]
+    beta <- sort(rowMeans(temp %*% weight), decreasing = TRUE)
 
-    temp <- textstat_simil(temp, selection = names(seed), margin = 'features')
-    model <- sort(rowMeans(temp %*% weight), decreasing = TRUE)
-
-    result <- list(model = model, data = x, feature = colnames(model))
+    result <- list(beta = beta, data = x, feature = colnames(temp))
     class(result) <- "textmodel_lss_fitted"
 
-    return(sort(rowMeans(sim), decreasing = TRUE))
+    return(result)
 }
 
 
 #' internal function to generate equally-weighted seed set
 #'
-#' @keyword internal
-weight_seeds <- function(x, type) {
-    seed <- names(x)
-    weight <- unnname(x)
+#' @keywords internal
+weight_seeds <- function(seed, weight, type) {
     s <- unlist(quanteda:::regex2fixed(seed, type, 'glob', FALSE))
     v <- rep(weight / length(s), length(s))
     names(v) <- s
     return(v)
 }
 
-preidict.textmodel_lss_fitted <- function(mx, words, score_only = TRUE){
+#' prediction method for textmodel_lss
+#' @param object textmodel_lss_fitted object
+#' @export
+predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit = FALSE){
 
-    mx_word <- Matrix::as.matrix(words)
-    common <- intersect(rownames(mx_word), colnames(mx))
-    mx <- mx[,match(common, colnames(mx))] # ignore words not in the model
-    mx_word <- mx_word[match(common, rownames(mx_word)),,drop=FALSE] # ignore words not in documents
-    mx_tf <- quanteda::dfm_weight(mx, "relFreq")
-    mn <- mx_tf %*% mx_word # mean scores of documents
+    model <- as.dfm(rbind(object$beta))
 
-    if(score_only){
-        return(as.vector(mn))
-    }else{
-        #mx_bin <- mx > 0
-        mx_bin <- as(mx, 'nMatrix')
-        mx_scr <- mx_bin * t(mx_word[, rep(1, nrow(mx_tf))]) # repeat the dictionary
-        mx_dev <- mx_scr - mn[, rep(1, ncol(mx_bin))] # difference from the mean
-        mx_err <- (mx_dev ** 2) * mx_tf # square of deviation weighted by frequency
-        var <- Matrix::rowSums(mx_err) # variances
+    if (is.null(newdata)) {
+        data <- dfm_select(object$data, model)
+    } else {
+        if (!is.dfm(newdata))
+            stop('newdata must be a dfm\n')
+        data <- dfm_select(newdata, model)
+    }
+
+    temp <- quanteda::dfm_weight(data, "relFreq")
+    model <- as(model, 'dgCMatrix')
+    s <- as.vector(temp %*% Matrix::t(model)) # mean scores of documents
+
+    if (confidence.fit) {
+
+        stop('Not yet implimented\n')
+
+        binary <- as(as(data, 'nMatrix'), 'dgCMatrix')
+
+
+        # se <- numeric(nrow(temp))
+        # for (i in seq_len(nrow(temp))) {
+        #     f <- as.vector(temp[i,])
+        #     dev <- s[i] - f # deviation from the mean
+        #     var <- sum((dev ** 2) * f)
+        #     sd <- c(sd, sqrt(var))
+        #     se[i] <- sqrt(var) / sqrt(sum(f > 0))
+        # }
+
+        mean <- binary * t(model[rep(1, nrow(temp)),])
+        deviation <- mx_scr - s[, rep(1, ncol(binary))] # difference from the mean
+        error <- (deviation ** 2) * temp # square of deviation weighted by frequency
+        var <- Matrix::rowSums(error)
         sd <- sqrt(var) # standard diviaitons
         se <- sd / sqrt(Matrix::rowSums(mx)) # SD divided by sqrt of total number of words
-        return(data.frame(lss_mn=mn[,1], lss_se=se, lss_n=Matrix::rowSums(mx_bin)))
+
+        result <- list(mue = s, sigma = se, n = rowSums(binary))
+        return(result)
+
+    } else {
+        return(s)
     }
 }
 
-get_keywords <- function(x, pattern) {
-    mt <- dfm(tokens_keep(x, pattern, window = 10))
-    mt <- dfm_trim(mt, min_count = 10)
-    mt <- dfm_remove(mt, pattern)
-    mt_not <- dfm(tokens_remove(x, pattern, window = 10))
-    rownames(textstat_keyness(rbind(mt, mt_not), seq_len(ndoc(mt))))
+#' identify words strongly associated with target word based on collocation
+#'
+#' @param x tokens object created by \code{\link[quanteda]{tokens}}.
+#' @param window size of window for collocation analysis.
+#' @param p threashold for statistical significance of collocaitons.
+#' @param min_count minimum frequency for words within the window to be
+#'   considered as collocations.
+#' @param ... additional arguments passed to \code{\link{textstat_keyness}}.
+#' @export
+#' @seealso \code{\link{textstat_keyness}}
+#' @examples
+#' require(quanteda)
+#' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+#' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
+#' toks <- tokens(corp, remove_punct = TRUE)
+#' toks <- tokens_remove(toks, stopwords())
+#'
+#' # economy keywords
+#' eco <- char_keyness(toks, 'econom*')
+#' head(eco)
+#'
+#' # politics keywords
+#' pol <- char_keyness(toks, 'politi*')
+#' head(pol)
+char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10, ...) {
+
+    if (!is.tokens(x))
+        stop('x must be a tokens object\n')
+    m <- dfm(tokens_keep(x, pattern, window = window))
+    m <- dfm_trim(m, min_count = min_count)
+    m <- dfm_remove(m, pattern)
+    n <- dfm(tokens_remove(x, pattern, window = window))
+    key <- textstat_keyness(rbind(m, n), seq_len(ndoc(m)), ...)
+    key <- key[key$p < p,]
+    rownames(key)
 }
 
+#' seed words for sentiment analysis
+#'
+#' @param type type of seed words currently only for sentiment (\code{pos-neg})
+#'   or political ideology (\code{left-right}).
+#' @export
+#' @examples
+#' seedwords('pos-neg')
+#' @references Turney, P. D., & Littman, M. L. (2003). Measuring Praise and
+#'   Criticism: Inference of Semantic Orientation from Association. ACM Trans.
+#'   Inf. Syst., 21(4), 315–346. https://doi.org/10.1145/944012.944013
+seedwords <- function(type) {
 
+    if (type == 'pos-neg') {
+        seeds <- c(rep(1, 7), rep(-1, 7))
+        names(seeds) <- c('good', 'nice', 'excellent', 'positive', 'fortunate', 'correct', 'superior',
+                          'bad', 'nasty', 'poor', 'negative', 'unfortunate', 'wrong', 'inferior')
+    } else if (type == 'left-right') {
+        seeds <- c(rep(1, 7), rep(-1, 7))
+        names(seeds) <- c('deficit', 'austerity', 'unstable', 'recession', 'inflation', 'currency', 'workforce',
+                          'poor', 'poverty', 'free', 'benefits', 'prices', 'money', 'workers')
+    } else {
+        stop(type, 'is not currently available')
+    }
+    return(seeds)
+}

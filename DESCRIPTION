@@ -1,20 +1,19 @@
 Package: LSS
 Type: Package
-Title: Computer-aided dictionary making for text analysis (Latent Semantic Scaling)
-Date: 2016-05-11
-Version: 0.1.0
+Title: Latent Semantic Scaling
+Date: 2017-12-12
+Version: 0.2.0
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre"))
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Description: A highly efficient vector-space model for subject-specific sentiment analysis.
+License: GPL-3
 LazyData: TRUE
 SystemRequirements: C++11
 LinkingTo: Rcpp
+Collate: 
+    textmodel_lss.R
 Imports:
     Matrix,
-    irlba,
+    RSpectra,
     stringi,
-    digest,
     quanteda,
-    Rcpp (>= 0.12.4),
-    Newsmap
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

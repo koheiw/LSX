@@ -1,0 +1,68 @@
+---
+title: "README"
+author: "KoheiWatanabe"
+date: "12 December 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Latent Semantic Scaling
+A highly efficient vector-space model for subject-specific sentiment analysis
+
+## How to install
+```{r, eval=FALSE}
+devtools::install_github("koheiw/LSS")
+```
+
+## How to use
+
+LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences.
+
+### Fit the model
+
+[Sample dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) is a 6000 news atricles from the Guardian.
+```{r}
+require(quanteda)
+load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+
+corp_train <- corpus_reshape(data_corpus_guardian, 'sentences')
+toks_train <- tokens(corp_train, remove_punct = TRUE)
+mt_train <- dfm(toks_train, remove = stopwords())
+mt_train <- dfm_select(mt_train, remove = c('*.uk', '*.com', '*.net', '*.it'))
+mt_train <- dfm_trim(mt_train, min_count = 10)
+
+#' sentiment model on economy
+eco <- char_keyness(toks_train, 'econom*')
+lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = eco)
+head(lss_eco$beta)
+tail(lss_eco$beta)
+
+# sentiment model on politics
+pol <- char_keyness(toks_train, 'politi*')
+lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = pol)
+head(lss_pol$beta)
+tail(lss_pol$beta)
+
+```
+
+## Prediction
+```{r}
+mt <- dfm(data_corpus_guardian)
+```
+
+```{r}
+# predicted economic sentiment
+sent_eco <- scale(predict(lss_pol, newdata = mt))
+plot(docvars(data_corpus_guardian, 'date'), sent_eco, pch = 16, col = rgb(0, 0, 0, 0.1))
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.01), col = 2)
+```
+```{r}
+# predicted political sentiment
+sent_pol <- scale(predict(lss_pol, newdata = mt))
+plot(docvars(data_corpus_guardian, 'date'), sent_pol, pch = 16, col = rgb(0, 0, 0, 0.1))
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.01), col = 2)
+```
+
