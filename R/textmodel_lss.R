@@ -134,7 +134,8 @@ predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit 
 #' # politics keywords
 #' pol <- char_keyness(toks, 'politi*')
 #' head(pol)
-char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10, remove_pattern = FALSE, ...) {
+char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
+                         remove_pattern = TRUE, ...) {
 
     if (!is.tokens(x))
         stop('x must be a tokens object\n')

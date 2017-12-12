@@ -5,7 +5,7 @@
 \title{identify keywords occur frequently with target words}
 \usage{
 char_keyness(x, pattern, window = 10, p = 0.001, min_count = 10,
-  remove_pattern = FALSE, ...)
+  remove_pattern = TRUE, ...)
 }
 \arguments{
 \item{x}{tokens object created by \code{\link[quanteda]{tokens}}.}
