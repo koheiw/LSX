@@ -4,7 +4,8 @@
 #' @param y character vector or named character vector that contains seed words.
 #' @param pattern pattern to select featues to make models only sensitive to
 #'   subject specific words.
-#' @param k the size of semantic space passed to \code{\link[RSpectra]{svd}}
+#' @param k the size of semantic space passed to \code{\link[RSpectra]{svds}}
+#' @param ... additional argument passed to \code{\link[RSpectra]{svds}}
 #' @export
 #' @references Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
 #'   Agency ITAR-TASS’ Coverage of the Ukraine Crisis.” European Journal of
@@ -27,11 +28,11 @@
 #' # sentiment model on politics
 #' pol <- char_keyness(toks, 'polti*')
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
-textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE) {
+textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
 
     if (verbose)
         cat('Starting singular value decomposition of dfm...\n')
-    s <- RSpectra::svds(x, k = k, nu = 0, nv = k, opts = list(tol = 1e-5))
+    s <- RSpectra::svds(x, k = k, nu = 0, nv = k, ...)
     temp <- t(s$v * s$d)
     colnames(temp) <- featnames(x)
     temp <- as.dfm(temp)
