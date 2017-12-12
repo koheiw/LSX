@@ -2,12 +2,15 @@
 % Please edit documentation in R/textmodel_lss.R
 \name{char_keyness}
 \alias{char_keyness}
-\title{identify words strongly associated with target word based on collocation}
+\title{identify keywords occur frequently with target words}
 \usage{
-char_keyness(x, pattern, window = 10, p = 0.001, min_count = 10, ...)
+char_keyness(x, pattern, window = 10, p = 0.001, min_count = 10,
+  remove_pattern = FALSE, ...)
 }
 \arguments{
 \item{x}{tokens object created by \code{\link[quanteda]{tokens}}.}
+
+\item{pattern}{to specify target words.}
 
 \item{window}{size of window for collocation analysis.}
 
@@ -16,10 +19,12 @@ char_keyness(x, pattern, window = 10, p = 0.001, min_count = 10, ...)
 \item{min_count}{minimum frequency for words within the window to be
 considered as collocations.}
 
+\item{remove_pattern}{if \code{TRUE}, keywords do not containe target words.}
+
 \item{...}{additional arguments passed to \code{\link{textstat_keyness}}.}
 }
 \description{
-identify words strongly associated with target word based on collocation
+identify keywords occur frequently with target words
 }
 \examples{
 require(quanteda)

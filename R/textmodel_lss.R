@@ -108,13 +108,15 @@ predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit 
     }
 }
 
-#' identify words strongly associated with target word based on collocation
+#' identify keywords occur frequently with target words
 #'
 #' @param x tokens object created by \code{\link[quanteda]{tokens}}.
+#' @param pattern to specify target words.
 #' @param window size of window for collocation analysis.
 #' @param p threashold for statistical significance of collocaitons.
 #' @param min_count minimum frequency for words within the window to be
 #'   considered as collocations.
+#' @param remove_pattern if \code{TRUE}, keywords do not containe target words.
 #' @param ... additional arguments passed to \code{\link{textstat_keyness}}.
 #' @export
 #' @seealso \code{\link{textstat_keyness}}
@@ -132,13 +134,14 @@ predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit 
 #' # politics keywords
 #' pol <- char_keyness(toks, 'politi*')
 #' head(pol)
-char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10, ...) {
+char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10, remove_pattern = FALSE, ...) {
 
     if (!is.tokens(x))
         stop('x must be a tokens object\n')
     m <- dfm(tokens_keep(x, pattern, window = window))
     m <- dfm_trim(m, min_count = min_count)
-    m <- dfm_remove(m, pattern)
+    if (remove_pattern)
+        m <- dfm_remove(m, pattern)
     n <- dfm(tokens_remove(x, pattern, window = window))
     key <- textstat_keyness(rbind(m, n), seq_len(ndoc(m)), ...)
     key <- key[key$p < p,]
