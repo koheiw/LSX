@@ -7,7 +7,8 @@ knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "##",
   fig.path = "man/images/",
-  dpi=300
+  dpi=300,
+  fig.width = 10
 )
 ```
 
