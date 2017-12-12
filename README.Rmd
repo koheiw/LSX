@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Latent Semantic Scaling
-A highly efficient vector-space model for subject-specific sentiment analysis
+A highly efficient vector-space model for subject-specific sentiment analysis.
 
 ## How to install
 ```{r, eval=FALSE}
@@ -23,15 +23,20 @@ LSS is created to perform sentiment analysis of long texts, but training of its 
 
 ### Fit the model
 
-[Sample dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) is a 6000 news atricles from the Guardian.
-```{r}
+[Sample dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) is a 6000 news articles from the Guardian.
+
+```{r, message=FALSE}
 require(quanteda)
+require(LSS)
+```
+
+```{r}
 load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 
 corp_train <- corpus_reshape(data_corpus_guardian, 'sentences')
 toks_train <- tokens(corp_train, remove_punct = TRUE)
 mt_train <- dfm(toks_train, remove = stopwords())
-mt_train <- dfm_select(mt_train, remove = c('*.uk', '*.com', '*.net', '*.it'))
+mt_train <- dfm_remove(mt_train, c('*.uk', '*.com', '*.net', '*.it', '*@*'))
 mt_train <- dfm_trim(mt_train, min_count = 10)
 
 #' sentiment model on economy
@@ -53,16 +58,38 @@ tail(lss_pol$beta)
 mt <- dfm(data_corpus_guardian)
 ```
 
+### Economic sentiment
+
 ```{r}
-# predicted economic sentiment
-sent_eco <- scale(predict(lss_pol, newdata = mt))
-plot(docvars(data_corpus_guardian, 'date'), sent_eco, pch = 16, col = rgb(0, 0, 0, 0.1))
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.01), col = 2)
+sent_eco <- scale(predict(lss_eco, newdata = mt))
+plot(docvars(data_corpus_guardian, 'date'), sent_eco, pch = 16, col = rgb(0, 0, 0, 0.1),
+     ylim = c(-1, 1), ylab = 'economic sentiment')
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.05), col = 1)
+abline(h = 0)
 ```
+
+### Political sentiment
+
 ```{r}
-# predicted political sentiment
 sent_pol <- scale(predict(lss_pol, newdata = mt))
-plot(docvars(data_corpus_guardian, 'date'), sent_pol, pch = 16, col = rgb(0, 0, 0, 0.1))
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.01), col = 2)
+plot(docvars(data_corpus_guardian, 'date'), sent_pol, pch = 16, col = rgb(0, 0, 0, 0.1),
+      ylim = c(-1, 1), ylab = 'political sentiment')
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.05), col = 1)
+abline(h = 0)
 ```
+
+### Comparison
+
+The sentiment analysis models were trained on the same corpus with the same seed, but they are sensitive to different subjects. We can see in the chart below that Guardian's framing of economy became positive in early 2015, while political sentiment were falling down gradually.
+
+```{r}
+plot(docvars(data_corpus_guardian, 'date'), rep(0, ndoc(data_corpus_guardian)),  
+     type = 'n', ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
+grid()
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.1), col = 1)
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.1), col = 2)
+abline(h = 0)
+legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
+```
+
 
