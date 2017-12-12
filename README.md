@@ -2,7 +2,7 @@
 Latent Semantic Scaling
 =======================
 
-LSS is a highly efficient vector-space model for subject-specific sentiment analysis used by @koheiw in sevel published studies:
+LSS is a highly efficient vector-space model for subject-specific sentiment analysis used by Kohei Watanabe in several published studies:
 
 -   Kohei Watanabe, 2017. "[Measuring News Bias: Russia’s Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)", *European Journal Communication*
 -   Kohei Watanabe, 2017. "[The spread of the Kremlin’s narratives by a western news agency during the Ukraine crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*
@@ -18,7 +18,7 @@ devtools::install_github("koheiw/LSS")
 How to use
 ----------
 
-LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences. The [sample dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) contains 6,000 Guradian news articles, but larger corpus should be used to [estimate parameters accurately](https://koheiw.net/?p=629).
+LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences. The [sample dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) contains 6,000 Guardian news articles, but larger corpus should be used to [estimate parameters accurately](https://koheiw.net/?p=629).
 
 ### Fit a LSS model
 
@@ -39,14 +39,15 @@ mt_train <- dfm_trim(mt_train, min_count = 10)
 #' sentiment model on economy
 eco <- char_keyness(toks_train, 'econom*')
 lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = eco)
-head(lss_eco$beta)
+
+head(lss_eco$beta) # most positive words
 ```
 
     ## opportunity    positive     success       force     reasons        bill 
     ##  0.04726892  0.04640303  0.04397306  0.04192484  0.04082709  0.03781205
 
 ``` r
-tail(lss_eco$beta)
+tail(lss_eco$beta) # most negative words
 ```
 
     ##      caused        debt      blamed    negative        poor         bad 
@@ -56,14 +57,15 @@ tail(lss_eco$beta)
 # sentiment model on politics
 pol <- char_keyness(toks_train, 'politi*')
 lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = pol)
-head(lss_pol$beta)
+
+head(lss_pol$beta) # most positive words
 ```
 
     ##      views      faith    playing      force    reasons       bill 
     ## 0.04225050 0.04208257 0.04206229 0.04192484 0.04082709 0.03781205
 
 ``` r
-tail(lss_pol$beta)
+tail(lss_pol$beta) # most negative words
 ```
 
     ##       power uncertainty     turmoil        lack     happens        talk 

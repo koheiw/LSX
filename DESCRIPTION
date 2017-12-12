@@ -7,8 +7,6 @@ Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role 
 Description: A highly efficient vector-space model for subject-specific sentiment analysis.
 License: GPL-3
 LazyData: TRUE
-SystemRequirements: C++11
-LinkingTo: Rcpp
 Collate: 
     textmodel_lss.R
 Imports:
