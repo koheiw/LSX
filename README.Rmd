@@ -1,36 +1,41 @@
 ---
-title: "README"
-author: "KoheiWatanabe"
-date: "12 December 2017"
-output: html_document
+output: github_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, echo=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "##",
+  fig.path = "man/images/"
+)
 ```
 
 # Latent Semantic Scaling
-A highly efficient vector-space model for subject-specific sentiment analysis.
+LSS is a highly efficient vector-space model for subject-specific sentiment analysis used by @koheiw in sevel published studies:
+
+* Kohei Watanabe, 2017. "[Measuring News Bias: Russia’s Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)", *European Journal Communication*
+* Kohei Watanabe, 2017. "[The spread of the Kremlin’s narratives by a western news agency during the Ukraine crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*
+* Tomila Lankina and Kohei Watanabe. Forthcoming. "Russian Spring’ or ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving Strategy in Ukraine"", *Europe-Asia Studies*
+
 
 ## How to install
+
 ```{r, eval=FALSE}
 devtools::install_github("koheiw/LSS")
 ```
 
 ## How to use
 
-LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences.
+LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences. The [sample  dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) contains 6,000 Guradian news articles, but larger corpus should be used to [estimate parameters accurately](https://koheiw.net/?p=629).
 
-### Fit the model
-
-[Sample dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) is a 6000 news articles from the Guardian.
+### Fit a LSS model
 
 ```{r, message=FALSE}
 require(quanteda)
 require(LSS)
 ```
 
-```{r}
+```{r, cache=TRUE}
 load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 
 corp_train <- corpus_reshape(data_corpus_guardian, 'sentences')
@@ -42,18 +47,21 @@ mt_train <- dfm_trim(mt_train, min_count = 10)
 #' sentiment model on economy
 eco <- char_keyness(toks_train, 'econom*')
 lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = eco)
-head(lss_eco$beta)
-tail(lss_eco$beta)
+
+head(lss_eco$beta) # most positive words
+tail(lss_eco$beta) # most negative words
 
 # sentiment model on politics
 pol <- char_keyness(toks_train, 'politi*')
 lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = pol)
-head(lss_pol$beta)
-tail(lss_pol$beta)
+
+head(lss_pol$beta) # most positive words
+tail(lss_pol$beta) # most negative words
 
 ```
 
-## Prediction
+## Predict sentiment of news
+
 ```{r}
 mt <- dfm(data_corpus_guardian)
 ```
@@ -80,7 +88,7 @@ abline(h = 0)
 
 ### Comparison
 
-The sentiment analysis models were trained on the same corpus with the same seed, but they are sensitive to different subjects. We can see in the chart below that Guardian's framing of economy became positive in early 2015, while political sentiment were falling down gradually.
+The sentiment analysis models were trained on the same corpus with the same seed words, but they are sensitive to different subjects. We can see in the chart below that Guardian's framing of economy became positive in early 2015, while political sentiment were falling down gradually.
 
 ```{r}
 plot(docvars(data_corpus_guardian, 'date'), rep(0, ndoc(data_corpus_guardian)),  
