@@ -96,7 +96,7 @@ predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit 
         data <- dfm_select(newdata, model)
     }
 
-    prop <- quanteda::dfm_weight(data, "relFreq")
+    prop <- quanteda::dfm_weight(data, "prop")
     model <- as(model, 'dgCMatrix')
     mn <- Matrix::rowSums(prop %*% Matrix::t(model)) # mean scores of documents
 
