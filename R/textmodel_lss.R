@@ -38,34 +38,42 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
     temp <- as.dfm(temp)
 
     if (is.dictionary(y)) {
-        y <- unlist(y, use.names = FALSE)
+        seed <- unlist(y, use.names = FALSE)
     }
 
     # give equal weight to characters
     if (is.character(y)) {
-        y <- structure(rep(1, length(y)), names = y)
+        seed <- structure(rep(1, length(y)), names = y)
     }
 
     # generalte inflected seed
-    y <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
-                       MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
+    seed <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
+                          MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
 
     if (verbose)
         cat('Calculating term-term similarity...\n')
 
-    seed <- names(y)
-    weight <- unname(y)
-
-    seed <- seed[seed %in% featnames(temp)]
-    temp <- textstat_simil(temp, selection = seed, margin = 'features')
-    if (!is.null(pattern))
-        temp <- temp[unlist(quanteda:::regex2fixed(pattern, rownames(temp), 'glob', FALSE)),]
-    beta <- sort(rowMeans(temp %*% weight), decreasing = TRUE)
-
-    result <- list(beta = beta, data = x, feature = colnames(temp))
+    result <- list(beta = get_beta(temp, seed, pattern),
+                   data = x, feature = colnames(temp))
     class(result) <- "textmodel_lss_fitted"
 
     return(result)
+}
+#' Internal function to beta parameters
+#'
+#' @param x svd-reduced dfm
+#' @param y named-numberic vector for seed words
+#' @param feature feature for which beta will be calcualted
+get_beta <- function(x, y, feature = NULL) {
+
+    seed <- names(y)
+    weight <- unname(y)
+
+    seed <- seed[seed %in% colnames(x)]
+    temp <- textstat_simil(x, selection = seed, margin = 'features')
+    if (!is.null(feature))
+        temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),]
+    sort(rowMeans(temp %*% weight), decreasing = TRUE)
 }
 
 
@@ -153,7 +161,7 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
     n <- dfm(tokens_remove(x, pattern, window = window))
     key <- textstat_keyness(rbind(m, n), seq_len(ndoc(m)), ...)
     key <- key[key$p < p,]
-    rownames(key)
+    key$feature
 }
 
 #' seed words for sentiment analysis
