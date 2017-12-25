@@ -54,7 +54,8 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
         cat('Calculating term-term similarity...\n')
 
     result <- list(beta = get_beta(temp, seed, pattern),
-                   data = x, feature = colnames(temp))
+                   data = x, feature = colnames(temp),
+                   seed = seed)
     class(result) <- "textmodel_lss_fitted"
 
     return(result)
@@ -101,7 +102,11 @@ predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit 
     } else {
         if (!is.dfm(newdata))
             stop('newdata must be a dfm\n')
-        data <- dfm_select(newdata, model)
+        if (!identical(featnames(newdata), featnames(model))) {
+            data <- dfm_select(newdata, model)
+        } else {
+            data <- newdata
+        }
     }
 
     prop <- quanteda::dfm_weight(data, "prop")
