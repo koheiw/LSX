@@ -6,7 +6,7 @@ LSS is a highly efficient vector-space model for subject-specific sentiment anal
 
 -   Kohei Watanabe, 2017. "[Measuring News Bias: Russia’s Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)", *European Journal Communication*
 -   Kohei Watanabe, 2017. "[The spread of the Kremlin’s narratives by a western news agency during the Ukraine crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*
--   Tomila Lankina and Kohei Watanabe. Forthcoming. ["Russian Spring’ or ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving Strategy in Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)", *Europe-Asia Studies*
+-   Tomila Lankina and Kohei Watanabe. 2017. ["Russian Spring’ or ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving Strategy in Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)", *Europe-Asia Studies*
 
 How to install
 --------------
@@ -37,14 +37,14 @@ mt_train <- dfm_remove(mt_train, c('*.uk', '*.com', '*.net', '*.it', '*@*'))
 mt_train <- dfm_trim(mt_train, min_count = 10)
 
 #' sentiment model on economy
-eco <- char_keyness(toks_train, 'econom*')
+eco <- head(char_keyness(toks_train, 'econom*'), 500)
 lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = eco)
 
 head(lss_eco$beta) # most positive words
 ```
 
-    ## opportunity    positive     success       force     reasons        bill 
-    ##  0.04726892  0.04640303  0.04397306  0.04192484  0.04082709  0.03781205
+    ## opportunity    positive     success       force     reasons      future 
+    ##  0.04726892  0.04640303  0.04397306  0.04192484  0.04082709  0.03111128
 
 ``` r
 tail(lss_eco$beta) # most negative words
@@ -55,7 +55,7 @@ tail(lss_eco$beta) # most negative words
 
 ``` r
 # sentiment model on politics
-pol <- char_keyness(toks_train, 'politi*')
+pol <- head(char_keyness(toks_train, 'politi*'), 500)
 lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = pol)
 
 head(lss_pol$beta) # most positive words
@@ -110,8 +110,8 @@ The sentiment analysis models were trained on the same corpus with the same seed
 plot(docvars(data_corpus_guardian, 'date'), rep(0, ndoc(data_corpus_guardian)),  
      type = 'n', ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
 grid()
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.1), col = 1)
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.1), col = 2)
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.05), col = 1)
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.05), col = 2)
 abline(h = 0)
 legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
 ```
