@@ -67,13 +67,15 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
 #' @param feature feature for which beta will be calcualted
 get_beta <- function(x, y, feature = NULL) {
 
+    y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
     seed <- names(y)
     weight <- unname(y)
 
-    seed <- seed[seed %in% colnames(x)]
     temp <- textstat_simil(x, selection = seed, margin = 'features')
     if (!is.null(feature))
         temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),]
+    if (!identical(colnames(temp), seed))
+        stop('Columns and seed words do not match')
     sort(rowMeans(temp %*% weight), decreasing = TRUE)
 }
 
