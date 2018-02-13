@@ -38,34 +38,45 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
     temp <- as.dfm(temp)
 
     if (is.dictionary(y)) {
-        y <- unlist(y, use.names = FALSE)
+        seed <- unlist(y, use.names = FALSE)
     }
 
     # give equal weight to characters
     if (is.character(y)) {
-        y <- structure(rep(1, length(y)), names = y)
+        seed <- structure(rep(1, length(y)), names = y)
     }
 
     # generalte inflected seed
-    y <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
-                       MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
+    seed <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
+                          MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
 
     if (verbose)
         cat('Calculating term-term similarity...\n')
 
+    result <- list(beta = get_beta(temp, seed, pattern),
+                   data = x, feature = colnames(temp),
+                   seed = seed)
+    class(result) <- "textmodel_lss"
+
+    return(result)
+}
+#' Internal function to beta parameters
+#'
+#' @param x svd-reduced dfm
+#' @param y named-numberic vector for seed words
+#' @param feature feature for which beta will be calcualted
+get_beta <- function(x, y, feature = NULL) {
+
+    y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
     seed <- names(y)
     weight <- unname(y)
 
-    seed <- seed[seed %in% featnames(temp)]
-    temp <- textstat_simil(temp, selection = seed, margin = 'features')
-    if (!is.null(pattern))
-        temp <- temp[unlist(quanteda:::regex2fixed(pattern, rownames(temp), 'glob', FALSE)),]
-    beta <- sort(rowMeans(temp %*% weight), decreasing = TRUE)
-
-    result <- list(beta = beta, data = x, feature = colnames(temp))
-    class(result) <- "textmodel_lss_fitted"
-
-    return(result)
+    temp <- textstat_simil(x, selection = seed, margin = 'features')
+    if (!is.null(feature))
+        temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),]
+    if (!identical(colnames(temp), seed))
+        stop('Columns and seed words do not match')
+    sort(rowMeans(temp %*% weight), decreasing = TRUE)
 }
 
 
@@ -84,7 +95,7 @@ weight_seeds <- function(seed, weight, type) {
 #' @param newdata dfm on which prediction should be made
 #' @param confidence.fit if \code{TRUE}, it also returns standard error of document scores.
 #' @export
-predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit = FALSE){
+predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE){
 
     model <- as.dfm(rbind(object$beta))
 
@@ -93,10 +104,14 @@ predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit 
     } else {
         if (!is.dfm(newdata))
             stop('newdata must be a dfm\n')
-        data <- dfm_select(newdata, model)
+        if (!identical(featnames(newdata), featnames(model))) {
+            data <- dfm_select(newdata, model)
+        } else {
+            data <- newdata
+        }
     }
 
-    prop <- quanteda::dfm_weight(data, "relFreq")
+    prop <- quanteda::dfm_weight(data, "prop")
     model <- as(model, 'dgCMatrix')
     mn <- Matrix::rowSums(prop %*% Matrix::t(model)) # mean scores of documents
 
@@ -153,7 +168,7 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
     n <- dfm(tokens_remove(x, pattern, window = window))
     key <- textstat_keyness(rbind(m, n), seq_len(ndoc(m)), ...)
     key <- key[key$p < p,]
-    rownames(key)
+    key$feature
 }
 
 #' seed words for sentiment analysis

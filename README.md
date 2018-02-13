@@ -37,14 +37,14 @@ mt_train <- dfm_remove(mt_train, c('*.uk', '*.com', '*.net', '*.it', '*@*'))
 mt_train <- dfm_trim(mt_train, min_count = 10)
 
 #' sentiment model on economy
-eco <- char_keyness(toks_train, 'econom*')
+eco <- head(char_keyness(toks_train, 'econom*'), 500)
 lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = eco)
 
 head(lss_eco$beta) # most positive words
 ```
 
-    ## opportunity    positive     success       force     reasons        bill 
-    ##  0.04726892  0.04640303  0.04397306  0.04192484  0.04082709  0.03781205
+    ## opportunity    positive     success       force     reasons      future 
+    ##  0.04726892  0.04640303  0.04397306  0.04192484  0.04082709  0.03111128
 
 ``` r
 tail(lss_eco$beta) # most negative words
@@ -55,7 +55,7 @@ tail(lss_eco$beta) # most negative words
 
 ``` r
 # sentiment model on politics
-pol <- char_keyness(toks_train, 'politi*')
+pol <- head(char_keyness(toks_train, 'politi*'), 500)
 lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = pol)
 
 head(lss_pol$beta) # most positive words
@@ -110,8 +110,8 @@ The sentiment analysis models were trained on the same corpus with the same seed
 plot(docvars(data_corpus_guardian, 'date'), rep(0, ndoc(data_corpus_guardian)),  
      type = 'n', ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
 grid()
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.1), col = 1)
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.1), col = 2)
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.05), col = 1)
+lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.05), col = 2)
 abline(h = 0)
 legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
 ```
