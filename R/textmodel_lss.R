@@ -66,6 +66,25 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
 
     return(result)
 }
+
+#' Extract model coefficients from a fitted textmodel_lss object
+#'
+#' \code{coef()} extract model coefficients from a fitted \code{textmodel_lss}
+#' object.  \code{coefficients()} is an alias.
+#' @param object a fitted \link{textmodel_lss} object
+#' @param ... unused
+#' @keywords textmodel internal
+#' @export
+coef.textmodel_lss <- function(object, ...) {
+    object$beta
+}
+
+#' @rdname coef.textmodel_lss
+#' @export
+coefficients.textmodel_lss <- function(object, ...) {
+    UseMethod('coef')
+}
+
 #' Internal function to beta parameters
 #'
 #' @param x svd-reduced dfm
