@@ -9,9 +9,10 @@ License: GPL-3
 LazyData: TRUE
 Collate: 
     textmodel_lss.R
+Depends:
+    quanteda
 Imports:
     Matrix,
     RSpectra,
-    stringi,
-    quanteda,
+    stringi
 RoxygenNote: 6.0.1
