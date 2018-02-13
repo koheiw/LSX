@@ -30,29 +30,35 @@
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
 textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
 
-    if (verbose)
-        cat('Starting singular value decomposition of dfm...\n')
-    s <- RSpectra::svds(x, k = k, nu = 0, nv = k, ...)
-    temp <- t(s$v * s$d)
-    colnames(temp) <- featnames(x)
-    temp <- as.dfm(temp)
-
-    if (is.dictionary(y)) {
-        seed <- unlist(y, use.names = FALSE)
-    }
+    if (is.dictionary(y))
+        y <- unlist(y, use.names = FALSE)
 
     # give equal weight to characters
-    if (is.character(y)) {
-        seed <- structure(rep(1, length(y)), names = y)
-    }
+    if (is.character(y))
+        y <- structure(rep(1, length(y)), names = y)
+
+    if (is.null(names(y)))
+        stop("y must be a named-numerid vector\n")
 
     # generalte inflected seed
     seed <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
                           MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
 
+    if (verbose) {
+        cat('Weighted seed words:\n')
+        print(seed)
+    }
+
     if (verbose)
         cat('Calculating term-term similarity...\n')
 
+    if (verbose)
+        cat('Starting singular value decomposition of dfm...\n')
+
+    s <- RSpectra::svds(x, k = k, nu = 0, nv = k, ...)
+    temp <- t(s$v * s$d)
+    colnames(temp) <- featnames(x)
+    temp <- as.dfm(temp)
     result <- list(beta = get_beta(temp, seed, pattern),
                    data = x, feature = colnames(temp),
                    seed = seed)
@@ -73,7 +79,7 @@ get_beta <- function(x, y, feature = NULL) {
 
     temp <- textstat_simil(x, selection = seed, margin = 'features')
     if (!is.null(feature))
-        temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),]
+        temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
         stop('Columns and seed words do not match')
     sort(rowMeans(temp %*% weight), decreasing = TRUE)
