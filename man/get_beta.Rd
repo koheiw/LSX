@@ -16,3 +16,4 @@ get_beta(x, y, feature = NULL)
 \description{
 Internal function to beta parameters
 }
+\keyword{internal}

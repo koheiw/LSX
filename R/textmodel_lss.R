@@ -71,6 +71,7 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
 #' @param x svd-reduced dfm
 #' @param y named-numberic vector for seed words
 #' @param feature feature for which beta will be calcualted
+#' @keywords internal
 get_beta <- function(x, y, feature = NULL) {
 
     y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
