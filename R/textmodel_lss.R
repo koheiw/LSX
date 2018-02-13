@@ -56,7 +56,7 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
     result <- list(beta = get_beta(temp, seed, pattern),
                    data = x, feature = colnames(temp),
                    seed = seed)
-    class(result) <- "textmodel_lss_fitted"
+    class(result) <- "textmodel_lss"
 
     return(result)
 }
@@ -95,7 +95,7 @@ weight_seeds <- function(seed, weight, type) {
 #' @param newdata dfm on which prediction should be made
 #' @param confidence.fit if \code{TRUE}, it also returns standard error of document scores.
 #' @export
-predict.textmodel_lss_fitted <- function(object, newdata = NULL, confidence.fit = FALSE){
+predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE){
 
     model <- as.dfm(rbind(object$beta))
 
