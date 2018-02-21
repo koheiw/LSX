@@ -5,6 +5,8 @@
 #' @param pattern pattern to select featues to make models only sensitive to
 #'   subject specific words.
 #' @param k the size of semantic space passed to \code{\link[RSpectra]{svds}}
+#' @param cache if \code{TRUE}, save retult of SVD for next execution with
+#'   identical \code{x} and \code{k}.
 #' @param ... additional argument passed to \code{\link[RSpectra]{svds}}
 #' @export
 #' @references Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
@@ -28,7 +30,7 @@
 #' # sentiment model on politics
 #' pol <- char_keyness(toks, 'polti*')
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
-textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
+textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, cache = FALSE, ...) {
 
     if (is.dictionary(y))
         y <- unlist(y, use.names = FALSE)
@@ -55,8 +57,18 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, ...) {
     if (verbose)
         cat('Starting singular value decomposition of dfm...\n')
 
-    s <- RSpectra::svds(x, k = k, nu = 0, nv = k, ...)
-    temp <- t(s$v * s$d)
+    file_cache <- paste0('lss_cache_', digest::digest(list(x, k), algo = 'xxhash64'), '.RDS')
+    if(cache && file.exists(file_cache)){
+        cat('Reading cache file:', file_cache, '\n')
+        temp <- readRDS(file_cache)
+    }else{
+        s <- RSpectra::svds(x, k = k, nu = 0, nv = k, ...)
+        temp <- t(s$v * s$d)
+        if (cache) {
+            cat('Writing cache file:', file_cache, '\n')
+            saveRDS(temp, file_cache)
+        }
+    }
     colnames(temp) <- featnames(x)
     temp <- as.dfm(temp)
     result <- list(beta = get_beta(temp, seed, pattern),

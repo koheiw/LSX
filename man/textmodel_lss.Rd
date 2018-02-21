@@ -4,7 +4,8 @@
 \alias{textmodel_lss}
 \title{a vector-space model for subject specific sentiment-analysis}
 \usage{
-textmodel_lss(x, y, pattern = NULL, k = 300, verbose = FALSE, ...)
+textmodel_lss(x, y, pattern = NULL, k = 300, verbose = FALSE,
+  cache = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
@@ -15,6 +16,9 @@ textmodel_lss(x, y, pattern = NULL, k = 300, verbose = FALSE, ...)
 subject specific words.}
 
 \item{k}{the size of semantic space passed to \code{\link[RSpectra]{svds}}}
+
+\item{cache}{if \code{TRUE}, save retult of SVD for next execution with
+identical \code{x} and \code{k}.}
 
 \item{...}{additional argument passed to \code{\link[RSpectra]{svds}}}
 }
