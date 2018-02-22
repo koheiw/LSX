@@ -200,6 +200,8 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
     if (!is.tokens(x))
         stop('x must be a tokens object\n')
     m <- dfm(tokens_keep(x, pattern, window = window))
+    if (nfeat(m) == 0)
+        stop(paste(unlist(pattern), collapse = ', '), ' was not found.')
     m <- dfm_trim(m, min_count = min_count)
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
