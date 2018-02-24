@@ -197,16 +197,17 @@ predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE
 char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
                          remove_pattern = TRUE, ...) {
 
+    g <- factor(rep(1, ndoc(x))) # combine all documents
     if (!is.tokens(x))
         stop('x must be a tokens object\n')
-    m <- dfm(tokens_keep(x, pattern, window = window))
+    m <- dfm(tokens_keep(x, pattern, window = window), groups = g)
     if (nfeat(m) == 0)
         stop(paste(unlist(pattern), collapse = ', '), ' was not found.')
     m <- dfm_trim(m, min_count = min_count)
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
-    n <- dfm(tokens_remove(x, pattern, window = window))
-    key <- textstat_keyness(rbind(m, n), seq_len(ndoc(m)), ...)
+    n <- dfm(tokens_remove(x, pattern, window = window), groups = g)
+    key <- textstat_keyness(rbind(m, n), ...)
     key <- key[key$p < p,]
     key$feature
 }
