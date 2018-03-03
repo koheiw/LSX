@@ -2,10 +2,10 @@
 % Please edit documentation in R/textmodel_lss.R
 \name{textmodel_lss}
 \alias{textmodel_lss}
-\title{a vector-space model for subject specific sentiment-analysis}
+\title{A vector-space model for subject specific sentiment-analysis}
 \usage{
-textmodel_lss(x, y, pattern = NULL, k = 300, verbose = FALSE,
-  cache = FALSE, ...)
+textmodel_lss(x, y, pattern = NULL, k = 300, cache = FALSE,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
@@ -20,10 +20,12 @@ subject specific words.}
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
 
+\item{verbose}{show messages if \code{TRUE}.}
+
 \item{...}{additional argument passed to \code{\link[RSpectra]{svds}}}
 }
 \description{
-a vector-space model for subject specific sentiment-analysis
+A vector-space model for subject specific sentiment-analysis
 }
 \examples{
 require(quanteda)
@@ -36,11 +38,11 @@ mt <- dfm_trim(mt, min_count = 10)
 lss <- textmodel_lss(mt, seedwords('pos-neg'))
 
 # sentiment model on economy
-eco <- char_keyness(toks, 'econom*')
+eco <- head(char_keyness(toks, 'econom*'), 500)
 lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), pattern = eco)
 
 # sentiment model on politics
-pol <- char_keyness(toks, 'polti*')
+pol <- head(char_keyness(toks, 'polti*'), 500)
 lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
 }
 \references{

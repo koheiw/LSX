@@ -1,4 +1,4 @@
-#' a vector-space model for subject specific sentiment-analysis
+#' A vector-space model for subject specific sentiment-analysis
 #'
 #' @param x a dfm created by \code{\link[quanteda]{dfm}}
 #' @param y character vector or named character vector that contains seed words.
@@ -7,7 +7,9 @@
 #' @param k the size of semantic space passed to \code{\link[RSpectra]{svds}}
 #' @param cache if \code{TRUE}, save retult of SVD for next execution with
 #'   identical \code{x} and \code{k}.
+#' @param verbose show messages if \code{TRUE}.
 #' @param ... additional argument passed to \code{\link[RSpectra]{svds}}
+#' @import quanteda
 #' @export
 #' @references Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
 #'   Agency ITAR-TASS’ Coverage of the Ukraine Crisis.” European Journal of
@@ -24,13 +26,16 @@
 #' lss <- textmodel_lss(mt, seedwords('pos-neg'))
 #'
 #' # sentiment model on economy
-#' eco <- char_keyness(toks, 'econom*')
+#' eco <- head(char_keyness(toks, 'econom*'), 500)
 #' lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), pattern = eco)
 #'
 #' # sentiment model on politics
-#' pol <- char_keyness(toks, 'polti*')
+#' pol <- head(char_keyness(toks, 'polti*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
-textmodel_lss <- function(x, y, pattern = NULL, k = 300, verbose = FALSE, cache = FALSE, ...) {
+textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
+
+    if (is.dfm(pattern))
+        stop('pattern cannot be a dfm.\n')
 
     if (is.dictionary(y))
         y <- unlist(y, use.names = FALSE)
