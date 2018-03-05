@@ -35,7 +35,7 @@
 textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
 
     if (is.dfm(pattern))
-        stop('pattern cannot be a dfm.\n')
+        stop('pattern cannot be a dfm\n', call. = FALSE)
 
     if (is.dictionary(y))
         y <- unlist(y, use.names = FALSE)
@@ -45,7 +45,7 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose 
         y <- structure(rep(1, length(y)), names = y)
 
     if (is.null(names(y)))
-        stop("y must be a named-numerid vector\n")
+        stop("y must be a named-numerid vector\n", call. = FALSE)
 
     # generalte inflected seed
     seed <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
@@ -111,6 +111,8 @@ coefficients.textmodel_lss <- function(object, ...) {
 get_beta <- function(x, y, feature = NULL) {
 
     y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
+    if (!length(y))
+        stop('No seed word is found in the dfm', call. = FALSE)
     seed <- names(y)
     weight <- unname(y)
 
@@ -118,7 +120,7 @@ get_beta <- function(x, y, feature = NULL) {
     if (!is.null(feature))
         temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
-        stop('Columns and seed words do not match')
+        stop('Columns and seed words do not match', call. = FALSE)
     sort(rowMeans(temp %*% weight), decreasing = TRUE)
 }
 
@@ -146,7 +148,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE
         data <- dfm_select(object$data, model)
     } else {
         if (!is.dfm(newdata))
-            stop('newdata must be a dfm\n')
+            stop('newdata must be a dfm\n', call. = FALSE)
         if (!identical(featnames(newdata), featnames(model))) {
             data <- dfm_select(newdata, model)
         } else {
@@ -204,10 +206,10 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
 
     g <- factor(rep(1, ndoc(x))) # combine all documents
     if (!is.tokens(x))
-        stop('x must be a tokens object\n')
+        stop('x must be a tokens object\n', call. = FALSE)
     m <- dfm(tokens_keep(x, pattern, window = window), groups = g)
     if (nfeat(m) == 0)
-        stop(paste(unlist(pattern), collapse = ', '), ' was not found.')
+        stop(paste(unlist(pattern), collapse = ', '), ' was not found.', call. = FALSE)
     m <- dfm_trim(m, min_count = min_count)
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
@@ -238,7 +240,7 @@ seedwords <- function(type) {
         names(seeds) <- c('deficit', 'austerity', 'unstable', 'recession', 'inflation', 'currency', 'workforce',
                           'poor', 'poverty', 'free', 'benefits', 'prices', 'money', 'workers')
     } else {
-        stop(type, 'is not currently available')
+        stop(type, 'is not currently available', call. = FALSE)
     }
     return(seeds)
 }
