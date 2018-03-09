@@ -2,6 +2,7 @@
 
 S3method(coef,textmodel_lss)
 S3method(predict,textmodel_lss)
+S3method(summary,textmodel_lss)
 export(char_keyness)
 export(coefficients.textmodel_lss)
 export(seedwords)
