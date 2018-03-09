@@ -20,17 +20,18 @@
 #'
 #' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 #' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
-#' toks <- tokens(corp)
+#' toks <- tokens(corp, remove_punct = TRUE)
 #' mt <- dfm(toks, remove = stopwords())
 #' mt <- dfm_trim(mt, min_count = 10)
 #' lss <- textmodel_lss(mt, seedwords('pos-neg'))
+#' summary(lss)
 #'
 #' # sentiment model on economy
 #' eco <- head(char_keyness(toks, 'econom*'), 500)
 #' lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), pattern = eco)
 #'
 #' # sentiment model on politics
-#' pol <- head(char_keyness(toks, 'polti*'), 500)
+#' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
 textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
 
@@ -78,10 +79,24 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose 
     temp <- as.dfm(temp)
     result <- list(beta = get_beta(temp, seed, pattern),
                    data = x, feature = colnames(temp),
-                   seed = seed)
+                   seed = seed,
+                   call = match.call())
     class(result) <- "textmodel_lss"
 
     return(result)
+}
+
+#' @export
+#' @noRd
+#' @method summary textmodel_lss
+summary.textmodel_lss <- function(object, n = 30L, ...) {
+    result <- list(
+        'call' = object$call,
+        'seed' = object$seed,
+        'data.dimension' = dim(object$data),
+        'beta' = as.coefficients_textmodel(head(coef(object), n))
+    )
+    as.summary.textmodel(result)
 }
 
 #' Extract model coefficients from a fitted textmodel_lss object
@@ -139,8 +154,9 @@ weight_seeds <- function(seed, weight, type) {
 #' @param object a fitted LSS textmodel
 #' @param newdata dfm on which prediction should be made
 #' @param confidence.fit if \code{TRUE}, it also returns standard error of document scores.
+#' @param ... not used
 #' @export
-predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE){
+predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE, ...){
 
     model <- as.dfm(rbind(object$beta))
 
