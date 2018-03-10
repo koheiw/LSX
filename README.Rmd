@@ -40,26 +40,38 @@ require(LSS)
 ```{r, cache=TRUE}
 load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 
-corp_train <- corpus_reshape(data_corpus_guardian, 'sentences')
-toks_train <- tokens(corp_train, remove_punct = TRUE)
-mt_train <- dfm(toks_train, remove = stopwords())
-mt_train <- dfm_remove(mt_train, c('*.uk', '*.com', '*.net', '*.it', '*@*'))
-mt_train <- dfm_trim(mt_train, min_count = 10)
+toks_sent <- data_corpus_guardian %>% 
+    corpus_reshape('sentences') %>% 
+    tokens(remove_punct = TRUE)
+mt_sent <- toks_sent %>% 
+    dfm(remove = stopwords()) %>% 
+    dfm_select('^[0-9a-zA-Z]+$', valuetype = 'regex') %>% 
+    dfm_trim(min_count = 5)
 
 #' sentiment model on economy
-eco <- head(char_keyness(toks_train, 'econom*'), 500)
-lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), features = eco)
-
-head(coef(lss_eco)) # most positive words
-tail(coef(lss_eco)) # most negative words
+eco <- head(char_keyness(toks_sent, 'econom*'), 500)
+lss_eco <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = eco)
 
 # sentiment model on politics
-pol <- head(char_keyness(toks_train, 'politi*'), 500)
-lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), features = pol)
+pol <- head(char_keyness(toks_sent, 'politi*'), 500)
+lss_pol <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = pol)
 
-head(coef(lss_pol)) # most positive words
-tail(coef(lss_pol)) # most negative words
+```
 
+
+### Economic words
+
+```{r}
+head(coef(lss_eco), 20) # most positive words
+tail(coef(lss_eco), 20) # most negative words
+
+```
+
+### Political words
+
+```{r}
+head(coef(lss_pol), 20) # most positive words
+tail(coef(lss_pol), 20) # most negative words
 ```
 
 ## Predict sentiment of news
@@ -80,9 +92,6 @@ plot(pred_eco$date, pred_eco$fit, pch = 16, col = rgb(0, 0, 0, 0.1),
 lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 abline(h = 0)
 ```
-Show in New WindowClear OutputExpand/Collapse Output
-
-Show in New WindowClear OutputExpand/Collapse Output
 
 
 ### Political sentiment
@@ -101,13 +110,14 @@ abline(h = 0)
 ### Comparison
 
 ```{r}
-plot(docvars(mt, 'date'), rep(0, ndoc(mt)), type = 'n', xlim = as.Date(c('2015-01-01', '2016-12-31')), 
+plot(docvars(mt, 'date'), rep(0, ndoc(mt)), type = 'n',
      ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
 grid()
 lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
+abline(h = 0)
 ```
 
 

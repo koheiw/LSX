@@ -30,63 +30,78 @@ require(LSS)
 ``` r
 load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 
-corp_train <- corpus_reshape(data_corpus_guardian, 'sentences')
-toks_train <- tokens(corp_train, remove_punct = TRUE)
-mt_train <- dfm(toks_train, remove = stopwords())
-mt_train <- dfm_remove(mt_train, c('*.uk', '*.com', '*.net', '*.it', '*@*'))
-mt_train <- dfm_trim(mt_train, min_count = 10)
-```
+toks_sent <- data_corpus_guardian %>% 
+    corpus_reshape('sentences') %>% 
+    tokens(remove_punct = TRUE)
+mt_sent <- toks_sent %>% 
+    dfm(remove = stopwords()) %>% 
+    dfm_select('^[0-9a-zA-Z]+$', valuetype = 'regex') %>% 
+    dfm_trim(min_count = 5)
 
-    ## Warning in dfm_trim.dfm(mt_train, min_count = 10): min_count is deprecated,
-    ## use min_termfreq
-
-``` r
 #' sentiment model on economy
-eco <- head(char_keyness(toks_train, 'econom*'), 500)
-```
+eco <- head(char_keyness(toks_sent, 'econom*'), 500)
+lss_eco <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = eco)
 
-    ## Warning in dfm_trim.dfm(m, min_count = min_count): min_count is deprecated,
-    ## use min_termfreq
-
-``` r
-lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), features = eco)
-
-head(coef(lss_eco)) # most positive words
-```
-
-    ## opportunity    positive     success       force     reasons      future 
-    ##  0.04726892  0.04640303  0.04397306  0.04192484  0.04082709  0.03111128
-
-``` r
-tail(coef(lss_eco)) # most negative words
-```
-
-    ##      caused        debt      blamed    negative        poor         bad 
-    ## -0.05297691 -0.05692699 -0.05951016 -0.06556126 -0.06617859 -0.07506342
-
-``` r
 # sentiment model on politics
-pol <- head(char_keyness(toks_train, 'politi*'), 500)
+pol <- head(char_keyness(toks_sent, 'politi*'), 500)
+lss_pol <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = pol)
 ```
 
-    ## Warning in dfm_trim.dfm(m, min_count = min_count): min_count is deprecated,
-    ## use min_termfreq
+### Economic words
 
 ``` r
-lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), features = pol)
-
-head(coef(lss_pol)) # most positive words
+head(coef(lss_eco), 20) # most positive words
 ```
 
-    ##      views      faith    playing      force    reasons       bill 
-    ## 0.04225050 0.04208257 0.04206229 0.04192484 0.04082709 0.03781205
+    ##    positive       third      energy opportunity       force        note 
+    ##  0.05505316  0.04890042  0.04765659  0.04650236  0.04413810  0.04197609 
+    ##     reasons     success      status      future       model     quarter 
+    ##  0.04172281  0.04170185  0.03465541  0.03436246  0.03395259  0.03271432 
+    ##    strategy        paid     society      fourth       hopes       thing 
+    ##  0.03231907  0.03201709  0.03021407  0.02951634  0.02913895  0.02792036 
+    ##    regional         nhs 
+    ##  0.02759222  0.02710538
 
 ``` r
-tail(coef(lss_pol)) # most negative words
+tail(coef(lss_eco), 20) # most negative words
 ```
 
-    ##       power uncertainty     turmoil        lack     happens        talk 
-    ## -0.04075780 -0.04218875 -0.04244589 -0.04791498 -0.04879530 -0.04967138
+    ##     warning         fed      blamed   austerity       warns      warned 
+    ## -0.04351791 -0.04390756 -0.04403180 -0.04436876 -0.04488856 -0.04516509 
+    ##    interest       sharp     raising    treasury      caused       rates 
+    ## -0.04647016 -0.04665759 -0.04715022 -0.04797562 -0.05044084 -0.05169764 
+    ##        debt       fears       raise         low     turmoil        poor 
+    ## -0.05208930 -0.05223961 -0.05362049 -0.05420565 -0.05466247 -0.05832461 
+    ##    negative         bad 
+    ## -0.06518192 -0.07795765
+
+### Political words
+
+``` r
+head(coef(lss_pol), 20) # most positive words
+```
+
+    ##       third        team       force     reasons     perfect     playing 
+    ##  0.04890042  0.04728605  0.04413810  0.04172281  0.04161544  0.03751904 
+    ##      future      writes       views      moment  opposition        paid 
+    ##  0.03436246  0.03399342  0.03349441  0.03297239  0.03202198  0.03201709 
+    ##     science       ideas       price        bill      modern        2016 
+    ##  0.03010308  0.03000192  0.02972510  0.02842569  0.02779306  0.02679979 
+    ## discussions       faith 
+    ##  0.02503479  0.02481003
+
+``` r
+tail(coef(lss_pol), 20) # most negative words
+```
+
+    ##       central      rhetoric          lack           men participation 
+    ##   -0.02964434   -0.03003867   -0.03080698   -0.03091979   -0.03154446 
+    ##    criticised      pressure     discourse         power          deep 
+    ##   -0.03221735   -0.03316489   -0.03372056   -0.03491120   -0.03697206 
+    ##        crisis      struggle  increasingly         anger    chancellor 
+    ##   -0.03849192   -0.03940885   -0.03957722   -0.04127278   -0.04245479 
+    ##     austerity          talk         rates       happens       turmoil 
+    ##   -0.04436876   -0.04473241   -0.05169764   -0.05363807   -0.05466247
 
 Predict sentiment of news
 -------------------------
@@ -108,9 +123,7 @@ lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 abline(h = 0)
 ```
 
-![](man/images/unnamed-chunk-6-1.png) Show in New WindowClear OutputExpand/Collapse Output
-
-Show in New WindowClear OutputExpand/Collapse Output
+![](man/images/unnamed-chunk-8-1.png)
 
 ### Political sentiment
 
@@ -125,18 +138,19 @@ lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 ```
 
-![](man/images/unnamed-chunk-7-1.png)
+![](man/images/unnamed-chunk-9-1.png)
 
 ### Comparison
 
 ``` r
-plot(docvars(mt, 'date'), rep(0, ndoc(mt)), type = 'n', xlim = as.Date(c('2015-01-01', '2016-12-31')), 
+plot(docvars(mt, 'date'), rep(0, ndoc(mt)), type = 'n',
      ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
 grid()
 lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
+abline(h = 0)
 ```
 
-![](man/images/unnamed-chunk-8-1.png)
+![](man/images/unnamed-chunk-10-1.png)
