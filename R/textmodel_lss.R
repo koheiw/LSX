@@ -1,7 +1,8 @@
 #' A vector-space model for subject specific sentiment-analysis
 #'
 #' @param x a dfm created by \code{\link[quanteda]{dfm}}
-#' @param y character vector or named character vector that contains seed words.
+#' @param y a character vector, named numeric vector or dictionary that contains
+#'   seed words.
 #' @param features featues of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
 #' @param k the size of semantic space passed to \code{\link[RSpectra]{svds}}
@@ -28,11 +29,11 @@
 #'
 #' # sentiment model on economy
 #' eco <- head(char_keyness(toks, 'econom*'), 500)
-#' lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), pattern = eco)
+#' lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), features = eco)
 #'
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
-#' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
+#' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
 
     if (is.dfm(features))

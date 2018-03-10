@@ -10,7 +10,8 @@ textmodel_lss(x, y, features = NULL, k = 300, cache = FALSE,
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
 
-\item{y}{character vector or named character vector that contains seed words.}
+\item{y}{a character vector, named numeric vector or dictionary that contains
+seed words.}
 
 \item{features}{featues of a dfm to be included in the model as terms. This
 argument is used to make models only sensitive to subject specific words.}
@@ -40,11 +41,11 @@ summary(lss)
 
 # sentiment model on economy
 eco <- head(char_keyness(toks, 'econom*'), 500)
-lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), pattern = eco)
+lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), features = eco)
 
 # sentiment model on politics
 pol <- head(char_keyness(toks, 'politi*'), 500)
-lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
+lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 }
 \references{
 Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
