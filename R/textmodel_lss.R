@@ -2,8 +2,8 @@
 #'
 #' @param x a dfm created by \code{\link[quanteda]{dfm}}
 #' @param y character vector or named character vector that contains seed words.
-#' @param pattern pattern to select featues to make models only sensitive to
-#'   subject specific words.
+#' @param features featues of a dfm to be included in the model as terms. This
+#'   argument is used to make models only sensitive to subject specific words.
 #' @param k the size of semantic space passed to \code{\link[RSpectra]{svds}}
 #' @param cache if \code{TRUE}, save retult of SVD for next execution with
 #'   identical \code{x} and \code{k}.
@@ -33,10 +33,10 @@
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), pattern = pol)
-textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
+textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
 
-    if (is.dfm(pattern))
-        stop('pattern cannot be a dfm\n', call. = FALSE)
+    if (is.dfm(features))
+        stop('features cannot be a dfm\n', call. = FALSE)
 
     if (is.dictionary(y))
         y <- unlist(y, use.names = FALSE)
@@ -51,11 +51,6 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose 
     # generalte inflected seed
     seed <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
                           MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
-
-    if (verbose) {
-        cat('Weighted seed words:\n')
-        print(seed)
-    }
 
     if (verbose)
         cat('Calculating term-term similarity...\n')
@@ -77,9 +72,11 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose 
     }
     colnames(temp) <- featnames(x)
     temp <- as.dfm(temp)
-    result <- list(beta = get_beta(temp, seed, pattern),
-                   data = x, feature = colnames(temp),
-                   seed = seed,
+    result <- list(beta = get_beta(temp, seed, features),
+                   data = x,
+                   features = if (is.null(features)) featnames(x) else features,
+                   seeds = y,
+                   seeds_weighted = seed,
                    call = match.call())
     class(result) <- "textmodel_lss"
 
@@ -92,7 +89,8 @@ textmodel_lss <- function(x, y, pattern = NULL, k = 300, cache = FALSE, verbose 
 summary.textmodel_lss <- function(object, n = 30L, ...) {
     result <- list(
         'call' = object$call,
-        'seed' = object$seed,
+        'seeds' = object$seeds,
+        'weighted.seeds' = object$seeds_weighted,
         'data.dimension' = dim(object$data),
         'beta' = as.coefficients_textmodel(head(coef(object), n))
     )
@@ -153,30 +151,41 @@ weight_seeds <- function(seed, weight, type) {
 #' prediction method for textmodel_lss
 #' @param object a fitted LSS textmodel
 #' @param newdata dfm on which prediction should be made
-#' @param confidence.fit if \code{TRUE}, it also returns standard error of document scores.
+#' @param fit.se if \code{TRUE}, it returns standard error of document scores.
+#' @param density if \code{TRUE}, returns frequency of features in documents.
+#'   Density distribution of features can be used to remove documents about
+#'   unrelated subjects.
+#' @param rescaling if \code{TRUE}, scores are reslaced using \code{scale()}.
 #' @param ... not used
 #' @export
-predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE, ...){
+predict.textmodel_lss <- function(object, newdata = NULL, fit.se = FALSE, density = FALSE, rescaling = TRUE, ...){
 
     model <- as.dfm(rbind(object$beta))
 
     if (is.null(newdata)) {
-        data <- dfm_select(object$data, model)
+        data <- object$data
     } else {
         if (!is.dfm(newdata))
             stop('newdata must be a dfm\n', call. = FALSE)
-        if (!identical(featnames(newdata), featnames(model))) {
-            data <- dfm_select(newdata, model)
-        } else {
-            data <- newdata
-        }
+        data <- newdata
     }
 
-    prop <- quanteda::dfm_weight(data, "prop")
+    d <- unname(rowSums(dfm_select(dfm_weight(data, 'prop'), object$features)))
+    if (!identical(featnames(data), featnames(model)))
+        data <- dfm_select(data, model)
+
+    prop <- dfm_weight(data, "prop")
     model <- as(model, 'dgCMatrix')
     mn <- Matrix::rowSums(prop %*% Matrix::t(model)) # mean scores of documents
 
-    if (confidence.fit) {
+    if (rescaling) {
+        mn_scaled <- scale(mn)
+        result <- list(fit = rowSums(mn_scaled))
+    } else {
+        result <- list(fit = mn)
+    }
+
+    if (fit.se) {
         binary <- as(data, 'nMatrix') * model[rep(1, nrow(prop)),]
         dev <- mn - binary # deviation from the mean
         error <- (dev ** 2) * prop
@@ -185,9 +194,18 @@ predict.textmodel_lss <- function(object, newdata = NULL, confidence.fit = FALSE
         sd <- sqrt(var)
         se <- sd / sqrt(n)
         se <- ifelse(is.na(se), 0 , se)
-        return(list(mue = mn, sigma = se, n = n))
+        if (rescaling)
+            se <- se / attr(mn_scaled, 'scaled:scale')
+        result$se.fit <- se
+        result$n <- n
+    }
+    if (density)
+        result$density <- d
+
+    if (!fit.se && !density) {
+        return(result$fit)
     } else {
-        return(mn)
+        return(result)
     }
 }
 

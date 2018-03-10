@@ -48,17 +48,17 @@ mt_train <- dfm_trim(mt_train, min_count = 10)
 
 #' sentiment model on economy
 eco <- head(char_keyness(toks_train, 'econom*'), 500)
-lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = eco)
+lss_eco <- textmodel_lss(mt_train, seedwords('pos-neg'), features = eco)
 
-head(lss_eco$beta) # most positive words
-tail(lss_eco$beta) # most negative words
+head(coef(lss_eco)) # most positive words
+tail(coef(lss_eco)) # most negative words
 
 # sentiment model on politics
 pol <- head(char_keyness(toks_train, 'politi*'), 500)
-lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), pattern = pol)
+lss_pol <- textmodel_lss(mt_train, seedwords('pos-neg'), features = pol)
 
-head(lss_pol$beta) # most positive words
-tail(lss_pol$beta) # most negative words
+head(coef(lss_pol)) # most positive words
+tail(coef(lss_pol)) # most negative words
 
 ```
 
@@ -71,33 +71,41 @@ mt <- dfm(data_corpus_guardian)
 ### Economic sentiment
 
 ```{r}
-sent_eco <- scale(predict(lss_eco, newdata = mt))
-plot(docvars(data_corpus_guardian, 'date'), sent_eco, pch = 16, col = rgb(0, 0, 0, 0.1),
+pred_eco <- as.data.frame(predict(lss_eco, newdata = mt, density = TRUE))
+pred_eco$date <- docvars(mt, 'date')
+pred_eco <- subset(pred_eco, density > quantile(density, 0.25))
+
+plot(pred_eco$date, pred_eco$fit, pch = 16, col = rgb(0, 0, 0, 0.1),
      ylim = c(-1, 1), ylab = 'economic sentiment')
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.05), col = 1)
+lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 abline(h = 0)
 ```
+Show in New WindowClear OutputExpand/Collapse Output
+
+Show in New WindowClear OutputExpand/Collapse Output
+
 
 ### Political sentiment
 
 ```{r}
-sent_pol <- scale(predict(lss_pol, newdata = mt))
-plot(docvars(data_corpus_guardian, 'date'), sent_pol, pch = 16, col = rgb(0, 0, 0, 0.1),
-      ylim = c(-1, 1), ylab = 'political sentiment')
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.05), col = 1)
+pred_pol <- as.data.frame(predict(lss_pol, newdata = mt, density = TRUE))
+pred_pol$date <- docvars(mt, 'date')
+pred_pol <- subset(pred_pol, density > quantile(density, 0.25))
+
+plot(pred_pol$date, pred_pol$fit, pch = 16, col = rgb(1, 0, 0, 0.1),
+     ylim = c(-1, 1), ylab = 'political sentiment')
+lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 ```
 
 ### Comparison
 
-The sentiment analysis models were trained on the same corpus with the same seed words, but they are sensitive to different subjects. We can see in the chart below that Guardian's framing of economy became positive in early 2015, while political sentiment were falling down gradually.
-
 ```{r}
-plot(docvars(data_corpus_guardian, 'date'), rep(0, ndoc(data_corpus_guardian)),  
-     type = 'n', ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
+plot(docvars(mt, 'date'), rep(0, ndoc(mt)), type = 'n', xlim = as.Date(c('2015-01-01', '2016-12-31')), 
+     ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
 grid()
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_pol, f = 0.05), col = 1)
-lines(lowess(docvars(data_corpus_guardian, 'date'), sent_eco, f = 0.05), col = 2)
+lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
+lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
 ```

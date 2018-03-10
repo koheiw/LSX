@@ -4,15 +4,21 @@
 \alias{predict.textmodel_lss}
 \title{prediction method for textmodel_lss}
 \usage{
-\method{predict}{textmodel_lss}(object, newdata = NULL,
-  confidence.fit = FALSE, ...)
+\method{predict}{textmodel_lss}(object, newdata = NULL, fit.se = FALSE,
+  density = FALSE, rescaling = TRUE, ...)
 }
 \arguments{
 \item{object}{a fitted LSS textmodel}
 
 \item{newdata}{dfm on which prediction should be made}
 
-\item{confidence.fit}{if \code{TRUE}, it also returns standard error of document scores.}
+\item{fit.se}{if \code{TRUE}, it returns standard error of document scores.}
+
+\item{density}{if \code{TRUE}, returns frequency of features in documents.
+Density distribution of features can be used to remove documents about
+unrelated subjects.}
+
+\item{rescaling}{if \code{TRUE}, scores are reslaced using \code{scale()}.}
 
 \item{...}{not used}
 }

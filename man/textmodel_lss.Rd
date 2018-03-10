@@ -4,7 +4,7 @@
 \alias{textmodel_lss}
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
-textmodel_lss(x, y, pattern = NULL, k = 300, cache = FALSE,
+textmodel_lss(x, y, features = NULL, k = 300, cache = FALSE,
   verbose = FALSE, ...)
 }
 \arguments{
@@ -12,8 +12,8 @@ textmodel_lss(x, y, pattern = NULL, k = 300, cache = FALSE,
 
 \item{y}{character vector or named character vector that contains seed words.}
 
-\item{pattern}{pattern to select featues to make models only sensitive to
-subject specific words.}
+\item{features}{featues of a dfm to be included in the model as terms. This
+argument is used to make models only sensitive to subject specific words.}
 
 \item{k}{the size of semantic space passed to \code{\link[RSpectra]{svds}}}
 

@@ -6,7 +6,7 @@
 #' slots are missing in this object (because the model was imported from the
 #' original Python implementation), it allows you to scale texts using
 #' \code{predict}.
-#' @name textmodel_lss_russianprotests
+#' @name data_textmodel_lss_russianprotests
 #' @docType data
 #' @author Kohei Watanabe \email{watanabe.kohei@gmail.com}
 #' @keywords data
