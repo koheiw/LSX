@@ -4,7 +4,7 @@
 \alias{predict.textmodel_lss}
 \title{prediction method for textmodel_lss}
 \usage{
-\method{predict}{textmodel_lss}(object, newdata = NULL, fit.se = FALSE,
+\method{predict}{textmodel_lss}(object, newdata = NULL, se.fit = FALSE,
   density = FALSE, rescaling = TRUE, ...)
 }
 \arguments{
@@ -12,7 +12,7 @@
 
 \item{newdata}{dfm on which prediction should be made}
 
-\item{fit.se}{if \code{TRUE}, it returns standard error of document scores.}
+\item{se.fit}{if \code{TRUE}, it returns standard error of document scores.}
 
 \item{density}{if \code{TRUE}, returns frequency of features in documents.
 Density distribution of features can be used to remove documents about

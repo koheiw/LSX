@@ -152,14 +152,15 @@ weight_seeds <- function(seed, weight, type) {
 #' prediction method for textmodel_lss
 #' @param object a fitted LSS textmodel
 #' @param newdata dfm on which prediction should be made
-#' @param fit.se if \code{TRUE}, it returns standard error of document scores.
+#' @param se.fit if \code{TRUE}, it returns standard error of document scores.
 #' @param density if \code{TRUE}, returns frequency of features in documents.
 #'   Density distribution of features can be used to remove documents about
 #'   unrelated subjects.
 #' @param rescaling if \code{TRUE}, scores are reslaced using \code{scale()}.
 #' @param ... not used
+#' @import methods
 #' @export
-predict.textmodel_lss <- function(object, newdata = NULL, fit.se = FALSE, density = FALSE, rescaling = TRUE, ...){
+predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, density = FALSE, rescaling = TRUE, ...){
 
     model <- as.dfm(rbind(object$beta))
 
@@ -175,35 +176,33 @@ predict.textmodel_lss <- function(object, newdata = NULL, fit.se = FALSE, densit
     if (!identical(featnames(data), featnames(model)))
         data <- dfm_select(data, model)
 
-    prop <- dfm_weight(data, "prop")
+    n <- Matrix::rowSums(data)
+    data <- dfm_weight(data, "prop")
     model <- as(model, 'dgCMatrix')
-    mn <- Matrix::rowSums(prop %*% Matrix::t(model)) # mean scores of documents
+    fit <- Matrix::rowSums(data %*% Matrix::t(model)) # mean scores of documents
 
     if (rescaling) {
-        mn_scaled <- scale(mn)
-        result <- list(fit = rowSums(mn_scaled))
+        fit_scaled <- scale(fit)
+        result <- list(fit = rowSums(fit_scaled))
     } else {
-        result <- list(fit = mn)
+        result <- list(fit = fit)
     }
 
-    if (fit.se) {
-        binary <- as(data, 'nMatrix') * model[rep(1, nrow(prop)),]
-        dev <- mn - binary # deviation from the mean
-        error <- (dev ** 2) * prop
-        var <- unname(Matrix::rowSums(error))
-        n <- unname(Matrix::rowSums(data))
-        sd <- sqrt(var)
-        se <- sd / sqrt(n)
+    if (se.fit) {
+        m <- matrix(rep(fit, ncol(data)), nrow = ncol(data), byrow = TRUE)
+        error <- t(m - model[,colnames(data)]) ^ 2
+        var <- Matrix::rowSums(data * error)
+        se <- sqrt(var) / sqrt(n)
         se <- ifelse(is.na(se), 0 , se)
         if (rescaling)
-            se <- se / attr(mn_scaled, 'scaled:scale')
+            se <- se / attr(fit_scaled, 'scaled:scale')
         result$se.fit <- se
         result$n <- n
     }
     if (density)
         result$density <- d
 
-    if (!fit.se && !density) {
+    if (!se.fit && !density) {
         return(result$fit)
     } else {
         return(result)
@@ -278,4 +277,20 @@ seedwords <- function(type) {
         stop(type, 'is not currently available', call. = FALSE)
     }
     return(seeds)
+}
+
+
+as.textmodel_lss <- function(x) {
+
+    stopifnot(is.numeric(x))
+    stopifnot(!is.null(names(x)))
+
+    result <- list(beta = x,
+                   data = NULL,
+                   features = names(x),
+                   seeds = character(),
+                   seeds_weighted = character(),
+                   call = match.call())
+    class(result) <- "textmodel_lss"
+    return(result)
 }

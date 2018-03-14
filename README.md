@@ -37,17 +37,53 @@ mt_sent <- toks_sent %>%
     dfm(remove = stopwords()) %>% 
     dfm_select('^[0-9a-zA-Z]+$', valuetype = 'regex') %>% 
     dfm_trim(min_count = 5)
+```
 
+    ## Warning in dfm_trim.dfm(., min_count = 5): min_count is deprecated, use
+    ## min_termfreq
+
+``` r
 #' sentiment model on economy
 eco <- head(char_keyness(toks_sent, 'econom*'), 500)
+```
+
+    ## Warning in dfm_trim.dfm(m, min_count = min_count): min_count is deprecated,
+    ## use min_termfreq
+
+``` r
 lss_eco <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = eco)
 
 # sentiment model on politics
 pol <- head(char_keyness(toks_sent, 'politi*'), 500)
+```
+
+    ## Warning in dfm_trim.dfm(m, min_count = min_count): min_count is deprecated,
+    ## use min_termfreq
+
+``` r
 lss_pol <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = pol)
 ```
 
-### Economic words
+### Sentiment seed words
+
+Seed words are 14 generic sentiment words.
+
+``` r
+seedwords('pos-neg')
+```
+
+    ##        good        nice   excellent    positive   fortunate     correct 
+    ##           1           1           1           1           1           1 
+    ##    superior         bad       nasty        poor    negative unfortunate 
+    ##           1          -1          -1          -1          -1          -1 
+    ##       wrong    inferior 
+    ##          -1          -1
+
+### Sentiment words
+
+LSS identifies domain specific words and weight them by sentiment.
+
+#### Economic words
 
 ``` r
 head(coef(lss_eco), 20) # most positive words
@@ -75,7 +111,7 @@ tail(coef(lss_eco), 20) # most negative words
     ##    negative         bad 
     ## -0.06518192 -0.07795765
 
-### Political words
+#### Political words
 
 ``` r
 head(coef(lss_pol), 20) # most positive words
@@ -123,7 +159,7 @@ lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 abline(h = 0)
 ```
 
-![](man/images/unnamed-chunk-8-1.png)
+![](man/images/unnamed-chunk-9-1.png)
 
 ### Political sentiment
 
@@ -138,7 +174,7 @@ lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 ```
 
-![](man/images/unnamed-chunk-9-1.png)
+![](man/images/unnamed-chunk-10-1.png)
 
 ### Comparison
 
@@ -153,4 +189,4 @@ legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
 abline(h = 0)
 ```
 
-![](man/images/unnamed-chunk-10-1.png)
+![](man/images/unnamed-chunk-11-1.png)

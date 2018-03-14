@@ -58,8 +58,19 @@ lss_pol <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = pol)
 
 ```
 
+### Sentiment seed words
 
-### Economic words
+Seed words are 14 generic sentiment words.
+
+```{r}
+seedwords('pos-neg')
+```
+
+### Sentiment words
+
+LSS identifies domain specific words and weight them by sentiment.
+
+#### Economic words
 
 ```{r}
 head(coef(lss_eco), 20) # most positive words
@@ -67,7 +78,7 @@ tail(coef(lss_eco), 20) # most negative words
 
 ```
 
-### Political words
+#### Political words
 
 ```{r}
 head(coef(lss_pol), 20) # most positive words

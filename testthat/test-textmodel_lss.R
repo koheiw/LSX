@@ -41,7 +41,7 @@ test_that("predict.textmodel_lss is working", {
     expect_true(is.numeric(pred1))
     expect_equal(sd(pred1), 1)
 
-    pred2 <- predict(test_lss, fit.se = TRUE)
+    pred2 <- predict(test_lss, se.fit = TRUE)
     expect_equal(length(pred2$fit), ndoc(toks))
     expect_equal(length(pred2$se.fit), ndoc(toks))
     expect_equal(length(pred2$n), ndoc(toks))
@@ -56,7 +56,7 @@ test_that("predict.textmodel_lss is working", {
     expect_identical(names(pred4), docnames(toks))
     expect_equal(as.numeric(scale(pred4)), unname(pred1))
 
-    pred5 <- predict(test_lss, fit.se = TRUE, density = TRUE)
+    pred5 <- predict(test_lss, se.fit = TRUE, density = TRUE)
     expect_equal(names(pred5), c('fit', 'se.fit', 'n', 'density'))
 
 })
@@ -82,4 +82,31 @@ test_that("predict.textmodel_lss works with newdata", {
 test_that("data object is valid", {
     sum <- summary(data_textmodel_lss_russianprotests)
     expect_equal(class(sum), c("summary.textmodel", "list"))
+})
+
+test_that("calculation of fit and se.fit are correct", {
+
+    lss <- LSS:::as.textmodel_lss(c('a' = 0.1, 'b' = 0.1, 'c' = 0.3))
+    mt <- dfm(c('a a a', 'a b', 'a a b c c d e'))
+    pred <- predict(lss, newdata = mt, se.fit = TRUE, rescaling = FALSE)
+
+    expect_equal(pred$fit[1], c(text1 = 0.10))
+    expect_equal(pred$fit[2], c(text2 = 0.10))
+    expect_equal(pred$fit[3], c(text3 = 0.1 * (2 / 5) + 0.1 * (1 / 5) + 0.3 * (2 / 5)))
+
+    beta <- coef(lss)
+    mt_sub <- dfm_select(mt, names(beta))
+    mt_prop <- dfm_weight(mt_sub, "prop")
+
+    expect_equal(pred$se.fit[1],
+                 sqrt(sum(as.numeric(mt_prop[1,]) * (pred$fit[1] - beta) ^ 2)) / sqrt(rowSums(mt_sub)[1]))
+    expect_equal(pred$se.fit[2],
+                 sqrt(sum(as.numeric(mt_prop[2,]) * (pred$fit[2] - beta) ^ 2)) / sqrt(rowSums(mt_sub)[2]))
+    expect_equal(pred$se.fit[3],
+                 sqrt(sum(as.numeric(mt_prop[3,]) * (pred$fit[3] - beta) ^ 2)) / sqrt(rowSums(mt_sub)[3]))
+
+    expect_equal(pred$n[1], 3)
+    expect_equal(pred$n[2], 2)
+    expect_equal(pred$n[3], 5)
+
 })
