@@ -86,6 +86,8 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose
 
 #' @export
 #' @noRd
+#' @importFrom stats coef
+#' @importFrom utils head
 #' @method summary textmodel_lss
 summary.textmodel_lss <- function(object, n = 30L, ...) {
     result <- list(
@@ -279,7 +281,10 @@ seedwords <- function(type) {
     return(seeds)
 }
 
-
+#' Create a dummy textmodel_lss object from numeric vector
+#' @param x named numeric vector
+#' @keywords internal
+#' @export
 as.textmodel_lss <- function(x) {
 
     stopifnot(is.numeric(x))
