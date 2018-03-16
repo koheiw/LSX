@@ -132,7 +132,7 @@ get_beta <- function(x, y, feature = NULL) {
     seed <- names(y)
     weight <- unname(y)
 
-    temp <- textstat_simil(x, selection = seed, margin = 'features')
+    temp <- textstat_simil(x, selection = seed, margin = 'features', method = 'cosine')
     if (!is.null(feature))
         temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
