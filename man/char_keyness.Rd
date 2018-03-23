@@ -35,11 +35,11 @@ toks <- tokens_remove(toks, stopwords())
 
 # economy keywords
 eco <- char_keyness(toks, 'econom*')
-head(eco)
+head(eco, 20)
 
 # politics keywords
 pol <- char_keyness(toks, 'politi*')
-head(pol)
+head(pol, 20)
 }
 \seealso{
 \code{\link{textstat_keyness}}
