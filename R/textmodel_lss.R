@@ -232,25 +232,24 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, densit
 #'
 #' # economy keywords
 #' eco <- char_keyness(toks, 'econom*')
-#' head(eco)
+#' head(eco, 20)
 #'
 #' # politics keywords
 #' pol <- char_keyness(toks, 'politi*')
-#' head(pol)
+#' head(pol, 20)
 char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
                          remove_pattern = TRUE, ...) {
 
-    g <- factor(rep(1, ndoc(x))) # combine all documents
     if (!is.tokens(x))
         stop('x must be a tokens object\n', call. = FALSE)
-    m <- dfm(tokens_keep(x, pattern, window = window), groups = g)
+    m <- dfm(tokens_select(x, pattern, window = window))
     if (nfeat(m) == 0)
         stop(paste(unlist(pattern), collapse = ', '), ' was not found.', call. = FALSE)
     m <- dfm_trim(m, min_count = min_count)
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
-    n <- dfm(tokens_remove(x, pattern, window = window), groups = g)
-    key <- textstat_keyness(rbind(m, n), ...)
+    n <- dfm(tokens_remove(x, pattern, window = window))
+    key <- textstat_keyness(rbind(m, n), target = seq(ndoc(m)), ...)
     key <- key[key$p < p,]
     key$feature
 }
