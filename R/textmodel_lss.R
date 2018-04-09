@@ -23,7 +23,7 @@
 #' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
 #' toks <- tokens(corp, remove_punct = TRUE)
 #' mt <- dfm(toks, remove = stopwords())
-#' mt <- dfm_trim(mt, min_count = 10)
+#' mt <- dfm_trim(mt, min_termfreq = 10)
 #' lss <- textmodel_lss(mt, seedwords('pos-neg'))
 #' summary(lss)
 #'
@@ -134,24 +134,24 @@ get_beta <- function(x, y, feature = NULL) {
 
     temp <- textstat_simil(x, selection = seed, margin = 'features', method = 'cosine')
     if (!is.null(feature))
-        temp <- temp[unlist(quanteda:::regex2fixed(feature, rownames(temp), 'glob', FALSE)),,drop = FALSE]
+        temp <- temp[unlist(pattern2fixed(feature, rownames(temp), 'glob', FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
         stop('Columns and seed words do not match', call. = FALSE)
     sort(rowMeans(temp %*% weight), decreasing = TRUE)
 }
 
 
-#' internal function to generate equally-weighted seed set
+#' Internal function to generate equally-weighted seed set
 #'
 #' @keywords internal
 weight_seeds <- function(seed, weight, type) {
-    s <- unlist(quanteda:::regex2fixed(seed, type, 'glob', FALSE))
+    s <- unlist(pattern2fixed(seed, type, 'glob', FALSE))
     v <- rep(weight / length(s), length(s))
     names(v) <- s
     return(v)
 }
 
-#' prediction method for textmodel_lss
+#' Prediction method for textmodel_lss
 #' @param object a fitted LSS textmodel
 #' @param newdata dfm on which prediction should be made
 #' @param se.fit if \code{TRUE}, it returns standard error of document scores.
@@ -211,7 +211,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, densit
     }
 }
 
-#' identify keywords occur frequently with target words
+#' Identify keywords occur frequently with target words
 #'
 #' @param x tokens object created by \code{\link[quanteda]{tokens}}.
 #' @param pattern to specify target words.
@@ -245,7 +245,7 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
     m <- dfm(tokens_select(x, pattern, window = window))
     if (nfeat(m) == 0)
         stop(paste(unlist(pattern), collapse = ', '), ' was not found.', call. = FALSE)
-    m <- dfm_trim(m, min_count = min_count)
+    m <- dfm_trim(m, min_termfreq = min_count)
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
     n <- dfm(tokens_remove(x, pattern, window = window))
@@ -254,7 +254,7 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
     key$feature
 }
 
-#' seed words for sentiment analysis
+#' Seed words for sentiment analysis
 #'
 #' @param type type of seed words currently only for sentiment (\code{pos-neg})
 #'   or political ideology (\code{left-right}).

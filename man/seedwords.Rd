@@ -2,7 +2,7 @@
 % Please edit documentation in R/textmodel_lss.R
 \name{seedwords}
 \alias{seedwords}
-\title{seed words for sentiment analysis}
+\title{Seed words for sentiment analysis}
 \usage{
 seedwords(type)
 }
@@ -11,7 +11,7 @@ seedwords(type)
 or political ideology (\code{left-right}).}
 }
 \description{
-seed words for sentiment analysis
+Seed words for sentiment analysis
 }
 \examples{
 seedwords('pos-neg')

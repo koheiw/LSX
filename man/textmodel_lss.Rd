@@ -35,7 +35,7 @@ load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 corp <- corpus_reshape(data_corpus_guardian, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE)
 mt <- dfm(toks, remove = stopwords())
-mt <- dfm_trim(mt, min_count = 10)
+mt <- dfm_trim(mt, min_termfreq = 10)
 lss <- textmodel_lss(mt, seedwords('pos-neg'))
 summary(lss)
 

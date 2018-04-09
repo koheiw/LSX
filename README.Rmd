@@ -46,7 +46,7 @@ toks_sent <- data_corpus_guardian %>%
 mt_sent <- toks_sent %>% 
     dfm(remove = stopwords()) %>% 
     dfm_select('^[0-9a-zA-Z]+$', valuetype = 'regex') %>% 
-    dfm_trim(min_count = 5)
+    dfm_trim(min_termfreq = 5)
 
 #' sentiment model on economy
 eco <- head(char_keyness(toks_sent, 'econom*'), 500)

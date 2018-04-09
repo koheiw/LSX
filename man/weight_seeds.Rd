@@ -2,11 +2,11 @@
 % Please edit documentation in R/textmodel_lss.R
 \name{weight_seeds}
 \alias{weight_seeds}
-\title{internal function to generate equally-weighted seed set}
+\title{Internal function to generate equally-weighted seed set}
 \usage{
 weight_seeds(seed, weight, type)
 }
 \description{
-internal function to generate equally-weighted seed set
+Internal function to generate equally-weighted seed set
 }
 \keyword{internal}

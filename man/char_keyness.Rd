@@ -2,7 +2,7 @@
 % Please edit documentation in R/textmodel_lss.R
 \name{char_keyness}
 \alias{char_keyness}
-\title{identify keywords occur frequently with target words}
+\title{Identify keywords occur frequently with target words}
 \usage{
 char_keyness(x, pattern, window = 10, p = 0.001, min_count = 10,
   remove_pattern = TRUE, ...)
@@ -24,7 +24,7 @@ considered as collocations.}
 \item{...}{additional arguments passed to \code{\link{textstat_keyness}}.}
 }
 \description{
-identify keywords occur frequently with target words
+Identify keywords occur frequently with target words
 }
 \examples{
 require(quanteda)

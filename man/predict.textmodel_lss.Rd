@@ -2,7 +2,7 @@
 % Please edit documentation in R/textmodel_lss.R
 \name{predict.textmodel_lss}
 \alias{predict.textmodel_lss}
-\title{prediction method for textmodel_lss}
+\title{Prediction method for textmodel_lss}
 \usage{
 \method{predict}{textmodel_lss}(object, newdata = NULL, se.fit = FALSE,
   density = FALSE, rescaling = TRUE, ...)
@@ -23,5 +23,5 @@ unrelated subjects.}
 \item{...}{not used}
 }
 \description{
-prediction method for textmodel_lss
+Prediction method for textmodel_lss
 }
