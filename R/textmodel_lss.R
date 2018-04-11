@@ -59,12 +59,14 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose
     if (verbose)
         cat('Starting singular value decomposition of dfm...\n')
 
+    hash <- digest::digest(list(as(x, "dgCMatrix"), k), algo = 'xxhash64')
+
     if (cache && !dir.exists("lss_cache"))
         dir.create("lss_cache")
-    file_cache <- paste0('lss_cache/svds_', digest::digest(list(x, k), algo = 'xxhash64'), '.RDS')
+    file_cache <- paste0('lss_cache/svds_', hash, '.RDS')
 
     # only for backward compatibility
-    file_cache_old <- paste0('lss_cache_', digest::digest(list(x, k), algo = 'xxhash64'), '.RDS')
+    file_cache_old <- paste0('lss_cache_', hash, '.RDS')
     if (file.exists(file_cache_old))
         file.rename(file_cache_old, file_cache)
 
