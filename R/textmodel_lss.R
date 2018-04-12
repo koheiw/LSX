@@ -37,7 +37,7 @@
 textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
 
     if (is.dfm(features))
-        stop('features cannot be a dfm\n', call. = FALSE)
+        stop("features cannot be a dfm\n", call. = FALSE)
 
     if (is.dictionary(y))
         y <- unlist(y, use.names = FALSE)
@@ -51,33 +51,33 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose
 
     # generalte inflected seed
     seed <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
-                          MoreArgs = list(featnames(x)), USE.NAMES = FALSE))
+                          MoreArgs = list(featnames(x)), USE.NAMES = FALSE, SIMPLIFY = FALSE))
 
     if (verbose)
-        cat('Calculating term-term similarity...\n')
+        cat("Calculating term-term similarity to", length(seed), "seed words...\n")
 
     if (verbose)
-        cat('Starting singular value decomposition of dfm...\n')
+        cat("Starting singular value decomposition of dfm...\n")
 
-    hash <- digest::digest(list(as(x, "dgCMatrix"), k), algo = 'xxhash64')
+    hash <- digest::digest(list(as(x, "dgCMatrix"), k), algo = "xxhash64")
 
     if (cache && !dir.exists("lss_cache"))
         dir.create("lss_cache")
-    file_cache <- paste0('lss_cache/svds_', hash, '.RDS')
+    file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
 
     # only for backward compatibility
-    file_cache_old <- paste0('lss_cache_', hash, '.RDS')
+    file_cache_old <- paste0("lss_cache_", hash, ".RDS")
     if (file.exists(file_cache_old))
         file.rename(file_cache_old, file_cache)
 
     if(cache && file.exists(file_cache)){
-        cat('Reading cache file:', file_cache, '\n')
+        cat("Reading cache file:", file_cache, "\n")
         temp <- readRDS(file_cache)
     }else{
         s <- RSpectra::svds(x, k = k, nu = 0, nv = k, ...)
         temp <- t(s$v * s$d)
         if (cache) {
-            cat('Writing cache file:', file_cache, '\n')
+            cat("Writing cache file:", file_cache, "\n")
             saveRDS(temp, file_cache)
         }
     }
@@ -101,11 +101,11 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose
 #' @method summary textmodel_lss
 summary.textmodel_lss <- function(object, n = 30L, ...) {
     result <- list(
-        'call' = object$call,
-        'seeds' = object$seeds,
-        'weighted.seeds' = object$seeds_weighted,
-        'data.dimension' = dim(object$data),
-        'beta' = as.coefficients_textmodel(head(coef(object), n))
+        "call" = object$call,
+        "seeds" = object$seeds,
+        "weighted.seeds" = object$seeds_weighted,
+        "data.dimension" = dim(object$data),
+        "beta" = as.coefficients_textmodel(head(coef(object), n))
     )
     as.summary.textmodel(result)
 }
@@ -125,7 +125,7 @@ coef.textmodel_lss <- function(object, ...) {
 #' @rdname coef.textmodel_lss
 #' @export
 coefficients.textmodel_lss <- function(object, ...) {
-    UseMethod('coef')
+    UseMethod("coef")
 }
 
 #' Internal function to beta parameters
@@ -138,15 +138,15 @@ get_beta <- function(x, y, feature = NULL) {
 
     y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
     if (!length(y))
-        stop('No seed word is found in the dfm', call. = FALSE)
+        stop("No seed word is found in the dfm", call. = FALSE)
     seed <- names(y)
     weight <- unname(y)
 
-    temp <- textstat_simil(x, selection = seed, margin = 'features', method = 'cosine')
+    temp <- textstat_simil(x, selection = seed, margin = "features", method = "cosine")
     if (!is.null(feature))
-        temp <- temp[unlist(pattern2fixed(feature, rownames(temp), 'glob', FALSE)),,drop = FALSE]
+        temp <- temp[unlist(pattern2fixed(feature, rownames(temp), "glob", FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
-        stop('Columns and seed words do not match', call. = FALSE)
+        stop("Columns and seed words do not match", call. = FALSE)
     sort(rowMeans(temp %*% weight), decreasing = TRUE)
 }
 
@@ -155,7 +155,7 @@ get_beta <- function(x, y, feature = NULL) {
 #'
 #' @keywords internal
 weight_seeds <- function(seed, weight, type) {
-    s <- unlist(pattern2fixed(seed, type, 'glob', FALSE))
+    s <- unlist(pattern2fixed(seed, type, "glob", FALSE))
     v <- rep(weight / length(s), length(s))
     names(v) <- s
     return(v)
@@ -180,17 +180,17 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, densit
         data <- object$data
     } else {
         if (!is.dfm(newdata))
-            stop('newdata must be a dfm\n', call. = FALSE)
+            stop("newdata must be a dfm\n", call. = FALSE)
         data <- newdata
     }
 
-    d <- unname(rowSums(dfm_select(dfm_weight(data, 'prop'), object$features)))
+    d <- unname(rowSums(dfm_select(dfm_weight(data, "prop"), object$features)))
     if (!identical(featnames(data), featnames(model)))
         data <- dfm_select(data, model)
 
     n <- Matrix::rowSums(data)
     data <- dfm_weight(data, "prop")
-    model <- as(model, 'dgCMatrix')
+    model <- as(model, "dgCMatrix")
     fit <- Matrix::rowSums(data %*% Matrix::t(model)) # mean scores of documents
 
     if (rescaling) {
@@ -207,7 +207,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, densit
         se <- sqrt(var) / sqrt(n)
         se <- ifelse(is.na(se), 0 , se)
         if (rescaling)
-            se <- se / attr(fit_scaled, 'scaled:scale')
+            se <- se / attr(fit_scaled, "scaled:scale")
         result$se.fit <- se
         result$n <- n
     }
@@ -251,10 +251,10 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
                          remove_pattern = TRUE, ...) {
 
     if (!is.tokens(x))
-        stop('x must be a tokens object\n', call. = FALSE)
+        stop("x must be a tokens object\n", call. = FALSE)
     m <- dfm(tokens_select(x, pattern, window = window))
     if (nfeat(m) == 0)
-        stop(paste(unlist(pattern), collapse = ', '), ' was not found.', call. = FALSE)
+        stop(paste(unlist(pattern), collapse = ", "), " was not found.", call. = FALSE)
     m <- dfm_trim(m, min_termfreq = min_count)
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
@@ -276,16 +276,16 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
 #'   Inf. Syst., 21(4), 315–346. https://doi.org/10.1145/944012.944013
 seedwords <- function(type) {
 
-    if (type == 'pos-neg') {
+    if (type == "pos-neg") {
         seeds <- c(rep(1, 7), rep(-1, 7))
-        names(seeds) <- c('good', 'nice', 'excellent', 'positive', 'fortunate', 'correct', 'superior',
-                          'bad', 'nasty', 'poor', 'negative', 'unfortunate', 'wrong', 'inferior')
-    } else if (type == 'left-right') {
+        names(seeds) <- c("good", "nice", "excellent", "positive", "fortunate", "correct", "superior",
+                          "bad", "nasty", "poor", "negative", "unfortunate", "wrong", "inferior")
+    } else if (type == "left-right") {
         seeds <- c(rep(1, 7), rep(-1, 7))
-        names(seeds) <- c('deficit', 'austerity', 'unstable', 'recession', 'inflation', 'currency', 'workforce',
-                          'poor', 'poverty', 'free', 'benefits', 'prices', 'money', 'workers')
+        names(seeds) <- c("deficit", "austerity", "unstable", "recession", "inflation", "currency", "workforce",
+                          "poor", "poverty", "free", "benefits", "prices", "money", "workers")
     } else {
-        stop(type, 'is not currently available', call. = FALSE)
+        stop(type, "is not currently available", call. = FALSE)
     }
     return(seeds)
 }
