@@ -1,9 +1,9 @@
 require(quanteda)
 
-corp_sent <- corpus_reshape(data_corpus_inaugural, 'sentence')
+corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
 toks <- tokens(corp_sent, remove_punct = TRUE)
-feat <- head(char_keyness(toks, 'america*', min_count = 1, p = 0.01), 100)
-test_lss <- textmodel_lss(dfm(toks), seedwords('pos-neg'), features = feat, k = 300)
+feat <- head(char_keyness(toks, "america*", min_count = 1, p = 0.01), 100)
+test_lss <- textmodel_lss(dfm(toks), seedwords("pos-neg"), features = feat, k = 300)
 
 test_that("char_keyness is working", {
 
@@ -21,7 +21,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_true(is.numeric(test_lss$beta))
     expect_true(is.dfm(test_lss$data))
     expect_identical(test_lss$features, feat)
-    expect_identical(names(test_lss$seeds), names(seedwords('pos-neg')))
+    expect_identical(names(test_lss$seeds), names(seedwords("pos-neg")))
 
 })
 
@@ -57,7 +57,7 @@ test_that("predict.textmodel_lss is working", {
     expect_equal(as.numeric(scale(pred4)), unname(pred1))
 
     pred5 <- predict(test_lss, se.fit = TRUE, density = TRUE)
-    expect_equal(names(pred5), c('fit', 'se.fit', 'n', 'density'))
+    expect_equal(names(pred5), c("fit", "se.fit", "n", "density"))
 
 })
 
@@ -68,7 +68,7 @@ test_that("density is correct", {
 
     expect_equal(
         pred$density,
-        unname(rowSums(dfm_select(dfm_weight(test_dfm, 'prop'), feat)))
+        unname(rowSums(dfm_select(dfm_weight(test_dfm, "prop"), feat)))
     )
 })
 
@@ -86,8 +86,8 @@ test_that("data object is valid", {
 
 test_that("calculation of fit and se.fit are correct", {
 
-    lss <- LSS:::as.textmodel_lss(c('a' = 0.1, 'b' = 0.1, 'c' = 0.3))
-    mt <- dfm(c('a a a', 'a b', 'a a b c c d e'))
+    lss <- LSS:::as.textmodel_lss(c("a" = 0.1, "b" = 0.1, "c" = 0.3))
+    mt <- dfm(c("a a a", "a b", "a a b c c d e"))
     pred <- predict(lss, newdata = mt, se.fit = TRUE, rescaling = FALSE)
 
     expect_equal(pred$fit[1], c(text1 = 0.10))
@@ -109,4 +109,12 @@ test_that("calculation of fit and se.fit are correct", {
     expect_equal(pred$n[2], 2)
     expect_equal(pred$n[3], 5)
 
+})
+
+
+test_that("as.textmodel_lss works with only with single seed", {
+
+    expect_silent(textmodel_lss(dfm(toks), seedwords("pos-neg")[1], features = feat, k = 300))
+    expect_silent(textmodel_lss(dfm(toks), seedwords("pos-neg")[1], features = character(), k = 300))
+    expect_silent(textmodel_lss(dfm(toks), seedwords("pos-neg")[1], k = 300))
 })
