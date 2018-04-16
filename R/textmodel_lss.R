@@ -256,6 +256,10 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
     if (nfeat(m) == 0)
         stop(paste(unlist(pattern), collapse = ", "), " was not found.", call. = FALSE)
     m <- dfm_trim(m, min_termfreq = min_count)
+    if (nfeat(m) == 0) {
+        warning("Consider changing pattern or min_count.")
+        return(character())
+    }
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
     n <- dfm(tokens_remove(x, pattern, window = window))
