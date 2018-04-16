@@ -252,17 +252,15 @@ char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
 
     if (!is.tokens(x))
         stop("x must be a tokens object\n", call. = FALSE)
-    m <- dfm(tokens_select(x, pattern, window = window))
+    m <- dfm(tokens_select(x, pattern, window = window), remove = "")
     if (nfeat(m) == 0)
         stop(paste(unlist(pattern), collapse = ", "), " was not found.", call. = FALSE)
     m <- dfm_trim(m, min_termfreq = min_count)
-    if (nfeat(m) == 0) {
-        warning("Consider changing pattern or min_count.")
-        return(character())
-    }
     if (remove_pattern)
         m <- dfm_remove(m, pattern)
-    n <- dfm(tokens_remove(x, pattern, window = window))
+    if (nfeat(m) == 0)
+        return(character())
+    n <- dfm(tokens_remove(x, pattern, window = window), remove = "")
     key <- textstat_keyness(rbind(m, n), target = seq(ndoc(m)), ...)
     key <- key[key$p < p,]
     key$feature
