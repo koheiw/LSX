@@ -74,7 +74,7 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose
         message("Reading cache file:", file_cache)
         temp <- readRDS(file_cache)
     }else{
-        s <- RSpectra::svds(x, k = k, nu = 0, nv = k, ...)
+        s <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
         temp <- t(s$v * s$d)
         if (cache) {
             message("Writing cache file:", file_cache)
