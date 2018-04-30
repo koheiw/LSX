@@ -7,8 +7,13 @@ test_lss <- textmodel_lss(dfm(toks), seedwords("pos-neg"), features = feat, k = 
 
 test_that("char_keyness is working", {
 
-    expect_equal(length(feat), 100)
-
+    expect_identical(length(feat), 100L)
+    expect_error(char_keyness(toks, "xxxxx", min_count = 1, p = 0.01),
+                 "xxxxx is not found")
+    expect_identical(char_keyness(toks, "america*", min_count = 100, remove_pattern = TRUE),
+                     character())
+    expect_warning(char_keyness(toks, "america*", min_count = 100, remove_pattern = FALSE),
+                   character())
 })
 
 test_that("textmodel_lss has all the attributes", {
