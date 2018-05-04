@@ -18,7 +18,7 @@ devtools::install_github("koheiw/LSS")
 How to use
 ----------
 
-LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences. The [sample dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) contains 6,000 Guardian news articles, but larger corpus should be used to [estimate parameters accurately](https://koheiw.net/?p=629).
+LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences. The [sample sample](https://www.dropbox.com/s/kfhdoifes7z7t6j/data_corpus_guardian2016-10k.RDS?dl=1) contains 10,000 Guardian news articles from 2016.
 
 ### Fit a LSS model
 
@@ -28,9 +28,9 @@ require(LSS)
 ```
 
 ``` r
-load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+corp <- readRDS('/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds')
 
-toks_sent <- data_corpus_guardian %>% 
+toks_sent <- corp %>% 
     corpus_reshape('sentences') %>% 
     tokens(remove_punct = TRUE)
 mt_sent <- toks_sent %>% 
@@ -72,27 +72,27 @@ LSS identifies domain specific words and weight them by sentiment.
 head(coef(lss_eco), 20) # most positive words
 ```
 
-    ##    positive       third      energy opportunity       force     success 
-    ##  0.05575652  0.04854844  0.04787103  0.04630764  0.04445485  0.04265223 
-    ##        note     reasons       model      status    strategy        paid 
-    ##  0.04190151  0.04122328  0.03510708  0.03497756  0.03353344  0.03329871 
-    ##      future     quarter       hopes     society      fourth       thing 
-    ##  0.03317974  0.03207682  0.03005912  0.02988894  0.02867550  0.02793827 
-    ##         nhs    regional 
-    ##  0.02749824  0.02734465
+    ##    positive    emerging       china   expecting cooperation        drag 
+    ##  0.03941849  0.03906230  0.03249657  0.03172653  0.03014628  0.02910002 
+    ##        asia        prof sustainable    academic challenging     markets 
+    ##  0.02873776  0.02849241  0.02765765  0.02732935  0.02682587  0.02644153 
+    ##   investors   prospects       stock      better   uncertain   strategic 
+    ##  0.02637175  0.02570061  0.02538831  0.02479903  0.02358457  0.02346433 
+    ##         hit     chinese 
+    ##  0.02302436  0.02291012
 
 ``` r
 tail(coef(lss_eco), 20) # most negative words
 ```
 
-    ##     cutting         fed     warning       warns      blamed     raising 
-    ## -0.04292397 -0.04335132 -0.04398681 -0.04410646 -0.04431494 -0.04536274 
-    ##    interest      warned       sharp    treasury       rates      caused 
-    ## -0.04613241 -0.04662480 -0.04703221 -0.04828769 -0.05035697 -0.05085765 
-    ##        debt       raise       fears         low     turmoil        poor 
-    ## -0.05216854 -0.05221771 -0.05235718 -0.05376015 -0.05452033 -0.05900819 
-    ##    negative         bad 
-    ## -0.06527032 -0.07853763
+    ##     downturn       macron     suggests     downbeat         debt 
+    ##  -0.03257441  -0.03258820  -0.03277442  -0.03309793  -0.03386571 
+    ##         data policymakers   unbalanced       shrink unemployment 
+    ##  -0.03524238  -0.03745570  -0.03934074  -0.03944345  -0.03987688 
+    ##    suggested          bad     pantheon      cutting       shocks 
+    ##  -0.04036920  -0.04047418  -0.04054125  -0.04082423  -0.04267978 
+    ##        rates          rba         rate          cut     negative 
+    ##  -0.04405703  -0.04789902  -0.05417844  -0.05498620  -0.05697134
 
 #### Political words
 
@@ -100,33 +100,37 @@ tail(coef(lss_eco), 20) # most negative words
 head(coef(lss_pol), 20) # most positive words
 ```
 
-    ##      third       team      force    reasons    perfect    playing 
-    ## 0.04854844 0.04720371 0.04445485 0.04122328 0.03946390 0.03807861 
-    ##     writes     moment       paid     future opposition      views 
-    ## 0.03511611 0.03394436 0.03329871 0.03317974 0.03249943 0.03221336 
-    ##      ideas      price    science       bill       2016     modern 
-    ## 0.03167905 0.02991380 0.02897796 0.02874248 0.02768428 0.02752270 
-    ##      faith  elections 
-    ## 0.02478055 0.02453918
+    ##            kong            hong  constitutional          robert 
+    ##      0.04137591      0.03633278      0.03548125      0.02879851 
+    ##         elected          career        guardian               f 
+    ##      0.02865901      0.02862221      0.02838269      0.02735207 
+    ##            play      activities    interference representatives 
+    ##      0.02630253      0.02611407      0.02610918      0.02522913 
+    ##           links        military         attempt         correct 
+    ##      0.02309744      0.02309173      0.02290495      0.02283412 
+    ##        lecturer          action       activists      washington 
+    ##      0.02246062      0.02243432      0.02175429      0.02136932
 
 ``` r
 tail(coef(lss_pol), 20) # most negative words
 ```
 
-    ##         data         lack      central          men     rhetoric 
-    ##  -0.02875861  -0.03004615  -0.03084299  -0.03114291  -0.03126121 
-    ##     pressure   criticised        power    discourse         deep 
-    ##  -0.03267190  -0.03282361  -0.03423453  -0.03511987  -0.03751972 
-    ##       crisis     struggle increasingly   chancellor        anger 
-    ##  -0.03869216  -0.03988131  -0.04076471  -0.04156370  -0.04255494 
-    ##    austerity         talk        rates      turmoil      happens 
-    ##  -0.04289836  -0.04358038  -0.05035697  -0.05452033  -0.05498455
+    ##       debate  calculation         rise  uncertainty        union 
+    ##  -0.02469601  -0.02591610  -0.02603371  -0.02624996  -0.02637228 
+    ##    prisoners       brexit     american     averages      divided 
+    ##  -0.02651267  -0.02704382  -0.02865085  -0.02874191  -0.02876009 
+    ##    landscape        often consequences        dirty      ratings 
+    ##  -0.02886668  -0.02944733  -0.03048922  -0.03102530  -0.03131321 
+    ##       causes    dominated  complicated       closer    americans 
+    ##  -0.03188798  -0.03228346  -0.03351240  -0.03814986  -0.04611773
 
 Predict sentiment of news
 -------------------------
 
+In the plots, circles indicate estimated sentiment of news articles. After the UK's referendum on EU membership on 23 June, we can see sharp drop in both economic and political sentiment in the newspaper articles. Economic sentiment recovered within a month, but negative political sentiment sustained.
+
 ``` r
-mt <- dfm(data_corpus_guardian)
+mt <- dfm(corp)
 ```
 
 ### Economic sentiment
@@ -134,12 +138,11 @@ mt <- dfm(data_corpus_guardian)
 ``` r
 pred_eco <- as.data.frame(predict(lss_eco, newdata = mt, density = TRUE))
 pred_eco$date <- docvars(mt, 'date')
-pred_eco <- subset(pred_eco, density > quantile(density, 0.25))
 
 plot(pred_eco$date, pred_eco$fit, pch = 16, col = rgb(0, 0, 0, 0.1),
      ylim = c(-1, 1), ylab = 'economic sentiment')
 lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
-abline(h = 0)
+abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
 ```
 
 ![](man/images/unnamed-chunk-9-1.png)
@@ -149,12 +152,11 @@ abline(h = 0)
 ``` r
 pred_pol <- as.data.frame(predict(lss_pol, newdata = mt, density = TRUE))
 pred_pol$date <- docvars(mt, 'date')
-pred_pol <- subset(pred_pol, density > quantile(density, 0.25))
 
 plot(pred_pol$date, pred_pol$fit, pch = 16, col = rgb(1, 0, 0, 0.1),
      ylim = c(-1, 1), ylab = 'political sentiment')
 lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
-abline(h = 0)
+abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
 ```
 
 ![](man/images/unnamed-chunk-10-1.png)
@@ -169,7 +171,7 @@ lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
-abline(h = 0)
+abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
 ```
 
 ![](man/images/unnamed-chunk-11-1.png)
