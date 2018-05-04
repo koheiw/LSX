@@ -4,7 +4,7 @@
 \alias{get_beta}
 \title{Internal function to beta parameters}
 \usage{
-get_beta(x, y, feature = NULL)
+get_beta(x, y, feature = NULL, method = "cosine")
 }
 \arguments{
 \item{x}{svd-reduced dfm}

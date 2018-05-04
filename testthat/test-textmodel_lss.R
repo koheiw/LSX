@@ -123,3 +123,15 @@ test_that("as.textmodel_lss works with only with single seed", {
     expect_silent(textmodel_lss(dfm(toks), seedwords("pos-neg")[1], features = character(), k = 300))
     expect_silent(textmodel_lss(dfm(toks), seedwords("pos-neg")[1], k = 300))
 })
+
+
+test_that("simil_method words", {
+
+    lss_cos <- textmodel_lss(dfm(toks), seedwords("pos-neg")[1], features = feat)
+    lss_cor <- textmodel_lss(dfm(toks), seedwords("pos-neg")[1], features = feat,
+                             simil_method = "correlation")
+
+    expect_false(identical(lss_cos, lss_cor))
+    expect_error(textmodel_lss(dfm(toks), seedwords("pos-neg")[1], features = feat,
+                               simil_method = "something"))
+})
