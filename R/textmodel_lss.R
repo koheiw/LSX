@@ -6,6 +6,9 @@
 #' @param features featues of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
 #' @param k the size of semantic space passed to \code{\link[RSpectra]{svds}}
+#' @param simil_method specifies method to compute similiaty between features.
+#'   The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
+#'   used otherwise.
 #' @param cache if \code{TRUE}, save retult of SVD for next execution with
 #'   identical \code{x} and \code{k}.
 #' @param verbose show messages if \code{TRUE}.
@@ -34,7 +37,8 @@
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
-textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose = FALSE, ...) {
+textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
+                          simil_method = "cosine", verbose = FALSE, ...) {
 
     if (is.dfm(features))
         stop("features cannot be a dfm\n", call. = FALSE)
@@ -83,7 +87,7 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE, verbose
     }
     colnames(temp) <- featnames(x)
     temp <- as.dfm(temp)
-    result <- list(beta = get_beta(temp, seed, features),
+    result <- list(beta = get_beta(temp, seed, features, simil_method),
                    data = x,
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = y,
@@ -134,7 +138,7 @@ coefficients.textmodel_lss <- function(object, ...) {
 #' @param y named-numberic vector for seed words
 #' @param feature feature for which beta will be calcualted
 #' @keywords internal
-get_beta <- function(x, y, feature = NULL) {
+get_beta <- function(x, y, feature = NULL, method = "cosine") {
 
     y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
     if (!length(y))
@@ -142,7 +146,7 @@ get_beta <- function(x, y, feature = NULL) {
     seed <- names(y)
     weight <- unname(y)
 
-    temp <- textstat_simil(x, selection = seed, margin = "features", method = "cosine")
+    temp <- textstat_simil(x, selection = seed, margin = "features", method = method)
     if (!is.null(feature))
         temp <- temp[unlist(pattern2fixed(feature, rownames(temp), "glob", FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
@@ -172,7 +176,8 @@ weight_seeds <- function(seed, weight, type) {
 #' @param ... not used
 #' @import methods
 #' @export
-predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, density = FALSE, rescaling = TRUE, ...){
+predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
+                                  density = FALSE, rescaling = TRUE, ...){
 
     model <- as.dfm(rbind(object$beta))
 

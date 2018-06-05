@@ -28,7 +28,7 @@ devtools::install_github("koheiw/LSS")
 
 ## How to use
 
-LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences. The [sample  dataset](https://www.dropbox.com/s/555sr2ml6wc701p/guardian-sample.RData?dl=0) contains 6,000 Guardian news articles, but larger corpus should be used to [estimate parameters accurately](https://koheiw.net/?p=629).
+LSS is created to perform sentiment analysis of long texts, but training of its models should be done on smaller units, typically sentences. The [sample  sample](https://www.dropbox.com/s/kfhdoifes7z7t6j/data_corpus_guardian2016-10k.RDS?dl=1) contains 10,000 Guardian news articles from 2016.
 
 ### Fit a LSS model
 
@@ -38,9 +38,9 @@ require(LSS)
 ```
 
 ```{r, cache=TRUE}
-load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+corp <- readRDS('/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds')
 
-toks_sent <- data_corpus_guardian %>% 
+toks_sent <- corp %>% 
     corpus_reshape('sentences') %>% 
     tokens(remove_punct = TRUE)
 mt_sent <- toks_sent %>% 
@@ -87,8 +87,10 @@ tail(coef(lss_pol), 20) # most negative words
 
 ## Predict sentiment of news
 
+In the plots, circles indicate estimated sentiment of news articles. After the UK's referendum on EU membership on 23 June, we can see sharp drop in both economic and political sentiment in the newspaper articles. Economic sentiment recovered within a month, but negative political sentiment sustained.
+
 ```{r}
-mt <- dfm(data_corpus_guardian)
+mt <- dfm(corp)
 ```
 
 ### Economic sentiment
@@ -96,12 +98,11 @@ mt <- dfm(data_corpus_guardian)
 ```{r}
 pred_eco <- as.data.frame(predict(lss_eco, newdata = mt, density = TRUE))
 pred_eco$date <- docvars(mt, 'date')
-pred_eco <- subset(pred_eco, density > quantile(density, 0.25))
 
 plot(pred_eco$date, pred_eco$fit, pch = 16, col = rgb(0, 0, 0, 0.1),
      ylim = c(-1, 1), ylab = 'economic sentiment')
 lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
-abline(h = 0)
+abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
 ```
 
 
@@ -110,12 +111,11 @@ abline(h = 0)
 ```{r}
 pred_pol <- as.data.frame(predict(lss_pol, newdata = mt, density = TRUE))
 pred_pol$date <- docvars(mt, 'date')
-pred_pol <- subset(pred_pol, density > quantile(density, 0.25))
 
 plot(pred_pol$date, pred_pol$fit, pch = 16, col = rgb(1, 0, 0, 0.1),
      ylim = c(-1, 1), ylab = 'political sentiment')
 lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
-abline(h = 0)
+abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
 ```
 
 ### Comparison
@@ -128,7 +128,7 @@ lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
 lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
 abline(h = 0)
 legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
-abline(h = 0)
+abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
 ```
 
 

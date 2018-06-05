@@ -5,7 +5,7 @@
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
 textmodel_lss(x, y, features = NULL, k = 300, cache = FALSE,
-  verbose = FALSE, ...)
+  simil_method = "cosine", verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
@@ -20,6 +20,10 @@ argument is used to make models only sensitive to subject specific words.}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
+
+\item{simil_method}{specifies method to compute similiaty between features.
+The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
+used otherwise.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
