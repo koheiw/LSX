@@ -271,14 +271,15 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     x <- tokens_select(x, pattern, valuetype = valuetype,
                       case_insensitive = case_insensitive,
                       window = window)
-    if (remove_pattern) {
+    if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
-    }
+
     tar <- dfm(x, remove = "")
     if (nfeat(tar) == 0)
         stop(paste(unlist(pattern), collapse = ", "), " was not found.", call. = FALSE)
     tar <- dfm_trim(tar, min_termfreq = min_count)
+    ref <- dfm_select(ref, tar)
     if (nfeat(tar) == 0)
         return(character())
     key <- textstat_keyness(rbind(tar, ref), target = seq(ndoc(tar)), ...)
