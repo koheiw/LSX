@@ -8,12 +8,29 @@ test_lss <- textmodel_lss(dfm(toks), seedwords("pos-neg"), features = feat, k = 
 test_that("char_keyness is working", {
 
     expect_identical(length(feat), 100L)
+    expect_identical(head(char_keyness(toks, "america.*", "regex", min_count = 1, p = 0.01), 100),
+                     feat)
+    expect_identical(head(char_keyness(toks, "America*", case_insensitive = FALSE, min_count = 1, p = 0.01), 100),
+                     feat)
     expect_error(char_keyness(toks, "xxxxx", min_count = 1, p = 0.01),
                  "xxxxx is not found")
     expect_identical(char_keyness(toks, "america*", min_count = 100, remove_pattern = TRUE),
                      character())
     expect_warning(char_keyness(toks, "america*", min_count = 100, remove_pattern = FALSE),
                    character())
+})
+
+test_that("char_keyness removes multi-word target", {
+
+    feat_rp <- char_keyness(toks, phrase("united states"), "regex",
+                            min_count = 1, p = 0.01)
+    expect_identical(c("united", "states") %in% feat_rp,
+                     c(FALSE, FALSE))
+
+    feat_kp <- char_keyness(toks, phrase("united states"), "regex",
+                            min_count = 1, p = 0.01, remove_pattern = FALSE)
+    expect_identical(c("united", "states") %in% feat_kp,
+                     c(TRUE, TRUE))
 })
 
 test_that("textmodel_lss has all the attributes", {

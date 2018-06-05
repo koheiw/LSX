@@ -224,7 +224,11 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, densit
 #' Identify keywords occur frequently with target words
 #'
 #' @param x tokens object created by \code{\link[quanteda]{tokens}}.
-#' @param pattern to specify target words.
+#' @param pattern to specify target words. See \code{\link[quanteda]{pattern}} for details.
+#' @param valuetype the type of pattern matching: \code{"glob"} for
+#'   "glob"-style wildcard expressions; \code{"regex"} for regular expressions;
+#'   or \code{"fixed"} for exact matching. See \code{\link[quanteda]{valuetype}} for details.
+#' @param case_insensitive ignore case when matching, if \code{TRUE}
 #' @param window size of window for collocation analysis.
 #' @param p threashold for statistical significance of collocaitons.
 #' @param min_count minimum frequency for words within the window to be
@@ -232,7 +236,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, densit
 #' @param remove_pattern if \code{TRUE}, keywords do not containe target words.
 #' @param ... additional arguments passed to \code{\link{textstat_keyness}}.
 #' @export
-#' @seealso \code{\link{textstat_keyness}}
+#' @seealso \code{\link{tokens_select}} and \code{\link{textstat_keyness}}
 #' @examples
 #' require(quanteda)
 #' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
@@ -247,21 +251,32 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE, densit
 #' # politics keywords
 #' pol <- char_keyness(toks, 'politi*')
 #' head(pol, 20)
-char_keyness <- function(x, pattern, window = 10, p = 0.001, min_count = 10,
+char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
+                         case_insensitive = TRUE, window = 10, p = 0.001, min_count = 10,
                          remove_pattern = TRUE, ...) {
-
     if (!is.tokens(x))
         stop("x must be a tokens object\n", call. = FALSE)
-    m <- dfm(tokens_select(x, pattern, window = window), remove = "")
-    if (nfeat(m) == 0)
+
+    # reference
+    ref <- dfm(tokens_remove(x, pattern, valuetype = valuetype,
+                           case_insensitive = case_insensitive,
+                           window = window), remove = "")
+
+    # target
+    x <- tokens_select(x, pattern, valuetype = valuetype,
+                      case_insensitive = case_insensitive,
+                      window = window)
+    if (remove_pattern) {
+        x <- tokens_remove(x, pattern, valuetype = valuetype,
+                           case_insensitive = case_insensitive)
+    }
+    tar <- dfm(x, remove = "")
+    if (nfeat(tar) == 0)
         stop(paste(unlist(pattern), collapse = ", "), " was not found.", call. = FALSE)
-    m <- dfm_trim(m, min_termfreq = min_count)
-    if (remove_pattern)
-        m <- dfm_remove(m, pattern)
-    if (nfeat(m) == 0)
+    tar <- dfm_trim(tar, min_termfreq = min_count)
+    if (nfeat(tar) == 0)
         return(character())
-    n <- dfm(tokens_remove(x, pattern, window = window), remove = "")
-    key <- textstat_keyness(rbind(m, n), target = seq(ndoc(m)), ...)
+    key <- textstat_keyness(rbind(tar, ref), target = seq(ndoc(tar)), ...)
     key <- key[key$p < p,]
     key$feature
 }
