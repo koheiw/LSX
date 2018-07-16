@@ -2,7 +2,11 @@
 Latent Semantic Scaling
 =======================
 
-LSS is a highly efficient vector-space model for subject-specific sentiment analysis used by Kohei Watanabe in several published studies:
+In machine learning, the cost for users to train a model and the control they have over its outputs usually correlate: supervised models are high in control but high in cost; unsupervised models are low in cost but low in control. However, social social scientists have to perform analysis based on existing theories and concepts with very limited computational, financial and human resources.
+
+LSS is a semi-supervised document scaling model developed by Kohei Watanabe to perform large scale analysis of textual data by keeping the balance between the cost and control for [his PhD thesis](http://etheses.lse.ac.uk/3658/). Taking pre-defined *seed words* as weak supervision, it estimates word parameters in a latent semantic space.
+
+This model has been used for large scale analysis of media content in recent research projects:
 
 -   Kohei Watanabe, 2017. "[Measuring News Bias: Russia’s Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)", *European Journal Communication*
 -   Kohei Watanabe, 2017. "[The spread of the Kremlin’s narratives by a western news agency during the Ukraine crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*
@@ -76,8 +80,8 @@ head(coef(lss_eco), 20) # most positive words
     ##  0.03941849  0.03906230  0.03249657  0.03172653  0.03014628  0.02910002 
     ##        asia        prof sustainable    academic challenging     markets 
     ##  0.02873776  0.02849241  0.02765765  0.02732935  0.02682587  0.02644153 
-    ##   investors   prospects       stock      better   uncertain   strategic 
-    ##  0.02637175  0.02570061  0.02538831  0.02479903  0.02358457  0.02346433 
+    ##   investors     beijing   prospects       stock   uncertain   strategic 
+    ##  0.02637175  0.02572956  0.02570061  0.02538831  0.02358457  0.02346433 
     ##         hit     chinese 
     ##  0.02302436  0.02291012
 
@@ -85,14 +89,14 @@ head(coef(lss_eco), 20) # most positive words
 tail(coef(lss_eco), 20) # most negative words
 ```
 
-    ##     downturn       macron     suggests     downbeat         debt 
-    ##  -0.03257441  -0.03258820  -0.03277442  -0.03309793  -0.03386571 
-    ##         data policymakers   unbalanced       shrink unemployment 
-    ##  -0.03524238  -0.03745570  -0.03934074  -0.03944345  -0.03987688 
+    ##       macron     suggests     downbeat         debt         data 
+    ##  -0.03258820  -0.03277442  -0.03309793  -0.03386571  -0.03524238 
+    ## implications policymakers   unbalanced       shrink unemployment 
+    ##  -0.03692698  -0.03745570  -0.03934074  -0.03944345  -0.03987688 
     ##    suggested          bad     pantheon      cutting       shocks 
     ##  -0.04036920  -0.04047418  -0.04054125  -0.04082423  -0.04267978 
-    ##        rates          rba         rate          cut     negative 
-    ##  -0.04405703  -0.04789902  -0.05417844  -0.05498620  -0.05697134
+    ##         hike        rates          rba         rate     negative 
+    ##  -0.04370420  -0.04405703  -0.04789902  -0.05417844  -0.05697134
 
 #### Political words
 
@@ -100,29 +104,29 @@ tail(coef(lss_eco), 20) # most negative words
 head(coef(lss_pol), 20) # most positive words
 ```
 
-    ##            kong            hong  constitutional          robert 
-    ##      0.04137591      0.03633278      0.03548125      0.02879851 
-    ##         elected          career        guardian               f 
-    ##      0.02865901      0.02862221      0.02838269      0.02735207 
-    ##            play      activities    interference representatives 
-    ##      0.02630253      0.02611407      0.02610918      0.02522913 
-    ##           links        military         attempt         correct 
-    ##      0.02309744      0.02309173      0.02290495      0.02283412 
-    ##        lecturer          action       activists      washington 
-    ##      0.02246062      0.02243432      0.02175429      0.02136932
+    ##           court            hong  constitutional            near 
+    ##      0.04106994      0.03633278      0.03548125      0.02894814 
+    ##          robert         elected          career               f 
+    ##      0.02879851      0.02865901      0.02862221      0.02735207 
+    ##      activities    interference representatives              10 
+    ##      0.02611407      0.02610918      0.02522913      0.02498850 
+    ##       companies          killed           links         attempt 
+    ##      0.02406716      0.02338786      0.02309744      0.02290495 
+    ##         correct        lecturer          action       activists 
+    ##      0.02283412      0.02246062      0.02243432      0.02175429
 
 ``` r
 tail(coef(lss_pol), 20) # most negative words
 ```
 
-    ##       debate  calculation         rise  uncertainty        union 
-    ##  -0.02469601  -0.02591610  -0.02603371  -0.02624996  -0.02637228 
-    ##    prisoners       brexit     american     averages      divided 
-    ##  -0.02651267  -0.02704382  -0.02865085  -0.02874191  -0.02876009 
-    ##    landscape        often consequences        dirty      ratings 
-    ##  -0.02886668  -0.02944733  -0.03048922  -0.03102530  -0.03131321 
-    ##       causes    dominated  complicated       closer    americans 
-    ##  -0.03188798  -0.03228346  -0.03351240  -0.03814986  -0.04611773
+    ##    departure       debate  calculation  uncertainty        union 
+    ##  -0.02360299  -0.02469601  -0.02591610  -0.02624996  -0.02637228 
+    ##    prisoners          men       brexit     american     averages 
+    ##  -0.02651267  -0.02676563  -0.02704382  -0.02865085  -0.02874191 
+    ##      divided    landscape        often consequences        dirty 
+    ##  -0.02876009  -0.02886668  -0.02944733  -0.03048922  -0.03102530 
+    ##    countries    dominated  complicated         data          cut 
+    ##  -0.03194409  -0.03228346  -0.03351240  -0.03524238  -0.05498620
 
 Predict sentiment of news
 -------------------------
