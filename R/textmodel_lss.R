@@ -11,6 +11,8 @@
 #'   used otherwise.
 #' @param cache if \code{TRUE}, save retult of SVD for next execution with
 #'   identical \code{x} and \code{k}.
+#' @param include_data if \code{TRUE}, fitted model include the dfm supplied as
+#'   \code{x}.
 #' @param verbose show messages if \code{TRUE}.
 #' @param ... additional argument passed to \code{\link[RSpectra]{svds}}
 #' @import quanteda
@@ -38,7 +40,7 @@
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
-                          simil_method = "cosine", verbose = FALSE, ...) {
+                          simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...) {
 
     if (is.dfm(features))
         stop("features cannot be a dfm\n", call. = FALSE)
@@ -88,11 +90,12 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
     colnames(temp) <- featnames(x)
     temp <- as.dfm(temp)
     result <- list(beta = get_beta(temp, seed, features, simil_method),
-                   data = x,
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = y,
                    seeds_weighted = seed,
                    call = match.call())
+    if (include_data)
+        result$data <- x
     class(result) <- "textmodel_lss"
 
     return(result)
@@ -108,9 +111,10 @@ summary.textmodel_lss <- function(object, n = 30L, ...) {
         "call" = object$call,
         "seeds" = object$seeds,
         "weighted.seeds" = object$seeds_weighted,
-        "data.dimension" = dim(object$data),
         "beta" = as.coefficients_textmodel(head(coef(object), n))
     )
+    if (!any("data" == names(object)))
+        result$data.dimension <- dim(object$data)
     as.summary.textmodel(result)
 }
 
@@ -182,6 +186,8 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     model <- as.dfm(rbind(object$beta))
 
     if (is.null(newdata)) {
+        if (!any("data" == names(object)))
+            stop("LSS model includes no data, please supply a dfm using newdata.\n")
         data <- object$data
     } else {
         if (!is.dfm(newdata))
@@ -193,7 +199,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     if (!identical(featnames(data), featnames(model)))
         data <- dfm_select(data, model)
 
-    n <- Matrix::rowSums(data)
+    n <- unname(Matrix::rowSums(data))
     data <- dfm_weight(data, "prop")
     model <- as(model, "dgCMatrix")
     fit <- Matrix::rowSums(data %*% Matrix::t(model)) # mean scores of documents
@@ -208,7 +214,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     if (se.fit) {
         m <- matrix(rep(fit, ncol(data)), nrow = ncol(data), byrow = TRUE)
         error <- t(m - model[,colnames(data)]) ^ 2
-        var <- Matrix::rowSums(data * error)
+        var <- unname(Matrix::rowSums(data * error))
         se <- sqrt(var) / sqrt(n)
         se <- ifelse(is.na(se), 0 , se)
         if (rescaling)
@@ -277,11 +283,11 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
 
     tar <- dfm(x, remove = "")
     if (nfeat(tar) == 0)
-        stop(paste(unlist(pattern), collapse = ", "), " was not found.", call. = FALSE)
+        stop(paste(unlist(pattern), collapse = ", "), " is not found\n", call. = FALSE)
     tar <- dfm_trim(tar, min_termfreq = min_count)
-    ref <- dfm_select(ref, tar)
     if (nfeat(tar) == 0)
         return(character())
+    ref <- dfm_select(ref, tar)
     key <- textstat_keyness(rbind(tar, ref), target = seq(ndoc(tar)), ...)
     key <- key[key$p < p,]
     key$feature

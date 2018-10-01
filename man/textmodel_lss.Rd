@@ -5,7 +5,7 @@
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
 textmodel_lss(x, y, features = NULL, k = 300, cache = FALSE,
-  simil_method = "cosine", verbose = FALSE, ...)
+  simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
@@ -24,6 +24,9 @@ identical \code{x} and \code{k}.}
 \item{simil_method}{specifies method to compute similiaty between features.
 The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
 used otherwise.}
+
+\item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as
+\code{x}.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
