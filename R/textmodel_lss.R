@@ -203,6 +203,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     data <- dfm_weight(data, "prop")
     model <- as(model, "dgCMatrix")
     fit <- Matrix::rowSums(data %*% Matrix::t(model)) # mean scores of documents
+    fit[n == 0] <- NA
 
     if (rescaling) {
         fit_scaled <- scale(fit)
@@ -215,8 +216,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
         m <- matrix(rep(fit, ncol(data)), nrow = ncol(data), byrow = TRUE)
         error <- t(m - model[,colnames(data)]) ^ 2
         var <- unname(Matrix::rowSums(data * error))
-        se <- sqrt(var) / sqrt(n)
-        se <- ifelse(is.na(se), 0 , se)
+        se <- ifelse(n == 0, NA, sqrt(var) / sqrt(n))
         if (rescaling)
             se <- se / attr(fit_scaled, "scaled:scale")
         result$se.fit <- se

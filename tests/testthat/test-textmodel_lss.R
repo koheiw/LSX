@@ -74,7 +74,8 @@ test_that("predict.textmodel_lss is working", {
     expect_equal(length(pred1), ndoc(test_mt))
     expect_identical(names(pred1), docnames(test_mt))
     expect_true(is.numeric(pred1))
-    expect_equal(sd(pred1), 1)
+    expect_equal(mean(pred1, na.rm = TRUE), 0)
+    expect_equal(sd(pred1, na.rm = TRUE), 1)
 
     pred2 <- predict(test_lss, se.fit = TRUE)
     expect_equal(length(pred2$fit), ndoc(test_mt))
@@ -164,7 +165,7 @@ test_that("simil_method works", {
 
     expect_false(identical(lss_cos, lss_cor))
     expect_error(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat,
-                               simil_method = "something"), "something is not implemented")
+                               simil_method = "something"), "'arg' should be one of")
 })
 
 
@@ -174,4 +175,21 @@ test_that("include_data is working", {
     lss_nd <- textmodel_lss(mt, seedwords("pos-neg"), include_data = FALSE)
     expect_error(predict(lss_nd), "LSS model includes no data")
     expect_identical(predict(lss), predict(lss_nd, newdata = mt))
+})
+
+test_that("predict.textmodel_lss retuns NA for empty documents", {
+
+    mt <- dfm(data_corpus_inaugural)
+    mt[c(3, 10),] <- 0
+    pred <- predict(test_lss, newdata = as.dfm(mt))
+    expect_equal(length(pred), ndoc(data_corpus_inaugural))
+    expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
+                     c("1789-Washington" = 0.42207451, "1797-Adams" = NA, "1825-Adams" = NA),
+                 tolerance = 0.01)
+
+    pred2 <- predict(test_lss, newdata = as.dfm(mt), se.fit = TRUE)
+    expect_equal(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")],
+                 c("1789-Washington" = 0.42207451, "1797-Adams" = NA, "1825-Adams" = NA))
+    expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.6426934, NA, NA), tolerance = 0.01)
+    expect_equal(pred2$n[c(1, 3, 10)], c(33, 0, 0))
 })
