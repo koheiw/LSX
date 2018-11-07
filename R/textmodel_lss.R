@@ -39,6 +39,7 @@
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
+
 textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...) {
 
@@ -89,16 +90,36 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
     }
     colnames(temp) <- featnames(x)
     temp <- as.dfm(temp)
-    result <- list(beta = get_beta(temp, seed, features, simil_method),
+    params <- get_params(temp, seed, features, simil_method)
+    result <- list(beta = sort(params$beta, decreasing = TRUE),
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = y,
                    seeds_weighted = seed,
+                   seeds_distance = params$mean,
+                   correlation = params$cor,
                    call = match.call())
     if (include_data)
         result$data <- x
     class(result) <- "textmodel_lss"
 
     return(result)
+}
+
+#' @export
+textplot_heatmap <- function(x, ...) {
+    UseMethod("textplot_heatmap")
+}
+
+#' Plot correlation matrix as heatmap
+#' @param x fitted textmodel_lss object
+#' @param color color of heatmap
+#' @method textplot_heatmap textmodel_lss
+#' @export
+textplot_heatmap.textmodel_lss <- function(x, color = grDevices::cm.colors(10)) {
+    diag(x$correlation) <- NA
+    heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
+            breaks = seq(-1, 1, length.out = length(color) + 1))
+
 }
 
 #' @export
@@ -136,13 +157,13 @@ coefficients.textmodel_lss <- function(object, ...) {
     UseMethod("coef")
 }
 
-#' Internal function to beta parameters
+#' Internal function to compute parameters
 #'
 #' @param x svd-reduced dfm
 #' @param y named-numberic vector for seed words
 #' @param feature feature for which beta will be calcualted
 #' @keywords internal
-get_beta <- function(x, y, feature = NULL, method = "cosine") {
+get_params <- function(x, y, feature = NULL, method = "cosine") {
 
     y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
     if (!length(y))
@@ -155,7 +176,16 @@ get_beta <- function(x, y, feature = NULL, method = "cosine") {
         temp <- temp[unlist(pattern2fixed(feature, rownames(temp), "glob", FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
         stop("Columns and seed words do not match", call. = FALSE)
-    sort(rowMeans(temp %*% weight), decreasing = TRUE)
+    if (ncol(temp) == 1) {
+        r <- matrix(1, dimnames = list(colnames(temp), colnames(temp)))
+    } else {
+        r <- cor(temp[,order(weight, decreasing = TRUE)])
+    }
+    return(list(beta = rowMeans(temp %*% weight),
+                weight = weight,
+                seed = seed,
+                cor = r,
+                mean = colMeans(abs(temp))))
 }
 
 
