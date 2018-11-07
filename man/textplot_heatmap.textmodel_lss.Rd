@@ -4,11 +4,13 @@
 \alias{textplot_heatmap.textmodel_lss}
 \title{Plot correlation matrix as heatmap}
 \usage{
-\method{textplot_heatmap}{textmodel_lss}(x,
+\method{textplot_heatmap}{textmodel_lss}(x, dendrogram = TRUE,
   color = grDevices::cm.colors(10))
 }
 \arguments{
 \item{x}{fitted textmodel_lss object}
+
+\item{dendrogram}{show dendrogram if \code{TRUE}}
 
 \item{color}{color of heatmap}
 }

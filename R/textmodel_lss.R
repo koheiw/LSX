@@ -112,14 +112,21 @@ textplot_heatmap <- function(x, ...) {
 
 #' Plot correlation matrix as heatmap
 #' @param x fitted textmodel_lss object
+#' @param dendrogram show dendrogram if \code{TRUE}
 #' @param color color of heatmap
 #' @method textplot_heatmap textmodel_lss
 #' @export
-textplot_heatmap.textmodel_lss <- function(x, color = grDevices::cm.colors(10)) {
+textplot_heatmap.textmodel_lss <- function(x, dendrogram = TRUE,
+                                           color = grDevices::cm.colors(10)) {
     diag(x$correlation) <- NA
-    heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
-            breaks = seq(-1, 1, length.out = length(color) + 1))
+    if (dendrogram) {
+        heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
+                breaks = seq(-1, 1, length.out = length(color) + 1))
+    } else {
+        heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
+                breaks = seq(-1, 1, length.out = length(color) + 1), Colv = NA, Rowv = NA)
 
+    }
 }
 
 #' @export
