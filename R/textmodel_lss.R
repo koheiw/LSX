@@ -178,18 +178,18 @@ get_params <- function(x, y, feature = NULL, method = "cosine") {
         stop("No seed word is found in the dfm", call. = FALSE)
     seed <- names(y)
     weight <- unname(y)
+    i <- order(weight, decreasing = TRUE)
 
     temp <- textstat_simil(x, selection = seed, margin = "features", method = method)
     if (!is.null(feature))
         temp <- temp[unlist(pattern2fixed(feature, rownames(temp), "glob", FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
         stop("Columns and seed words do not match", call. = FALSE)
-    i <- order(weight, decreasing = TRUE)
-    r <- cor(temp)[i,i,drop = FALSE]
+
     return(list(beta = rowMeans(temp %*% weight),
                 weight = weight,
                 seed = seed,
-                cor = r,
+                cor = cor(temp)[i, i, drop = FALSE],
                 mean = colMeans(abs(temp))))
 }
 
