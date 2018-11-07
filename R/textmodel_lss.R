@@ -124,7 +124,8 @@ textplot_heatmap.textmodel_lss <- function(x, dendrogram = TRUE,
                 breaks = seq(-1, 1, length.out = length(color) + 1))
     } else {
         heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
-                breaks = seq(-1, 1, length.out = length(color) + 1), Colv = NA, Rowv = NA)
+                breaks = seq(-1, 1, length.out = length(color) + 1), Colv = NA, Rowv = NA,
+                revC = TRUE)
 
     }
 }
@@ -183,11 +184,8 @@ get_params <- function(x, y, feature = NULL, method = "cosine") {
         temp <- temp[unlist(pattern2fixed(feature, rownames(temp), "glob", FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
         stop("Columns and seed words do not match", call. = FALSE)
-    if (ncol(temp) == 1) {
-        r <- matrix(1, dimnames = list(colnames(temp), colnames(temp)))
-    } else {
-        r <- cor(temp[,order(weight, decreasing = TRUE)])
-    }
+    i <- order(weight, decreasing = TRUE)
+    r <- cor(temp)[i,i,drop = FALSE]
     return(list(beta = rowMeans(temp %*% weight),
                 weight = weight,
                 seed = seed,
