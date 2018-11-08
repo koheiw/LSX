@@ -118,6 +118,8 @@ textplot_heatmap <- function(x, ...) {
 #' @export
 textplot_heatmap.textmodel_lss <- function(x, dendrogram = TRUE,
                                            color = grDevices::cm.colors(10)) {
+    if (!"correlation" %in% names(x))
+        stop("correlation matrix is missing")
     diag(x$correlation) <- NA
     if (dendrogram) {
         heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
