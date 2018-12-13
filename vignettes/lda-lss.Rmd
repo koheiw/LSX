@@ -1,19 +1,17 @@
 ---
-title: "Combining LSS and LDA"
-author: "KoheiWatanabe"
-date: "13/12/2018"
-output: rmarkdown::html_vignette
+output: rmarkdown::github_document
 ---
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "##",
-  fig.path = "images/",
   fig.height = 5,
   fig.width = 10
 )
 ```
+
+# "Combining LSS and LDA"
 
 ```{r, message=FALSE}
 require(quanteda)
@@ -22,13 +20,12 @@ require(topicmodels)
 ```
 
 ```{r}
-corp <- readRDS('/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds')
+corp <- head(readRDS('/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds'), 100)
 ```
-
 
 ### Fit a LDA model
 
-```{r, cache=TRUE}
+```{r}
 toks <- corp %>% 
     tokens(remove_punct = TRUE)
 mt <- toks %>% 
@@ -36,17 +33,18 @@ mt <- toks %>%
     dfm_select('^[a-zA-Z]+$', valuetype = 'regex') %>% 
     dfm_trim(min_termfreq = 0.95, termfreq_type = "quantile", 
              max_docfreq = 0.1, docfreq_type = "prop")
+```
 
+```{r, cache=TRUE}
 lda <- LDA(convert(mt[ntoken(mt) > 0,], to = "topicmodels"), 10, 
            control = list(seed = 1234))
 print(terms(lda, 10))
 ```
 
 
-
 ### Fit a LSS model
 
-```{r, cache=TRUE}
+```{r}
 toks_sent <- corp %>% 
     corpus_reshape('sentences') %>% 
     tokens(remove_punct = TRUE)
@@ -54,7 +52,9 @@ mt_sent <- toks_sent %>%
     dfm(remove = stopwords()) %>% 
     dfm_select('^[a-zA-Z]+$', valuetype = 'regex') %>% 
     dfm_trim(min_termfreq = 5)
+```
 
+```{r, cache=TRUE}
 eco <- terms(lda, 500)[,10]
 pol <- terms(lda, 500)[,7]
 
@@ -63,16 +63,6 @@ lss_eco <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = eco)
 
 # sentiment model on politics
 lss_pol <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = pol)
-
-```
-
-
-### Sentiment seed words
-
-Seed words are 14 generic sentiment words.
-
-```{r}
-seedwords('pos-neg')
 ```
 
 ### Sentiment words
@@ -84,7 +74,6 @@ LSS identifies domain specific words and weight them by sentiment.
 ```{r}
 head(coef(lss_eco), 20) # most positive words
 tail(coef(lss_eco), 20) # most negative words
-
 ```
 
 #### Political words
