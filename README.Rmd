@@ -1,13 +1,16 @@
 ---
-output: github_document
+output: 
+  rmarkdown::github_document:
+    html_preview: false
 ---
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "##",
-  fig.path = "man/images/",
-  dpi = 300,
+  fig.path = "images/",
+  dpi = 150,
+  fig.height = 5,
   fig.width = 10
 )
 ```
@@ -103,6 +106,7 @@ mt <- dfm(corp)
 ```{r}
 pred_eco <- as.data.frame(predict(lss_eco, newdata = mt, density = TRUE))
 pred_eco$date <- docvars(mt, 'date')
+pred_eco <- na.omit(pred_eco)
 
 plot(pred_eco$date, pred_eco$fit, pch = 16, col = rgb(0, 0, 0, 0.1),
      ylim = c(-1, 1), ylab = 'economic sentiment')
@@ -116,6 +120,7 @@ abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
 ```{r}
 pred_pol <- as.data.frame(predict(lss_pol, newdata = mt, density = TRUE))
 pred_pol$date <- docvars(mt, 'date')
+pred_pol <- na.omit(pred_pol)
 
 plot(pred_pol$date, pred_pol$fit, pch = 16, col = rgb(1, 0, 0, 0.1),
      ylim = c(-1, 1), ylab = 'political sentiment')
