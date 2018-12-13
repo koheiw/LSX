@@ -1,5 +1,7 @@
 ---
-output: github_document
+output: 
+  rmarkdown::github_document:
+    html_preview: false
 ---
 
 ```{r, echo=FALSE}
@@ -7,6 +9,7 @@ knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "##",
   fig.path = "images/",
+  dpi = 150,
   fig.height = 5,
   fig.width = 10
 )

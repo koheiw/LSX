@@ -1,11 +1,14 @@
 ---
-output: rmarkdown::github_document
+output: 
+  rmarkdown::github_document:
+    html_preview: false
 ---
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "##",
+  dpi = 150,
   fig.height = 5,
   fig.width = 10
 )
@@ -20,7 +23,7 @@ require(topicmodels)
 ```
 
 ```{r}
-corp <- head(readRDS('/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds'), 100)
+corp <- readRDS('/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds')
 ```
 
 ### Fit a LDA model
