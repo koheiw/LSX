@@ -6,8 +6,8 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "##",
-  fig.path = "man/images/",
-  dpi = 300,
+  fig.path = "images/",
+  fig.height = 5,
   fig.width = 10
 )
 ```

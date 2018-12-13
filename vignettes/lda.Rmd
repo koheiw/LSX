@@ -9,7 +9,7 @@ output: rmarkdown::html_vignette
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "##",
-  fig.path = "man/images/",
+  fig.path = "images/",
   fig.height = 5,
   fig.width = 10
 )
@@ -33,16 +33,16 @@ toks <- corp %>%
     tokens(remove_punct = TRUE)
 mt <- toks %>% 
     dfm(remove = stopwords()) %>% 
-    dfm_select('^[0-9a-zA-Z]+$', valuetype = 'regex') %>% 
+    dfm_select('^[a-zA-Z]+$', valuetype = 'regex') %>% 
     dfm_trim(min_termfreq = 0.95, termfreq_type = "quantile", 
              max_docfreq = 0.1, docfreq_type = "prop")
 
-set.seed(1234)
-lda <- LDA(convert(mt[ntoken(mt) > 0,], to = "topicmodels"), 10)
-
-eco <- terms(lda, 500)[,6]
-pol <- terms(lda, 500)[,1]
+lda <- LDA(convert(mt[ntoken(mt) > 0,], to = "topicmodels"), 10, 
+           control = list(seed = 1234))
+print(terms(lda, 10))
 ```
+
+
 
 ### Fit a LSS model
 
@@ -52,8 +52,11 @@ toks_sent <- corp %>%
     tokens(remove_punct = TRUE)
 mt_sent <- toks_sent %>% 
     dfm(remove = stopwords()) %>% 
-    dfm_select('^[0-9a-zA-Z]+$', valuetype = 'regex') %>% 
+    dfm_select('^[a-zA-Z]+$', valuetype = 'regex') %>% 
     dfm_trim(min_termfreq = 5)
+
+eco <- terms(lda, 500)[,10]
+pol <- terms(lda, 500)[,7]
 
 #' sentiment model on economy
 lss_eco <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = eco)
