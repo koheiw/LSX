@@ -64,7 +64,7 @@ toks_sent <- corp %>%
     tokens(remove_punct = TRUE)
 mt_sent <- toks_sent %>% 
     dfm(remove = stopwords()) %>% 
-    dfm_select('^[0-9a-zA-Z]+$', valuetype = 'regex') %>% 
+    dfm_select('^[a-zA-Z]+$', valuetype = 'regex', min_nchar = 2) %>% 
     dfm_trim(min_termfreq = 5)
 
 #' sentiment model on economy
@@ -103,27 +103,27 @@ LSS identifies domain specific words and weight them by
 head(coef(lss_eco), 20) # most positive words
 ```
 
-    ##    positive     markets    emerging   expecting        drag       weigh 
-    ##  0.05214424  0.03698609  0.03501609  0.03403731  0.03342814  0.03301794 
-    ## challenging  management        asia     impacts sustainable      senior 
-    ##  0.03131688  0.03109008  0.03082225  0.02873497  0.02821411  0.02779674 
-    ## cooperation      french  powerhouse       stock     chinese       china 
-    ##  0.02757589  0.02742529  0.02717255  0.02711204  0.02644329  0.02633488 
-    ##   efficient     slowing 
-    ##  0.02630425  0.02609119
+    ##    positive   expecting    emerging   professor sustainable      decent 
+    ##  0.04198759  0.04041890  0.03913838  0.03453550  0.03438302  0.03208933 
+    ##      oxford       stock        prof    academic     markets   efficient 
+    ##  0.03161188  0.03147390  0.03014006  0.02986570  0.02947902  0.02903777 
+    ##      failed        asia  management         hit consultancy       slide 
+    ##  0.02804538  0.02780202  0.02704815  0.02670997  0.02659349  0.02640886 
+    ##     impacts       china 
+    ##  0.02586232  0.02559905
 
 ``` r
 tail(coef(lss_eco), 20) # most negative words
 ```
 
-    ##   suggesting      created     downbeat    inflation       norway 
-    ##  -0.03082917  -0.03097888  -0.03111960  -0.03244584  -0.03292088 
-    ## implications      deficit       single         data      cutting 
-    ##  -0.03363656  -0.03451063  -0.03576445  -0.03814103  -0.03854116 
-    ## consequences    dependent          low         hike unemployment 
-    ##  -0.03874300  -0.03969037  -0.04090138  -0.04119885  -0.04393768 
-    ##     interest         rate          rba        rates     negative 
-    ##  -0.04396777  -0.04691304  -0.04920256  -0.04934219  -0.05966217
+    ##       brexit        pound    situation         data         rise 
+    ##  -0.03378953  -0.03410171  -0.03439309  -0.03457411  -0.03495389 
+    ##       impact     pantheon implications      cutting     downbeat 
+    ##  -0.03535304  -0.03546813  -0.03565484  -0.03590826  -0.03597810 
+    ##         debt     interest    suggested     suggests         hike 
+    ##  -0.03636211  -0.03762701  -0.03864661  -0.03928283  -0.04396055 
+    ##        rates         rate unemployment          rba     negative 
+    ##  -0.04638569  -0.04689606  -0.04810378  -0.05048054  -0.06004318
 
 #### Political words
 
@@ -131,27 +131,29 @@ tail(coef(lss_eco), 20) # most negative words
 head(coef(lss_pol), 20) # most positive words
 ```
 
-    ##          court constitutional           hong         robert      activists 
-    ##     0.03683695     0.03448106     0.03303420     0.02960304     0.02919637 
-    ##       rousseff         senior          north              f   interference 
-    ##     0.02833502     0.02779674     0.02669770     0.02630391     0.02558804 
-    ##         highly           near       leftwing       involved           case 
-    ##     0.02538547     0.02536469     0.02484337     0.02452125     0.02407098 
-    ##    westminster     consultant        correct         guests      professor 
-    ##     0.02388269     0.02272020     0.02219132     0.02162323     0.02160143
+    ##         correct  constitutional     commentator          battle 
+    ##      0.04617497      0.03838595      0.03682553      0.03494310 
+    ##       professor           court      university          killed 
+    ##      0.03453550      0.03383873      0.02973055      0.02935159 
+    ##            near         process        lecturer representatives 
+    ##      0.02786398      0.02731266      0.02720056      0.02698998 
+    ##           laura         elected       relatives          robert 
+    ##      0.02482720      0.02462219      0.02432675      0.02395674 
+    ##          career            hong         reasons        involved 
+    ##      0.02390902      0.02288129      0.02280180      0.02272463
 
 ``` r
 tail(coef(lss_pol), 20) # most negative words
 ```
 
-    ## economically     religion    primarily  calculation        union 
-    ##  -0.02050284  -0.02214345  -0.02221894  -0.02229977  -0.02313443 
-    ##    landscape       access    sensitive    departure    countries 
-    ##  -0.02314414  -0.02331452  -0.02366598  -0.02387345  -0.02504337 
-    ##     personal        often      happens       brexit     dictated 
-    ##  -0.02658480  -0.02713668  -0.02716319  -0.02764422  -0.02847745 
-    ##        dirty         data    movements consequences          cut 
-    ##  -0.02933004  -0.03814103  -0.03834440  -0.03874300  -0.04932111
+    ##     increase     purposes         talk    motivated       showed 
+    ##  -0.02656812  -0.02661012  -0.02661925  -0.02663048  -0.02764339 
+    ##     promises  calculation consequences          row        often 
+    ##  -0.02847466  -0.02879053  -0.02903463  -0.02939308  -0.03084510 
+    ##  complicated        dirty    movements       debate   discussion 
+    ##  -0.03151053  -0.03228046  -0.03235362  -0.03269543  -0.03360233 
+    ##       brexit         data    departure    dominated          cut 
+    ##  -0.03378953  -0.03457411  -0.03629428  -0.03700214  -0.05993724
 
 ## Predict sentiment of news
 
