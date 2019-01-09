@@ -39,7 +39,6 @@
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
-
 textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...) {
 
@@ -105,15 +104,16 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
     return(result)
 }
 
-#' @export
-textplot_heatmap <- function(x, ...) {
-    UseMethod("textplot_heatmap")
-}
-
 #' Plot correlation matrix as heatmap
 #' @param x fitted textmodel_lss object
 #' @param dendrogram show dendrogram if \code{TRUE}
 #' @param color color of heatmap
+#' @export
+textplot_heatmap <- function(x, dendrogram = TRUE,
+                             color = grDevices::cm.colors(10)) {
+    UseMethod("textplot_heatmap")
+}
+
 #' @method textplot_heatmap textmodel_lss
 #' @export
 textplot_heatmap.textmodel_lss <- function(x, dendrogram = TRUE,
@@ -122,12 +122,12 @@ textplot_heatmap.textmodel_lss <- function(x, dendrogram = TRUE,
         stop("correlation matrix is missing")
     diag(x$correlation) <- NA
     if (dendrogram) {
-        heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
-                breaks = seq(-1, 1, length.out = length(color) + 1))
+        stats::heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
+                       breaks = seq(-1, 1, length.out = length(color) + 1))
     } else {
-        heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
-                breaks = seq(-1, 1, length.out = length(color) + 1), Colv = NA, Rowv = NA,
-                revC = TRUE)
+        stats::heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
+                       breaks = seq(-1, 1, length.out = length(color) + 1), Colv = NA, Rowv = NA,
+                       revC = TRUE)
 
     }
 }
@@ -182,7 +182,7 @@ get_params <- function(x, y, feature = NULL, method = "cosine") {
     weight <- unname(y)
     i <- order(weight, decreasing = TRUE)
 
-    temp <- textstat_simil(x, selection = seed, margin = "features", method = method)
+    temp <- t(as.matrix(textstat_simil(x, selection = seed, margin = "features", method = method)))
     if (!is.null(feature))
         temp <- temp[unlist(pattern2fixed(feature, rownames(temp), "glob", FALSE)),,drop = FALSE]
     if (!identical(colnames(temp), seed))
@@ -191,7 +191,7 @@ get_params <- function(x, y, feature = NULL, method = "cosine") {
     return(list(beta = rowMeans(temp %*% weight),
                 weight = weight,
                 seed = seed,
-                cor = cor(temp)[i, i, drop = FALSE],
+                cor = stats::cor(temp)[i, i, drop = FALSE],
                 mean = colMeans(abs(temp))))
 }
 

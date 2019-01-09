@@ -3,3 +3,5 @@
 ^README.Rmd
 ^testthat
 ^README_cache
+^images/*
+^lss_cache/*
