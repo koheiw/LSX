@@ -1,7 +1,7 @@
 #' A vector-space model for subject specific sentiment-analysis
 #'
 #' @param x a dfm created by \code{\link[quanteda]{dfm}}
-#' @param y a character vector, named numeric vector or dictionary that contains
+#' @param seeds a character vector, named numeric vector or dictionary that contains
 #'   seed words.
 #' @param features featues of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
@@ -39,34 +39,62 @@
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
-textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
+textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...) {
 
     if (is.dfm(features))
         stop("features cannot be a dfm\n", call. = FALSE)
 
-    if (is.dictionary(y))
-        y <- unlist(y, use.names = FALSE)
+    if (is.dictionary(seeds))
+        seeds <- unlist(seeds, use.names = FALSE)
 
     # give equal weight to characters
-    if (is.character(y))
-        y <- structure(rep(1, length(y)), names = y)
+    if (is.character(seeds))
+        seeds <- structure(rep(1, length(seeds)), names = seeds)
 
-    if (is.null(names(y)))
+    if (is.null(names(seeds)))
         stop("y must be a named-numerid vector\n", call. = FALSE)
 
-    # generalte inflected seed
-    seed <- unlist(mapply(weight_seeds, names(y), unname(y) / length(y),
-                          MoreArgs = list(featnames(x)), USE.NAMES = FALSE, SIMPLIFY = FALSE))
+    # generate inflected seed
+    seeds_weighted <- mapply(weight_seeds, names(seeds), unname(seeds) / length(seeds),
+                             MoreArgs = list(featnames(x)), USE.NAMES = TRUE, SIMPLIFY = FALSE)
+    seed <- unlist(unname(seeds_weighted))
 
     if (verbose)
-        cat("Calculating term-term similarity to", length(seed), "seed words...\n")
+        cat("Calculating term-term similarity to", sum(lengths(seeds)), "seed words...\n")
 
     if (verbose)
         cat("Starting singular value decomposition of dfm...\n")
 
-    hash <- digest::digest(list(as(x, "dgCMatrix"), k), algo = "xxhash64")
+    if (all(lengths(seeds_weighted) == 0))
+        stop("No seed word is found in the dfm", call. = FALSE)
 
+    temp <- as.matrix(textstat_simil(cache_svd(x, k, cache, ...),
+                                     selection = names(seed),
+                                     margin = "features", method = simil_method))
+    if (!is.null(features))
+        temp <- temp[unlist(pattern2fixed(features, rownames(temp), "glob", FALSE)),,drop = FALSE]
+    if (!identical(colnames(temp), names(seed)))
+        stop("Columns and seed words do not match", call. = FALSE)
+
+    i <- order(seed, decreasing = TRUE)
+    result <- list(beta = sort(rowMeans(temp %*% seed), decreasing = TRUE),
+                   features = if (is.null(features)) featnames(x) else features,
+                   seeds = seeds,
+                   seeds_weighted = seeds_weighted,
+                   seeds_distance = colMeans(abs(temp)),
+                   correlation = stats::cor(temp)[i, i, drop = FALSE],
+                   call = match.call())
+
+    if (include_data)
+        result$data <- x
+    class(result) <- "textmodel_lss"
+    return(result)
+}
+
+cache_svd <- function(x, k, cache = TRUE, ...) {
+
+    hash <- digest::digest(list(as(x, "dgCMatrix"), k), algo = "xxhash64")
     if (cache && !dir.exists("lss_cache"))
         dir.create("lss_cache")
     file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
@@ -78,58 +106,49 @@ textmodel_lss <- function(x, y, features = NULL, k = 300, cache = FALSE,
 
     if(cache && file.exists(file_cache)){
         message("Reading cache file:", file_cache)
-        temp <- readRDS(file_cache)
+        result <- readRDS(file_cache)
     }else{
         s <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
-        temp <- t(s$v * s$d)
+        result <- t(s$v * s$d)
         if (cache) {
             message("Writing cache file:", file_cache)
-            saveRDS(temp, file_cache)
+            saveRDS(result, file_cache)
         }
     }
-    colnames(temp) <- featnames(x)
-    temp <- as.dfm(temp)
-    params <- get_params(temp, seed, features, simil_method)
-    result <- list(beta = sort(params$beta, decreasing = TRUE),
-                   features = if (is.null(features)) featnames(x) else features,
-                   seeds = y,
-                   seeds_weighted = seed,
-                   seeds_distance = params$mean,
-                   correlation = params$cor,
-                   call = match.call())
-    if (include_data)
-        result$data <- x
-    class(result) <- "textmodel_lss"
-
+    colnames(result) <- featnames(x)
+    result <- as.dfm(result)
     return(result)
 }
 
-#' Plot correlation matrix as heatmap
+#' Plot proximity of seed words
 #' @param x fitted textmodel_lss object
-#' @param dendrogram show dendrogram if \code{TRUE}
-#' @param color color of heatmap
+#' @param group if \code{TRUE} group seed words by seed patterns and show
+#'   average proximity
 #' @export
-textplot_heatmap <- function(x, dendrogram = TRUE,
-                             color = grDevices::cm.colors(10)) {
-    UseMethod("textplot_heatmap")
+textplot_proxy <- function(x, group = TRUE) {
+    UseMethod("textplot_proxy")
 }
 
-#' @method textplot_heatmap textmodel_lss
+#' @method textplot_proxy textmodel_lss
+#' @import ggplot2
 #' @export
-textplot_heatmap.textmodel_lss <- function(x, dendrogram = TRUE,
-                                           color = grDevices::cm.colors(10)) {
+textplot_proxy.textmodel_lss <- function(x, group = TRUE) {
     if (!"correlation" %in% names(x))
         stop("correlation matrix is missing")
-    diag(x$correlation) <- NA
-    if (dendrogram) {
-        stats::heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
-                       breaks = seq(-1, 1, length.out = length(color) + 1))
-    } else {
-        stats::heatmap(x$correlation, col = color, symm = TRUE, scale = "none",
-                       breaks = seq(-1, 1, length.out = length(color) + 1), Colv = NA, Rowv = NA,
-                       revC = TRUE)
 
+    temp <- reshape2::melt(lss$correlation)
+    if (group) {
+        seed <- rep(names(x$seeds_weighted), lengths(x$seeds_weighted))
+        names(seed) <- unlist(x$seeds_weighted)
+        temp$Var1 <- seed[temp$Var1]
+        temp$Var2 <- seed[temp$Var2]
+        temp <- aggregate(list(value = temp$value), by = list(Var1 = temp$Var1, Var2 = temp$Var2), mean)
     }
+    ggplot(data = temp, aes(x = Var1, y = Var2)) +
+        geom_point(aes(colour = value > 0, cex = value)) +
+        theme(axis.title.x = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 }
 
 #' @export
@@ -166,35 +185,6 @@ coef.textmodel_lss <- function(object, ...) {
 coefficients.textmodel_lss <- function(object, ...) {
     UseMethod("coef")
 }
-
-#' Internal function to compute parameters
-#'
-#' @param x svd-reduced dfm
-#' @param y named-numberic vector for seed words
-#' @param feature feature for which beta will be calcualted
-#' @keywords internal
-get_params <- function(x, y, feature = NULL, method = "cosine") {
-
-    y <- y[intersect(colnames(x), names(y))] # dorp seed not in x
-    if (!length(y))
-        stop("No seed word is found in the dfm", call. = FALSE)
-    seed <- names(y)
-    weight <- unname(y)
-    i <- order(weight, decreasing = TRUE)
-
-    temp <- as.matrix(textstat_simil(x, selection = seed, margin = "features", method = method))
-    if (!is.null(feature))
-        temp <- temp[unlist(pattern2fixed(feature, rownames(temp), "glob", FALSE)),,drop = FALSE]
-    if (!identical(colnames(temp), seed))
-        stop("Columns and seed words do not match", call. = FALSE)
-
-    return(list(beta = rowMeans(temp %*% weight),
-                weight = weight,
-                seed = seed,
-                cor = stats::cor(temp)[i, i, drop = FALSE],
-                mean = colMeans(abs(temp))))
-}
-
 
 #' Internal function to generate equally-weighted seed set
 #'

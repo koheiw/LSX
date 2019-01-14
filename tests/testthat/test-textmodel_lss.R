@@ -186,7 +186,7 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
     pred <- predict(test_lss, newdata = as.dfm(mt))
     expect_equal(length(pred), ndoc(data_corpus_inaugural))
     expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                     c("1789-Washington" = 0.42207451, "1797-Adams" = NA, "1825-Adams" = NA),
+                      c("1789-Washington" = 0.42207451, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
 
     pred2 <- predict(test_lss, newdata = as.dfm(mt), se.fit = TRUE)
@@ -194,4 +194,16 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
                  c("1789-Washington" = 0.42207451, "1797-Adams" = NA, "1825-Adams" = NA))
     expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.6426934, NA, NA), tolerance = 0.01)
     expect_equal(pred2$n[c(1, 3, 10)], c(33, 0, 0))
+})
+
+
+test_that("textmodel_lss works with glob patterns", {
+    mt <- dfm(test_toks)
+    seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
+    lss <- textmodel_lss(mt, seed, k = 300)
+    expect_equal(names(lss$seeds_weighted), names(seed))
+    expect_equal(lengths(lss$seeds_weighted),
+                 c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
+    expect_equal(class(textplot_proxy(lss)), c("gg", "ggplot"))
+    expect_equal(class(textplot_proxy(lss, group = FALSE)), c("gg", "ggplot"))
 })

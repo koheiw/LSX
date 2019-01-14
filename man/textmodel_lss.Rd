@@ -4,13 +4,13 @@
 \alias{textmodel_lss}
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
-textmodel_lss(x, y, features = NULL, k = 300, cache = FALSE,
+textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
   simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
 
-\item{y}{a character vector, named numeric vector or dictionary that contains
+\item{seeds}{a character vector, named numeric vector or dictionary that contains
 seed words.}
 
 \item{features}{featues of a dfm to be included in the model as terms. This
