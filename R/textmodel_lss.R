@@ -77,11 +77,12 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
 
+    l <- names(seed) %in% colnames(simil)
     result <- list(beta = sort(rowMeans(simil %*% seed), decreasing = TRUE),
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
-                   similarity = simil[names(seed), names(seed)],
+                   similarity = simil[l, l],
                    call = match.call())
 
     if (include_data)
@@ -140,8 +141,9 @@ textplot_simil.textmodel_lss <- function(x, group = TRUE) {
         names(seed) <- unlist(x$seeds_weighted)
         temp$Var1 <- seed[temp$Var1]
         temp$Var2 <- seed[temp$Var2]
-        temp <- aggregate(list(value = temp$value), by = list(Var1 = temp$Var1,
-                                                              Var2 = temp$Var2), mean)
+        temp <- stats::aggregate(list(value = temp$value),
+                                 by = list(Var1 = temp$Var1,
+                                           Var2 = temp$Var2), mean)
     }
     ggplot(data = temp, aes(x = Var1, y = Var2)) +
         geom_point(aes(colour = value > 0, cex = value)) +
