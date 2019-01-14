@@ -69,20 +69,19 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (all(lengths(seeds_weighted) == 0))
         stop("No seed word is found in the dfm", call. = FALSE)
 
-    temp <- as.matrix(textstat_simil(cache_svd(x, k, cache, ...),
-                                     selection = names(seed),
-                                     margin = "features", method = simil_method))
+    simil <- as.matrix(textstat_simil(cache_svd(x, k, cache, ...),
+                                      selection = names(seed),
+                                      margin = "features", method = simil_method))
     if (!is.null(features))
-        temp <- temp[unlist(pattern2fixed(features, rownames(temp), "glob", FALSE)),,drop = FALSE]
-    if (!identical(colnames(temp), names(seed)))
+        simil <- simil[unlist(pattern2fixed(features, rownames(simil), "glob", FALSE)),,drop = FALSE]
+    if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
 
-    result <- list(beta = sort(rowMeans(temp %*% seed), decreasing = TRUE),
+    result <- list(beta = sort(rowMeans(simil %*% seed), decreasing = TRUE),
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
-                   seeds_distance = colMeans(abs(temp)),
-                   simil = temp[names(seed), names(seed)],
+                   similarity = simil[names(seed), names(seed)],
                    call = match.call())
 
     if (include_data)

@@ -44,7 +44,7 @@ test_that("textmodel_lss has all the attributes", {
 
     expect_equal(
         names(test_lss),
-        c("beta", "features", "seeds", "seeds_weighted", "seeds_distance",
+        c("beta", "features", "seeds", "seeds_weighted",
           "similarity", "call", "data")
     )
 
@@ -55,7 +55,7 @@ test_that("textmodel_lss has all the attributes", {
 
     expect_equal(
         names(test_lss_nd),
-        c("beta", "features", "seeds", "seeds_weighted", "seeds_distance",
+        c("beta", "features", "seeds", "seeds_weighted",
           "similarity", "call")
     )
 
