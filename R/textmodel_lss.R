@@ -136,13 +136,14 @@ textplot_proxy.textmodel_lss <- function(x, group = TRUE) {
     if (!"correlation" %in% names(x))
         stop("correlation matrix is missing")
 
-    temp <- reshape2::melt(lss$correlation)
+    temp <- reshape2::melt(x$correlation)
     if (group) {
         seed <- rep(names(x$seeds_weighted), lengths(x$seeds_weighted))
         names(seed) <- unlist(x$seeds_weighted)
         temp$Var1 <- seed[temp$Var1]
         temp$Var2 <- seed[temp$Var2]
-        temp <- aggregate(list(value = temp$value), by = list(Var1 = temp$Var1, Var2 = temp$Var2), mean)
+        temp <- aggregate(list(value = temp$value), by = list(Var1 = temp$Var1,
+                                                              Var2 = temp$Var2), mean)
     }
     ggplot(data = temp, aes(x = Var1, y = Var2)) +
         geom_point(aes(colour = value > 0, cex = value)) +
