@@ -45,7 +45,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_equal(
         names(test_lss),
         c("beta", "features", "seeds", "seeds_weighted", "seeds_distance",
-          "correlation", "call", "data")
+          "similarity", "call", "data")
     )
 
     expect_true(is.numeric(test_lss$beta))
@@ -56,7 +56,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_equal(
         names(test_lss_nd),
         c("beta", "features", "seeds", "seeds_weighted", "seeds_distance",
-          "correlation", "call")
+          "similarity", "call")
     )
 
 })
@@ -204,6 +204,6 @@ test_that("textmodel_lss works with glob patterns", {
     expect_equal(names(lss$seeds_weighted), names(seed))
     expect_equal(lengths(lss$seeds_weighted),
                  c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
-    expect_equal(class(textplot_proxy(lss)), c("gg", "ggplot"))
-    expect_equal(class(textplot_proxy(lss, group = FALSE)), c("gg", "ggplot"))
+    expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
+    expect_equal(class(textplot_simil(lss, group = FALSE)), c("gg", "ggplot"))
 })

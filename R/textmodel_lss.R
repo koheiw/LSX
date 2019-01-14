@@ -77,13 +77,12 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (!identical(colnames(temp), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
 
-    i <- order(seed, decreasing = TRUE)
     result <- list(beta = sort(rowMeans(temp %*% seed), decreasing = TRUE),
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
                    seeds_distance = colMeans(abs(temp)),
-                   correlation = stats::cor(temp)[i, i, drop = FALSE],
+                   simil = temp[names(seed), names(seed)],
                    call = match.call())
 
     if (include_data)
@@ -120,23 +119,23 @@ cache_svd <- function(x, k, cache = TRUE, ...) {
     return(result)
 }
 
-#' Plot proximity of seed words
+#' Plot similarity of seed words
 #' @param x fitted textmodel_lss object
 #' @param group if \code{TRUE} group seed words by seed patterns and show
-#'   average proximity
+#'   average similarity
 #' @export
-textplot_proxy <- function(x, group = TRUE) {
-    UseMethod("textplot_proxy")
+textplot_simil <- function(x, group = TRUE) {
+    UseMethod("textplot_simil")
 }
 
-#' @method textplot_proxy textmodel_lss
+#' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
-textplot_proxy.textmodel_lss <- function(x, group = TRUE) {
-    if (!"correlation" %in% names(x))
-        stop("correlation matrix is missing")
+textplot_simil.textmodel_lss <- function(x, group = TRUE) {
+    if (!"similarity" %in% names(x))
+        stop("similarity matrix is missing")
 
-    temp <- reshape2::melt(x$correlation)
+    temp <- reshape2::melt(x$similarity)
     if (group) {
         seed <- rep(names(x$seeds_weighted), lengths(x$seeds_weighted))
         names(seed) <- unlist(x$seeds_weighted)
