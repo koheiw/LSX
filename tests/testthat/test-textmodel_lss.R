@@ -153,28 +153,29 @@ test_that("calculation of fit and se.fit are correct", {
 
 test_that("as.textmodel_lss works with only with single seed", {
 
-    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat, k = 300))
-    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = character(), k = 300))
-    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], k = 300))
+    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat, k = 10))
+    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = character(), k = 10))
+    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], k = 10))
 })
 
 
 test_that("simil_method works", {
 
-    lss_cos <- textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat)
+    lss_cos <- textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat,
+                             k = 10)
     lss_cor <- textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat,
-                             simil_method = "correlation")
+                             simil_method = "correlation", k = 10)
 
     expect_false(identical(lss_cos, lss_cor))
     expect_error(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat,
-                               simil_method = "something"), "'arg' should be one of")
+                               simil_method = "something", k = 10), "'arg' should be one of")
 })
 
 
 test_that("include_data is working", {
     mt <- dfm(test_toks)
-    lss <- textmodel_lss(mt, seedwords("pos-neg"), include_data = TRUE)
-    lss_nd <- textmodel_lss(mt, seedwords("pos-neg"), include_data = FALSE)
+    lss <- textmodel_lss(mt, seedwords("pos-neg"), include_data = TRUE, k = 10)
+    lss_nd <- textmodel_lss(mt, seedwords("pos-neg"), include_data = FALSE, k = 10)
     expect_error(predict(lss_nd), "LSS model includes no data")
     expect_identical(predict(lss), predict(lss_nd, newdata = mt))
 })
@@ -200,10 +201,21 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
 test_that("textmodel_lss works with glob patterns", {
     mt <- dfm(test_toks)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
-    lss <- textmodel_lss(mt, seed, k = 300)
+    lss <- textmodel_lss(mt, seed, k = 10)
     expect_equal(names(lss$seeds_weighted), names(seed))
     expect_equal(lengths(lss$seeds_weighted),
                  c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
     expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
     expect_equal(class(textplot_simil(lss, group = FALSE)), c("gg", "ggplot"))
 })
+
+test_that("textmodel_lss works with non-existent seeds", {
+    mt <- dfm(test_toks)
+    seed1 <- c("good" = 1, "bad" = -1, "xyz" = -1)
+    expect_silent(textmodel_lss(mt, seed1, k = 10))
+
+    seed2 <- c("xyz", "xxx")
+    expect_error(textmodel_lss(mt, seed2, k = 10),
+                 "No seed word is found in the dfm")
+})
+
