@@ -72,17 +72,18 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     simil <- as.matrix(textstat_simil(cache_svd(x, k, cache, ...),
                                       selection = names(seed),
                                       margin = "features", method = simil_method))
+    simil_seed <- simil[rownames(simil) %in% names(seed),
+                        colnames(simil) %in% names(seed), drop = FALSE]
     if (!is.null(features))
         simil <- simil[unlist(pattern2fixed(features, rownames(simil), "glob", FALSE)),,drop = FALSE]
     if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
 
-    l <- names(seed) %in% colnames(simil)
     result <- list(beta = sort(rowMeans(simil %*% seed), decreasing = TRUE),
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
-                   similarity = simil[l, l],
+                   similarity = simil_seed,
                    call = match.call())
 
     if (include_data)
@@ -145,6 +146,7 @@ textplot_simil.textmodel_lss <- function(x, group = TRUE) {
                                  by = list(Var1 = temp$Var1,
                                            Var2 = temp$Var2), mean)
     }
+    Var1 <- Var2 <- value <- NULL
     ggplot(data = temp, aes(x = Var1, y = Var2)) +
         geom_point(aes(colour = value > 0, cex = value)) +
         theme(axis.title.x = element_blank(),

@@ -5,4 +5,4 @@
 ^README_cache
 ^images/*
 ^lss_cache/*
-^\.*\.yml
+^\.yaml\.yml$
