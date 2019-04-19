@@ -370,3 +370,37 @@ as.textmodel_lss <- function(x) {
     class(result) <- "textmodel_lss"
     return(result)
 }
+
+#' Smooth predicted LSS scores by local polynomial regression
+#'
+#' @param x a \code{data.frame} containing variables for LSS scores and dates
+#' @param lss_var the name of the column for LSS scores
+#' @param date_var the name of the columns for dates
+#' @param span determines the level of smoothing
+#' @param from start of the time period
+#' @param to end of the time period
+#' @param ... extra arguments passed to \code{\link{loess}}
+#' @export
+smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
+                       from = NULL, to = NULL, ...) {
+    if (!lss_var %in% names(x) || !identical(class(x[[lss_var]]), "numeric"))
+        stop("x must have a numeric variable for LSS scores")
+    if (!date_var %in% names(x) || !identical(class(x[[date_var]]), "Date"))
+        stop("x must have a date variable for dates")
+    x$lss <- x[[lss_var]]
+    x$date <- x[[date_var]]
+    if (is.null(from))
+        from <- min(x$date)
+    if (is.null(to))
+        to <- max(x$date)
+    x$time <- as.numeric(difftime(x$date, from, units = "days"))
+    dummy <- data.frame(date = seq(from, to, '1 day'))
+    dummy$time <- as.numeric(difftime(dummy$date, from, units = "days"))
+    dummy$fit <- NA
+    suppressWarnings(
+        temp <- predict(loess(lss ~ time, data = x, span = span, ...),
+                        newdata = dummy, se = TRUE)
+    )
+    result <- cbind(dummy[c("date", "time")], temp[c("fit", "se.fit")])
+    return(result)
+}
