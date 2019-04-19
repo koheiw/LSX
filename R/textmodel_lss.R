@@ -381,6 +381,7 @@ as.textmodel_lss <- function(x) {
 #' @param to end of the time period
 #' @param ... extra arguments passed to \code{\link{loess}}
 #' @export
+#' @import stats
 smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
                        from = NULL, to = NULL, ...) {
     if (!lss_var %in% names(x) || !identical(class(x[[lss_var]]), "numeric"))

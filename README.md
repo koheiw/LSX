@@ -57,24 +57,22 @@ require(LSS)
 ```
 
 ``` r
-corp <- readRDS('/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds')
+corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
 
 toks_sent <- corp %>% 
-    corpus_reshape('sentences') %>% 
-    tokens(remove_punct = TRUE)
-mt_sent <- toks_sent %>% 
-    dfm(remove = stopwords()) %>% 
-    dfm_select('^[a-zA-Z]+$', valuetype = 'regex', min_nchar = 2) %>% 
+    corpus_reshape("sentences") %>% 
+    tokens(remove_punct = TRUE) %>% 
+    tokens_remove(stopwords(), padding = TRUE)
+dfmt_sent <- toks_sent %>% 
+    dfm(remove = "") %>% 
+    dfm_select("^\\p{L}+$", valuetype = "regex", min_nchar = 2) %>% 
     dfm_trim(min_termfreq = 5)
 
-#' sentiment model on economy
-eco <- head(char_keyness(toks_sent, 'econom*'), 500)
-lss_eco <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = eco)
-
-# sentiment model on politics
-pol <- head(char_keyness(toks_sent, 'politi*'), 500)
-lss_pol <- textmodel_lss(mt_sent, seedwords('pos-neg'), features = pol)
+eco <- char_keyness(toks_sent, "econom*", p = 0.05)
+tmod_lss <- textmodel_lss(dfmt_sent, seedwords('pos-neg'), feature = eco, cache = TRUE)
 ```
+
+    ## Reading cache file:lss_cache/svds_89a7251a04d7553f.RDS
 
 ### Sentiment seed words
 
@@ -82,7 +80,7 @@ Seed words are 14 generic sentiment
     words.
 
 ``` r
-seedwords('pos-neg')
+seedwords("pos-neg")
 ```
 
     ##        good        nice   excellent    positive   fortunate     correct 
@@ -97,118 +95,61 @@ seedwords('pos-neg')
 LSS identifies domain specific words and weight them by
     sentiment.
 
-#### Economic words
-
 ``` r
-head(coef(lss_eco), 20) # most positive words
+head(coef(tmod_lss), 20) # most positive words
 ```
 
-    ##    positive   expecting    emerging   professor sustainable      decent 
-    ##  0.04198759  0.04041890  0.03913838  0.03453550  0.03438302  0.03208933 
-    ##      oxford       stock        prof    academic     markets   efficient 
-    ##  0.03161188  0.03147390  0.03014006  0.02986570  0.02947902  0.02903777 
-    ##      failed        asia  management         hit consultancy       slide 
-    ##  0.02804538  0.02780202  0.02704815  0.02670997  0.02659349  0.02640886 
-    ##     impacts       china 
-    ##  0.02586232  0.02559905
+    ##       legal    positive   expecting    emerging        able   professor 
+    ##  0.04205670  0.04198759  0.04041890  0.03913838  0.03768802  0.03453550 
+    ## sustainable      monday      decent      oxford         aid       stock 
+    ##  0.03438302  0.03376070  0.03208933  0.03161188  0.03156961  0.03147390 
+    ##  principles       shape        prof    northern    academic     markets 
+    ##  0.03035493  0.03016979  0.03014006  0.02992693  0.02986570  0.02947902 
+    ##         nhs      either 
+    ##  0.02922554  0.02915907
 
 ``` r
-tail(coef(lss_eco), 20) # most negative words
+tail(coef(tmod_lss), 20) # most negative words
 ```
 
-    ##       brexit        pound    situation         data         rise 
-    ##  -0.03378953  -0.03410171  -0.03439309  -0.03457411  -0.03495389 
-    ##       impact     pantheon implications      cutting     downbeat 
-    ##  -0.03535304  -0.03546813  -0.03565484  -0.03590826  -0.03597810 
-    ##         debt     interest    suggested     suggests         hike 
-    ##  -0.03636211  -0.03762701  -0.03864661  -0.03928283  -0.04396055 
+    ##         rise       impact     pantheon implications      cutting 
+    ##  -0.03495389  -0.03535304  -0.03546813  -0.03565484  -0.03590826 
+    ##     downbeat         debt    dominated     interest    suggested 
+    ##  -0.03597810  -0.03636211  -0.03700214  -0.03762701  -0.03864661 
+    ##     suggests    something       happen         hike    borrowing 
+    ##  -0.03928283  -0.04008333  -0.04076961  -0.04396055  -0.04549552 
     ##        rates         rate unemployment          rba     negative 
     ##  -0.04638569  -0.04689606  -0.04810378  -0.05048054  -0.06004318
 
-#### Political words
+## Result of analysis
+
+In the plots, circles indicate sentiment of individual news articles and
+lines are their local average (solid line) with a confidence band
+(dotted lines). According to the plot, economic sentiment in the
+Guardian news stories became negative from February to April, but it
+become more positive in April. As the referendum approaches, the
+newspaper’s sentiment became less stable, although it became close to
+neutral (overall mean) on the day of voting (broken line).
 
 ``` r
-head(coef(lss_pol), 20) # most positive words
+dfmt <- dfm(corp)
+
+# predict sentiment scores
+pred <- as.data.frame(predict(tmod_lss, se.fit = TRUE, newdata = dfmt))
+pred$date <- docvars(dfmt, "date")
+pred <- na.omit(pred)
+
+# smooth LSS scores
+pred_sm <- smooth_lss(pred, from = as.Date("2016-01-01"), to = as.Date("2016-12-31"))
+
+# plot trend
+plot(pred$date, pred$fit, col = rgb(0, 0, 0, 0.05), pch = 16, ylim = c(-0.5, 0.5),
+     xlab = "Time", ylab = "Negative vs. positive", main = "Economic sentiment in the Guardian")
+lines(pred_sm$date, pred_sm$fit, type = "l")
+lines(pred_sm$date, pred_sm$fit + pred_sm$se.fit * 2, type = "l", lty = 3)
+lines(pred_sm$date, pred_sm$fit - pred_sm$se.fit * 2, type = "l", lty = 3)
+abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 2))
+text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 ```
 
-    ##         correct  constitutional     commentator          battle 
-    ##      0.04617497      0.03838595      0.03682553      0.03494310 
-    ##       professor           court      university          killed 
-    ##      0.03453550      0.03383873      0.02973055      0.02935159 
-    ##            near         process        lecturer representatives 
-    ##      0.02786398      0.02731266      0.02720056      0.02698998 
-    ##           laura         elected       relatives          robert 
-    ##      0.02482720      0.02462219      0.02432675      0.02395674 
-    ##          career            hong         reasons        involved 
-    ##      0.02390902      0.02288129      0.02280180      0.02272463
-
-``` r
-tail(coef(lss_pol), 20) # most negative words
-```
-
-    ##     increase     purposes         talk    motivated       showed 
-    ##  -0.02656812  -0.02661012  -0.02661925  -0.02663048  -0.02764339 
-    ##     promises  calculation consequences          row        often 
-    ##  -0.02847466  -0.02879053  -0.02903463  -0.02939308  -0.03084510 
-    ##  complicated        dirty    movements       debate   discussion 
-    ##  -0.03151053  -0.03228046  -0.03235362  -0.03269543  -0.03360233 
-    ##       brexit         data    departure    dominated          cut 
-    ##  -0.03378953  -0.03457411  -0.03629428  -0.03700214  -0.05993724
-
-## Predict sentiment of news
-
-In the plots, circles indicate estimated sentiment of news articles.
-After the UK’s referendum on EU membership on 23 June, we can see sharp
-drop in both economic and political sentiment in the newspaper articles.
-Economic sentiment recovered within a month, but negative political
-sentiment
-sustained.
-
-``` r
-mt <- dfm(corp)
-```
-
-### Economic sentiment
-
-``` r
-pred_eco <- as.data.frame(predict(lss_eco, newdata = mt, density = TRUE))
-pred_eco$date <- docvars(mt, 'date')
-pred_eco <- na.omit(pred_eco)
-
-plot(pred_eco$date, pred_eco$fit, pch = 16, col = rgb(0, 0, 0, 0.1),
-     ylim = c(-1, 1), ylab = 'economic sentiment')
-lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
-abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
-```
-
-![](images/unnamed-chunk-9-1.png)<!-- -->
-
-### Political sentiment
-
-``` r
-pred_pol <- as.data.frame(predict(lss_pol, newdata = mt, density = TRUE))
-pred_pol$date <- docvars(mt, 'date')
-pred_pol <- na.omit(pred_pol)
-
-plot(pred_pol$date, pred_pol$fit, pch = 16, col = rgb(1, 0, 0, 0.1),
-     ylim = c(-1, 1), ylab = 'political sentiment')
-lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
-abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
-```
-
-![](images/unnamed-chunk-10-1.png)<!-- -->
-
-### Comparison
-
-``` r
-plot(docvars(mt, 'date'), rep(0, ndoc(mt)), type = 'n',
-     ylim = c(-0.5, 0.5), ylab = 'economic/political sentiment')
-grid()
-lines(lowess(pred_eco$date, pred_eco$fit, f = 0.05), col = 1)
-lines(lowess(pred_pol$date, pred_pol$fit, f = 0.05), col = 2)
-abline(h = 0)
-legend('topright', lty = 1, col = 1:2, legend = c('political', 'economic'))
-abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 3))
-```
-
-![](images/unnamed-chunk-11-1.png)<!-- -->
+![](images/unnamed-chunk-7-1.png)<!-- -->
