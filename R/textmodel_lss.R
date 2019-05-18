@@ -17,8 +17,8 @@
 #' @param ... additional argument passed to \code{\link[RSpectra]{svds}}
 #' @import quanteda
 #' @export
-#' @references Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
-#'   Agency ITAR-TASS’ Coverage of the Ukraine Crisis.” European Journal of
+#' @references Watanabe, Kohei. "Measuring News Bias: Russia's Official News
+#'   Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
 #'   Communication 32, no. 3 (March 20, 2017): 224–41.
 #'   https://doi.org/10.1177/0267323117695735.
 #' @examples
