@@ -145,7 +145,7 @@ textplot_simil <- function(x, group = TRUE, labelsize = 10) {
 #' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
-textplot_simil.textmodel_lss <- function(x, group = FALS, labelsize = 10) {
+textplot_simil.textmodel_lss <- function(x, group = FALSE, labelsize = 10) {
     if (!"similarity" %in% names(x))
         stop("similarity matrix is missing")
 
