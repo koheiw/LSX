@@ -55,8 +55,8 @@ pol <- head(char_keyness(toks, 'politi*'), 500)
 lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 }
 \references{
-Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
-  Agency ITAR-TASS’ Coverage of the Ukraine Crisis.” European Journal of
+Watanabe, Kohei. "Measuring News Bias: Russia's Official News
+  Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
   Communication 32, no. 3 (March 20, 2017): 224–41.
   https://doi.org/10.1177/0267323117695735.
 }
