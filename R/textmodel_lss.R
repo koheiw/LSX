@@ -136,15 +136,16 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
 #' @param x fitted textmodel_lss object
 #' @param group if \code{TRUE} group seed words by seed patterns and show
 #'   average similarity
+#' @param labelsize size of seed words
 #' @export
-textplot_simil <- function(x, group = TRUE) {
+textplot_simil <- function(x, group = TRUE, labelsize = NULL) {
     UseMethod("textplot_simil")
 }
 
 #' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
-textplot_simil.textmodel_lss <- function(x, group = TRUE) {
+textplot_simil.textmodel_lss <- function(x, group = FALSE, labelsize = NULL) {
     if (!"similarity" %in% names(x))
         stop("similarity matrix is missing")
 
@@ -158,15 +159,13 @@ textplot_simil.textmodel_lss <- function(x, group = TRUE) {
                                  by = list(Var1 = temp$Var1,
                                            Var2 = temp$Var2), mean)
     }
-    temp$Var1 <- factor(temp$Var1, levels = unique(temp$Var2))
-    temp$Var2 <- factor(temp$Var2, levels = unique(temp$Var2))
-
     Var1 <- Var2 <- value <- NULL
     ggplot(data = temp, aes(x = Var1, y = Var2)) +
         geom_point(aes(colour = value > 0, cex = abs(value))) +
         theme(axis.title.x = element_blank(),
               axis.title.y = element_blank(),
-              axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+              axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = labelsize),
+              axis.text.y = element_text(size = labelsize))
 }
 
 #' @export
