@@ -219,3 +219,8 @@ test_that("textmodel_lss works with non-existent seeds", {
                  "No seed word is found in the dfm")
 })
 
+test_that("RSpectra and irlba work", {
+    mt <- dfm(test_toks)
+    expect_silent(textmodel_lss(mt, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
+    expect_silent(textmodel_lss(mt, seedwords("pos-neg"), k = 10, engine = "irlba"))
+})

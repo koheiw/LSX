@@ -5,18 +5,19 @@
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
 textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
-  simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...)
+  simil_method = "cosine", include_data = TRUE,
+  engine = c("RSpectra", "irlba"), verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
 
-\item{seeds}{a character vector, named numeric vector or dictionary that contains
-seed words.}
+\item{seeds}{a character vector, named numeric vector or dictionary that
+contains seed words.}
 
 \item{features}{featues of a dfm to be included in the model as terms. This
 argument is used to make models only sensitive to subject specific words.}
 
-\item{k}{the size of semantic space passed to \code{\link[RSpectra]{svds}}}
+\item{k}{the size of semantic space passed to the SVD engine}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
@@ -28,9 +29,12 @@ used otherwise.}
 \item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as
 \code{x}.}
 
+\item{engine}{choose SVD engine between \code{\link[RSpectra]{svds}} and
+\code{\link[irlba]{irlba}}}
+
 \item{verbose}{show messages if \code{TRUE}.}
 
-\item{...}{additional argument passed to \code{\link[RSpectra]{svds}}}
+\item{...}{additional argument passed to the SVD engine}
 }
 \description{
 A vector-space model for subject specific sentiment-analysis
@@ -55,8 +59,8 @@ pol <- head(char_keyness(toks, 'politi*'), 500)
 lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 }
 \references{
-Watanabe, Kohei. “Measuring News Bias: Russia’s Official News
-  Agency ITAR-TASS’ Coverage of the Ukraine Crisis.” European Journal of
+Watanabe, Kohei. "Measuring News Bias: Russia's Official News
+  Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
   Communication 32, no. 3 (March 20, 2017): 224–41.
   https://doi.org/10.1177/0267323117695735.
 }
