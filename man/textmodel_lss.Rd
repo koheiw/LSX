@@ -5,18 +5,19 @@
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
 textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
-  simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...)
+  simil_method = "cosine", include_data = TRUE,
+  engine = c("RSpectra", "irlba"), verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
 
-\item{seeds}{a character vector, named numeric vector or dictionary that contains
-seed words.}
+\item{seeds}{a character vector, named numeric vector or dictionary that
+contains seed words.}
 
 \item{features}{featues of a dfm to be included in the model as terms. This
 argument is used to make models only sensitive to subject specific words.}
 
-\item{k}{the size of semantic space passed to \code{\link[RSpectra]{svds}}}
+\item{k}{the size of semantic space passed to the SVD engine}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
@@ -28,9 +29,12 @@ used otherwise.}
 \item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as
 \code{x}.}
 
+\item{engine}{choose SVD engine between \code{\link[RSpectra]{svds}} and
+\code{\link[irlba]{irlba}}}
+
 \item{verbose}{show messages if \code{TRUE}.}
 
-\item{...}{additional argument passed to \code{\link[RSpectra]{svds}}}
+\item{...}{additional argument passed to the SVD engine}
 }
 \description{
 A vector-space model for subject specific sentiment-analysis

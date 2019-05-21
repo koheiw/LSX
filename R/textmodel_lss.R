@@ -1,11 +1,11 @@
 #' A vector-space model for subject specific sentiment-analysis
 #'
 #' @param x a dfm created by \code{\link[quanteda]{dfm}}
-#' @param seeds a character vector, named numeric vector or dictionary that contains
-#'   seed words.
+#' @param seeds a character vector, named numeric vector or dictionary that
+#'   contains seed words.
 #' @param features featues of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
-#' @param k the size of semantic space passed to \code{\link[RSpectra]{svds}}
+#' @param k the size of semantic space passed to the SVD engine
 #' @param simil_method specifies method to compute similiaty between features.
 #'   The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
 #'   used otherwise.
@@ -13,8 +13,10 @@
 #'   identical \code{x} and \code{k}.
 #' @param include_data if \code{TRUE}, fitted model include the dfm supplied as
 #'   \code{x}.
+#' @param engine choose SVD engine between \code{\link[RSpectra]{svds}} and
+#'   \code{\link[irlba]{irlba}}
 #' @param verbose show messages if \code{TRUE}.
-#' @param ... additional argument passed to \code{\link[RSpectra]{svds}}
+#' @param ... additional argument passed to the SVD engine
 #' @import quanteda
 #' @export
 #' @references Watanabe, Kohei. "Measuring News Bias: Russia's Official News
@@ -40,7 +42,11 @@
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
-                          simil_method = "cosine", include_data = TRUE, verbose = FALSE, ...) {
+                          simil_method = "cosine", include_data = TRUE,
+                          engine = c("RSpectra", "irlba"),
+                          verbose = FALSE, ...) {
+
+    engine <- match.arg(engine)
 
     if (is.dfm(features))
         stop("features cannot be a dfm\n", call. = FALSE)
@@ -69,7 +75,9 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (all(lengths(seeds_weighted) == 0))
         stop("No seed word is found in the dfm", call. = FALSE)
 
-    svd <- cache_svd(x, k, cache, ...)
+    if (verbose)
+        cat("Performing SVD by ", engine, "...\n")
+    svd <- cache_svd(x, k, engine, cache, ...)
     simil <- as.matrix(proxyC::simil(svd, svd[,names(seed)],
                                      margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
@@ -92,9 +100,9 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     return(result)
 }
 
-cache_svd <- function(x, k, cache = TRUE, ...) {
+cache_svd <- function(x, k, engine, cache = TRUE, ...) {
 
-    hash <- digest::digest(list(as(x, "dgCMatrix"), k), algo = "xxhash64")
+    hash <- digest::digest(list(as(x, "dgCMatrix"), k, engine), algo = "xxhash64")
     if (cache && !dir.exists("lss_cache"))
         dir.create("lss_cache")
     file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
@@ -108,7 +116,11 @@ cache_svd <- function(x, k, cache = TRUE, ...) {
         message("Reading cache file:", file_cache)
         result <- readRDS(file_cache)
     }else{
-        s <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
+        if (engine == "RSpectra") {
+            s <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
+        } else {
+            s <- irlba::irlba(as(x, "dgCMatrix"), k = k, right_only = TRUE, ...)
+        }
         result <- t(s$v * s$d)
         if (cache) {
             message("Writing cache file:", file_cache)
