@@ -138,14 +138,14 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
 #'   average similarity
 #' @param labelsize size of seed words
 #' @export
-textplot_simil <- function(x, group = TRUE, labelsize = NULL) {
+textplot_simil <- function(x, group = TRUE, labelsize = 10) {
     UseMethod("textplot_simil")
 }
 
 #' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
-textplot_simil.textmodel_lss <- function(x, group = FALSE, labelsize = NULL) {
+textplot_simil.textmodel_lss <- function(x, group = FALS, labelsize = 10) {
     if (!"similarity" %in% names(x))
         stop("similarity matrix is missing")
 
@@ -161,7 +161,7 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE, labelsize = NULL) {
     }
     Var1 <- Var2 <- value <- NULL
     ggplot(data = temp, aes(x = Var1, y = Var2)) +
-        geom_point(aes(colour = value > 0, cex = abs(value))) +
+        geom_point(aes(colour = value > 0, size = abs(value))) +
         theme(axis.title.x = element_blank(),
               axis.title.y = element_blank(),
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = labelsize),

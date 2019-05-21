@@ -4,7 +4,7 @@
 \alias{textplot_simil}
 \title{Plot similarity of seed words}
 \usage{
-textplot_simil(x, group = TRUE, labelsize = NULL)
+textplot_simil(x, group = TRUE, labelsize = 10)
 }
 \arguments{
 \item{x}{fitted textmodel_lss object}
