@@ -137,14 +137,14 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
 #' @param group if \code{TRUE} group seed words by seed patterns and show
 #'   average similarity
 #' @export
-textplot_simil <- function(x, group = TRUE) {
+textplot_simil <- function(x, group = FALSE) {
     UseMethod("textplot_simil")
 }
 
 #' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
-textplot_simil.textmodel_lss <- function(x, group = TRUE) {
+textplot_simil.textmodel_lss <- function(x, group = FALSE) {
     if (!"similarity" %in% names(x))
         stop("similarity matrix is missing")
 
