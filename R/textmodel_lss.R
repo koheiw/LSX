@@ -69,9 +69,9 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (all(lengths(seeds_weighted) == 0))
         stop("No seed word is found in the dfm", call. = FALSE)
 
-    simil <- as.matrix(textstat_simil(cache_svd(x, k, cache, ...),
-                                      selection = names(seed),
-                                      margin = "features", method = simil_method))
+    svd <- cache_svd(x, k, cache, ...)
+    simil <- as.matrix(proxyC::simil(svd, svd[,names(seed)],
+                                     margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
     if (!is.null(features))
