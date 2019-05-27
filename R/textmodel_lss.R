@@ -44,7 +44,7 @@
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE,
                           engine = c("RSpectra", "irlba"),
-                          p = 0, exclude = TRUE,
+                          substruct = FALSE, p = 1.0,
                           verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -82,8 +82,16 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
 
     # detect common factors
     #s <- rowSums(t(t(embed[,colnames(embed) %in% names(seed)]) * sign(seed)))
-    s <- rowSums(embed[,colnames(embed) %in% names(seed)])
-    l <- (s < quantile(s, 1 - p) | quantile(s, p) < s) == exclude
+    #s <- rowSums(embed[,colnames(embed) %in% names(seed)])
+    #l <- (s < quantile(s, 1 - p) | quantile(s, p) < s) == exclude
+    if (substruct) {
+        b <- abs(sign(embed[,names(seed)]) %*% sign(seed))
+        hist(as.numeric(b))
+        l <- as.numeric(b) / length(seed) > p
+        cat("Use ", sum(l), " of ", k, " factors\n")
+    } else {
+        l <- rep(TRUE, length(seed))
+    }
 
     simil <- as.matrix(proxyC::simil(embed[l], embed[l,names(seed)],
                                      margin = 2, method = simil_method))
