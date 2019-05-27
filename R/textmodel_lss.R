@@ -44,6 +44,7 @@
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE,
                           engine = c("RSpectra", "irlba"),
+                          p = 0, exclude = TRUE,
                           verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -77,8 +78,14 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
 
     if (verbose)
         cat("Performing SVD by ", engine, "...\n")
-    svd <- cache_svd(x, k, engine, cache, ...)
-    simil <- as.matrix(proxyC::simil(svd, svd[,names(seed)],
+    embed <- cache_svd(x, k, engine, cache, ...)
+
+    # detect common factors
+    #s <- rowSums(t(t(embed[,colnames(embed) %in% names(seed)]) * sign(seed)))
+    s <- rowSums(embed[,colnames(embed) %in% names(seed)])
+    l <- (s < quantile(s, 1 - p) | quantile(s, p) < s) == exclude
+
+    simil <- as.matrix(proxyC::simil(embed[l], embed[l,names(seed)],
                                      margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
@@ -91,6 +98,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
+                   embedding = embed,
                    similarity = simil_seed,
                    call = match.call())
 
