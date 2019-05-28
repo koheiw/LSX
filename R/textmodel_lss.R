@@ -44,7 +44,7 @@
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE,
                           engine = c("RSpectra", "irlba"),
-                          substruct = FALSE, p = 1.0,
+                          substruct = FALSE, p = 0.1,
                           verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -80,15 +80,13 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
         cat("Performing SVD by ", engine, "...\n")
     embed <- cache_svd(x, k, engine, cache, ...)
 
-    # detect common factors
-    #s <- rowSums(t(t(embed[,colnames(embed) %in% names(seed)]) * sign(seed)))
-    #s <- rowSums(embed[,colnames(embed) %in% names(seed)])
-    #l <- (s < quantile(s, 1 - p) | quantile(s, p) < s) == exclude
     if (substruct) {
-        b <- abs(sign(embed[,names(seed)]) %*% sign(seed))
-        hist(as.numeric(b))
-        l <- as.numeric(b) / length(seed) > p
-        cat("Use ", sum(l), " of ", k, " factors\n")
+        b <- proxyC::simil(sign(embed[,names(seed)]),
+                           sign(Matrix::Matrix(seed, nrow = 1, sparse = TRUE)),
+                           margin = 1)
+        l <- abs(as.numeric(b)) >= p
+
+        cat("Use", sum(l), "of", k, "factors\n")
     } else {
         l <- rep(TRUE, length(seed))
     }
