@@ -119,8 +119,11 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
     hash <- digest::digest(list(as(x, "dgCMatrix"), k, engine), algo = "xxhash64")
     if (cache && !dir.exists("lss_cache"))
         dir.create("lss_cache")
-    file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
-
+    if (engine == "RSpectra") {
+        file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
+    } else {
+        file_cache <- paste0("lss_cache/irlba_", hash, ".RDS")
+    }
     # only for backward compatibility
     file_cache_old <- paste0("lss_cache_", hash, ".RDS")
     if (file.exists(file_cache_old))
