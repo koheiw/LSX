@@ -43,8 +43,7 @@
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE,
-                          engine = c("RSpectra", "irlba"),
-                          substruct = FALSE, p = 0.9,
+                          engine = c("RSpectra", "irlba"), s = k,
                           verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -81,21 +80,18 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     svd <- cache_svd(x, k, engine, cache, ...)
     embed <- get_embedding(svd, featnames(x))
 
-    if (substruct) {
-#        cos <- proxyC::simil(sign(embed[,names(seed)]),
-#                             sign(Matrix::Matrix(seed, nrow = 1, sparse = TRUE)),
-#                             margin = 1)
-        cos <- proxyC::simil(embed[,names(seed)],
-                             Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
-                             margin = 1)
-        relev <- abs(as.numeric(cos))
-        l <- relev >= quantile(relev, 1 - p)
-        cat("Use", sum(l), "of", k, "factors\n")
+    # identify relevance to seed words
+    cos <- proxyC::simil(embed[,names(seed)],
+                         Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
+                         margin = 1)
+    relev <- abs(as.numeric(cos))
+    if (s < k) {
+        l <- rank(relev) >= s
     } else {
-        l <- rep(TRUE, length(seed))
+        l <- rep(TRUE, k)
     }
 
-    simil <- as.matrix(proxyC::simil(embed[l], embed[l,names(seed)],
+    simil <- as.matrix(proxyC::simil(embed[l,,drop = FALSE], embed[l,names(seed),drop = FALSE],
                                      margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
@@ -155,7 +151,7 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
 get_embedding <- function(svd, feature) {
     result <- t(svd$v * svd$d)
     colnames(result) <- feature
-    as.dfm(result)
+    Matrix::Matrix(result, sparse = TRUE)
 }
 
 #' @export

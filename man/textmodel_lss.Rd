@@ -6,8 +6,7 @@
 \usage{
 textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
   simil_method = "cosine", include_data = TRUE,
-  engine = c("RSpectra", "irlba"), substruct = FALSE, p = 0.9,
-  verbose = FALSE, ...)
+  engine = c("RSpectra", "irlba"), s = k, verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
