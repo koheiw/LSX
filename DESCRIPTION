@@ -8,9 +8,6 @@ Description: A highly efficient vector-space model for document scaling.
 License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
-Collate: 
-    textmodel_lss.R
-    data.R
 Depends:
     quanteda (>= 1.1.6),
     methods
