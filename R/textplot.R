@@ -40,7 +40,7 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 }
 
-#' Plot factors of latent semanitic space
+#' Plot factors of vector space
 #' @param x fitted textmodel_lss object
 #' @export
 textplot_factor <- function(x) {
