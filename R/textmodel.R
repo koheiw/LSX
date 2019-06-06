@@ -15,6 +15,7 @@
 #'   \code{x}.
 #' @param engine choose SVD engine between \code{\link[RSpectra]{svds}} and
 #'   \code{\link[irlba]{irlba}}
+#' @param s the number factors used to compute similiaty between features.
 #' @param verbose show messages if \code{TRUE}.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
@@ -43,7 +44,7 @@
 #' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                           simil_method = "cosine", include_data = TRUE,
-                          engine = c("RSpectra", "irlba"),
+                          engine = c("RSpectra", "irlba"), s = k,
                           verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -78,7 +79,20 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (verbose)
         cat("Performing SVD by ", engine, "...\n")
     svd <- cache_svd(x, k, engine, cache, ...)
-    simil <- as.matrix(proxyC::simil(svd, svd[,names(seed)],
+    embed <- get_embedding(svd, featnames(x))
+
+    # identify relevance to seed words
+    cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
+                         Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
+                         margin = 1)
+    relev <- abs(as.numeric(cos))
+    if (s < k) {
+        l <- rank(relev) >= s
+    } else {
+        l <- rep(TRUE, nrow(embed))
+    }
+
+    simil <- as.matrix(proxyC::simil(embed[l,,drop = FALSE], embed[l,names(seed),drop = FALSE],
                                      margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
@@ -91,7 +105,10 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
+                   embedding = embed,
                    similarity = simil_seed,
+                   relevance = relev,
+                   importance = svd$d,
                    call = match.call())
 
     if (include_data)
@@ -105,68 +122,37 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
     hash <- digest::digest(list(as(x, "dgCMatrix"), k, engine), algo = "xxhash64")
     if (cache && !dir.exists("lss_cache"))
         dir.create("lss_cache")
-    file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
-
+    if (engine == "RSpectra") {
+        file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
+    } else {
+        file_cache <- paste0("lss_cache/irlba_", hash, ".RDS")
+    }
     # only for backward compatibility
     file_cache_old <- paste0("lss_cache_", hash, ".RDS")
     if (file.exists(file_cache_old))
         file.rename(file_cache_old, file_cache)
 
-    if(cache && file.exists(file_cache)){
-        message("Reading cache file:", file_cache)
+    if (cache && file.exists(file_cache)){
+        message("Reading cache file: ", file_cache)
         result <- readRDS(file_cache)
-    }else{
+    } else {
         if (engine == "RSpectra") {
-            s <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
+            result <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
         } else {
-            s <- irlba::irlba(as(x, "dgCMatrix"), k = k, right_only = TRUE, ...)
+            result <- irlba::irlba(as(x, "dgCMatrix"), k = k, right_only = TRUE, ...)
         }
-        result <- t(s$v * s$d)
         if (cache) {
-            message("Writing cache file:", file_cache)
+            message("Writing cache file: ", file_cache)
             saveRDS(result, file_cache)
         }
     }
-    colnames(result) <- featnames(x)
-    result <- as.dfm(result)
     return(result)
 }
 
-#' Plot similarity of seed words
-#' @param x fitted textmodel_lss object
-#' @param group if \code{TRUE} group seed words by seed patterns and show
-#'   average similarity
-#' @export
-textplot_simil <- function(x, group = FALSE) {
-    UseMethod("textplot_simil")
-}
-
-#' @method textplot_simil textmodel_lss
-#' @import ggplot2
-#' @export
-textplot_simil.textmodel_lss <- function(x, group = FALSE) {
-    if (!"similarity" %in% names(x))
-        stop("similarity matrix is missing")
-
-    temp <- reshape2::melt(x$similarity, as.is = TRUE)
-    if (group) {
-        seed <- rep(names(x$seeds_weighted), lengths(x$seeds_weighted))
-        names(seed) <- names(unlist(unname(x$seeds_weighted)))
-        temp$Var1 <- seed[temp$Var1]
-        temp$Var2 <- seed[temp$Var2]
-        temp <- stats::aggregate(list(value = temp$value),
-                                 by = list(Var1 = temp$Var1,
-                                           Var2 = temp$Var2), mean)
-    }
-    temp$Var1 <- factor(temp$Var1, levels = unique(temp$Var2))
-    temp$Var2 <- factor(temp$Var2, levels = unique(temp$Var2))
-
-    Var1 <- Var2 <- value <- NULL
-    ggplot(data = temp, aes(x = Var1, y = Var2)) +
-        geom_point(aes(colour = value > 0, cex = abs(value))) +
-        theme(axis.title.x = element_blank(),
-              axis.title.y = element_blank(),
-              axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+get_embedding <- function(svd, feature) {
+    result <- t(svd$v * svd$d)
+    colnames(result) <- feature
+    Matrix::Matrix(result, sparse = TRUE)
 }
 
 #' @export
@@ -332,10 +318,10 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     tar <- dfm_trim(tar, min_termfreq = min_count)
     if (nfeat(tar) == 0)
         return(character())
-    ref <- dfm_select(ref, tar)
-    key <- textstat_keyness(rbind(tar, ref), target = seq(ndoc(tar)), ...)
+    ref <- dfm_match(ref, featnames(tar))
+    key <- textstat_keyness(rbind(tar, ref), target = seq_len(ndoc(tar)), ...)
     key <- key[key$p < p,]
-    key$feature
+    return(key$feature)
 }
 
 #' Seed words for sentiment analysis
