@@ -132,17 +132,17 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
     if (file.exists(file_cache_old))
         file.rename(file_cache_old, file_cache)
 
-    if(cache && file.exists(file_cache)){
-        message("Reading cache file:", file_cache)
+    if (cache && file.exists(file_cache)){
+        message("Reading cache file: ", file_cache)
         result <- readRDS(file_cache)
-    }else{
+    } else {
         if (engine == "RSpectra") {
             result <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
         } else {
             result <- irlba::irlba(as(x, "dgCMatrix"), k = k, right_only = TRUE, ...)
         }
         if (cache) {
-            message("Writing cache file:", file_cache)
+            message("Writing cache file: ", file_cache)
             saveRDS(result, file_cache)
         }
     }
