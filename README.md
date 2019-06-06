@@ -72,7 +72,7 @@ eco <- char_keyness(toks_sent, "econom*", p = 0.05)
 tmod_lss <- textmodel_lss(dfmt_sent, seedwords('pos-neg'), feature = eco, cache = TRUE)
 ```
 
-    ## Reading cache file:lss_cache/svds_89a7251a04d7553f.RDS
+    ## Writing cache file: lss_cache/svds_60960635d75c271b.RDS
 
 ### Sentiment seed words
 
