@@ -32,6 +32,8 @@ used otherwise.}
 \item{engine}{choose SVD engine between \code{\link[RSpectra]{svds}} and
 \code{\link[irlba]{irlba}}}
 
+\item{s}{the number factors used to compute similiaty between features.}
+
 \item{verbose}{show messages if \code{TRUE}.}
 
 \item{...}{additional argument passed to the SVD engine}

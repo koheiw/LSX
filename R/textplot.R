@@ -11,8 +11,9 @@ textplot_simil <- function(x, group = FALSE) {
 #' @import ggplot2
 #' @export
 textplot_simil.textmodel_lss <- function(x, group = FALSE) {
-    if (!"similarity" %in% names(x))
-        stop("similarity matrix is missing")
+
+    if (!all(c("similarity", "seeds_weighted") %in% names(x)))
+        stop("Invalid textmodel_lss object")
 
     temp <- reshape2::melt(x$similarity, as.is = TRUE)
     if (group) {
@@ -39,19 +40,24 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 }
 
-#' Plot substructure of latent semanitic space
+#' Plot factors of latent semanitic space
+#' @param x fitted textmodel_lss object
 #' @export
-textplot_substruct <- function(x) {
-    UseMethod("textplot_substruct")
+textplot_factor <- function(x) {
+    UseMethod("textplot_factor")
 }
 
 #' @export
-textplot_substruct.textmodel_lss <- function(x) {
+#' @import grDevices
+textplot_factor.textmodel_lss <- function(x) {
+
+    if (!all(c("relevance", "importance") %in% names(x)))
+        stop("Invalid textmodel_lss object")
 
     temp <- data.frame(relevance = x$relevance,
                        importance = scale(x$importance, center = FALSE))
     temp <- temp[order(temp$relevance, decreasing = TRUE),]
     temp$factor <- seq_len(nrow(temp))
     ggplot(temp, aes(x = factor, y = relevance)) +
-        geom_point(aes(size = importance), color = rgb(0, 0, 0, 0.2))
+        geom_point(aes(size = importance), color = "black", alpha = 0.2)
 }

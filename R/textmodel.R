@@ -15,6 +15,7 @@
 #'   \code{x}.
 #' @param engine choose SVD engine between \code{\link[RSpectra]{svds}} and
 #'   \code{\link[irlba]{irlba}}
+#' @param s the number factors used to compute similiaty between features.
 #' @param verbose show messages if \code{TRUE}.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
@@ -81,14 +82,14 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     embed <- get_embedding(svd, featnames(x))
 
     # identify relevance to seed words
-    cos <- proxyC::simil(embed[,names(seed)],
+    cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
                          Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
                          margin = 1)
     relev <- abs(as.numeric(cos))
     if (s < k) {
         l <- rank(relev) >= s
     } else {
-        l <- rep(TRUE, k)
+        l <- rep(TRUE, nrow(embed))
     }
 
     simil <- as.matrix(proxyC::simil(embed[l,,drop = FALSE], embed[l,names(seed),drop = FALSE],
