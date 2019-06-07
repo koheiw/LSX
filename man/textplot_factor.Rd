@@ -2,7 +2,7 @@
 % Please edit documentation in R/textplot.R
 \name{textplot_factor}
 \alias{textplot_factor}
-\title{Plot factors of latent semanitic space}
+\title{Plot factors of vector space}
 \usage{
 textplot_factor(x)
 }
@@ -10,5 +10,5 @@ textplot_factor(x)
 \item{x}{fitted textmodel_lss object}
 }
 \description{
-Plot factors of latent semanitic space
+Plot factors of vector space
 }

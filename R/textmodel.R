@@ -119,7 +119,9 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
 
 cache_svd <- function(x, k, engine, cache = TRUE, ...) {
 
-    hash <- digest::digest(list(as(x, "dgCMatrix"), k, engine), algo = "xxhash64")
+    hash <- digest::digest(list(as(x, "dgCMatrix"), k,
+                                utils::packageVersion("LSS")),
+                           algo = "xxhash64")
     if (cache && !dir.exists("lss_cache"))
         dir.create("lss_cache")
     if (engine == "RSpectra") {
