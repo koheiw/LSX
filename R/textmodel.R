@@ -81,6 +81,12 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     svd <- cache_svd(x, k, engine, cache, ...)
     embed <- get_embedding(svd, featnames(x))
 
+    simil_factor <- as.matrix(proxyC::simil(embed, embed, 1))
+    diag(simil_factor) <- NA
+    print(mean(abs(simil_factor), na.rm = TRUE))
+    print(mean(simil_factor, na.rm = TRUE))
+    print(var(as.numeric(simil_factor), na.rm = TRUE))
+
     # identify relevance to seed words
     cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
                          Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
