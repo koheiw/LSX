@@ -102,8 +102,9 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
 
-    result <- list(beta = sort(rowMeans(simil %*% seed), decreasing = TRUE),
-                   frequency = freq[rownames(simil)],
+    beta <- sort(rowMeans(simil %*% seed), decreasing = TRUE)
+    result <- list(beta = beta,
+                   frequency = freq[names(beta)],
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
