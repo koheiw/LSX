@@ -92,6 +92,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
         l <- rep(TRUE, nrow(embed))
     }
 
+    freq <- colSums(x)
     simil <- as.matrix(proxyC::simil(embed[l,,drop = FALSE], embed[l,names(seed),drop = FALSE],
                                      margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
@@ -102,6 +103,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
         stop("Columns and seed words do not match", call. = FALSE)
 
     result <- list(beta = sort(rowMeans(simil %*% seed), decreasing = TRUE),
+                   frequency = freq[rownames(simil)],
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
