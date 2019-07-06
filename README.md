@@ -72,7 +72,7 @@ eco <- char_keyness(toks_sent, "econom*", p = 0.05)
 tmod_lss <- textmodel_lss(dfmt_sent, seedwords('pos-neg'), feature = eco, cache = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_60960635d75c271b.RDS
+    ## Reading cache file: lss_cache/svds_dcdacb167d4fdfc7.RDS
 
 ### Sentiment seed words
 
@@ -121,6 +121,15 @@ tail(coef(tmod_lss), 20) # most negative words
     ##        rates         rate unemployment          rba     negative 
     ##  -0.04638569  -0.04689606  -0.04810378  -0.05048054  -0.06004318
 
+``` r
+par(mar = c(4.1, 10.1, 4.1, 10.1))
+plot(tmod_lss$beta, tmod_lss$frequency, type = "n", main = "Word sentiment",
+     xlab = "Estimated sentiment", ylab = "Frequency in corpus", log = "y")
+text(tmod_lss$beta, tmod_lss$frequency, names(tmod_lss$beta), col = rgb(0, 0, 0, 0.5))
+```
+
+![](images/unnamed-chunk-7-1.png)<!-- -->
+
 ## Result of analysis
 
 In the plots, circles indicate sentiment of individual news articles and
@@ -152,4 +161,4 @@ abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 2))
 text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 ```
 
-![](images/unnamed-chunk-7-1.png)<!-- -->
+![](images/unnamed-chunk-8-1.png)<!-- -->

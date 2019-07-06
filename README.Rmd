@@ -77,6 +77,13 @@ head(coef(tmod_lss), 20) # most positive words
 tail(coef(tmod_lss), 20) # most negative words
 ```
 
+```{r}
+par(mar = c(4.1, 10.1, 4.1, 10.1))
+plot(tmod_lss$beta, tmod_lss$frequency, type = "n", main = "Word sentiment",
+     xlab = "Estimated sentiment", ylab = "Frequency in corpus", log = "y")
+text(tmod_lss$beta, tmod_lss$frequency, names(tmod_lss$beta), col = rgb(0, 0, 0, 0.5))
+```
+
 ## Result of analysis
 
 In the plots, circles indicate sentiment of individual news articles and lines are their local average (solid line) with a confidence band (dotted lines). According to the plot, economic sentiment in the Guardian news stories became negative from February to April, but it become more positive in April. As the referendum approaches, the newspaper's sentiment became less stable, although it became close to neutral (overall mean) on the day of voting (broken line).
