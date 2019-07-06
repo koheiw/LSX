@@ -59,5 +59,6 @@ textplot_factor.textmodel_lss <- function(x) {
     temp <- temp[order(temp$relevance, decreasing = TRUE),]
     temp$factor <- seq_len(nrow(temp))
     ggplot(temp, aes(x = factor, y = relevance)) +
-        geom_point(aes(size = importance), color = "black", alpha = 0.2)
+        geom_point(aes(size = importance), color = "black", alpha = 0.2) +
+        ylim(0, 1)
 }
