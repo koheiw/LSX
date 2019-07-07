@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{diagnosys}
 \alias{diagnosys}
-\title{Diagnose levels of noises in documents in a corpus}
+\title{Diagnose the amount of noise in documents in a corpus}
 \usage{
 diagnosys(x, ...)
 }
@@ -12,5 +12,5 @@ diagnosys(x, ...)
 \item{...}{extra arguments passed to \code{tokens}}
 }
 \description{
-Diagnose levels of noises in documents in a corpus
+Diagnose the amount of noise in documents in a corpus
 }
