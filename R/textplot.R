@@ -62,3 +62,34 @@ textplot_factor.textmodel_lss <- function(x) {
         geom_point(aes(size = importance), color = "black", alpha = 0.2) +
         ylim(0, 1)
 }
+
+
+#' @export
+#' @import ggplot2
+textplot_scale1d.textmodel_lss <- function(x,
+                                           margin = c("features", "documents"),
+                                           doclabels = NULL,
+                                           sort = TRUE,
+                                           groups = NULL,
+                                           highlighted = NULL,
+                                           alpha = 0.7,
+                                           highlighted_color = "black") {
+
+    margin <- match.arg(margin)
+    if (margin == "documents") {
+        stop("This margin can only be run on a LSS model.")
+    } else if (margin == "features") {
+        p <- quanteda:::textplot_scale1d_features(
+            x$beta,
+            weight = log(x$frequency),
+            featlabels = names(x$beta),
+            highlighted = highlighted,
+            alpha = alpha,
+            highlighted_color = highlighted_color
+        ) +
+            xlab("beta") +
+            ylab("log(term frequency)")
+        quanteda:::apply_theme(p)
+    }
+}
+
