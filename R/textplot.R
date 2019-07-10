@@ -7,7 +7,7 @@ textplot_simil <- function(x, group = FALSE) {
     UseMethod("textplot_simil")
 }
 
-    #' @method textplot_simil textmodel_lss
+#' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
 textplot_simil.textmodel_lss <- function(x, group = FALSE) {
@@ -30,7 +30,7 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
     temp$color <- factor(temp$value > 0, levels = c(TRUE, FALSE),
                          labels = c("positive", "negative"))
     temp$size <- abs(temp$value)
-    Var1 <- Var2 <- value <- NULL
+    Var1 <- Var2 <- value <- size <- color <- NULL
     ggplot(data = temp, aes(x = Var1, y = Var2)) +
         geom_point(aes(colour = color, cex = size)) +
         guides(cex = guide_legend(order = 1),
@@ -58,7 +58,40 @@ textplot_factor.textmodel_lss <- function(x) {
                        importance = scale(x$importance, center = FALSE))
     temp <- temp[order(temp$relevance, decreasing = TRUE),]
     temp$factor <- seq_len(nrow(temp))
+
+    factor <- relevance <- importance <- color <- NULL
     ggplot(temp, aes(x = factor, y = relevance)) +
         geom_point(aes(size = importance), color = "black", alpha = 0.2) +
         ylim(0, 1)
 }
+
+
+#' @export
+#' @import ggplot2
+textplot_scale1d.textmodel_lss <- function(x,
+                                           margin = c("features", "documents"),
+                                           doclabels = NULL,
+                                           sort = TRUE,
+                                           groups = NULL,
+                                           highlighted = NULL,
+                                           alpha = 0.7,
+                                           highlighted_color = "black") {
+
+    margin <- match.arg(margin)
+    if (margin == "documents") {
+        stop("There is no document margin in a LSS model.")
+    } else if (margin == "features") {
+        p <- quanteda:::textplot_scale1d_features(
+            x$beta,
+            weight = log(x$frequency),
+            featlabels = names(x$beta),
+            highlighted = highlighted,
+            alpha = alpha,
+            highlighted_color = highlighted_color
+        ) +
+            xlab("beta") +
+            ylab("log(term frequency)")
+        quanteda:::apply_theme(p)
+    }
+}
+

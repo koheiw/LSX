@@ -14,4 +14,3 @@ test_that("diagnosys works", {
     expect_equal(diagnosys(txt), dat)
 
 })
-
