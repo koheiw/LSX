@@ -79,7 +79,7 @@ textplot_scale1d.textmodel_lss <- function(x,
 
     margin <- match.arg(margin)
     if (margin == "documents") {
-        stop("This margin can only be run on a LSS model.")
+        stop("There is no document margin in a LSS model.")
     } else if (margin == "features") {
         p <- quanteda:::textplot_scale1d_features(
             x$beta,
