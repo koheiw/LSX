@@ -30,7 +30,7 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
     temp$color <- factor(temp$value > 0, levels = c(TRUE, FALSE),
                          labels = c("positive", "negative"))
     temp$size <- abs(temp$value)
-    Var1 <- Var2 <- value <- size <- NULL
+    Var1 <- Var2 <- value <- size <- color <- NULL
     ggplot(data = temp, aes(x = Var1, y = Var2)) +
         geom_point(aes(colour = color, cex = size)) +
         guides(cex = guide_legend(order = 1),
