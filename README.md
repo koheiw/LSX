@@ -92,8 +92,9 @@ seedwords("pos-neg")
 
 ### Sentiment words
 
-LSS identifies domain specific words and weight them by
-    sentiment.
+Economic words are weighted in terms of sentiment based on the proximity
+to seed
+    words.
 
 ``` r
 head(coef(tmod_lss), 20) # most positive words
@@ -121,11 +122,15 @@ tail(coef(tmod_lss), 20) # most negative words
     ##        rates         rate unemployment          rba     negative 
     ##  -0.04638569  -0.04689606  -0.04810378  -0.05048054  -0.06004318
 
+This plot shows that frequent words (“said”, “people”, “also”) are
+neutral while less frequenty words such as “borrowing”, “unemployment”,
+“emerging” and “efficient” are either negative or positive.
+
 ``` r
-par(mar = c(4.1, 10.1, 4.1, 10.1))
-plot(tmod_lss$beta, tmod_lss$frequency, type = "n", main = "Word sentiment",
-     xlab = "Estimated sentiment", ylab = "Frequency in corpus", log = "y")
-text(tmod_lss$beta, tmod_lss$frequency, names(tmod_lss$beta), col = rgb(0, 0, 0, 0.5))
+textplot_scale1d(tmod_lss, 
+                 highlighted = c("said", "people", "also",
+                                 "borrowing", "unemployment",
+                                 "emerging", "efficient"))
 ```
 
 ![](images/unnamed-chunk-7-1.png)<!-- -->
