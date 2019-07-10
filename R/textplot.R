@@ -7,7 +7,7 @@ textplot_simil <- function(x, group = FALSE) {
     UseMethod("textplot_simil")
 }
 
-    #' @method textplot_simil textmodel_lss
+#' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
 textplot_simil.textmodel_lss <- function(x, group = FALSE) {
