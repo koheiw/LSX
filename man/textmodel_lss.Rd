@@ -2,14 +2,28 @@
 % Please edit documentation in R/textmodel.R
 \name{textmodel_lss}
 \alias{textmodel_lss}
+\alias{textmodel_lss.dfm}
+\alias{textmodel_lss.fcm}
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
 textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
   simil_method = "cosine", include_data = TRUE,
-  engine = c("RSpectra", "irlba"), s = k, verbose = FALSE, ...)
+  engine = c("RSpectra", "irlba"), s = k, w = 50, verbose = FALSE,
+  ...)
+
+\method{textmodel_lss}{dfm}(x, seeds, features = NULL, k = 300,
+  cache = FALSE, simil_method = "cosine", include_data = TRUE,
+  engine = c("RSpectra", "irlba"), s = k, w = 50, verbose = FALSE,
+  ...)
+
+\method{textmodel_lss}{fcm}(x, seeds, features = NULL, k = 300,
+  cache = FALSE, simil_method = "cosine", include_data = TRUE,
+  engine = c("RSpectra", "irlba"), s = k, w = 50, verbose = FALSE,
+  ...)
 }
 \arguments{
-\item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
+\item{x}{a dfm or fcm created by \code{\link[quanteda]{dfm}} or
+\code{\link[quanteda]{fcm}}}
 
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
@@ -17,7 +31,8 @@ contains seed words.}
 \item{features}{featues of a dfm to be included in the model as terms. This
 argument is used to make models only sensitive to subject specific words.}
 
-\item{k}{the size of semantic space passed to the SVD engine}
+\item{k}{the size of semantic space passed to the SVD engine Only used when
+\code{x} is a \code{dfm}.}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
@@ -34,6 +49,8 @@ used otherwise.}
 
 \item{s}{the number factors used to compute similiaty between features.}
 
+\item{w}{the size of word vectors. Only used when \code{x} is a \code{fcm}.}
+
 \item{verbose}{show messages if \code{TRUE}.}
 
 \item{...}{additional argument passed to the SVD engine}
@@ -42,23 +59,35 @@ used otherwise.}
 A vector-space model for subject specific sentiment-analysis
 }
 \examples{
+\dontrun{
 require(quanteda)
 
 load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 corp <- corpus_reshape(data_corpus_guardian, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE)
-mt <- dfm(toks, remove = stopwords())
-mt <- dfm_trim(mt, min_termfreq = 10)
-lss <- textmodel_lss(mt, seedwords('pos-neg'))
+dfmat <- dfm(toks, remove = stopwords())
+dfmat <- dfm_trim(dfmat, min_termfreq = 10)
+# SVD
+lss <- textmodel_lss(dfmat, seedwords('pos-neg'))
 summary(lss)
 
 # sentiment model on economy
 eco <- head(char_keyness(toks, 'econom*'), 500)
-lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), features = eco)
+lss_eco <- textmodel_lss(dfmat, seedwords('pos-neg'), features = eco)
 
 # sentiment model on politics
 pol <- head(char_keyness(toks, 'politi*'), 500)
-lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
+lss_pol <- textmodel_lss(dfmat, seedwords('pos-neg'), features = pol)
+}
+\dontrun{
+
+toks <- tokens(corp, remove_punct = TRUE) \%>\%
+        tokens_remove(stopwords()) \%>\%
+        tokens_select("^[\\\\p{L}]+$", valuetype = "regex", padding = TRUE)
+# GloVe
+fcmat  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
+lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
+}
 }
 \references{
 Watanabe, Kohei. "Measuring News Bias: Russia's Official News

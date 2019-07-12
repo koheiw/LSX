@@ -2,13 +2,15 @@
 % Please edit documentation in R/textplot.R
 \name{textplot_factor}
 \alias{textplot_factor}
-\title{Plot factors of vector space}
+\title{Plot factors of latent sematic space}
 \usage{
-textplot_factor(x)
+textplot_factor(x, sort = TRUE)
 }
 \arguments{
 \item{x}{fitted textmodel_lss object}
+
+\item{sort}{sort factors by relevance if \code{TRUE}}
 }
 \description{
-Plot factors of vector space
+Plot factors of latent sematic space
 }
