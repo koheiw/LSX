@@ -120,7 +120,7 @@ fit_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
             embed <- as(glove$main + glove$context, "dgCMatrix")
         })
         include_data <- FALSE
-        import <- NA
+        import <- rep(1, w)
     } else {
         if (verbose)
             cat("Performing SVD by ", engine, "...\n")

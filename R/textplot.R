@@ -65,6 +65,7 @@ textplot_factor.textmodel_lss <- function(x, sort = TRUE) {
     ggplot(temp, aes(x = factor, y = relevance)) +
         geom_point(aes(size = importance), color = "black", alpha = 0.2) +
         ylim(0, 1)
+
 }
 
 #' @export
