@@ -2,7 +2,7 @@ Package: LSS
 Type: Package
 Title: Latent Semantic Scaling
 Date: 2019-07-10
-Version: 0.7
+Version: 0.7.2
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre"))
 Description: A highly efficient vector-space model for document scaling.
 License: GPL-3
@@ -16,6 +16,7 @@ Imports:
     Matrix,
     RSpectra,
     irlba,
+    text2vec,
     proxyC,
     stringi,
     grDevices,
