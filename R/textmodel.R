@@ -115,12 +115,10 @@ fit_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (is.fcm(x)) {
         if (verbose)
             cat("Fitting GloVe model text2vec...\n")
-        suppressMessages({
-            glove <- cache_glove(x, w, ...)
-            embed <- as(glove$main + glove$context, "dgCMatrix")
-        })
-        include_data <- FALSE
+        glove <- cache_glove(x, w, ...)
+        embed <- as(glove$main + glove$context, "dgCMatrix")
         import <- rep(1, w)
+        include_data <- FALSE
     } else {
         if (verbose)
             cat("Performing SVD by ", engine, "...\n")
