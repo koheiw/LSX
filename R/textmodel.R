@@ -15,10 +15,11 @@
 #'   identical \code{x} and \code{k}.
 #' @param include_data if \code{TRUE}, fitted model include the dfm supplied as
 #'   \code{x}.
-#' @param engine choose SVD engine between \code{\link[RSpectra]{svds}} and
-#'   \code{\link[irlba]{irlba}}
+#' @param engine choose SVD engine between \code{\link[RSpectra]{svds}},
+#'   \code{\link[irlba]{irlba}}, and \code{\link[text2vec]{GlobalVectors}}.
 #' @param s the number factors used to compute similiaty between features.
-#' @param w the size of word vectors. Only used when \code{x} is a \code{fcm}.
+#' @param w the size of word vectors. Only used when \code{engine} is
+#'   "text2vec".
 #' @param verbose show messages if \code{TRUE}.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
@@ -27,23 +28,17 @@
 #'   Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
 #'   Communication 32, no. 3 (March 20, 2017): 224–41.
 #'   https://doi.org/10.1177/0267323117695735.
-textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
-                          simil_method = "cosine", include_data = TRUE,
-                          engine = c("RSpectra", "irlba"), s = k, w = 50,
-                          verbose = FALSE, ...) {
-    UseMethod("textmodel_lss")
-}
-
-#' @rdname textmodel_lss
 #' @examples
 #' \dontrun{
 #' require(quanteda)
 #'
 #' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 #' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
-#' toks <- tokens(corp, remove_punct = TRUE)
-#' dfmat <- dfm(toks, remove = stopwords())
-#' dfmat <- dfm_trim(dfmat, min_termfreq = 10)
+#' toks <- tokens(corp, remove_punct = TRUE) %>%
+#'         tokens_remove(stopwords()) %>%
+#' dfmat <- dfm(toks) %>%
+#'          dfm_trim(dfmat, min_termfreq = 10)
+#'
 #' # SVD
 #' lss <- textmodel_lss(dfmat, seedwords('pos-neg'))
 #' summary(lss)
@@ -55,41 +50,16 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
 #' lss_pol <- textmodel_lss(dfmat, seedwords('pos-neg'), features = pol)
-#' }
-#' @export
-textmodel_lss.dfm <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
-                              simil_method = "cosine", include_data = TRUE,
-                              engine = c("RSpectra", "irlba"), s = k, w = 50,
-                              verbose = FALSE, ...) {
-
-
-    fit_lss(x, seeds, features, k, cache, simil_method, include_data, engine, s, w, verbose, ...)
-}
-
-#' @rdname textmodel_lss
-#' @examples
-#' \dontrun{
 #'
-#' toks <- tokens(corp, remove_punct = TRUE) %>%
-#'         tokens_remove(stopwords()) %>%
-#'         tokens_select("^[\\p{L}]+$", valuetype = "regex", padding = TRUE)
 #' # GloVe
+#' toks <- tokens_select("^[\\p{L}]+$", valuetype = "regex", padding = TRUE)
 #' fcmat  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
 #' lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
 #' }
 #' @export
-textmodel_lss.fcm <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
-                              simil_method = "cosine", include_data = TRUE,
-                              engine = c("RSpectra", "irlba"), s = k, w = 50,
-                              verbose = FALSE, ...) {
-
-
-    fit_lss(x, seeds, features, k, cache, simil_method, include_data, engine, s, w, verbose, ...)
-}
-
-fit_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
+textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                     simil_method = "cosine", include_data = TRUE,
-                    engine = c("RSpectra", "irlba"), s = k, w = 50,
+                    engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50,
                     verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -112,13 +82,14 @@ fit_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (verbose)
         cat("Starting singular value decomposition of dfm...\n")
 
-    if (is.fcm(x)) {
+    if (engine == "text2vec") {
+        if (!is.fcm(x))
+            stop("x must be a fcm for text2vec", call. = FALSE)
         if (verbose)
             cat("Fitting GloVe model text2vec...\n")
         glove <- cache_glove(x, w, ...)
         embed <- as(glove$main + glove$context, "dgCMatrix")
         import <- rep(1, w)
-        include_data <- FALSE
     } else {
         if (verbose)
             cat("Performing SVD by ", engine, "...\n")
@@ -159,7 +130,7 @@ fit_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                    importance = import,
                    call = match.call())
 
-    if (include_data)
+    if (include_data && !is.fcm(x))
         result$data <- x
     class(result) <- "textmodel_lss"
     return(result)
