@@ -6,10 +6,12 @@
 \usage{
 textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
   simil_method = "cosine", include_data = TRUE,
-  engine = c("RSpectra", "irlba"), s = k, verbose = FALSE, ...)
+  engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50,
+  verbose = FALSE, ...)
 }
 \arguments{
-\item{x}{a dfm created by \code{\link[quanteda]{dfm}}}
+\item{x}{a dfm or fcm created by \code{\link[quanteda]{dfm}} or
+\code{\link[quanteda]{fcm}}}
 
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
@@ -17,7 +19,8 @@ contains seed words.}
 \item{features}{featues of a dfm to be included in the model as terms. This
 argument is used to make models only sensitive to subject specific words.}
 
-\item{k}{the size of semantic space passed to the SVD engine}
+\item{k}{the size of semantic space passed to the SVD engine Only used when
+\code{x} is a \code{dfm}.}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
@@ -29,10 +32,13 @@ used otherwise.}
 \item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as
 \code{x}.}
 
-\item{engine}{choose SVD engine between \code{\link[RSpectra]{svds}} and
-\code{\link[irlba]{irlba}}}
+\item{engine}{choose SVD engine between \code{\link[RSpectra]{svds}},
+\code{\link[irlba]{irlba}}, and \code{\link[text2vec]{GlobalVectors}}.}
 
 \item{s}{the number factors used to compute similiaty between features.}
+
+\item{w}{the size of word vectors. Only used when \code{engine} is
+"text2vec".}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
@@ -42,23 +48,33 @@ used otherwise.}
 A vector-space model for subject specific sentiment-analysis
 }
 \examples{
+\dontrun{
 require(quanteda)
 
 load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 corp <- corpus_reshape(data_corpus_guardian, 'sentences')
-toks <- tokens(corp, remove_punct = TRUE)
-mt <- dfm(toks, remove = stopwords())
-mt <- dfm_trim(mt, min_termfreq = 10)
-lss <- textmodel_lss(mt, seedwords('pos-neg'))
+toks <- tokens(corp, remove_punct = TRUE) \%>\%
+        tokens_remove(stopwords()) \%>\%
+dfmat <- dfm(toks) \%>\%
+         dfm_trim(dfmat, min_termfreq = 10)
+
+# SVD
+lss <- textmodel_lss(dfmat, seedwords('pos-neg'))
 summary(lss)
 
 # sentiment model on economy
 eco <- head(char_keyness(toks, 'econom*'), 500)
-lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), features = eco)
+lss_eco <- textmodel_lss(dfmat, seedwords('pos-neg'), features = eco)
 
 # sentiment model on politics
 pol <- head(char_keyness(toks, 'politi*'), 500)
-lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
+lss_pol <- textmodel_lss(dfmat, seedwords('pos-neg'), features = pol)
+
+# GloVe
+toks <- tokens_select("^[\\\\p{L}]+$", valuetype = "regex", padding = TRUE)
+fcmat  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
+lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
+}
 }
 \references{
 Watanabe, Kohei. "Measuring News Bias: Russia's Official News

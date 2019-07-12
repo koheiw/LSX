@@ -40,31 +40,37 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 }
 
-#' Plot factors of vector space
+#' Plot factors of latent sematic space
 #' @param x fitted textmodel_lss object
+#' @param sort sort factors by relevance if \code{TRUE}
 #' @export
-textplot_factor <- function(x) {
+textplot_factor <- function(x, sort = TRUE) {
     UseMethod("textplot_factor")
 }
 
 #' @export
 #' @import grDevices
-textplot_factor.textmodel_lss <- function(x) {
+textplot_factor.textmodel_lss <- function(x, sort = TRUE) {
 
     if (!all(c("relevance", "importance") %in% names(x)))
         stop("Invalid textmodel_lss object")
 
     temp <- data.frame(relevance = x$relevance,
                        importance = scale(x$importance, center = FALSE))
-    temp <- temp[order(temp$relevance, decreasing = TRUE),]
+    if (sort)
+        temp <- temp[order(temp$relevance, decreasing = TRUE),]
     temp$factor <- seq_len(nrow(temp))
 
     factor <- relevance <- importance <- color <- NULL
     ggplot(temp, aes(x = factor, y = relevance)) +
         geom_point(aes(size = importance), color = "black", alpha = 0.2) +
         ylim(0, 1)
+
 }
 
+#' @export
+#' @importFrom quanteda textplot_scale1d
+quanteda::textplot_scale1d
 
 #' @export
 #' @import ggplot2

@@ -218,7 +218,31 @@ test_that("textmodel_lss works with non-existent seeds", {
 })
 
 test_that("RSpectra and irlba work", {
-    mt <- dfm(test_toks)
-    expect_silent(textmodel_lss(mt, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
-    expect_silent(textmodel_lss(mt, seedwords("pos-neg"), k = 10, engine = "irlba"))
+    dfmat <- dfm(test_toks)
+    expect_silent(textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
+    expect_silent(textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, engine = "irlba"))
+
+    fcmat <- fcm(test_toks)
+    expect_silent(textmodel_lss(fcmat, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
+    expect_silent(textmodel_lss(fcmat, seedwords("pos-neg"), k = 10, engine = "irlba"))
 })
+
+test_that("text2vec works", {
+    dfmat <- dfm(test_toks)
+    expect_error(textmodel_lss(dfmat, seedwords("pos-neg"), engine = "text2vec"),
+                 "x must be a fcm for text2vec")
+    fcmat <- fcm(test_toks)
+    lss <- textmodel_lss(fcmat, seedwords("pos-neg"), engine = "text2vec")
+    expect_equal(
+        names(predict(lss, dfmat)),
+        docnames(dfmat)
+    )
+    expect_error(
+        predict(lss),
+        "LSS model includes no data"
+    )
+    expect_true(setequal(names(coef(lss)), colnames(fcmat)))
+})
+
+
+

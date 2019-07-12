@@ -1,11 +1,13 @@
 #' A vector-space model for subject specific sentiment-analysis
 #'
-#' @param x a dfm created by \code{\link[quanteda]{dfm}}
+#' @param x a dfm or fcm created by \code{\link[quanteda]{dfm}} or
+#'   \code{\link[quanteda]{fcm}}
 #' @param seeds a character vector, named numeric vector or dictionary that
 #'   contains seed words.
 #' @param features featues of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
-#' @param k the size of semantic space passed to the SVD engine
+#' @param k the size of semantic space passed to the SVD engine Only used when
+#'   \code{x} is a \code{dfm}.
 #' @param simil_method specifies method to compute similiaty between features.
 #'   The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
 #'   used otherwise.
@@ -13,9 +15,11 @@
 #'   identical \code{x} and \code{k}.
 #' @param include_data if \code{TRUE}, fitted model include the dfm supplied as
 #'   \code{x}.
-#' @param engine choose SVD engine between \code{\link[RSpectra]{svds}} and
-#'   \code{\link[irlba]{irlba}}
+#' @param engine choose SVD engine between \code{\link[RSpectra]{svds}},
+#'   \code{\link[irlba]{irlba}}, and \code{\link[text2vec]{GlobalVectors}}.
 #' @param s the number factors used to compute similiaty between features.
+#' @param w the size of word vectors. Only used when \code{engine} is
+#'   "text2vec".
 #' @param verbose show messages if \code{TRUE}.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
@@ -25,47 +29,52 @@
 #'   Communication 32, no. 3 (March 20, 2017): 224–41.
 #'   https://doi.org/10.1177/0267323117695735.
 #' @examples
+#' \dontrun{
 #' require(quanteda)
 #'
 #' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
 #' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
-#' toks <- tokens(corp, remove_punct = TRUE)
-#' mt <- dfm(toks, remove = stopwords())
-#' mt <- dfm_trim(mt, min_termfreq = 10)
-#' lss <- textmodel_lss(mt, seedwords('pos-neg'))
+#' toks <- tokens(corp, remove_punct = TRUE) %>%
+#'         tokens_remove(stopwords()) %>%
+#' dfmat <- dfm(toks) %>%
+#'          dfm_trim(dfmat, min_termfreq = 10)
+#'
+#' # SVD
+#' lss <- textmodel_lss(dfmat, seedwords('pos-neg'))
 #' summary(lss)
 #'
 #' # sentiment model on economy
 #' eco <- head(char_keyness(toks, 'econom*'), 500)
-#' lss_eco <- textmodel_lss(mt, seedwords('pos-neg'), features = eco)
+#' lss_eco <- textmodel_lss(dfmat, seedwords('pos-neg'), features = eco)
 #'
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
-#' lss_pol <- textmodel_lss(mt, seedwords('pos-neg'), features = pol)
+#' lss_pol <- textmodel_lss(dfmat, seedwords('pos-neg'), features = pol)
+#'
+#' # GloVe
+#' toks <- tokens_select("^[\\p{L}]+$", valuetype = "regex", padding = TRUE)
+#' fcmat  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
+#' lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
+#' }
+#' @export
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
-                          simil_method = "cosine", include_data = TRUE,
-                          engine = c("RSpectra", "irlba"), s = k,
-                          verbose = FALSE, ...) {
+                    simil_method = "cosine", include_data = TRUE,
+                    engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50,
+                    verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
 
     if (is.dfm(features))
         stop("features cannot be a dfm\n", call. = FALSE)
 
-    if (is.dictionary(seeds))
-        seeds <- unlist(seeds, use.names = FALSE)
-
-    # give equal weight to characters
-    if (is.character(seeds))
-        seeds <- structure(rep(1, length(seeds)), names = seeds)
-
-    if (is.null(names(seeds)))
-        stop("y must be a named-numerid vector\n", call. = FALSE)
-
     # generate inflected seed
+    seeds <- get_seeds(seeds)
     seeds_weighted <- mapply(weight_seeds, names(seeds), unname(seeds) / length(seeds),
                              MoreArgs = list(featnames(x)), USE.NAMES = TRUE, SIMPLIFY = FALSE)
     seed <- unlist(unname(seeds_weighted))
+
+    if (all(lengths(seeds_weighted) == 0))
+        stop("No seed word is found in the dfm", call. = FALSE)
 
     if (verbose)
         cat("Calculating term-term similarity to", sum(lengths(seeds)), "seed words...\n")
@@ -73,14 +82,21 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     if (verbose)
         cat("Starting singular value decomposition of dfm...\n")
 
-    if (all(lengths(seeds_weighted) == 0))
-        stop("No seed word is found in the dfm", call. = FALSE)
-
-    if (verbose)
-        cat("Performing SVD by ", engine, "...\n")
-    svd <- cache_svd(x, k, engine, cache, ...)
-    embed <- get_embedding(svd, featnames(x))
-
+    if (engine == "text2vec") {
+        if (!is.fcm(x))
+            stop("x must be a fcm for text2vec", call. = FALSE)
+        if (verbose)
+            cat("Fitting GloVe model text2vec...\n")
+        glove <- cache_glove(x, w, ...)
+        embed <- as(glove$main + glove$context, "dgCMatrix")
+        import <- rep(1, w)
+    } else {
+        if (verbose)
+            cat("Performing SVD by ", engine, "...\n")
+        svd <- cache_svd(x, k, engine, cache, ...)
+        embed <- get_embedding(svd, featnames(x))
+        import <- svd$d
+    }
     # identify relevance to seed words
     cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
                          Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
@@ -111,10 +127,10 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                    embedding = embed,
                    similarity = simil_seed,
                    relevance = relev,
-                   importance = svd$d,
+                   importance = import,
                    call = match.call())
 
-    if (include_data)
+    if (include_data && !is.fcm(x))
         result$data <- x
     class(result) <- "textmodel_lss"
     return(result)
@@ -132,10 +148,6 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
     } else {
         file_cache <- paste0("lss_cache/irlba_", hash, ".RDS")
     }
-    # only for backward compatibility
-    file_cache_old <- paste0("lss_cache_", hash, ".RDS")
-    if (file.exists(file_cache_old))
-        file.rename(file_cache_old, file_cache)
 
     if (cache && file.exists(file_cache)){
         message("Reading cache file: ", file_cache)
@@ -154,10 +166,53 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
     return(result)
 }
 
+cache_glove <- function(x, w, cache = TRUE, ...) {
+
+    hash <- digest::digest(list(as(x, "dgCMatrix"), w,
+                                utils::packageVersion("LSS")),
+                           algo = "xxhash64")
+    if (cache && !dir.exists("lss_cache"))
+        dir.create("lss_cache")
+    file_cache <- paste0("lss_cache/text2vec_", hash, ".RDS")
+
+    if (cache && file.exists(file_cache)){
+        message("Reading cache file: ", file_cache)
+        result <- readRDS(file_cache)
+    } else {
+        temp <- text2vec::GlobalVectors$new(
+            word_vectors_size = w,
+            vocabulary = featnames(x),
+            x_max = 10
+        )
+        result <- list(main = t(text2vec::fit_transform(x, temp, ...)),
+                       context = temp$components)
+        if (cache) {
+            message("Writing cache file: ", file_cache)
+            saveRDS(result, file_cache)
+        }
+    }
+    return(result)
+}
+
 get_embedding <- function(svd, feature) {
     result <- t(svd$v * svd$d)
     colnames(result) <- feature
     Matrix::Matrix(result, sparse = TRUE)
+}
+
+get_seeds <- function(seeds) {
+
+    if (is.dictionary(seeds))
+        seeds <- unlist(seeds, use.names = FALSE)
+
+    # give equal weight to characters
+    if (is.character(seeds))
+        seeds <- structure(rep(1, length(seeds)), names = seeds)
+
+    if (is.null(names(seeds)))
+        stop("y must be a named-numerid vector\n", call. = FALSE)
+
+    return(seeds)
 }
 
 #' @export

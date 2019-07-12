@@ -19,7 +19,8 @@ diagnosys.corpus <- function(x, ...) {
     dict <- dictionary(list(
         "number" = "\\p{N}",
         "punct" = "\\p{P}",
-        "symbol" = "\\p{S}"
+        "symbol" = "\\p{S}",
+        "any" = "[\\p{N}\\p{P}\\p{S}]"
     ))
 
     n_sent <- ntoken(tokens(x, what = "sentence"))
@@ -32,7 +33,8 @@ diagnosys.corpus <- function(x, ...) {
     result$n_sent <- n_sent
     result$n_token <- n_token
     result$dupli <- duplicated(texts(x))
-    result$noise <- (result$number + result$punct + result$symbol) / result$n_token
+    result$noise <- result$any / result$n_token
     return(result)
 }
+
 
