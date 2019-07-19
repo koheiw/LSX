@@ -244,5 +244,12 @@ test_that("text2vec works", {
     expect_true(setequal(names(coef(lss)), colnames(fcmat)))
 })
 
+test_that("d is working", {
+    dfmat <- dfm(test_toks)
+    lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 0)
+    lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 1.0)
+    expect_false(identical(lss1, lss2))
+})
+
 
 
