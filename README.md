@@ -90,7 +90,7 @@ seedwords("pos-neg")
     ##       wrong    inferior 
     ##          -1          -1
 
-### Sentiment words
+### Econimic sentiment words
 
 Economic words are weighted in terms of sentiment based on the proximity
 to seed

@@ -20,6 +20,8 @@
 #' @param s the number factors used to compute similiaty between features.
 #' @param w the size of word vectors. Only used when \code{engine} is
 #'   "text2vec".
+#' @param d eigen value value weighting. Only used when \code{engine} is
+#'   "RSpectra" or "irlba".
 #' @param verbose show messages if \code{TRUE}.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
@@ -59,7 +61,7 @@
 #' @export
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                     simil_method = "cosine", include_data = TRUE,
-                    engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50,
+                    engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50, d = 0,
                     verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -94,7 +96,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
         if (verbose)
             cat("Performing SVD by ", engine, "...\n")
         svd <- cache_svd(x, k, engine, cache, ...)
-        embed <- get_embedding(svd, featnames(x))
+        embed <- get_embedding(svd, featnames(x), d)
         import <- svd$d
     }
     # identify relevance to seed words
@@ -194,8 +196,12 @@ cache_glove <- function(x, w, cache = TRUE, ...) {
     return(result)
 }
 
-get_embedding <- function(svd, feature) {
-    result <- t(svd$v * svd$d)
+get_embedding <- function(svd, feature, d) {
+    if (d == 0) {
+        result <- t(svd$v)
+    } else {
+        result <- t(svd$v %*% diag(svd$d * d))
+    }
     colnames(result) <- feature
     Matrix::Matrix(result, sparse = TRUE)
 }

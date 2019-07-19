@@ -187,13 +187,13 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
     pred <- predict(test_lss, newdata = as.dfm(mt))
     expect_equal(length(pred), ndoc(data_corpus_inaugural))
     expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                      c("1789-Washington" = 0.42207451, "1797-Adams" = NA, "1825-Adams" = NA),
+                      c("1789-Washington" = -0.724806, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
 
     pred2 <- predict(test_lss, newdata = as.dfm(mt), se.fit = TRUE)
     expect_equal(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                 c("1789-Washington" = 0.42207451, "1797-Adams" = NA, "1825-Adams" = NA))
-    expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.6426934, NA, NA), tolerance = 0.01)
+                 c("1789-Washington" = -0.724806, "1797-Adams" = NA, "1825-Adams" = NA))
+    expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.931129, NA, NA), tolerance = 0.01)
     expect_equal(pred2$n[c(1, 3, 10)], c(33, 0, 0))
 })
 
@@ -242,6 +242,13 @@ test_that("text2vec works", {
         "LSS model includes no data"
     )
     expect_true(setequal(names(coef(lss)), colnames(fcmat)))
+})
+
+test_that("d is working", {
+    dfmat <- dfm(test_toks)
+    lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 0)
+    lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 1.0)
+    expect_false(identical(lss1, lss2))
 })
 
 

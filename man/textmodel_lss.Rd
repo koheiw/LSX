@@ -7,7 +7,7 @@
 textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
   simil_method = "cosine", include_data = TRUE,
   engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50,
-  verbose = FALSE, ...)
+  d = 0, verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{a dfm or fcm created by \code{\link[quanteda]{dfm}} or
@@ -39,6 +39,9 @@ used otherwise.}
 
 \item{w}{the size of word vectors. Only used when \code{engine} is
 "text2vec".}
+
+\item{d}{eigen value value weighting. Only used when \code{engine} is
+"RSpectra" or "irlba".}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
