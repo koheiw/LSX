@@ -61,7 +61,7 @@
 #' @export
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
                     simil_method = "cosine", include_data = TRUE,
-                    engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50, d = 0,
+                    engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = k, w = 50, d = 0,
                     verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -147,6 +147,8 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
         dir.create("lss_cache")
     if (engine == "RSpectra") {
         file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
+    } else if (engine == "rsvd") {
+        file_cache <- paste0("lss_cache/rsvd_", hash, ".RDS")
     } else {
         file_cache <- paste0("lss_cache/irlba_", hash, ".RDS")
     }
@@ -157,6 +159,8 @@ cache_svd <- function(x, k, engine, cache = TRUE, ...) {
     } else {
         if (engine == "RSpectra") {
             result <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
+        } else if (engine == "rsvd") {
+            result <- rsvd::rsvd(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
         } else {
             result <- irlba::irlba(as(x, "dgCMatrix"), k = k, right_only = TRUE, ...)
         }

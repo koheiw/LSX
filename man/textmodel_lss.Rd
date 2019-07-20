@@ -6,7 +6,7 @@
 \usage{
 textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
   simil_method = "cosine", include_data = TRUE,
-  engine = c("RSpectra", "irlba", "text2vec"), s = k, w = 50,
+  engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = k, w = 50,
   d = 0, verbose = FALSE, ...)
 }
 \arguments{

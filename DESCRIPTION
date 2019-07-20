@@ -16,6 +16,7 @@ Imports:
     Matrix,
     RSpectra,
     irlba,
+    rsvd,
     text2vec,
     proxyC,
     stringi,
