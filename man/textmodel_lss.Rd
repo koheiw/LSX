@@ -4,8 +4,8 @@
 \alias{textmodel_lss}
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
-textmodel_lss(x, seeds, features = NULL, k = 300, cache = FALSE,
-  simil_method = "cosine", include_data = TRUE,
+textmodel_lss(x, seeds, features = NULL, k = 300, weight = "count",
+  cache = FALSE, simil_method = "cosine", include_data = TRUE,
   engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = k, w = 50,
   d = 0, verbose = FALSE, ...)
 }
@@ -21,6 +21,9 @@ argument is used to make models only sensitive to subject specific words.}
 
 \item{k}{the size of semantic space passed to the SVD engine Only used when
 \code{x} is a \code{dfm}.}
+
+\item{weight}{weighting scheme assed to \code{\link[quanteda]{dfm_weight}}.
+Ignored when \code{engine} is "text2vec".}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
