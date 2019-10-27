@@ -1,3 +1,4 @@
+context("test textmodel_lss")
 
 corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
 test_toks <- tokens(corp_sent, remove_punct = TRUE)
@@ -249,6 +250,17 @@ test_that("d is working", {
     lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 0)
     lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 1.0)
     expect_false(identical(lss1, lss2))
+})
+
+test_that("weight is working", {
+    dfmat <- dfm(test_toks)
+
+    lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "count")
+    lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "logcount")
+    expect_false(identical(lss1, lss2))
+    expect_error(
+        textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "xxx")
+    )
 })
 
 

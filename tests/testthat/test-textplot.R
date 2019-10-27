@@ -1,3 +1,5 @@
+context("test textplot_*")
+
 corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
 test_toks <- tokens(corp_sent, remove_punct = TRUE) %>%
     tokens_remove(stopwords())

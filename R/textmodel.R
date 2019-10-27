@@ -8,6 +8,8 @@
 #'   argument is used to make models only sensitive to subject specific words.
 #' @param k the size of semantic space passed to the SVD engine Only used when
 #'   \code{x} is a \code{dfm}.
+#' @param weight weighting scheme assed to \code{\link[quanteda]{dfm_weight}}.
+#'   Ignored when \code{engine} is "text2vec".
 #' @param simil_method specifies method to compute similiaty between features.
 #'   The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
 #'   used otherwise.
@@ -59,7 +61,7 @@
 #' lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
 #' }
 #' @export
-textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
+textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", cache = FALSE,
                     simil_method = "cosine", include_data = TRUE,
                     engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = k, w = 50, d = 0,
                     verbose = FALSE, ...) {
@@ -89,13 +91,13 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
             stop("x must be a fcm for text2vec", call. = FALSE)
         if (verbose)
             cat("Fitting GloVe model text2vec...\n")
-        glove <- cache_glove(x, w, ...)
+        glove <- cache_glove(x, w, cache, ...)
         embed <- as(glove$main + glove$context, "dgCMatrix")
         import <- rep(1, w)
     } else {
         if (verbose)
             cat("Performing SVD by ", engine, "...\n")
-        svd <- cache_svd(x, k, engine, cache, ...)
+        svd <- cache_svd(x, k, weight, engine, cache, ...)
         embed <- get_embedding(svd, featnames(x), d)
         import <- svd$d
     }
@@ -138,8 +140,9 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, cache = FALSE,
     return(result)
 }
 
-cache_svd <- function(x, k, engine, cache = TRUE, ...) {
+cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
 
+    x <- dfm_weight(x, scheme = weight)
     hash <- digest::digest(list(as(x, "dgCMatrix"), k,
                                 utils::packageVersion("LSS")),
                            algo = "xxhash64")
