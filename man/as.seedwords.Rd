@@ -7,11 +7,11 @@
 as.seedwords(x, upper = 1, lower = 2)
 }
 \arguments{
-\item{x}{a list of characters vectors}
+\item{x}{a list of characters vectors or a \link[quanteda]{dictionary} object}
 
-\item{upper}{index for seed words for higher scores}
+\item{upper}{numeric index or key for seed words for higher scores}
 
-\item{lower}{index for seed words for lower scores}
+\item{lower}{numeric index or key for seed words for lower scores}
 }
 \description{
 Convinient function to convert a list to seed words

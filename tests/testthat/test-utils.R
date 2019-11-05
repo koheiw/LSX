@@ -28,5 +28,10 @@ test_that("as.seedwords works", {
     lis3 <- list("pos" = c("a", "b", "c"), "neg" = c("d", "e", "f"))
     expect_equal(as.seedwords(lis3, upper = "pos", lower = "neg"),
                  c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
+    dict <- dictionary(lis3)
+    expect_equal(as.seedwords(dict, upper = "pos", lower = "neg"),
+                 c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
+    expect_error(as.seedwords(data.frame(1:3)), "x must be a list or dictionary object")
+    expect_error(as.seedwords(list(1:3, 8:10)), "x must contain character vectors")
 })
 

@@ -70,24 +70,28 @@ discrimination <- function(object, newdata = NULL) {
 }
 
 #' Convinient function to convert a list to seed words
-#' @param x a list of characters vectors
-#' @param upper index for seed words for higher scores
-#' @param lower index for seed words for lower scores
+#' @param x a list of characters vectors or a \link[quanteda]{dictionary} object
+#' @param upper numeric index or key for seed words for higher scores
+#' @param lower numeric index or key for seed words for lower scores
 #' @export
 as.seedwords <- function(x, upper = 1, lower = 2) {
-    if (!"list" %in% class(x))
-        stop("x must be a list object")
+    if (!"list" %in% class(x) && !quanteda::is.dictionary(x))
+        stop("x must be a list or dictionary object")
+    if (quanteda::is.dictionary(x))
+        x <- quanteda::as.list(x)
     if (is.null(upper)) {
         pos <- character()
     } else {
         pos <- unlist(x[[upper]])
-        stopifnot(is.character(pos))
+        if(!is.character(pos))
+            stop("x must contain character vectors")
     }
     if (is.null(lower)) {
         neg <- character()
     } else {
         neg <- unlist(x[[lower]])
-        stopifnot(is.character(neg))
+        if(!is.character(neg))
+            stop("x must contain character vectors")
     }
     c(structure(rep(1, length(pos)), names = pos),
       structure(rep(-1, length(neg)), names = neg))
