@@ -263,5 +263,10 @@ test_that("weight is working", {
     )
 })
 
-
+test_that("utils are working", {
+    expect_equal(names(divergence(test_lss)),
+                 c("within", "between", "diff"))
+    expect_equal(names(discrimination(test_lss)),
+                 c("document", "term"))
+})
 
