@@ -1,3 +1,5 @@
+context("test utilities")
+
 test_that("diagnosys works", {
     skip_on_travis()
     txt <- c("a b c d 0.2 . (xxx) \u2700", "a b_c 1st 2nd k100@gmail.com",
@@ -15,3 +17,21 @@ test_that("diagnosys works", {
     expect_equal(diagnosys(txt), dat)
 
 })
+
+test_that("as.seedwords works", {
+    lis1 <- list(c("a", "b", "c"), c("d", "e", "f"))
+    expect_equal(as.seedwords(lis1),
+                 c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
+    lis2 <- list(c("a", "b", "c"), c("d", "e", "f"))
+    expect_equal(as.seedwords(lis2, upper = 2, lower = 1),
+                 c("d" = 1, "e" = 1, "f" = 1, "a" = -1, "b" = -1, "c" = -1))
+    lis3 <- list("pos" = c("a", "b", "c"), "neg" = c("d", "e", "f"))
+    expect_equal(as.seedwords(lis3, upper = "pos", lower = "neg"),
+                 c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
+    dict <- dictionary(lis3)
+    expect_equal(as.seedwords(dict, upper = "pos", lower = "neg"),
+                 c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
+    expect_error(as.seedwords(data.frame(1:3)), "x must be a list or dictionary object")
+    expect_error(as.seedwords(list(1:3, 8:10)), "x must contain character vectors")
+})
+

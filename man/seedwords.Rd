@@ -7,14 +7,14 @@
 seedwords(type)
 }
 \arguments{
-\item{type}{type of seed words currently only for sentiment (\code{pos-neg})
-or political ideology (\code{left-right}).}
+\item{type}{type of seed words currently only for sentiment (\code{sentiment})
+or political ideology (\code{ideology}).}
 }
 \description{
 Seed words for sentiment analysis
 }
 \examples{
-seedwords('pos-neg')
+seedwords('sentiment')
 }
 \references{
 Turney, P. D., & Littman, M. L. (2003). Measuring Praise and
