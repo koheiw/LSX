@@ -399,21 +399,21 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
 
 #' Seed words for sentiment analysis
 #'
-#' @param type type of seed words currently only for sentiment (\code{pos-neg})
-#'   or political ideology (\code{left-right}).
+#' @param type type of seed words currently only for sentiment (\code{sentiment})
+#'   or political ideology (\code{ideology}).
 #' @export
 #' @examples
-#' seedwords('pos-neg')
+#' seedwords('sentiment')
 #' @references Turney, P. D., & Littman, M. L. (2003). Measuring Praise and
 #'   Criticism: Inference of Semantic Orientation from Association. ACM Trans.
 #'   Inf. Syst., 21(4), 315–346. https://doi.org/10.1145/944012.944013
 seedwords <- function(type) {
 
-    if (type == "pos-neg") {
+    if (type == "pos-neg" || type == "sentiment") {
         seeds <- c(rep(1, 7), rep(-1, 7))
         names(seeds) <- c("good", "nice", "excellent", "positive", "fortunate", "correct", "superior",
                           "bad", "nasty", "poor", "negative", "unfortunate", "wrong", "inferior")
-    } else if (type == "left-right") {
+    } else if (type == "left-right" || type == "ideology") {
         seeds <- c(rep(1, 7), rep(-1, 7))
         names(seeds) <- c("deficit", "austerity", "unstable", "recession", "inflation", "currency", "workforce",
                           "poor", "poverty", "free", "benefits", "prices", "money", "workers")
