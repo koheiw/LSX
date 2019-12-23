@@ -69,26 +69,25 @@ dfmt_sent <- toks_sent %>%
     dfm_trim(min_termfreq = 5)
 
 eco <- char_keyness(toks_sent, "econom*", p = 0.05)
-tmod_lss <- textmodel_lss(dfmt_sent, seedwords('pos-neg'), feature = eco, cache = TRUE)
+tmod_lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
+                          feature = eco, cache = TRUE)
 ```
 
-    ## Reading cache file: lss_cache/svds_dcdacb167d4fdfc7.RDS
+    ## Reading cache file: lss_cache/svds_a588a327e03cb074.RDS
 
 ### Sentiment seed words
 
-Seed words are 14 generic sentiment
-    words.
+Seed words are 14 generic sentiment words.
 
 ``` r
-seedwords("pos-neg")
+data_dictionary_sentiment
 ```
 
-    ##        good        nice   excellent    positive   fortunate     correct 
-    ##           1           1           1           1           1           1 
-    ##    superior         bad       nasty        poor    negative unfortunate 
-    ##           1          -1          -1          -1          -1          -1 
-    ##       wrong    inferior 
-    ##          -1          -1
+    ## Dictionary object with 2 key entries.
+    ## - [positive]:
+    ##   - good, nice, excellent, positive, fortunate, correct, superior
+    ## - [negative]:
+    ##   - bad, nasty, poor, negative, unfortunate, wrong, inferior
 
 ### Econimic sentiment words
 
@@ -100,27 +99,27 @@ to seed
 head(coef(tmod_lss), 20) # most positive words
 ```
 
-    ##       legal    positive   expecting    emerging        able   professor 
-    ##  0.04205670  0.04198759  0.04041890  0.03913838  0.03768802  0.03453550 
-    ## sustainable      monday      decent      oxford         aid       stock 
-    ##  0.03438302  0.03376070  0.03208933  0.03161188  0.03156961  0.03147390 
-    ##  principles       shape        prof    northern    academic     markets 
-    ##  0.03035493  0.03016979  0.03014006  0.02992693  0.02986570  0.02947902 
-    ##         nhs      either 
-    ##  0.02922554  0.02915907
+    ##       legal       shape      either    positive      monday sustainable 
+    ##  0.04467974  0.04030600  0.03729081  0.03594595  0.03324765  0.03267820 
+    ##   expecting      decent    emerging     several        york   candidate 
+    ##  0.03235872  0.03105931  0.03077907  0.03048184  0.02915092  0.02874260 
+    ## challenging        able  powerhouse        asia    northern       thing 
+    ##  0.02799373  0.02758163  0.02700428  0.02689114  0.02672865  0.02663936 
+    ##        drag       stock 
+    ##  0.02627880  0.02617401
 
 ``` r
 tail(coef(tmod_lss), 20) # most negative words
 ```
 
-    ##         rise       impact     pantheon implications      cutting 
-    ##  -0.03495389  -0.03535304  -0.03546813  -0.03565484  -0.03590826 
-    ##     downbeat         debt    dominated     interest    suggested 
-    ##  -0.03597810  -0.03636211  -0.03700214  -0.03762701  -0.03864661 
-    ##     suggests    something       happen         hike    borrowing 
-    ##  -0.03928283  -0.04008333  -0.04076961  -0.04396055  -0.04549552 
-    ##        rates         rate unemployment          rba     negative 
-    ##  -0.04638569  -0.04689606  -0.04810378  -0.05048054  -0.06004318
+    ##        allow      nothing       shrink      cutting      problem        grows 
+    ##  -0.03653112  -0.03718793  -0.03752405  -0.03762728  -0.03795939  -0.03860088 
+    ##         debt implications       happen policymakers    suggested    something 
+    ##  -0.03907404  -0.03925240  -0.03925315  -0.04015877  -0.04092905  -0.04308314 
+    ##     interest    borrowing unemployment         hike         rate        rates 
+    ##  -0.04312183  -0.04493415  -0.04511959  -0.04540284  -0.04862177  -0.04875790 
+    ##          rba     negative 
+    ##  -0.05088908  -0.06187295
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequenty words such as “borrowing”, “unemployment”,

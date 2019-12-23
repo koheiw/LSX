@@ -57,7 +57,8 @@ dfmt_sent <- toks_sent %>%
     dfm_trim(min_termfreq = 5)
 
 eco <- char_keyness(toks_sent, "econom*", p = 0.05)
-tmod_lss <- textmodel_lss(dfmt_sent, seedwords('pos-neg'), feature = eco, cache = TRUE)
+tmod_lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
+                          feature = eco, cache = TRUE)
 ```
 
 ### Sentiment seed words
@@ -65,7 +66,7 @@ tmod_lss <- textmodel_lss(dfmt_sent, seedwords('pos-neg'), feature = eco, cache 
 Seed words are 14 generic sentiment words.
 
 ```{r}
-seedwords("pos-neg")
+data_dictionary_sentiment
 ```
 
 ### Econimic sentiment words
