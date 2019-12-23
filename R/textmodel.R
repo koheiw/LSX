@@ -300,8 +300,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     }
 
     d <- unname(rowSums(dfm_select(dfm_weight(data, "prop"), object$features)))
-    if (!identical(featnames(data), featnames(model)))
-        data <- dfm_select(data, model)
+    data <- dfm_match(data, featnames(model))
 
     n <- unname(Matrix::rowSums(data))
     data <- dfm_weight(data, "prop")
