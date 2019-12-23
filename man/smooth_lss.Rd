@@ -4,8 +4,15 @@
 \alias{smooth_lss}
 \title{Smooth predicted LSS scores by local polynomial regression}
 \usage{
-smooth_lss(x, lss_var = "fit", date_var = "date", span = 0.1,
-  from = NULL, to = NULL, ...)
+smooth_lss(
+  x,
+  lss_var = "fit",
+  date_var = "date",
+  span = 0.1,
+  from = NULL,
+  to = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{a \code{data.frame} containing variables for LSS scores and dates}
@@ -20,7 +27,7 @@ smooth_lss(x, lss_var = "fit", date_var = "date", span = 0.1,
 
 \item{to}{end of the time period}
 
-\item{...}{extra arguments passed to \code{\link{loess}}}
+\item{...}{extra arguments passed to \code{\link[=loess]{loess()}}}
 }
 \description{
 Smooth predicted LSS scores by local polynomial regression

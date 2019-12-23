@@ -7,7 +7,7 @@
 as.seedwords(x, upper = 1, lower = 2)
 }
 \arguments{
-\item{x}{a list of characters vectors or a \link[quanteda]{dictionary} object}
+\item{x}{a list of characters vectors or a \link[quanteda:dictionary]{dictionary} object}
 
 \item{upper}{numeric index or key for seed words for higher scores}
 

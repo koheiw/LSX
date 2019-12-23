@@ -4,14 +4,26 @@
 \alias{textmodel_lss}
 \title{A vector-space model for subject specific sentiment-analysis}
 \usage{
-textmodel_lss(x, seeds, features = NULL, k = 300, weight = "count",
-  cache = FALSE, simil_method = "cosine", include_data = TRUE,
-  engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = k, w = 50,
-  d = 0, verbose = FALSE, ...)
+textmodel_lss(
+  x,
+  seeds,
+  features = NULL,
+  k = 300,
+  weight = "count",
+  cache = FALSE,
+  simil_method = "cosine",
+  include_data = TRUE,
+  engine = c("RSpectra", "rsvd", "irlba", "text2vec"),
+  s = k,
+  w = 50,
+  d = 0,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
-\item{x}{a dfm or fcm created by \code{\link[quanteda]{dfm}} or
-\code{\link[quanteda]{fcm}}}
+\item{x}{a dfm or fcm created by \code{\link[quanteda:dfm]{quanteda::dfm()}} or
+\code{\link[quanteda:fcm]{quanteda::fcm()}}}
 
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
@@ -22,21 +34,21 @@ argument is used to make models only sensitive to subject specific words.}
 \item{k}{the size of semantic space passed to the SVD engine Only used when
 \code{x} is a \code{dfm}.}
 
-\item{weight}{weighting scheme assed to \code{\link[quanteda]{dfm_weight}}.
+\item{weight}{weighting scheme assed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}.
 Ignored when \code{engine} is "text2vec".}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
 
 \item{simil_method}{specifies method to compute similiaty between features.
-The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
+The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is
 used otherwise.}
 
 \item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as
 \code{x}.}
 
-\item{engine}{choose SVD engine between \code{\link[RSpectra]{svds}},
-\code{\link[irlba]{irlba}}, and \code{\link[text2vec]{GlobalVectors}}.}
+\item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}},
+\code{\link[irlba:irlba]{irlba::irlba()}}, and \code{\link[text2vec:GlobalVectors]{text2vec::GlobalVectors()}}.}
 
 \item{s}{the number factors used to compute similiaty between features.}
 
@@ -84,7 +96,7 @@ lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
 }
 \references{
 Watanabe, Kohei. "Measuring News Bias: Russia's Official News
-  Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
-  Communication 32, no. 3 (March 20, 2017): 224–41.
-  https://doi.org/10.1177/0267323117695735.
+Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
+Communication 32, no. 3 (March 20, 2017): 224–41.
+https://doi.org/10.1177/0267323117695735.
 }

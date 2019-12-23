@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README.Rmd
+^dict/
 ^testthat
 ^README_cache
 ^images/*

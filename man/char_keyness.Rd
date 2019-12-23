@@ -4,18 +4,26 @@
 \alias{char_keyness}
 \title{Identify keywords occur frequently with target words}
 \usage{
-char_keyness(x, pattern, valuetype = c("glob", "regex", "fixed"),
-  case_insensitive = TRUE, window = 10, p = 0.001, min_count = 10,
-  remove_pattern = TRUE, ...)
+char_keyness(
+  x,
+  pattern,
+  valuetype = c("glob", "regex", "fixed"),
+  case_insensitive = TRUE,
+  window = 10,
+  p = 0.001,
+  min_count = 10,
+  remove_pattern = TRUE,
+  ...
+)
 }
 \arguments{
-\item{x}{tokens object created by \code{\link[quanteda]{tokens}}.}
+\item{x}{tokens object created by \code{\link[quanteda:tokens]{quanteda::tokens()}}.}
 
-\item{pattern}{to specify target words. See \code{\link[quanteda]{pattern}} for details.}
+\item{pattern}{to specify target words. See \code{\link[quanteda:pattern]{quanteda::pattern()}} for details.}
 
 \item{valuetype}{the type of pattern matching: \code{"glob"} for
 "glob"-style wildcard expressions; \code{"regex"} for regular expressions;
-or \code{"fixed"} for exact matching. See \code{\link[quanteda]{valuetype}} for details.}
+or \code{"fixed"} for exact matching. See \code{\link[quanteda:valuetype]{quanteda::valuetype()}} for details.}
 
 \item{case_insensitive}{ignore case when matching, if \code{TRUE}}
 
@@ -28,7 +36,7 @@ considered as collocations.}
 
 \item{remove_pattern}{if \code{TRUE}, keywords do not containe target words.}
 
-\item{...}{additional arguments passed to \code{\link{textstat_keyness}}.}
+\item{...}{additional arguments passed to \code{\link[=textstat_keyness]{textstat_keyness()}}.}
 }
 \description{
 Identify keywords occur frequently with target words
@@ -49,5 +57,5 @@ pol <- char_keyness(toks, 'politi*')
 head(pol, 20)
 }
 \seealso{
-\code{\link{tokens_select}} and \code{\link{textstat_keyness}}
+\code{\link[=tokens_select]{tokens_select()}} and \code{\link[=textstat_keyness]{textstat_keyness()}}
 }

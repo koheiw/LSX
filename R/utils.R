@@ -1,6 +1,6 @@
 #' Identify noisy documents in a corpus
-#' @param x character or \link{corpus} object whose texts will be diagnosed
-#' @param ... extra arguments passed to \code{tokens}
+#' @param x character or [corpus] object whose texts will be diagnosed
+#' @param ... extra arguments passed to `tokens`
 #' @export
 diagnosys <- function(x, ...) {
     UseMethod("diagnosys")
@@ -70,7 +70,7 @@ discrimination <- function(object, newdata = NULL) {
 }
 
 #' Convinient function to convert a list to seed words
-#' @param x a list of characters vectors or a \link[quanteda]{dictionary} object
+#' @param x a list of characters vectors or a [dictionary][quanteda::dictionary] object
 #' @param upper numeric index or key for seed words for higher scores
 #' @param lower numeric index or key for seed words for lower scores
 #' @export
