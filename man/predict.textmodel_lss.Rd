@@ -4,8 +4,14 @@
 \alias{predict.textmodel_lss}
 \title{Prediction method for textmodel_lss}
 \usage{
-\method{predict}{textmodel_lss}(object, newdata = NULL, se.fit = FALSE,
-  density = FALSE, rescaling = TRUE, ...)
+\method{predict}{textmodel_lss}(
+  object,
+  newdata = NULL,
+  se.fit = FALSE,
+  density = FALSE,
+  rescaling = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{a fitted LSS textmodel}

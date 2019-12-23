@@ -28,3 +28,4 @@ Imports:
 Suggests:
     testthat
 RoxygenNote: 7.0.2
+Roxygen: list(markdown = TRUE)

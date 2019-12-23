@@ -1,30 +1,30 @@
 #' A vector-space model for subject specific sentiment-analysis
 #'
-#' @param x a dfm or fcm created by \code{\link[quanteda]{dfm}} or
-#'   \code{\link[quanteda]{fcm}}
+#' @param x a dfm or fcm created by [quanteda::dfm()] or
+#'   [quanteda::fcm()]
 #' @param seeds a character vector, named numeric vector or dictionary that
 #'   contains seed words.
 #' @param features featues of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
 #' @param k the size of semantic space passed to the SVD engine Only used when
-#'   \code{x} is a \code{dfm}.
-#' @param weight weighting scheme assed to \code{\link[quanteda]{dfm_weight}}.
-#'   Ignored when \code{engine} is "text2vec".
+#'   `x` is a `dfm`.
+#' @param weight weighting scheme assed to [quanteda::dfm_weight()].
+#'   Ignored when `engine` is "text2vec".
 #' @param simil_method specifies method to compute similiaty between features.
-#'   The value is passed to \code{\link[quanteda]{textstat_simil}}, "cosine" is
+#'   The value is passed to [quanteda::textstat_simil()], "cosine" is
 #'   used otherwise.
-#' @param cache if \code{TRUE}, save retult of SVD for next execution with
-#'   identical \code{x} and \code{k}.
-#' @param include_data if \code{TRUE}, fitted model include the dfm supplied as
-#'   \code{x}.
-#' @param engine choose SVD engine between \code{\link[RSpectra]{svds}},
-#'   \code{\link[irlba]{irlba}}, and \code{\link[text2vec]{GlobalVectors}}.
+#' @param cache if `TRUE`, save retult of SVD for next execution with
+#'   identical `x` and `k`.
+#' @param include_data if `TRUE`, fitted model include the dfm supplied as
+#'   `x`.
+#' @param engine choose SVD engine between [RSpectra::svds()],
+#'   [irlba::irlba()], and [text2vec::GlobalVectors()].
 #' @param s the number factors used to compute similiaty between features.
-#' @param w the size of word vectors. Only used when \code{engine} is
+#' @param w the size of word vectors. Only used when `engine` is
 #'   "text2vec".
-#' @param d eigen value value weighting. Only used when \code{engine} is
+#' @param d eigen value value weighting. Only used when `engine` is
 #'   "RSpectra" or "irlba".
-#' @param verbose show messages if \code{TRUE}.
+#' @param verbose show messages if `TRUE`.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
 #' @export
@@ -247,9 +247,9 @@ summary.textmodel_lss <- function(object, n = 30L, ...) {
 
 #' Extract model coefficients from a fitted textmodel_lss object
 #'
-#' \code{coef()} extract model coefficients from a fitted \code{textmodel_lss}
-#' object.  \code{coefficients()} is an alias.
-#' @param object a fitted \link{textmodel_lss} object
+#' `coef()` extract model coefficients from a fitted `textmodel_lss`
+#' object.  `coefficients()` is an alias.
+#' @param object a fitted [textmodel_lss] object
 #' @param ... unused
 #' @keywords textmodel internal
 #' @export
@@ -276,11 +276,11 @@ weight_seeds <- function(seed, weight, type) {
 #' Prediction method for textmodel_lss
 #' @param object a fitted LSS textmodel
 #' @param newdata dfm on which prediction should be made
-#' @param se.fit if \code{TRUE}, it returns standard error of document scores.
-#' @param density if \code{TRUE}, returns frequency of features in documents.
+#' @param se.fit if `TRUE`, it returns standard error of document scores.
+#' @param density if `TRUE`, returns frequency of features in documents.
 #'   Density distribution of features can be used to remove documents about
 #'   unrelated subjects.
-#' @param rescaling if \code{TRUE}, scores are reslaced using \code{scale()}.
+#' @param rescaling if `TRUE`, scores are reslaced using `scale()`.
 #' @param ... not used
 #' @import methods
 #' @export
@@ -337,20 +337,20 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 
 #' Identify keywords occur frequently with target words
 #'
-#' @param x tokens object created by \code{\link[quanteda]{tokens}}.
-#' @param pattern to specify target words. See \code{\link[quanteda]{pattern}} for details.
-#' @param valuetype the type of pattern matching: \code{"glob"} for
-#'   "glob"-style wildcard expressions; \code{"regex"} for regular expressions;
-#'   or \code{"fixed"} for exact matching. See \code{\link[quanteda]{valuetype}} for details.
-#' @param case_insensitive ignore case when matching, if \code{TRUE}
+#' @param x tokens object created by [quanteda::tokens()].
+#' @param pattern to specify target words. See [quanteda::pattern()] for details.
+#' @param valuetype the type of pattern matching: `"glob"` for
+#'   "glob"-style wildcard expressions; `"regex"` for regular expressions;
+#'   or `"fixed"` for exact matching. See [quanteda::valuetype()] for details.
+#' @param case_insensitive ignore case when matching, if `TRUE`
 #' @param window size of window for collocation analysis.
 #' @param p threashold for statistical significance of collocaitons.
 #' @param min_count minimum frequency for words within the window to be
 #'   considered as collocations.
-#' @param remove_pattern if \code{TRUE}, keywords do not containe target words.
-#' @param ... additional arguments passed to \code{\link{textstat_keyness}}.
+#' @param remove_pattern if `TRUE`, keywords do not containe target words.
+#' @param ... additional arguments passed to [textstat_keyness()].
 #' @export
-#' @seealso \code{\link{tokens_select}} and \code{\link{textstat_keyness}}
+#' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
 #' require(quanteda)
 #' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
@@ -398,8 +398,8 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
 
 #' Seed words for Latent Semantci Analysis
 #'
-#' @param type type of seed words currently only for sentiment (\code{sentiment})
-#'   or political ideology (\code{ideology}).
+#' @param type type of seed words currently only for sentiment (`sentiment`)
+#'   or political ideology (`ideology`).
 #' @export
 #' @examples
 #' seedwords('sentiment')
@@ -443,13 +443,13 @@ as.textmodel_lss <- function(x) {
 
 #' Smooth predicted LSS scores by local polynomial regression
 #'
-#' @param x a \code{data.frame} containing variables for LSS scores and dates
+#' @param x a `data.frame` containing variables for LSS scores and dates
 #' @param lss_var the name of the column for LSS scores
 #' @param date_var the name of the columns for dates
 #' @param span determines the level of smoothing
 #' @param from start of the time period
 #' @param to end of the time period
-#' @param ... extra arguments passed to \code{\link{loess}}
+#' @param ... extra arguments passed to [loess()]
 #' @export
 #' @import stats
 smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,

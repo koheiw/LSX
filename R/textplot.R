@@ -1,6 +1,6 @@
 #' Plot similarity of seed words
 #' @param x fitted textmodel_lss object
-#' @param group if \code{TRUE} group seed words by seed patterns and show
+#' @param group if `TRUE` group seed words by seed patterns and show
 #'   average similarity
 #' @export
 textplot_simil <- function(x, group = FALSE) {
@@ -42,7 +42,7 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
 
 #' Plot factors of latent sematic space
 #' @param x fitted textmodel_lss object
-#' @param sort sort factors by relevance if \code{TRUE}
+#' @param sort sort factors by relevance if `TRUE`
 #' @export
 textplot_factor <- function(x, sort = TRUE) {
     UseMethod("textplot_factor")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/textmodel.R
 \name{seedwords}
 \alias{seedwords}
-\title{Seed words for sentiment analysis}
+\title{Seed words for Latent Semantci Analysis}
 \usage{
 seedwords(type)
 }
@@ -11,13 +11,13 @@ seedwords(type)
 or political ideology (\code{ideology}).}
 }
 \description{
-Seed words for sentiment analysis
+Seed words for Latent Semantci Analysis
 }
 \examples{
 seedwords('sentiment')
 }
 \references{
 Turney, P. D., & Littman, M. L. (2003). Measuring Praise and
-  Criticism: Inference of Semantic Orientation from Association. ACM Trans.
-  Inf. Syst., 21(4), 315–346. https://doi.org/10.1145/944012.944013
+Criticism: Inference of Semantic Orientation from Association. ACM Trans.
+Inf. Syst., 21(4), 315–346. https://doi.org/10.1145/944012.944013
 }
