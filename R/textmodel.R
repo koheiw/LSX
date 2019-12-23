@@ -396,7 +396,7 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     return(key$feature)
 }
 
-#' Seed words for sentiment analysis
+#' Seed words for Latent Semantci Analysis
 #'
 #' @param type type of seed words currently only for sentiment (\code{sentiment})
 #'   or political ideology (\code{ideology}).
