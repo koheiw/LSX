@@ -37,9 +37,12 @@ diagnosys.corpus <- function(x, ...) {
     return(result)
 }
 
-#' Function to test qualtiy of word vectors
+#' Function to test quality of word vectors
 
 #' Computes similarity between and within seed words
+#'
+#' Gauge the quality of word vectors given know seed words by the computing
+#' similarities within and between antonyms.
 #' @param object a fitted LSS textmodel
 #' @export
 #' @keywords internal
@@ -55,9 +58,10 @@ divergence <- function(object) {
     c("within" = w, "between" = b, "diff" = w - b)
 }
 
-#' Function to test qualtiy of seed words
+#' Function to test quality of seed words
 #'
-#' Computes kurtosis of document scores and terms weights
+#' Gauge seed words' ability to discriminate unit texts by computing kurtosis of
+#' document scores and terms weights.
 #' @inheritParams predict
 #' @export
 #' @keywords internal

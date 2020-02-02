@@ -2,7 +2,7 @@
 % Please edit documentation in R/textplot.R
 \name{textplot_factor}
 \alias{textplot_factor}
-\title{Plot factors of latent sematic space}
+\title{Plot factors of latent semantic space}
 \usage{
 textplot_factor(x, sort = TRUE)
 }
@@ -12,5 +12,5 @@ textplot_factor(x, sort = TRUE)
 \item{sort}{sort factors by relevance if \code{TRUE}}
 }
 \description{
-Plot factors of latent sematic space
+Plot factors of latent semantic space
 }

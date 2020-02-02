@@ -2,11 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{discrimination}
 \alias{discrimination}
-\title{Function to test qualtiy of seed words}
+\title{Function to test quality of seed words}
 \usage{
 discrimination(object, newdata = NULL)
 }
 \description{
-Computes kurtosis of document scores and terms weights
+Gauge seed words' ability to discriminate unit texts by computing kurtosis of
+document scores and terms weights.
 }
 \keyword{internal}

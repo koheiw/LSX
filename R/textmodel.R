@@ -10,7 +10,7 @@
 #'   `x` is a `dfm`.
 #' @param weight weighting scheme assed to [quanteda::dfm_weight()].
 #'   Ignored when `engine` is "text2vec".
-#' @param simil_method specifies method to compute similiaty between features.
+#' @param simil_method specifies method to compute similarity between features.
 #'   The value is passed to [quanteda::textstat_simil()], "cosine" is
 #'   used otherwise.
 #' @param cache if `TRUE`, save retult of SVD for next execution with
@@ -19,7 +19,7 @@
 #'   `x`.
 #' @param engine choose SVD engine between [RSpectra::svds()],
 #'   [irlba::irlba()], and [text2vec::GlobalVectors()].
-#' @param s the number factors used to compute similiaty between features.
+#' @param s the number factors used to compute similarity between features.
 #' @param w the size of word vectors. Only used when `engine` is
 #'   "text2vec".
 #' @param d eigen value value weighting. Only used when `engine` is
@@ -36,7 +36,8 @@
 #' \dontrun{
 #' require(quanteda)
 #'
-#' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+#' # Available at https://bit.ly/2GZwLcN
+#' corp <- readRDS("data_corpus_guardian2016-10k.rds")
 #' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
 #' toks <- tokens(corp, remove_punct = TRUE) %>%
 #'         tokens_remove(stopwords()) %>%
@@ -280,7 +281,7 @@ weight_seeds <- function(seed, weight, type) {
 #' @param density if `TRUE`, returns frequency of features in documents.
 #'   Density distribution of features can be used to remove documents about
 #'   unrelated subjects.
-#' @param rescaling if `TRUE`, scores are reslaced using `scale()`.
+#' @param rescaling if `TRUE`, scores are normalized using `scale()`.
 #' @param ... not used
 #' @import methods
 #' @export
@@ -344,7 +345,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #'   or `"fixed"` for exact matching. See [quanteda::valuetype()] for details.
 #' @param case_insensitive ignore case when matching, if `TRUE`
 #' @param window size of window for collocation analysis.
-#' @param p threashold for statistical significance of collocaitons.
+#' @param p threshold for statistical significance of collocaitons.
 #' @param min_count minimum frequency for words within the window to be
 #'   considered as collocations.
 #' @param remove_pattern if `TRUE`, keywords do not containe target words.
@@ -352,8 +353,10 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
+#' \dontrun{
 #' require(quanteda)
-#' load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+#' # Available at https://bit.ly/2GZwLcN
+#' corp <- readRDS("data_corpus_guardian2016-10k.rds")
 #' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
 #' toks <- tokens(corp, remove_punct = TRUE)
 #' toks <- tokens_remove(toks, stopwords())
@@ -365,6 +368,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' # politics keywords
 #' pol <- char_keyness(toks, 'politi*')
 #' head(pol, 20)
+#' }
 char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                          case_insensitive = TRUE, window = 10, p = 0.001, min_count = 10,
                          remove_pattern = TRUE, ...) {

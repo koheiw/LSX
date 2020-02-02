@@ -40,7 +40,7 @@ Ignored when \code{engine} is "text2vec".}
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with
 identical \code{x} and \code{k}.}
 
-\item{simil_method}{specifies method to compute similiaty between features.
+\item{simil_method}{specifies method to compute similarity between features.
 The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is
 used otherwise.}
 
@@ -50,7 +50,7 @@ used otherwise.}
 \item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}},
 \code{\link[irlba:irlba]{irlba::irlba()}}, and \code{\link[text2vec:GlobalVectors]{text2vec::GlobalVectors()}}.}
 
-\item{s}{the number factors used to compute similiaty between features.}
+\item{s}{the number factors used to compute similarity between features.}
 
 \item{w}{the size of word vectors. Only used when \code{engine} is
 "text2vec".}
@@ -69,7 +69,8 @@ A vector-space model for subject specific sentiment-analysis
 \dontrun{
 require(quanteda)
 
-load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+# Available at https://bit.ly/2GZwLcN
+corp <- readRDS("data_corpus_guardian2016-10k.rds")
 corp <- corpus_reshape(data_corpus_guardian, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE) \%>\%
         tokens_remove(stopwords()) \%>\%

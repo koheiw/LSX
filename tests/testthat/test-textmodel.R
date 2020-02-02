@@ -126,7 +126,7 @@ test_that("data object is valid", {
 
 test_that("calculation of fit and se.fit are correct", {
 
-    lss <- LSS:::as.textmodel_lss(c("a" = 0.1, "b" = 0.1, "c" = 0.3))
+    lss <- as.textmodel_lss(c("a" = 0.1, "b" = 0.1, "c" = 0.3))
     mt <- dfm(c("a a a", "a b", "a a b c c d e"))
     pred <- predict(lss, newdata = mt, se.fit = TRUE, rescaling = FALSE)
 

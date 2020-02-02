@@ -78,7 +78,7 @@ head(coef(tmod_lss), 20) # most positive words
 tail(coef(tmod_lss), 20) # most negative words
 ```
 
-This plot shows that frequent words ("said", "people", "also") are neutral while less frequenty words such as "borrowing", "unemployment", "emerging" and "efficient" are  either negative or positive.
+This plot shows that frequent words ("said", "people", "also") are neutral while less frequent words such as "borrowing", "unemployment", "emerging" and "efficient" are  either negative or positive.
 
 ```{r}
 textplot_scale1d(tmod_lss, 

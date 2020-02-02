@@ -24,7 +24,7 @@
 Density distribution of features can be used to remove documents about
 unrelated subjects.}
 
-\item{rescaling}{if \code{TRUE}, scores are reslaced using \code{scale()}.}
+\item{rescaling}{if \code{TRUE}, scores are normalized using \code{scale()}.}
 
 \item{...}{not used}
 }

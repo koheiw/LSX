@@ -29,7 +29,7 @@ or \code{"fixed"} for exact matching. See \code{\link[quanteda:valuetype]{quante
 
 \item{window}{size of window for collocation analysis.}
 
-\item{p}{threashold for statistical significance of collocaitons.}
+\item{p}{threshold for statistical significance of collocaitons.}
 
 \item{min_count}{minimum frequency for words within the window to be
 considered as collocations.}
@@ -42,8 +42,10 @@ considered as collocations.}
 Identify keywords occur frequently with target words
 }
 \examples{
+\dontrun{
 require(quanteda)
-load('/home/kohei/Dropbox/Public/guardian-sample.RData')
+# Available at https://bit.ly/2GZwLcN
+corp <- readRDS("data_corpus_guardian2016-10k.rds")
 corp <- corpus_reshape(data_corpus_guardian, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE)
 toks <- tokens_remove(toks, stopwords())
@@ -55,6 +57,7 @@ head(eco, 20)
 # politics keywords
 pol <- char_keyness(toks, 'politi*')
 head(pol, 20)
+}
 }
 \seealso{
 \code{\link[=tokens_select]{tokens_select()}} and \code{\link[=textstat_keyness]{textstat_keyness()}}

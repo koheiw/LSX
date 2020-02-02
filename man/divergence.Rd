@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{divergence}
 \alias{divergence}
-\title{Function to test qualtiy of word vectors
+\title{Function to test quality of word vectors
 Computes similarity between and within seed words}
 \usage{
 divergence(object)
@@ -11,7 +11,7 @@ divergence(object)
 \item{object}{a fitted LSS textmodel}
 }
 \description{
-Function to test qualtiy of word vectors
-Computes similarity between and within seed words
+Gauge the quality of word vectors given know seed words by the computing
+similarities within and between antonyms.
 }
 \keyword{internal}
