@@ -5,7 +5,7 @@ Date: 2020-02-02
 Version: 0.8.0
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre"))
 Description: A word embeddings-based semi-supervised model for document scaling <doi.org/10.1177/0267323117695735>.
-    LSS allows users to analyze large and complex corpora on arbitrary dimensions with seed words exploiting efficiency of word embeddings (SVG, Glove).
+    LSS allows users to analyze large and complex corpora on arbitrary dimensions with seed words exploiting efficiency of word embeddings (SVD, Glove).
 License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
