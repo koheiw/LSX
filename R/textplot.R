@@ -40,7 +40,7 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 }
 
-#' Plot factors of latent sematic space
+#' Plot factors of latent semantic space
 #' @param x fitted textmodel_lss object
 #' @param sort sort factors by relevance if `TRUE`
 #' @export
@@ -87,17 +87,41 @@ textplot_scale1d.textmodel_lss <- function(x,
     if (margin == "documents") {
         stop("There is no document margin in a LSS model.")
     } else if (margin == "features") {
-        p <- quanteda:::textplot_scale1d_features(
+        textplot_scale1d_features(
             x$beta,
             weight = log(x$frequency),
             featlabels = names(x$beta),
             highlighted = highlighted,
             alpha = alpha,
-            highlighted_color = highlighted_color
-        ) +
-            xlab("beta") +
-            ylab("log(term frequency)")
-        quanteda:::apply_theme(p)
+            highlighted_color = highlighted_color)
     }
 }
 
+#' compied from quanteda::textplot_scale1d_features
+#' @import ggplot2
+textplot_scale1d_features <- function(x, weight, featlabels,
+                                      highlighted = NULL, alpha = 0.7,
+                                      highlighted_color = "black") {
+
+    beta <- psi <- feature <- NULL
+    temp <- data.frame(feature = featlabels,
+                       psi = weight,
+                       beta = x)
+    ggplot(data = temp, aes(x = beta, y = psi, label = feature)) +
+        geom_text(colour = "grey70", alpha = alpha) +
+        geom_text(aes(beta, psi, label = feature),
+                  data = temp[temp$feature %in% highlighted,],
+                  color = highlighted_color) +
+        xlab("beta") +
+        ylab("log(term frequency)") +
+        theme_bw() +
+        theme(panel.background = ggplot2::element_blank(),
+              panel.grid.major.x = element_blank(),
+              panel.grid.minor.x = element_blank(),
+              # panel.grid.major.y = element_blank(),
+              panel.grid.minor.y = element_blank(),
+              plot.background = element_blank(),
+              axis.ticks.y = element_blank(),
+              # panel.spacing = grid::unit(0.1, "lines"),
+              panel.grid.major.y = element_line(linetype = "dotted"))
+}
