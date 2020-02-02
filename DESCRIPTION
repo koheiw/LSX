@@ -11,7 +11,8 @@ LazyData: TRUE
 Encoding: UTF-8
 Depends:
     quanteda (>= 1.5),
-    methods
+    methods,
+    R (>= 3.5.0)
 Imports:
     digest,
     Matrix,
