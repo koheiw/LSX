@@ -2,7 +2,7 @@
 % Please edit documentation in R/textplot.R
 \name{textplot_simil}
 \alias{textplot_simil}
-\title{Plot similarity of seed words}
+\title{Plot similarity between seed words}
 \usage{
 textplot_simil(x, group = FALSE)
 }
@@ -13,5 +13,5 @@ textplot_simil(x, group = FALSE)
 average similarity}
 }
 \description{
-Plot similarity of seed words
+Plot similarity between seed words
 }

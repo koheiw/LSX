@@ -45,9 +45,8 @@ contexts, so a LSS model should be trained on data where the text unit
 is sentence. It is also affected by noises in data such as function
 words and punctuation marks, so they should also be removed. It requires
 larger corpus of texts (5000 or more documents) to accurately estimate
-semantic proximity. The [sample
-corpus](https://www.dropbox.com/s/kfhdoifes7z7t6j/data_corpus_guardian2016-10k.RDS?dl=1)
-contains 10,000 Guardian news articles from 2016.
+semantic proximity. The [sample corpus](https://bit.ly/2GZwLcN) contains
+10,000 Guardian news articles from 2016.
 
 ### Fit a LSS model
 
@@ -89,7 +88,7 @@ data_dictionary_sentiment
     ## - [negative]:
     ##   - bad, nasty, poor, negative, unfortunate, wrong, inferior
 
-### Econimic sentiment words
+### Economic sentiment words
 
 Economic words are weighted in terms of sentiment based on the proximity
 to seed
@@ -122,7 +121,7 @@ tail(coef(tmod_lss), 20) # most negative words
     ##  -0.05088908  -0.06187295
 
 This plot shows that frequent words (“said”, “people”, “also”) are
-neutral while less frequenty words such as “borrowing”, “unemployment”,
+neutral while less frequent words such as “borrowing”, “unemployment”,
 “emerging” and “efficient” are either negative or positive.
 
 ``` r

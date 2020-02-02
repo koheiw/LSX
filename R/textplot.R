@@ -1,4 +1,4 @@
-#' Plot similarity of seed words
+#' Plot similarity between seed words
 #' @param x fitted textmodel_lss object
 #' @param group if `TRUE` group seed words by seed patterns and show
 #'   average similarity
@@ -97,8 +97,10 @@ textplot_scale1d.textmodel_lss <- function(x,
     }
 }
 
-#' compied from quanteda::textplot_scale1d_features
+#' Internal function adopted from quanteda
+#' @noRd
 #' @import ggplot2
+#' @keywords internal
 textplot_scale1d_features <- function(x, weight, featlabels,
                                       highlighted = NULL, alpha = 0.7,
                                       highlighted_color = "black") {

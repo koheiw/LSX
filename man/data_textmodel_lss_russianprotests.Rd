@@ -5,7 +5,7 @@
 \alias{data_textmodel_lss_russianprotests}
 \title{A fitted LSS model on street protest in Russia}
 \description{
-This model was trained on a Russian media coprus (newspapers, TV transcripts
+This model was trained on a Russian media corpus (newspapers, TV transcripts
 and newswires) to analyze framing of street protests. The scale is protests
 as "freedom of expression" (high) vs "social disorder" (low). Although some
 slots are missing in this object (because the model was imported from the

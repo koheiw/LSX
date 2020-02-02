@@ -28,13 +28,13 @@ textmodel_lss(
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
 
-\item{features}{featues of a dfm to be included in the model as terms. This
+\item{features}{features of a dfm to be included in the model as terms. This
 argument is used to make models only sensitive to subject specific words.}
 
 \item{k}{the size of semantic space passed to the SVD engine Only used when
 \code{x} is a \code{dfm}.}
 
-\item{weight}{weighting scheme assed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}.
+\item{weight}{weighting scheme passed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}.
 Ignored when \code{engine} is "text2vec".}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with

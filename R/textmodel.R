@@ -4,11 +4,11 @@
 #'   [quanteda::fcm()]
 #' @param seeds a character vector, named numeric vector or dictionary that
 #'   contains seed words.
-#' @param features featues of a dfm to be included in the model as terms. This
+#' @param features features of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
 #' @param k the size of semantic space passed to the SVD engine Only used when
 #'   `x` is a `dfm`.
-#' @param weight weighting scheme assed to [quanteda::dfm_weight()].
+#' @param weight weighting scheme passed to [quanteda::dfm_weight()].
 #'   Ignored when `engine` is "text2vec".
 #' @param simil_method specifies method to compute similarity between features.
 #'   The value is passed to [quanteda::textstat_simil()], "cosine" is
@@ -345,7 +345,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #'   or `"fixed"` for exact matching. See [quanteda::valuetype()] for details.
 #' @param case_insensitive ignore case when matching, if `TRUE`
 #' @param window size of window for collocation analysis.
-#' @param p threshold for statistical significance of collocaitons.
+#' @param p threshold for statistical significance of collocations.
 #' @param min_count minimum frequency for words within the window to be
 #'   considered as collocations.
 #' @param remove_pattern if `TRUE`, keywords do not containe target words.

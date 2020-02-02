@@ -29,7 +29,7 @@ or \code{"fixed"} for exact matching. See \code{\link[quanteda:valuetype]{quante
 
 \item{window}{size of window for collocation analysis.}
 
-\item{p}{threshold for statistical significance of collocaitons.}
+\item{p}{threshold for statistical significance of collocations.}
 
 \item{min_count}{minimum frequency for words within the window to be
 considered as collocations.}
