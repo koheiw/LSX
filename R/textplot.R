@@ -69,10 +69,7 @@ textplot_factor.textmodel_lss <- function(x, sort = TRUE) {
 }
 
 #' @export
-#' @importFrom quanteda textplot_scale1d
-quanteda::textplot_scale1d
-
-#' @export
+#' @noRd
 #' @import ggplot2
 textplot_scale1d.textmodel_lss <- function(x,
                                            margin = c("features", "documents"),
