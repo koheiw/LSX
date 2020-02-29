@@ -62,7 +62,6 @@ divergence <- function(object) {
 #'
 #' Gauge seed words' ability to discriminate unit texts by computing kurtosis of
 #' document scores and terms weights.
-#' @inheritParams predict
 #' @export
 #' @keywords internal
 discrimination <- function(object, newdata = NULL) {

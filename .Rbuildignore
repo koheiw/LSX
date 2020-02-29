@@ -7,3 +7,4 @@
 ^images/*
 ^lss_cache/*
 ^\.travis\.yml$
+^cran-comments.md$

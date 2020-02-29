@@ -233,6 +233,8 @@ get_seeds <- function(seeds) {
 #' @noRd
 #' @importFrom stats coef
 #' @importFrom utils head
+#' @importFrom quanteda.textmodels as.coefficients_textmodel
+#' @importFrom quanteda.textmodels as.summary.textmodel
 #' @method summary textmodel_lss
 summary.textmodel_lss <- function(object, n = 30L, ...) {
     result <- list(
@@ -275,6 +277,8 @@ weight_seeds <- function(seed, weight, type) {
 }
 
 #' Prediction method for textmodel_lss
+#'
+#' @method predict textmodel_lss
 #' @param object a fitted LSS textmodel
 #' @param newdata dfm on which prediction should be made
 #' @param se.fit if `TRUE`, it returns standard error of document scores.
@@ -283,6 +287,7 @@ weight_seeds <- function(seed, weight, type) {
 #'   unrelated subjects.
 #' @param rescaling if `TRUE`, scores are normalized using `scale()`.
 #' @param ... not used
+#' @keywords internal
 #' @import methods
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,

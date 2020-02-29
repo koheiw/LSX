@@ -48,6 +48,7 @@ textplot_factor <- function(x, sort = TRUE) {
     UseMethod("textplot_factor")
 }
 
+#' @method textplot_factor textmodel_lss
 #' @export
 #' @import grDevices
 textplot_factor.textmodel_lss <- function(x, sort = TRUE) {
@@ -68,6 +69,11 @@ textplot_factor.textmodel_lss <- function(x, sort = TRUE) {
 
 }
 
+#' @export
+#' @importFrom quanteda.textmodels textplot_scale1d
+quanteda.textmodels::textplot_scale1d
+
+#' @method textplot_scale1d textmodel_lss
 #' @export
 #' @noRd
 #' @import ggplot2
