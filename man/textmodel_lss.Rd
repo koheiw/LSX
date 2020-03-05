@@ -14,7 +14,7 @@ textmodel_lss(
   simil_method = "cosine",
   include_data = TRUE,
   engine = c("RSpectra", "rsvd", "irlba", "text2vec"),
-  s = k,
+  s = NULL,
   w = 50,
   d = 0,
   verbose = FALSE,
@@ -50,7 +50,7 @@ used otherwise.}
 \item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}},
 \code{\link[irlba:irlba]{irlba::irlba()}}, and \code{\link[text2vec:GlobalVectors]{text2vec::GlobalVectors()}}.}
 
-\item{s}{the number factors used to compute similarity between features.}
+\item{s}{indices for factors used to compute similarity}
 
 \item{w}{the size of word vectors. Only used when \code{engine} is
 "text2vec".}
