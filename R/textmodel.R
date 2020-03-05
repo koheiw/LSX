@@ -112,8 +112,8 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
                          margin = 1)
     relev <- abs(as.numeric(cos))
     s <- as.integer(s)
-    if (any(s < 1L) || any(s > k))
-        stop("invalid s indices")
+    if (any(s < 1L) || any(k < s))
+        stop("s must be between 1 and k")
 
     freq <- colSums(x)
     simil <- as.matrix(proxyC::simil(embed[s,,drop = FALSE], embed[s,names(seed),drop = FALSE],

@@ -271,3 +271,12 @@ test_that("utils are working", {
                  c("document", "term"))
 })
 
+test_that("s argument is working", {
+    expect_silent(
+        textmodel_lss(test_mt, seedwords("pos-neg"), features = test_feat, k = 300, s = 1:100)
+    )
+    expect_silent(
+        textmodel_lss(test_mt, seedwords("pos-neg"), features = test_feat, k = 300, s = 1:400),
+        "s must be between 1 and k"
+    )
+})
