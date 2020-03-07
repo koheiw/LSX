@@ -1,41 +1,42 @@
 context("test textmodel_lss")
 
 corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
-test_toks <- tokens(corp_sent, remove_punct = TRUE)
-test_feat <- head(char_keyness(test_toks, "america*", min_count = 1, p = 0.05), 100)
-test_mt <- dfm(test_toks)
-test_lss <- textmodel_lss(test_mt, seedwords("pos-neg"), features = test_feat, k = 300)
-test_lss_nd <- textmodel_lss(test_mt, seedwords("pos-neg"), features = test_feat, k = 300,
+toks_test <- tokens(corp_sent, remove_punct = TRUE)
+feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
+dfmt_test <- dfm(toks_test)
+seed <- as.seedwords(data_dictionary_sentiment)
+lss_test <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300)
+lss_test_nd <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300,
                              include_data = FALSE)
 
 test_that("char_keyness is working", {
 
-    expect_identical(length(test_feat), 100L)
-    feat1 <- char_keyness(test_toks, "america.*", "regex", min_count = 1, p = 0.05)
-    expect_identical(head(feat1, 100), test_feat)
+    expect_identical(length(feat_test), 100L)
+    feat1 <- char_keyness(toks_test, "america.*", "regex", min_count = 1, p = 0.05)
+    expect_identical(head(feat1, 100), feat_test)
 
-    feat2 <- char_keyness(test_toks, "America*", case_insensitive = FALSE, min_count = 1, p = 0.05)
-    expect_identical(head(feat2, 100), test_feat)
+    feat2 <- char_keyness(toks_test, "America*", case_insensitive = FALSE, min_count = 1, p = 0.05)
+    expect_identical(head(feat2, 100), feat_test)
 
-    feat3 <- char_keyness(test_toks, "america*", min_count = 1000, remove_pattern = TRUE)
+    feat3 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = TRUE)
     expect_identical(feat3, character())
 
-    feat4 <- char_keyness(test_toks, "america*", min_count = 1000, remove_pattern = FALSE)
+    feat4 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = FALSE)
     expect_identical(feat4, character())
 
-    expect_error(char_keyness(test_toks, "xxxxx", min_count = 1, p = 0.05),
+    expect_error(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05),
                  "xxxxx is not found")
 
 })
 
 test_that("char_keyness removes multi-word target", {
 
-    feat_rp <- char_keyness(test_toks, phrase("united states"), "regex",
+    feat_rp <- char_keyness(toks_test, phrase("united states"), "regex",
                             min_count = 1, p = 0.05)
     expect_identical(c("united", "states") %in% feat_rp,
                      c(FALSE, FALSE))
 
-    feat_kp <- char_keyness(test_toks, phrase("united states"), "regex",
+    feat_kp <- char_keyness(toks_test, phrase("united states"), "regex",
                             min_count = 1, p = 0.05, remove_pattern = FALSE)
     expect_identical(c("united", "states") %in% feat_kp,
                      c(TRUE, TRUE))
@@ -44,18 +45,18 @@ test_that("char_keyness removes multi-word target", {
 test_that("textmodel_lss has all the attributes", {
 
     expect_equal(
-        names(test_lss),
+        names(lss_test),
         c("beta", "frequency", "features", "seeds", "seeds_weighted",
           "embedding", "similarity", "relevance", "importance", "call",  "data")
     )
 
-    expect_true(is.numeric(test_lss$beta))
-    expect_true(is.dfm(test_lss$data))
-    expect_identical(test_lss$features, test_feat)
-    expect_identical(names(test_lss$seeds), names(seedwords("pos-neg")))
+    expect_true(is.numeric(lss_test$beta))
+    expect_true(is.dfm(lss_test$data))
+    expect_identical(lss_test$features, feat_test)
+    expect_identical(names(lss_test$seeds), names(seedwords("pos-neg")))
 
     expect_equal(
-        names(test_lss_nd),
+        names(lss_test_nd),
         c("beta", "frequency", "features", "seeds", "seeds_weighted",
           "embedding", "similarity", "relevance", "importance", "call")
     )
@@ -64,8 +65,8 @@ test_that("textmodel_lss has all the attributes", {
 
 test_that("summary.textmodel_lss is working", {
 
-    expect_silent(summary(test_lss))
-    expect_silent(summary(test_lss_nd))
+    expect_silent(summary(lss_test))
+    expect_silent(summary(lss_test_nd))
 
 })
 
@@ -73,30 +74,30 @@ test_that("summary.textmodel_lss is working", {
 
 test_that("predict.textmodel_lss is working", {
 
-    pred1 <- predict(test_lss)
-    expect_equal(length(pred1), ndoc(test_mt))
-    expect_identical(names(pred1), docnames(test_mt))
+    pred1 <- predict(lss_test)
+    expect_equal(length(pred1), ndoc(dfmt_test))
+    expect_identical(names(pred1), docnames(dfmt_test))
     expect_true(is.numeric(pred1))
     expect_equal(mean(pred1, na.rm = TRUE), 0)
     expect_equal(sd(pred1, na.rm = TRUE), 1)
 
-    pred2 <- predict(test_lss, se.fit = TRUE)
-    expect_equal(length(pred2$fit), ndoc(test_mt))
-    expect_identical(names(pred2$fit), docnames(test_mt))
-    expect_equal(length(pred2$se.fit), ndoc(test_mt))
-    expect_equal(length(pred2$n), ndoc(test_mt))
+    pred2 <- predict(lss_test, se.fit = TRUE)
+    expect_equal(length(pred2$fit), ndoc(dfmt_test))
+    expect_identical(names(pred2$fit), docnames(dfmt_test))
+    expect_equal(length(pred2$se.fit), ndoc(dfmt_test))
+    expect_equal(length(pred2$n), ndoc(dfmt_test))
     expect_null(names(pred2$se.fit))
     expect_null(names(pred2$n))
 
-    pred3 <- predict(test_lss, density = TRUE)
-    expect_equal(length(pred3$density), ndoc(test_toks))
+    pred3 <- predict(lss_test, density = TRUE)
+    expect_equal(length(pred3$density), ndoc(toks_test))
     expect_null(names(pred3$density))
 
-    pred4 <- predict(test_lss, rescaling = FALSE)
-    expect_identical(names(pred4), docnames(test_toks))
+    pred4 <- predict(lss_test, rescaling = FALSE)
+    expect_identical(names(pred4), docnames(toks_test))
     expect_equal(as.numeric(scale(pred4)), unname(pred1))
 
-    pred5 <- predict(test_lss, se.fit = TRUE, density = TRUE)
+    pred5 <- predict(lss_test, se.fit = TRUE, density = TRUE)
     expect_equal(names(pred5), c("fit", "se.fit", "n", "density"))
 
 })
@@ -104,17 +105,17 @@ test_that("predict.textmodel_lss is working", {
 test_that("density is correct", {
 
     test_dfm <- dfm(data_corpus_inaugural)
-    pred <- predict(test_lss, newdata = test_dfm, density = TRUE)
+    pred <- predict(lss_test, newdata = test_dfm, density = TRUE)
 
     expect_equal(
         pred$density,
-        unname(rowSums(dfm_select(dfm_weight(test_dfm, "prop"), test_feat)))
+        unname(rowSums(dfm_select(dfm_weight(test_dfm, "prop"), feat_test)))
     )
 })
 
 test_that("predict.textmodel_lss works with newdata", {
 
-    pred <- predict(test_lss, newdata = dfm(data_corpus_inaugural))
+    pred <- predict(lss_test, newdata = dfm(data_corpus_inaugural))
     expect_equal(length(pred), ndoc(data_corpus_inaugural))
 
 })
@@ -154,27 +155,27 @@ test_that("calculation of fit and se.fit are correct", {
 
 test_that("as.textmodel_lss works with only with single seed", {
 
-    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat, k = 10))
-    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = character(), k = 10))
-    expect_silent(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], k = 10))
+    expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test, k = 10))
+    expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = character(), k = 10))
+    expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], k = 10))
 })
 
 
 test_that("simil_method works", {
 
-    lss_cos <- textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat,
+    lss_cos <- textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test,
                              k = 10)
-    lss_cor <- textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat,
+    lss_cor <- textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test,
                              simil_method = "correlation", k = 10)
 
     expect_false(identical(lss_cos, lss_cor))
-    expect_error(textmodel_lss(dfm(test_toks), seedwords("pos-neg")[1], features = test_feat,
+    expect_error(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test,
                                simil_method = "something", k = 10), "'arg' should be one of")
 })
 
 
 test_that("include_data is working", {
-    mt <- dfm(test_toks)
+    mt <- dfm(toks_test)
     lss <- textmodel_lss(mt, seedwords("pos-neg"), include_data = TRUE, k = 10)
     lss_nd <- textmodel_lss(mt, seedwords("pos-neg"), include_data = FALSE, k = 10)
     expect_error(predict(lss_nd), "LSS model includes no data")
@@ -185,13 +186,13 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
 
     mt <- dfm(data_corpus_inaugural)
     mt[c(3, 10),] <- 0
-    pred <- predict(test_lss, newdata = as.dfm(mt))
+    pred <- predict(lss_test, newdata = as.dfm(mt))
     expect_equal(length(pred), ndoc(data_corpus_inaugural))
     expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
                       c("1789-Washington" = -0.7618717, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
 
-    pred2 <- predict(test_lss, newdata = as.dfm(mt), se.fit = TRUE)
+    pred2 <- predict(lss_test, newdata = as.dfm(mt), se.fit = TRUE)
     expect_equal(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")],
                  c("1789-Washington" = -0.7618717, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
@@ -201,7 +202,7 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
 
 
 test_that("textmodel_lss works with glob patterns", {
-    mt <- dfm(test_toks)
+    mt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(mt, seed, k = 10)
     expect_equal(names(lss$seeds_weighted), names(seed))
@@ -210,7 +211,7 @@ test_that("textmodel_lss works with glob patterns", {
 })
 
 test_that("textmodel_lss works with non-existent seeds", {
-    mt <- dfm(test_toks)
+    mt <- dfm(toks_test)
     seed1 <- c("good" = 1, "bad" = -1, "xyz" = -1)
     expect_silent(textmodel_lss(mt, seed1, k = 10))
 
@@ -220,20 +221,20 @@ test_that("textmodel_lss works with non-existent seeds", {
 })
 
 test_that("RSpectra and irlba work", {
-    dfmat <- dfm(test_toks)
+    dfmat <- dfm(toks_test)
     expect_silent(textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
     expect_silent(textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, engine = "irlba"))
 
-    fcmat <- fcm(test_toks)
+    fcmat <- fcm(toks_test)
     expect_silent(textmodel_lss(fcmat, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
     expect_silent(textmodel_lss(fcmat, seedwords("pos-neg"), k = 10, engine = "irlba"))
 })
 
 test_that("text2vec works", {
-    dfmat <- dfm(test_toks)
+    dfmat <- dfm(toks_test)
     expect_error(textmodel_lss(dfmat, seedwords("pos-neg"), engine = "text2vec"),
                  "x must be a fcm for text2vec")
-    fcmat <- fcm(test_toks)
+    fcmat <- fcm(toks_test)
     lss <- textmodel_lss(fcmat, seedwords("pos-neg"), engine = "text2vec")
     expect_equal(
         names(predict(lss, dfmat)),
@@ -247,14 +248,14 @@ test_that("text2vec works", {
 })
 
 test_that("d is working", {
-    dfmat <- dfm(test_toks)
+    dfmat <- dfm(toks_test)
     lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 0)
     lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 1.0)
     expect_false(identical(lss1, lss2))
 })
 
 test_that("weight is working", {
-    dfmat <- dfm(test_toks)
+    dfmat <- dfm(toks_test)
 
     lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "count")
     lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "logcount")
@@ -265,9 +266,9 @@ test_that("weight is working", {
 })
 
 test_that("utils are working", {
-    expect_equal(names(divergence(test_lss)),
+    expect_equal(names(divergence(lss_test)),
                  c("within", "between", "diff"))
-    expect_equal(names(discrimination(test_lss)),
+    expect_equal(names(discrimination(lss_test)),
                  c("document", "term"))
 })
 
