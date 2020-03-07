@@ -93,7 +93,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
         if (verbose)
             cat("Fitting GloVe model text2vec...\n")
         glove <- cache_glove(x, w, cache, ...)
-        embed <- as(glove$main + glove$context, "dgCMatrix")
+        embed <- as(glove, "dgCMatrix")
         import <- rep(1, w)
     } else {
         if (verbose)
@@ -189,13 +189,9 @@ cache_glove <- function(x, w, cache = TRUE, ...) {
         message("Reading cache file: ", file_cache)
         result <- readRDS(file_cache)
     } else {
-        temp <- text2vec::GlobalVectors$new(
-            word_vectors_size = w,
-            vocabulary = featnames(x),
-            x_max = 10
-        )
-        result <- list(main = t(text2vec::fit_transform(x, temp, ...)),
-                       context = temp$components)
+        glove <- text2vec::GlobalVectors$new(rank = w, x_max = 10)
+        result <- t(glove$fit_transform(Matrix::drop0(x), n_iter = 10, ...))
+        result <- result + glove$components
         if (cache) {
             message("Writing cache file: ", file_cache)
             saveRDS(result, file_cache)
