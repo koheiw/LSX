@@ -70,8 +70,6 @@ test_that("summary.textmodel_lss is working", {
 
 })
 
-
-
 test_that("predict.textmodel_lss is working", {
 
     pred1 <- predict(lss_test)
@@ -152,9 +150,7 @@ test_that("calculation of fit and se.fit are correct", {
 
 })
 
-
 test_that("as.textmodel_lss works with only with single seed", {
-
     expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test, k = 10))
     expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = character(), k = 10))
     expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], k = 10))
@@ -211,34 +207,36 @@ test_that("textmodel_lss works with glob patterns", {
 })
 
 test_that("textmodel_lss works with non-existent seeds", {
-    mt <- dfm(toks_test)
+
     seed1 <- c("good" = 1, "bad" = -1, "xyz" = -1)
-    expect_silent(textmodel_lss(mt, seed1, k = 10))
+    expect_silent(textmodel_lss(dfmt_test, seed1, k = 10))
 
     seed2 <- c("xyz", "xxx")
-    expect_error(textmodel_lss(mt, seed2, k = 10),
+    expect_error(textmodel_lss(dfmt_test, seed2, k = 10),
                  "No seed word is found in the dfm")
 })
 
 test_that("RSpectra and irlba work", {
-    dfmat <- dfm(toks_test)
-    expect_silent(textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
-    expect_silent(textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, engine = "irlba"))
 
-    fcmat <- fcm(toks_test)
-    expect_silent(textmodel_lss(fcmat, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
-    expect_silent(textmodel_lss(fcmat, seedwords("pos-neg"), k = 10, engine = "irlba"))
+    expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
+    expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "irlba"))
+
+    fcmt <- fcm(dfmt_test)
+    expect_silent(textmodel_lss(fcmt, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
+    expect_silent(textmodel_lss(fcmt, seedwords("pos-neg"), k = 10, engine = "irlba"))
 })
 
 test_that("text2vec works", {
-    dfmat <- dfm(toks_test)
-    expect_error(textmodel_lss(dfmat, seedwords("pos-neg"), engine = "text2vec"),
+    dfmt <- dfm(toks_test)
+    expect_error(textmodel_lss(dfmt, seedwords("pos-neg"), engine = "text2vec"),
                  "x must be a fcm for text2vec")
     fcmat <- fcm(toks_test)
-    lss <- textmodel_lss(fcmat, seedwords("pos-neg"), engine = "text2vec")
+    suppressMessages({
+        lss <- textmodel_lss(fcmat, seedwords("pos-neg"), engine = "text2vec")
+    })
     expect_equal(
-        names(predict(lss, dfmat)),
-        docnames(dfmat)
+        names(predict(lss, dfmt)),
+        docnames(dfmt)
     )
     expect_error(
         predict(lss),
@@ -248,20 +246,20 @@ test_that("text2vec works", {
 })
 
 test_that("d is working", {
-    dfmat <- dfm(toks_test)
-    lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 0)
-    lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, d = 1.0)
+    dfmt <- dfm(toks_test)
+    lss1 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, d = 0)
+    lss2 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, d = 1.0)
     expect_false(identical(lss1, lss2))
 })
 
 test_that("weight is working", {
-    dfmat <- dfm(toks_test)
+    dfmt <- dfm(toks_test)
 
-    lss1 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "count")
-    lss2 <- textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "logcount")
+    lss1 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, weight = "count")
+    lss2 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, weight = "logcount")
     expect_false(identical(lss1, lss2))
     expect_error(
-        textmodel_lss(dfmat, seedwords("pos-neg"), k = 10, weight = "xxx")
+        textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, weight = "xxx")
     )
 })
 
@@ -274,10 +272,10 @@ test_that("utils are working", {
 
 test_that("s argument is working", {
     expect_silent(
-        textmodel_lss(test_mt, seedwords("pos-neg"), features = test_feat, k = 300, s = 1:100)
+        textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 1:100)
     )
-    expect_silent(
-        textmodel_lss(test_mt, seedwords("pos-neg"), features = test_feat, k = 300, s = 1:400),
+    expect_error(
+        textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 1:400),
         "s must be between 1 and k"
     )
 })
