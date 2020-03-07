@@ -168,7 +168,7 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
         } else if (engine == "rsvd") {
             result <- rsvd::rsvd(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
         } else {
-            result <- irlba::irlba(as(x, "dgCMatrix"), k = k, right_only = TRUE, ...)
+            result <- irlba::irlba(as(x, "dgCMatrix"), nv = k, right_only = TRUE, ...)
         }
         if (cache) {
             message("Writing cache file: ", file_cache)
