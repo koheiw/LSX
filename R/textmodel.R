@@ -19,7 +19,7 @@
 #'   `x`.
 #' @param engine choose SVD engine between [RSpectra::svds()],
 #'   [irlba::irlba()], and [text2vec::GlobalVectors()].
-#' @param s the number factors used to compute similarity between features.
+#' @param s indices for factors used to compute similarity
 #' @param w the size of word vectors. Only used when `engine` is
 #'   "text2vec".
 #' @param d eigen value value weighting. Only used when `engine` is
@@ -64,7 +64,7 @@
 #' @export
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", cache = FALSE,
                     simil_method = "cosine", include_data = TRUE,
-                    engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = k, w = 50, d = 0,
+                    engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = NULL, w = 50, d = 0,
                     verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -95,26 +95,28 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
         glove <- cache_glove(x, w, cache, ...)
         embed <- as(glove, "dgCMatrix")
         import <- rep(1, w)
+        if (is.null(s))
+            s <- seq_len(w)
     } else {
         if (verbose)
             cat("Performing SVD by ", engine, "...\n")
         svd <- cache_svd(x, k, weight, engine, cache, ...)
         embed <- get_embedding(svd, featnames(x), d)
         import <- svd$d
+        if (is.null(s))
+            s <- seq_len(k)
     }
     # identify relevance to seed words
     cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
                          Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
                          margin = 1)
     relev <- abs(as.numeric(cos))
-    if (s < k) {
-        l <- rank(relev) >= s
-    } else {
-        l <- rep(TRUE, nrow(embed))
-    }
+    s <- as.integer(s)
+    if (any(s < 1L) || any(k < s))
+        stop("s must be between 1 and k")
 
     freq <- colSums(x)
-    simil <- as.matrix(proxyC::simil(embed[l,,drop = FALSE], embed[l,names(seed),drop = FALSE],
+    simil <- as.matrix(proxyC::simil(embed[s,,drop = FALSE], embed[s,names(seed),drop = FALSE],
                                      margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
