@@ -43,7 +43,7 @@ diagnosys.corpus <- function(x, ...) {
 #'
 #' Gauge the quality of word vectors given know seed words by the computing
 #' similarities within and between antonyms.
-#' @param object a fitted LSS textmodel
+#' @param object a fitted `textmodel_lss`
 #' @export
 #' @keywords internal
 divergence <- function(object) {
@@ -57,6 +57,25 @@ divergence <- function(object) {
     w <- mean(temp[l], na.rm = TRUE) # within
     c("within" = w, "between" = b, "diff" = w - b)
 }
+
+#' Computes cohesion of components of word embedding
+#' @param object a fitted `textmodel_lss`
+#' @param bandwidth size of window for smoothing
+#' @export
+#' @keywords internal
+cohesion <- function(object, bandwidth = 10) {
+  stopifnot("textmodel_lss" %in% class(object))
+  s <- sign(unlist(unname(object$seeds_weighted)))
+  f <- names(s)
+  d <- Matrix::tcrossprod(object$embedding[,f])
+  d <- Matrix::tril(d)
+  result <- data.frame(k = seq_len(nrow(d)),
+                       raw = log(rowSums(abs(d) / seq_len(nrow(d)))))
+  result$smoothed <- stats::ksmooth(result$k, result$raw, kernel = "normal",
+                                    bandwidth = bandwidth)$y
+  return(result)
+}
+
 
 #' Function to test quality of seed words
 #'

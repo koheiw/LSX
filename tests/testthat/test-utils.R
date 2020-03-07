@@ -1,5 +1,12 @@
 context("test utilities")
 
+corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
+toks_test <- tokens(corp_sent, remove_punct = TRUE)
+feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
+dfmt_test <- dfm(toks_test)
+seed_test <- as.seedwords(data_dictionary_sentiment)
+lss_test <- textmodel_lss(dfmt_test, seed_test, features = feat_test, k = 300)
+
 test_that("diagnosys works", {
     skip_on_travis()
     txt <- c("a b c d 0.2 . (xxx) \u2700", "a b_c 1st 2nd k100@gmail.com",
@@ -33,5 +40,12 @@ test_that("as.seedwords works", {
                  c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
     expect_error(as.seedwords(data.frame(1:3)), "x must be a list or dictionary object")
     expect_error(as.seedwords(list(1:3, 8:10)), "x must contain character vectors")
+})
+
+
+test_that("cohesion workds", {
+    dat <- cohesion(lss_test)
+    expect_identical(names(dat), c("k", "raw", "smoothed"))
+    expect_identical(dat$k, seq_len(300))
 })
 

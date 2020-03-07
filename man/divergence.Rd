@@ -8,7 +8,7 @@ Computes similarity between and within seed words}
 divergence(object)
 }
 \arguments{
-\item{object}{a fitted LSS textmodel}
+\item{object}{a fitted \code{textmodel_lss}}
 }
 \description{
 Gauge the quality of word vectors given know seed words by the computing
