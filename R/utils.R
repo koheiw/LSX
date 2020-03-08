@@ -67,7 +67,7 @@ cohesion <- function(object, bandwidth = 10) {
   stopifnot("textmodel_lss" %in% class(object))
   s <- sign(unlist(unname(object$seeds_weighted)))
   f <- names(s)
-  d <- Matrix::tcrossprod(object$embedding[,f])
+  d <- Matrix::tcrossprod(object$embedding[, f, drop = FALSE])
   d <- Matrix::tril(d)
   result <- data.frame(k = seq_len(nrow(d)),
                        raw = log(rowSums(abs(d) / seq_len(nrow(d)))))
@@ -89,6 +89,28 @@ discrimination <- function(object, newdata = NULL) {
     t <- e1071::kurtosis(coef(object), na.rm = TRUE)
     d <- e1071::kurtosis(p, na.rm = TRUE)
     c("document" = d, "term" = t)
+}
+#' @rdname discrimination
+strength <- function(object) {
+  stopifnot("textmodel_lss" %in% class(object))
+  f <- object$features
+  s <- sign(unlist(unname(object$seeds_weighted))) > 0
+  m <- proxyC::simil(object$embedding,
+                     object$embedding[, names(s), drop = FALSE], margin = 2)
+  Matrix::diag(m) <- NA
+  temp <- data.frame(seed = colnames(m),
+                     selected = log(1 / apply(m[f,], 2, function(x) abs(mean(x, na.rm = TRUE)))),
+                     all = log(1 / apply(m, 2, function(x) abs(mean(x, na.rm = TRUE)))),
+                     stringsAsFactors = FALSE)
+  temp <- temp[order(temp$selected, decreasing = TRUE),]
+  rownames(temp) <- NULL
+  result <- list(
+    "overall" = c("selected" =  log(1 / abs(Matrix::mean(m[f,], na.rm = TRUE))),
+                  "all" = log(1 / abs(Matrix::mean(m, na.rm = TRUE)))),
+    "each" = temp
+  )
+  class(result) <- "listof"
+  return(result)
 }
 
 #' Convinient function to convert a list to seed words
