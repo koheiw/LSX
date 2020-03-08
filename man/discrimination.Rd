@@ -2,9 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{discrimination}
 \alias{discrimination}
+\alias{strength}
 \title{Function to test quality of seed words}
 \usage{
 discrimination(object, newdata = NULL)
+
+strength(object)
 }
 \description{
 Gauge seed words' ability to discriminate unit texts by computing kurtosis of

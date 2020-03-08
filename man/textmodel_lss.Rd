@@ -22,8 +22,7 @@ textmodel_lss(
 )
 }
 \arguments{
-\item{x}{a dfm or fcm created by \code{\link[quanteda:dfm]{quanteda::dfm()}} or
-\code{\link[quanteda:fcm]{quanteda::fcm()}}}
+\item{x}{a dfm or fcm created by \code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}}}
 
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
@@ -31,32 +30,31 @@ contains seed words.}
 \item{features}{features of a dfm to be included in the model as terms. This
 argument is used to make models only sensitive to subject specific words.}
 
-\item{k}{the size of semantic space passed to the SVD engine Only used when
-\code{x} is a \code{dfm}.}
+\item{k}{the number of singular values requested to the SVD engine. Only used
+when \code{x} is a \code{dfm}.}
 
-\item{weight}{weighting scheme passed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}.
-Ignored when \code{engine} is "text2vec".}
+\item{weight}{weighting scheme passed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}. Ignored
+when \code{engine} is "text2vec".}
 
-\item{cache}{if \code{TRUE}, save retult of SVD for next execution with
-identical \code{x} and \code{k}.}
+\item{cache}{if \code{TRUE}, save retult of SVD for next execution with identical
+\code{x} and \code{k}.}
 
 \item{simil_method}{specifies method to compute similarity between features.
-The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is
-used otherwise.}
+The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is used
+otherwise.}
 
-\item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as
-\code{x}.}
+\item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as \code{x}.}
 
-\item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}},
-\code{\link[irlba:irlba]{irlba::irlba()}}, and \code{\link[text2vec:GlobalVectors]{text2vec::GlobalVectors()}}.}
+\item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}},
+and \code{\link[text2vec:GlobalVectors]{text2vec::GlobalVectors()}}.}
 
-\item{s}{indices for factors used to compute similarity}
+\item{s}{the number or indices of the components of word vectors used
+to compute similarity.}
 
-\item{w}{the size of word vectors. Only used when \code{engine} is
-"text2vec".}
+\item{w}{the size of word vectors. Only used when \code{engine} is "text2vec".}
 
-\item{d}{eigen value value weighting. Only used when \code{engine} is
-"RSpectra" or "irlba".}
+\item{d}{eigen value weighting. Only used when \code{engine} is "RSpectra"
+or "irlba".}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
