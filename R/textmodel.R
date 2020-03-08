@@ -1,29 +1,27 @@
 #' A vector-space model for subject specific sentiment-analysis
 #'
-#' @param x a dfm or fcm created by [quanteda::dfm()] or
-#'   [quanteda::fcm()]
+#' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
 #' @param seeds a character vector, named numeric vector or dictionary that
 #'   contains seed words.
 #' @param features features of a dfm to be included in the model as terms. This
 #'   argument is used to make models only sensitive to subject specific words.
-#' @param k the size of semantic space passed to the SVD engine Only used when
-#'   `x` is a `dfm`.
-#' @param weight weighting scheme passed to [quanteda::dfm_weight()].
-#'   Ignored when `engine` is "text2vec".
+#' @param k the number of singular values requested to the SVD engine. Only used
+#'   when `x` is a `dfm`.
+#' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
+#'   when `engine` is "text2vec".
 #' @param simil_method specifies method to compute similarity between features.
-#'   The value is passed to [quanteda::textstat_simil()], "cosine" is
-#'   used otherwise.
-#' @param cache if `TRUE`, save retult of SVD for next execution with
-#'   identical `x` and `k`.
-#' @param include_data if `TRUE`, fitted model include the dfm supplied as
-#'   `x`.
-#' @param engine choose SVD engine between [RSpectra::svds()],
-#'   [irlba::irlba()], and [text2vec::GlobalVectors()].
-#' @param s indices for factors used to compute similarity
-#' @param w the size of word vectors. Only used when `engine` is
-#'   "text2vec".
-#' @param d eigen value value weighting. Only used when `engine` is
-#'   "RSpectra" or "irlba".
+#'   The value is passed to [quanteda::textstat_simil()], "cosine" is used
+#'   otherwise.
+#' @param cache if `TRUE`, save retult of SVD for next execution with identical
+#'   `x` and `k`.
+#' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
+#' @param engine choose SVD engine between [RSpectra::svds()], [irlba::irlba()],
+#'   and [text2vec::GlobalVectors()].
+#' @param s the number or indices of the components of word vectors used
+#'   to compute similarity.
+#' @param w the size of word vectors. Only used when `engine` is "text2vec".
+#' @param d eigen value weighting. Only used when `engine` is "RSpectra"
+#'   or "irlba".
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
@@ -96,7 +94,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
         embed <- as(glove, "dgCMatrix")
         import <- rep(1, w)
         if (is.null(s))
-            s <- seq_len(w)
+            s <- w
     } else {
         if (verbose)
             cat("Performing SVD by ", engine, "...\n")
@@ -104,16 +102,19 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
         embed <- get_embedding(svd, featnames(x), d)
         import <- svd$d
         if (is.null(s))
-            s <- seq_len(k)
+            s <- k
     }
     # identify relevance to seed words
     cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
                          Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
                          margin = 1)
     relev <- abs(as.numeric(cos))
+
     s <- as.integer(s)
     if (any(s < 1L) || any(k < s))
         stop("s must be between 1 and k")
+    if (length(s) == 1)
+        s <- seq_len(s)
 
     freq <- colSums(x)
     simil <- as.matrix(proxyC::simil(embed[s,,drop = FALSE], embed[s,names(seed),drop = FALSE],
