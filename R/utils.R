@@ -91,6 +91,8 @@ discrimination <- function(object, newdata = NULL) {
     c("document" = d, "term" = t)
 }
 #' @rdname discrimination
+#' @export
+#' @keywords internal
 strength <- function(object) {
   stopifnot("textmodel_lss" %in% class(object))
   f <- object$features
@@ -105,8 +107,9 @@ strength <- function(object) {
   temp <- temp[order(temp$selected, decreasing = TRUE),]
   rownames(temp) <- NULL
   result <- list(
-    "overall" = c("selected" =  log(1 / abs(Matrix::mean(m[f,], na.rm = TRUE))),
-                  "all" = log(1 / abs(Matrix::mean(m, na.rm = TRUE)))),
+    "overall" = c("selected" =  log(1 / mean(abs(object$beta[f]))),
+                  "all" = log(1 / mean(abs(object$beta)))
+    ),
     "each" = temp
   )
   class(result) <- "listof"
