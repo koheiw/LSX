@@ -271,6 +271,10 @@ test_that("utils are working", {
 })
 
 test_that("s argument is working", {
+    expect_identical(
+        dim(textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 100)$embedding),
+        dim(textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 1:100)$embedding)
+    )
     expect_silent(
         textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 1:100)
     )
