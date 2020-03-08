@@ -64,16 +64,21 @@ divergence <- function(object) {
 #' @export
 #' @keywords internal
 cohesion <- function(object, bandwidth = 10) {
-  stopifnot("textmodel_lss" %in% class(object))
-  s <- sign(unlist(unname(object$seeds_weighted)))
-  f <- names(s)
-  d <- Matrix::tcrossprod(object$embedding[, f, drop = FALSE])
-  d <- Matrix::tril(d)
-  result <- data.frame(k = seq_len(nrow(d)),
-                       raw = log(rowSums(abs(d) / seq_len(nrow(d)))))
-  result$smoothed <- stats::ksmooth(result$k, result$raw, kernel = "normal",
+    stopifnot("textmodel_lss" %in% class(object))
+    s <- sign(unlist(unname(object$seeds_weighted)))
+    f <- names(s)
+    d <- Matrix::tcrossprod(object$embedding[, f, drop = FALSE])
+    d <- Matrix::tril(d)
+    temp <- data.frame(k = seq_len(nrow(d)),
+                         raw = log(rowSums(abs(d) / seq_len(nrow(d)))))
+    temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
                                     bandwidth = bandwidth)$y
-  return(result)
+    result <- list(
+      "overall" = c("mean" = mean(temp$raw), "max" = max(temp$raw), "min" = min(temp$raw)),
+      "component" = temp
+    )
+    class(result) <- "listof"
+    return(result)
 }
 
 
@@ -99,18 +104,21 @@ strength <- function(object) {
   s <- sign(unlist(unname(object$seeds_weighted))) > 0
   m <- proxyC::simil(object$embedding,
                      object$embedding[, names(s), drop = FALSE], margin = 2)
+  b <- rowMeans(m)
   Matrix::diag(m) <- NA
   temp <- data.frame(seed = colnames(m),
-                     selected = log(1 / apply(m[f,], 2, function(x) abs(mean(x, na.rm = TRUE)))),
-                     all = log(1 / apply(m, 2, function(x) abs(mean(x, na.rm = TRUE)))),
+                     selected = log(1 / abs(colMeans(m[f,], na.rm = TRUE))),
+                     all = log(1 / abs(colMeans(m, na.rm = TRUE))),
+                     #selected = log(1 / apply(m[f,], 2, function(x) abs(mean(x, na.rm = TRUE)))),
+                     #all = log(1 / apply(m, 2, function(x) abs(mean(x, na.rm = TRUE)))),
                      stringsAsFactors = FALSE)
   temp <- temp[order(temp$selected, decreasing = TRUE),]
   rownames(temp) <- NULL
   result <- list(
-    "overall" = c("selected" =  log(1 / mean(abs(object$beta[f]))),
-                  "all" = log(1 / mean(abs(object$beta)))
+    "overall" = c("selected" =  log(1 / mean(abs(b[f]))),
+                  "all" = log(1 / mean(abs(b)))
     ),
-    "each" = temp
+    "element" = temp
   )
   class(result) <- "listof"
   return(result)
