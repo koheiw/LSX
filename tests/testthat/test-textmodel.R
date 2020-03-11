@@ -46,7 +46,7 @@ test_that("textmodel_lss has all the attributes", {
 
     expect_equal(
         names(lss_test),
-        c("beta", "frequency", "features", "seeds", "seeds_weighted",
+        c("beta", "k", "s", "frequency", "features", "seeds", "seeds_weighted",
           "embedding", "similarity", "relevance", "importance", "call",  "data")
     )
 
@@ -57,7 +57,7 @@ test_that("textmodel_lss has all the attributes", {
 
     expect_equal(
         names(lss_test_nd),
-        c("beta", "frequency", "features", "seeds", "seeds_weighted",
+        c("beta", "k", "s", "frequency", "features", "seeds", "seeds_weighted",
           "embedding", "similarity", "relevance", "importance", "call")
     )
 
@@ -185,12 +185,12 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
     pred <- predict(lss_test, newdata = as.dfm(mt))
     expect_equal(length(pred), ndoc(data_corpus_inaugural))
     expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                      c("1789-Washington" = -0.7618717, "1797-Adams" = NA, "1825-Adams" = NA),
+                      c("1789-Washington" = -0.7138554, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
 
     pred2 <- predict(lss_test, newdata = as.dfm(mt), se.fit = TRUE)
     expect_equal(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                 c("1789-Washington" = -0.7618717, "1797-Adams" = NA, "1825-Adams" = NA),
+                 c("1789-Washington" = -0.7138554, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
     expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.931129, NA, NA), tolerance = 0.01)
     expect_equal(pred2$n[c(1, 3, 10)], c(33, 0, 0))
