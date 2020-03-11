@@ -55,7 +55,7 @@
 #' lss_pol <- textmodel_lss(dfmat, seedwords('pos-neg'), features = pol)
 #'
 #' # GloVe
-#' toks <- tokens_select("^[\\p{L}]+$", valuetype = "regex", padding = TRUE)
+#' toks <- tokens_select(toks, "^[\\p{L}]+$", valuetype = "regex", padding = TRUE)
 #' fcmat  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
 #' lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
 #' }
