@@ -67,8 +67,12 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
 
     engine <- match.arg(engine)
 
-    if (is.dfm(features))
-        stop("features cannot be a dfm\n", call. = FALSE)
+    # select features to weight
+    if (is.null(features))
+        features <- featnames(x)
+    if (!is.character(features))
+        stop("features must be a character vector\n", call. = FALSE)
+    features <- intersect(features, featnames(x))
 
     # generate inflected seed
     seeds <- get_seeds(seeds)
@@ -121,15 +125,14 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
                                      margin = 2, method = simil_method))
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
-    if (!is.null(features))
-        simil <- simil[unlist(pattern2fixed(features, rownames(simil), "glob", FALSE)),,drop = FALSE]
+    simil <- simil[unlist(pattern2fixed(features, rownames(simil), "glob", FALSE)),,drop = FALSE]
+
     if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
-
     beta <- sort(rowMeans(simil %*% seed), decreasing = TRUE)
     result <- list(beta = beta,
                    frequency = freq[names(beta)],
-                   features = if (is.null(features)) featnames(x) else features,
+                   features = features,
                    seeds = seeds,
                    seeds_weighted = seeds_weighted,
                    embedding = embed,

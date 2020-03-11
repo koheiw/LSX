@@ -44,8 +44,9 @@ test_that("as.seedwords works", {
 
 
 test_that("cohesion workds", {
-    dat <- cohesion(lss_test)
-    expect_identical(names(dat), c("k", "raw", "smoothed"))
-    expect_identical(dat$k, seq_len(300))
+    lis <- cohesion(lss_test)
+    expect_identical(names(lis), c("overall", "component"))
+    expect_identical(names(lis$component), c("k", "raw", "smoothed"))
+    expect_identical(nrow(lis$component), lss_test$k)
 })
 
