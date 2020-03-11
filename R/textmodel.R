@@ -114,6 +114,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
                          margin = 1)
     relev <- abs(as.numeric(cos))
 
+    k <- as.integer(k)
     s <- as.integer(s)
     if (any(s < 1L) || any(k < s))
         stop("s must be between 1 and k")
