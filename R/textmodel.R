@@ -131,6 +131,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
         stop("Columns and seed words do not match", call. = FALSE)
     beta <- sort(rowMeans(simil %*% seed), decreasing = TRUE)
     result <- list(beta = beta,
+                   k = k, s = s,
                    frequency = freq[names(beta)],
                    features = features,
                    seeds = seeds,
