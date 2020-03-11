@@ -74,7 +74,8 @@ cohesion <- function(object, bandwidth = 10) {
     temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
                                     bandwidth = bandwidth)$y
     result <- list(
-      "overall" = c("mean" = mean(temp$raw), "max" = max(temp$raw), "min" = min(temp$raw)),
+      "overall" = c("selected" = mean(temp$raw[object$s]),
+                    "all" = mean(temp$raw)),
       "component" = temp
     )
     class(result) <- "listof"

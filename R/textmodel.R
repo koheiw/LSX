@@ -128,6 +128,7 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
 
     beta <- sort(rowMeans(simil %*% seed), decreasing = TRUE)
     result <- list(beta = beta,
+                   k = k, s = s,
                    frequency = freq[names(beta)],
                    features = if (is.null(features)) featnames(x) else features,
                    seeds = seeds,
