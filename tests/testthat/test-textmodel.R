@@ -283,3 +283,32 @@ test_that("s argument is working", {
         "s must be between 1 and k"
     )
 })
+
+test_that("test smooth_lss", {
+    lss <- sample(1:10 / 100, size = 1000, replace = TRUE)
+    date <- sample(seq(as.Date("2020-01-01"), as.Date("2020-12-31"), by = "1 day"),
+                   size = 1000, replace = TRUE)
+    char <- sample(letters, size = 1000, replace = TRUE)
+    expect_silent(smooth_lss(data.frame(fit = lss, date = date)))
+    expect_error(
+        smooth_lss(data.frame(score = lss, date = date)),
+        "fit does not exist in x"
+    )
+    expect_error(
+        smooth_lss(data.frame(fit = char, date = date)),
+        "fit must be a numeric column"
+    )
+    expect_error(
+        smooth_lss(data.frame(fit = lss, published = date)),
+        "date does not exist in x"
+    )
+    expect_error(
+        smooth_lss(data.frame(fit = lss, date = char)),
+        "date must be a date column"
+    )
+    expect_silent(
+        smooth_lss(data.frame(score = lss, published = date),
+                   lss_var = "score", "date_var" = "published")
+    )
+})
+
