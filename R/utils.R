@@ -69,8 +69,8 @@ cohesion <- function(object, bandwidth = 10) {
     f <- names(s)
     d <- Matrix::tcrossprod(object$embedding[, f, drop = FALSE])
     d <- Matrix::tril(d)
-    temp <- data.frame(k = seq_len(nrow(d)),
-                         raw = log(rowSums(abs(d) / seq_len(nrow(d)))))
+    h <- abs(Matrix::rowMeans(Matrix::band(d, -1, -1)))
+    temp <- data.frame(k = seq_along(h), raw = log(h))
     temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
                                     bandwidth = bandwidth)$y
     result <- list(
