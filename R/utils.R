@@ -104,16 +104,14 @@ discrimination <- function(object, newdata = NULL) {
 strength <- function(object) {
     stopifnot("textmodel_lss" %in% class(object))
     f <- object$features
-    s <- sign(unlist(unname(object$seeds_weighted))) > 0
-    m <- proxyC::simil(object$embedding,
-                       object$embedding[, names(s), drop = FALSE], margin = 2)
-    b <- rowMeans(m)
-    Matrix::diag(m) <- NA
-    temp <- data.frame(seed = colnames(m),
-                       selected = log(1 / abs(colMeans(m[f,], na.rm = TRUE))),
-                       all = log(1 / abs(colMeans(m, na.rm = TRUE))),
-                       #selected = log(1 / apply(m[f,], 2, function(x) abs(mean(x, na.rm = TRUE)))),
-                       #all = log(1 / apply(m, 2, function(x) abs(mean(x, na.rm = TRUE)))),
+    w <- names(unlist(unname(object$seeds_weighted)))
+    sim <- proxyC::simil(object$embedding[object$s,, drop = FALSE],
+                         object$embedding[object$s, w, drop = FALSE], margin = 2)
+    b <- rowMeans(sim)
+    Matrix::diag(sim) <- NA
+    temp <- data.frame(seed = colnames(sim),
+                       selected = log(1 / abs(colMeans(sim[f,], na.rm = TRUE))),
+                       all = log(1 / abs(colMeans(sim, na.rm = TRUE))),
                        stringsAsFactors = FALSE)
     temp <- temp[order(temp$selected, decreasing = TRUE),]
     rownames(temp) <- NULL

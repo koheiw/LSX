@@ -55,5 +55,9 @@ test_that("strength works", {
     expect_identical(names(lis), c("overall", "element"))
     expect_identical(names(lis$element), c("seed", "selected", "all"))
     expect_identical(nrow(lis$element), length(unlist(lss_test$seeds_weighted)))
+
+    lss1 <- textmodel_lss(dfmt_test, seed_test, features = feat_test, k = 300, s = 100)
+    lss2 <- textmodel_lss(dfmt_test, seed_test, features = feat_test, k = 300)
+    expect_true(all(strength(lss1)$overall != strength(lss2)$overall))
 })
 
