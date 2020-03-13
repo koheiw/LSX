@@ -185,12 +185,12 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
     pred <- predict(lss_test, newdata = as.dfm(mt))
     expect_equal(length(pred), ndoc(data_corpus_inaugural))
     expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                      c("1789-Washington" = -0.7138554, "1797-Adams" = NA, "1825-Adams" = NA),
+                      c("1789-Washington" = -0.762, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
 
     pred2 <- predict(lss_test, newdata = as.dfm(mt), se.fit = TRUE)
     expect_equal(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                 c("1789-Washington" = -0.7138554, "1797-Adams" = NA, "1825-Adams" = NA),
+                 c("1789-Washington" = -0.762, "1797-Adams" = NA, "1825-Adams" = NA),
                  tolerance = 0.01)
     expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.931129, NA, NA), tolerance = 0.01)
     expect_equal(pred2$n[c(1, 3, 10)], c(33, 0, 0))
@@ -283,3 +283,32 @@ test_that("s argument is working", {
         "s must be between 1 and k"
     )
 })
+
+test_that("test smooth_lss", {
+    lss <- sample(1:10 / 100, size = 1000, replace = TRUE)
+    date <- sample(seq(as.Date("2020-01-01"), as.Date("2020-12-31"), by = "1 day"),
+                   size = 1000, replace = TRUE)
+    char <- sample(letters, size = 1000, replace = TRUE)
+    expect_silent(smooth_lss(data.frame(fit = lss, date = date)))
+    expect_error(
+        smooth_lss(data.frame(score = lss, date = date)),
+        "fit does not exist in x"
+    )
+    expect_error(
+        smooth_lss(data.frame(fit = char, date = date)),
+        "fit must be a numeric column"
+    )
+    expect_error(
+        smooth_lss(data.frame(fit = lss, published = date)),
+        "date does not exist in x"
+    )
+    expect_error(
+        smooth_lss(data.frame(fit = lss, date = char)),
+        "date must be a date column"
+    )
+    expect_silent(
+        smooth_lss(data.frame(score = lss, published = date),
+                   lss_var = "score", "date_var" = "published")
+    )
+})
+

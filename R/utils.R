@@ -47,6 +47,7 @@ diagnosys.corpus <- function(x, ...) {
 #' @export
 #' @keywords internal
 divergence <- function(object) {
+    .Deprecated("cohesion")
     stopifnot("textmodel_lss" %in% class(object))
     seed_weighted <- unlist(unname(object$seeds_weighted))
     seed_sign <- sign(seed_weighted)
@@ -90,6 +91,7 @@ cohesion <- function(object, bandwidth = 10) {
 #' @export
 #' @keywords internal
 discrimination <- function(object, newdata = NULL) {
+    .Deprecated("cohesion")
     stopifnot("textmodel_lss" %in% class(object))
     p <- predict(object, newdata, rescaling = FALSE)
     t <- e1071::kurtosis(coef(object), na.rm = TRUE)
@@ -100,29 +102,29 @@ discrimination <- function(object, newdata = NULL) {
 #' @export
 #' @keywords internal
 strength <- function(object) {
-  stopifnot("textmodel_lss" %in% class(object))
-  f <- object$features
-  s <- sign(unlist(unname(object$seeds_weighted))) > 0
-  m <- proxyC::simil(object$embedding,
-                     object$embedding[, names(s), drop = FALSE], margin = 2)
-  b <- rowMeans(m)
-  Matrix::diag(m) <- NA
-  temp <- data.frame(seed = colnames(m),
-                     selected = log(1 / abs(colMeans(m[f,], na.rm = TRUE))),
-                     all = log(1 / abs(colMeans(m, na.rm = TRUE))),
-                     #selected = log(1 / apply(m[f,], 2, function(x) abs(mean(x, na.rm = TRUE)))),
-                     #all = log(1 / apply(m, 2, function(x) abs(mean(x, na.rm = TRUE)))),
-                     stringsAsFactors = FALSE)
-  temp <- temp[order(temp$selected, decreasing = TRUE),]
-  rownames(temp) <- NULL
-  result <- list(
-    "overall" = c("selected" =  log(1 / mean(abs(b[f]))),
-                  "all" = log(1 / mean(abs(b)))
-    ),
-    "element" = temp
-  )
-  class(result) <- "listof"
-  return(result)
+    stopifnot("textmodel_lss" %in% class(object))
+    f <- object$features
+    s <- sign(unlist(unname(object$seeds_weighted))) > 0
+    m <- proxyC::simil(object$embedding,
+                       object$embedding[, names(s), drop = FALSE], margin = 2)
+    b <- rowMeans(m)
+    Matrix::diag(m) <- NA
+    temp <- data.frame(seed = colnames(m),
+                       selected = log(1 / abs(colMeans(m[f,], na.rm = TRUE))),
+                       all = log(1 / abs(colMeans(m, na.rm = TRUE))),
+                       #selected = log(1 / apply(m[f,], 2, function(x) abs(mean(x, na.rm = TRUE)))),
+                       #all = log(1 / apply(m, 2, function(x) abs(mean(x, na.rm = TRUE)))),
+                       stringsAsFactors = FALSE)
+    temp <- temp[order(temp$selected, decreasing = TRUE),]
+    rownames(temp) <- NULL
+    result <- list(
+      "overall" = c("selected" =  log(1 / mean(abs(b[f]))),
+                    "all" = log(1 / mean(abs(b)))
+      ),
+      "element" = temp
+    )
+    class(result) <- "listof"
+    return(result)
 }
 
 #' Convinient function to convert a list to seed words
@@ -152,7 +154,4 @@ as.seedwords <- function(x, upper = 1, lower = 2) {
     c(structure(rep(1, length(pos)), names = pos),
       structure(rep(-1, length(neg)), names = neg))
 }
-
-
-
 

@@ -10,7 +10,7 @@ License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
 Depends:
-    quanteda (>= 1.5),
+    quanteda (>= 2.0),
     quanteda.textmodels,
     methods,
     R (>= 3.5.0)

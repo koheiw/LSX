@@ -68,10 +68,11 @@ A vector-space model for subject specific sentiment-analysis
 require(quanteda)
 
 # Available at https://bit.ly/2GZwLcN
-corp <- readRDS("data_corpus_guardian2016-10k.rds")
-corp <- corpus_reshape(data_corpus_guardian, 'sentences')
+corp <- readRDS("data_corpus_guardian2016-10k.rds") \%>\%
+                 corpus_reshape('sentences')
 toks <- tokens(corp, remove_punct = TRUE) \%>\%
         tokens_remove(stopwords()) \%>\%
+        tokens_select("^[\\\\p{L}]+$", valuetype = "regex", padding = TRUE)
 dfmat <- dfm(toks) \%>\%
          dfm_trim(dfmat, min_termfreq = 10)
 
@@ -88,7 +89,6 @@ pol <- head(char_keyness(toks, 'politi*'), 500)
 lss_pol <- textmodel_lss(dfmat, seedwords('pos-neg'), features = pol)
 
 # GloVe
-toks <- tokens_select("^[\\\\p{L}]+$", valuetype = "regex", padding = TRUE)
 fcmat  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
 lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
 }
