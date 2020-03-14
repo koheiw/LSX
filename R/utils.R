@@ -110,10 +110,10 @@ strength <- function(object) {
     b <- rowMeans(sim)
     Matrix::diag(sim) <- NA
     temp <- data.frame(seed = colnames(sim),
-                       selected = log(1 / abs(colMeans(sim[f,], na.rm = TRUE))),
+                       selected = log(1 / abs(colMeans(sim[f,,drop = FALSE], na.rm = TRUE))),
                        all = log(1 / abs(colMeans(sim, na.rm = TRUE))),
                        stringsAsFactors = FALSE)
-    temp <- temp[order(temp$selected, decreasing = TRUE),]
+    temp <- temp[order(temp$selected, decreasing = TRUE),, drop = FALSE]
     rownames(temp) <- NULL
     result <- list(
       "overall" = c("selected" =  log(1 / mean(abs(b[f]))),

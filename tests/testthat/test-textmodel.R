@@ -8,6 +8,7 @@ seed <- as.seedwords(data_dictionary_sentiment)
 lss_test <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300)
 lss_test_nd <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300,
                              include_data = FALSE)
+lss_test_ss <- textmodel_lss(dfmt_test, seed[1], features = feat_test, k = 300)
 
 test_that("char_keyness is working", {
 
@@ -263,13 +264,6 @@ test_that("weight is working", {
     )
 })
 
-test_that("utils are working", {
-    expect_equal(names(divergence(lss_test)),
-                 c("within", "between", "diff"))
-    expect_equal(names(discrimination(lss_test)),
-                 c("document", "term"))
-})
-
 test_that("s argument is working", {
     expect_identical(
         dim(textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 100)$embedding),
@@ -310,5 +304,10 @@ test_that("test smooth_lss", {
         smooth_lss(data.frame(score = lss, published = date),
                    lss_var = "score", "date_var" = "published")
     )
+})
+
+test_that("test with single seed", {
+    expect_silent(cohesion(lss_test_ss))
+    expect_silent(strength(lss_test_ss))
 })
 
