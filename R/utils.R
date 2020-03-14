@@ -64,15 +64,18 @@ divergence <- function(object) {
 #' @param bandwidth size of window for smoothing
 #' @export
 #' @keywords internal
-#' @importFrom Matrix rowMeans tcrossprod tril
+#' @importFrom Matrix rowMeans rowSums tcrossprod tril
 cohesion <- function(object, bandwidth = 10) {
     stopifnot("textmodel_lss" %in% class(object))
     s <- sign(unlist(unname(object$seeds_weighted)))
     f <- names(s)
+
     d <- tcrossprod(object$embedding[, f, drop = FALSE])
-    d <- tril(d)
-    h <- abs(rowMeans(band(d, -1, -1)))
-    temp <- data.frame(k = seq_along(h), raw = log(h))
+    d <- tril(d, -1)
+    n <- seq_len(nrow(d))
+    h <- rowSums(abs(d)) / (n - 1)
+    h[1] <- NA # no similarity for k = 1
+    temp <- data.frame(k = n, raw = log(h))
     temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
                                     bandwidth = bandwidth)$y
     result <- list(
@@ -80,6 +83,18 @@ cohesion <- function(object, bandwidth = 10) {
                     "all" = mean(temp$raw)),
       "component" = temp
     )
+
+    # d <- tcrossprod(object$embedding[, f, drop = FALSE])
+    # d <- tril(d)
+    # h <- abs(rowMeans(band(d, -1, -1)))
+    # temp <- data.frame(k = seq_along(h), raw = log(h))
+    # temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
+    #                                 bandwidth = bandwidth)$y
+    # result <- list(
+    #   "overall" = c("selected" = mean(temp$raw[object$s]),
+    #                 "all" = mean(temp$raw)),
+    #   "component" = temp
+    # )
     class(result) <- "listof"
     return(result)
 }
