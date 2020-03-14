@@ -2,7 +2,7 @@ Package: LSS
 Type: Package
 Title: Latent Semantic Scaling
 Date: 2020-03-13
-Version: 0.8.3
+Version: 0.8.4
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre"))
 Description: A word embeddings-based semi-supervised model for document scaling <doi.org/10.1177/0267323117695735>.
     LSS allows users to analyze large and complex corpora on arbitrary dimensions with seed words exploiting efficiency of word embeddings (SVD, Glove).

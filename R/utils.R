@@ -64,13 +64,14 @@ divergence <- function(object) {
 #' @param bandwidth size of window for smoothing
 #' @export
 #' @keywords internal
+#' @importFrom Matrix rowMeans tcrossprod tril
 cohesion <- function(object, bandwidth = 10) {
     stopifnot("textmodel_lss" %in% class(object))
     s <- sign(unlist(unname(object$seeds_weighted)))
     f <- names(s)
-    d <- Matrix::tcrossprod(object$embedding[, f, drop = FALSE])
-    d <- Matrix::tril(d)
-    h <- abs(Matrix::rowMeans(Matrix::band(d, -1, -1)))
+    d <- tcrossprod(object$embedding[, f, drop = FALSE])
+    d <- tril(d)
+    h <- abs(rowMeans(band(d, -1, -1)))
     temp <- data.frame(k = seq_along(h), raw = log(h))
     temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
                                     bandwidth = bandwidth)$y
@@ -101,6 +102,7 @@ discrimination <- function(object, newdata = NULL) {
 #' @rdname discrimination
 #' @export
 #' @keywords internal
+#' @importFrom Matrix rowMeans colMeans diag band
 strength <- function(object) {
     stopifnot("textmodel_lss" %in% class(object))
     f <- object$features
@@ -108,7 +110,7 @@ strength <- function(object) {
     sim <- proxyC::simil(object$embedding[object$s,, drop = FALSE],
                          object$embedding[object$s, w, drop = FALSE], margin = 2)
     b <- rowMeans(sim)
-    Matrix::diag(sim) <- NA
+    diag(sim) <- NA
     temp <- data.frame(seed = colnames(sim),
                        selected = log(1 / abs(colMeans(sim[f,,drop = FALSE], na.rm = TRUE))),
                        all = log(1 / abs(colMeans(sim, na.rm = TRUE))),
