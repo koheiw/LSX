@@ -62,7 +62,7 @@
 #' @export
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", cache = FALSE,
                     simil_method = "cosine", include_data = TRUE,
-                    engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = NULL, w = 50, d = 0, q = 1,
+                    engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = NULL, w = 50, d = 0,
                     verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -127,8 +127,6 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
     simil <- simil[unlist(pattern2fixed(features, rownames(simil), "glob", FALSE)),,drop = FALSE]
-
-    #simil[simil < quantile(as.numeric(simil), q)] <- 0
 
     if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
