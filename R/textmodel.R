@@ -62,7 +62,7 @@
 #' @export
 textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", cache = FALSE,
                     simil_method = "cosine", include_data = TRUE,
-                    engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = NULL, w = 50, d = 0,
+                    engine = c("RSpectra", "rsvd", "irlba", "text2vec"), s = NULL, w = 50, d = 0, q = 1,
                     verbose = FALSE, ...) {
 
     engine <- match.arg(engine)
@@ -127,6 +127,8 @@ textmodel_lss <- function(x, seeds, features = NULL, k = 300, weight = "count", 
     simil_seed <- simil[rownames(simil) %in% names(seed),
                         colnames(simil) %in% names(seed), drop = FALSE]
     simil <- simil[unlist(pattern2fixed(features, rownames(simil), "glob", FALSE)),,drop = FALSE]
+
+    #simil[simil < quantile(as.numeric(simil), q)] <- 0
 
     if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
@@ -293,11 +295,12 @@ weight_seeds <- function(seed, weight, type) {
 #' @param ... not used
 #' @keywords internal
 #' @import methods
+#' @importFrom Matrix rowSums t
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
                                   density = FALSE, rescaling = TRUE, ...){
 
-    model <- as.dfm(rbind(object$beta))
+    model <- rbind(object$beta)
 
     if (is.null(newdata)) {
         if (!any("data" == names(object)))
@@ -309,13 +312,13 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
         data <- newdata
     }
 
-    d <- unname(rowSums(dfm_select(dfm_weight(data, "prop"), object$features)))
-    data <- dfm_match(data, featnames(model))
+    if (density)
+        d <- unname(rowSums(dfm_select(data, object$features)) / rowSums(data))
 
-    n <- unname(Matrix::rowSums(data))
+    data <- dfm_match(data, colnames(model))
+    n <- unname(rowSums(data))
     data <- dfm_weight(data, "prop")
-    model <- as(model, "dgCMatrix")
-    fit <- Matrix::rowSums(data %*% Matrix::t(model)) # mean scores of documents
+    fit <- rowSums(data %*% t(model)) # mean scores of documents
     fit[n == 0] <- NA
 
     if (rescaling) {
@@ -328,7 +331,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     if (se.fit) {
         m <- matrix(rep(fit, ncol(data)), nrow = ncol(data), byrow = TRUE)
         error <- t(m - model[,colnames(data)]) ^ 2
-        var <- unname(Matrix::rowSums(data * error))
+        var <- unname(rowSums(data * error))
         se <- ifelse(n == 0, NA, sqrt(var) / sqrt(n))
         if (rescaling)
             se <- se / attr(fit_scaled, "scaled:scale")

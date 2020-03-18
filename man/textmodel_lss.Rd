@@ -17,6 +17,7 @@ textmodel_lss(
   s = NULL,
   w = 50,
   d = 0,
+  q = 1,
   verbose = FALSE,
   ...
 )
