@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{cohesion}
 \alias{cohesion}
-\title{Computes cohesion of components of word embedding}
+\title{Computes cohesion of components of latent semantic analysis}
 \usage{
 cohesion(object, bandwidth = 10)
 }
@@ -12,6 +12,5 @@ cohesion(object, bandwidth = 10)
 \item{bandwidth}{size of window for smoothing}
 }
 \description{
-Computes cohesion of components of word embedding
+Computes cohesion of components of latent semantic analysis
 }
-\keyword{internal}

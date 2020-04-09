@@ -59,11 +59,10 @@ divergence <- function(object) {
     c("within" = w, "between" = b, "diff" = w - b)
 }
 
-#' Computes cohesion of components of word embedding
+#' Computes cohesion of components of latent semantic analysis
 #' @param object a fitted `textmodel_lss`
 #' @param bandwidth size of window for smoothing
 #' @export
-#' @keywords internal
 #' @importFrom Matrix rowMeans rowSums tcrossprod tril
 cohesion <- function(object, bandwidth = 10) {
     stopifnot("textmodel_lss" %in% class(object))

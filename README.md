@@ -32,6 +32,10 @@ recent research projects:
     Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)",
     *Europe-Asia Studies*
 
+Please read [my working
+paper](https://blog.koheiw.net/wp-content/uploads/2020/04/LSS-06.pdf)"
+for the algorothm and methodolgy.
+
 ## How to install
 
 ``` r
@@ -68,11 +72,11 @@ dfmt_sent <- toks_sent %>%
     dfm_trim(min_termfreq = 5)
 
 eco <- char_keyness(toks_sent, "econom*", p = 0.05)
-tmod_lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
-                          feature = eco, cache = TRUE)
+lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
+                     feature = eco, cache = TRUE, k = 300)
 ```
 
-    ## Reading cache file: lss_cache/svds_a588a327e03cb074.RDS
+    ## Reading cache file: lss_cache/svds_34e08f32419c9eca.RDS
 
 ### Sentiment seed words
 
@@ -95,37 +99,37 @@ to seed
     words.
 
 ``` r
-head(coef(tmod_lss), 20) # most positive words
+head(coef(lss), 20) # most positive words
 ```
 
-    ##       legal       shape      either    positive      monday sustainable 
-    ##  0.04467974  0.04030600  0.03729081  0.03594595  0.03324765  0.03267820 
-    ##   expecting      decent    emerging     several        york   candidate 
-    ##  0.03235872  0.03105931  0.03077907  0.03048184  0.02915092  0.02874260 
-    ## challenging        able  powerhouse        asia    northern       thing 
-    ##  0.02799373  0.02758163  0.02700428  0.02689114  0.02672865  0.02663936 
-    ##        drag       stock 
-    ##  0.02627880  0.02617401
+    ##       shape      either    positive      monday   expecting sustainable 
+    ##  0.04017038  0.03745197  0.03602651  0.03352895  0.03307553  0.03277666 
+    ##      decent     several    emerging        york   candidate challenging 
+    ##  0.03084942  0.03080686  0.03046641  0.02925947  0.02883487  0.02801757 
+    ##      argued        able  powerhouse        asia       thing        drag 
+    ##  0.02770138  0.02753339  0.02724199  0.02715581  0.02663417  0.02638054 
+    ##       stock         aid 
+    ##  0.02608997  0.02603547
 
 ``` r
-tail(coef(tmod_lss), 20) # most negative words
+tail(coef(lss), 20) # most negative words
 ```
 
-    ##        allow      nothing       shrink      cutting      problem        grows 
-    ##  -0.03653112  -0.03718793  -0.03752405  -0.03762728  -0.03795939  -0.03860088 
-    ##         debt implications       happen policymakers    suggested    something 
-    ##  -0.03907404  -0.03925240  -0.03925315  -0.04015877  -0.04092905  -0.04308314 
-    ##     interest    borrowing unemployment         hike         rate        rates 
-    ##  -0.04312183  -0.04493415  -0.04511959  -0.04540284  -0.04862177  -0.04875790 
-    ##          rba     negative 
-    ##  -0.05088908  -0.06187295
+    ##     actually        allow      nothing      cutting       shrink        grows 
+    ##  -0.03527976  -0.03671954  -0.03702909  -0.03735588  -0.03815107  -0.03851795 
+    ##         debt implications policymakers    suggested     interest    something 
+    ##  -0.03872739  -0.03942620  -0.04015681  -0.04115879  -0.04288522  -0.04311322 
+    ##    borrowing unemployment         hike        rates         rate          rba 
+    ##  -0.04490576  -0.04508967  -0.04572553  -0.04857283  -0.04878567  -0.05076572 
+    ##          cut     negative 
+    ##  -0.05599481  -0.06169430
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,
 “emerging” and “efficient” are either negative or positive.
 
 ``` r
-textplot_scale1d(tmod_lss, 
+textplot_scale1d(lss, 
                  highlighted = c("said", "people", "also",
                                  "borrowing", "unemployment",
                                  "emerging", "efficient"))
@@ -147,7 +151,7 @@ neutral (overall mean) on the day of voting (broken line).
 dfmt <- dfm(corp)
 
 # predict sentiment scores
-pred <- as.data.frame(predict(tmod_lss, se.fit = TRUE, newdata = dfmt))
+pred <- as.data.frame(predict(lss, se.fit = TRUE, newdata = dfmt))
 pred$date <- docvars(dfmt, "date")
 pred <- na.omit(pred)
 

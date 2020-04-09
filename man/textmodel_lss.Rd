@@ -48,13 +48,14 @@ otherwise.}
 \item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}},
 and \code{\link[text2vec:GlobalVectors]{text2vec::GlobalVectors()}}.}
 
-\item{s}{the number or indices of the components of word vectors used
-to compute similarity.}
+\item{s}{a number or indices of the components of word vectors used to
+compute similarity; \code{s < k} to truncate word vectors; useful for diagnosys
+and simulation.}
 
 \item{w}{the size of word vectors. Only used when \code{engine} is "text2vec".}
 
-\item{d}{eigen value weighting. Only used when \code{engine} is "RSpectra"
-or "irlba".}
+\item{d}{eigen value weighting. Only used when \code{engine} is "RSpectra" or
+"irlba".}
 
 \item{verbose}{show messages if \code{TRUE}.}
 

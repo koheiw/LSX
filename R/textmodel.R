@@ -17,11 +17,12 @@
 #' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
 #' @param engine choose SVD engine between [RSpectra::svds()], [irlba::irlba()],
 #'   and [text2vec::GlobalVectors()].
-#' @param s the number or indices of the components of word vectors used
-#'   to compute similarity.
+#' @param s a number or indices of the components of word vectors used to
+#'   compute similarity; `s < k` to truncate word vectors; useful for diagnosys
+#'   and simulation.
 #' @param w the size of word vectors. Only used when `engine` is "text2vec".
-#' @param d eigen value weighting. Only used when `engine` is "RSpectra"
-#'   or "irlba".
+#' @param d eigen value weighting. Only used when `engine` is "RSpectra" or
+#'   "irlba".
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional argument passed to the SVD engine
 #' @import quanteda
