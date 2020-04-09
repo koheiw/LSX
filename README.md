@@ -33,8 +33,8 @@ recent research projects:
     *Europe-Asia Studies*
 
 Please read [my working
-paper](https://blog.koheiw.net/wp-content/uploads/2020/04/LSS-06.pdf)"
-for the algorothm and methodolgy.
+paper](https://blog.koheiw.net/wp-content/uploads/2020/04/LSS-06.pdf)
+for the algorithm and methodology.
 
 ## How to install
 
@@ -135,7 +135,7 @@ textplot_scale1d(lss,
                                  "emerging", "efficient"))
 ```
 
-![](images/unnamed-chunk-7-1.png)<!-- -->
+![](images/words-1.png)<!-- -->
 
 ## Result of analysis
 
@@ -168,4 +168,4 @@ abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 2))
 text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 ```
 
-![](images/unnamed-chunk-8-1.png)<!-- -->
+![](images/trend-1.png)<!-- -->

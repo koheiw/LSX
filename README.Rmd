@@ -26,7 +26,7 @@ This model has been used for large scale analysis of media content in recent res
 * Kohei Watanabe, 2017. "[The spread of the Kremlin’s narratives by a western news agency during the Ukraine crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*
 * Tomila Lankina and Kohei Watanabe. 2017. ["Russian Spring’ or ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving Strategy in Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)", *Europe-Asia Studies*
 
-Please read [my working paper](https://blog.koheiw.net/wp-content/uploads/2020/04/LSS-06.pdf)" for the algorothm and methodolgy.
+Please read [my working paper](https://blog.koheiw.net/wp-content/uploads/2020/04/LSS-06.pdf) for the algorithm and methodology.
 
 ## How to install
 
@@ -81,7 +81,7 @@ tail(coef(lss), 20) # most negative words
 
 This plot shows that frequent words ("said", "people", "also") are neutral while less frequent words such as "borrowing", "unemployment", "emerging" and "efficient" are  either negative or positive.
 
-```{r}
+```{r words}
 textplot_scale1d(lss, 
                  highlighted = c("said", "people", "also",
                                  "borrowing", "unemployment",
@@ -92,7 +92,7 @@ textplot_scale1d(lss,
 
 In the plots, circles indicate sentiment of individual news articles and lines are their local average (solid line) with a confidence band (dotted lines). According to the plot, economic sentiment in the Guardian news stories became negative from February to April, but it become more positive in April. As the referendum approaches, the newspaper's sentiment became less stable, although it became close to neutral (overall mean) on the day of voting (broken line).
 
-```{r}
+```{r trend}
 dfmt <- dfm(corp)
 
 # predict sentiment scores
