@@ -12,13 +12,13 @@ textplot_simil <- function(x, group = FALSE) {
 #' @export
 textplot_simil.textmodel_lss <- function(x, group = FALSE) {
 
-    if (!all(c("similarity", "seeds_weighted") %in% names(x)))
+    if (!all(c("similarity", "seeds") %in% names(x)))
         stop("Invalid textmodel_lss object")
 
     temp <- reshape2::melt(x$similarity, as.is = TRUE)
     if (group) {
-        seed <- rep(names(x$seeds_weighted), lengths(x$seeds_weighted))
-        names(seed) <- names(unlist(unname(x$seeds_weighted)))
+        seed <- rep(names(x$seeds), lengths(x$seeds))
+        names(seed) <- names(unlist(unname(x$seeds)))
         temp$Var1 <- seed[temp$Var1]
         temp$Var2 <- seed[temp$Var2]
         temp <- stats::aggregate(list(value = temp$value),
