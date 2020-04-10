@@ -49,8 +49,8 @@ diagnosys.corpus <- function(x, ...) {
 divergence <- function(object) {
     .Deprecated("cohesion")
     stopifnot("textmodel_lss" %in% class(object))
-    seed_weighted <- unlist(unname(object$seeds_weighted))
-    seed_sign <- sign(seed_weighted)
+    seed <- unlist(unname(object$seeds))
+    seed_sign <- sign(seed)
     temp <- object$similarity[names(seed_sign), names(seed_sign)]
     l <- tcrossprod(seed_sign) > 0
     diag(l) <- NA
@@ -66,10 +66,8 @@ divergence <- function(object) {
 #' @importFrom Matrix rowMeans rowSums tcrossprod tril
 cohesion <- function(object, bandwidth = 10) {
     stopifnot("textmodel_lss" %in% class(object))
-    s <- sign(unlist(unname(object$seeds_weighted)))
-    f <- names(s)
-
-    cross <- tcrossprod(object$embedding[, f, drop = FALSE])
+    seed <- unlist(unname(object$seeds))
+    cross <- tcrossprod(object$embedding[,names(seed), drop = FALSE])
     cross <- tril(cross, -1)
     n <- seq_len(nrow(cross))
     h <- rowSums(abs(cross)) / (n - 1)
@@ -78,7 +76,7 @@ cohesion <- function(object, bandwidth = 10) {
     temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
                                     bandwidth = bandwidth)$y
     result <- list(
-      "overall" = c("selected" = mean(temp$raw[object$s], na.rm = TRUE),
+      "overall" = c("selected" = mean(temp$raw[object$slice], na.rm = TRUE),
                     "all" = mean(temp$raw, na.rm = TRUE)),
       "component" = temp
     )
@@ -119,21 +117,21 @@ discrimination <- function(object, newdata = NULL) {
 #' @importFrom Matrix rowMeans colMeans diag band
 strength <- function(object) {
     stopifnot("textmodel_lss" %in% class(object))
-    f <- object$features
-    w <- names(unlist(unname(object$seeds_weighted)))
-    sim <- proxyC::simil(object$embedding[object$s,, drop = FALSE],
-                         object$embedding[object$s, w, drop = FALSE], margin = 2)
-    b <- rowMeans(sim)
+    term <- object$terms
+    seed <- unlist(unname(object$seeds))
+    sim <- proxyC::simil(object$embedding[object$slice,, drop = FALSE],
+                         object$embedding[object$slice, names(seed), drop = FALSE], margin = 2)
     diag(sim) <- NA
     temp <- data.frame(seed = colnames(sim),
-                       selected = log(1 / abs(colMeans(sim[f,,drop = FALSE], na.rm = TRUE))),
+                       selected = log(1 / abs(colMeans(sim[term,,drop = FALSE], na.rm = TRUE))),
                        all = log(1 / abs(colMeans(sim, na.rm = TRUE))),
                        stringsAsFactors = FALSE)
+    sim_mean <- rowMeans(sim, na.rm = TRUE)
     temp <- temp[order(temp$selected, decreasing = TRUE),, drop = FALSE]
     rownames(temp) <- NULL
     result <- list(
-      "overall" = c("selected" =  log(1 / mean(abs(b[f]))),
-                    "all" = log(1 / mean(abs(b)))
+      "overall" = c("selected" =  log(1 / mean(abs(sim_mean[term]))),
+                    "all" = log(1 / mean(abs(sim_mean)))
       ),
       "element" = temp
     )
@@ -167,5 +165,14 @@ as.seedwords <- function(x, upper = 1, lower = 2) {
     }
     c(structure(rep(1, length(pos)), names = pos),
       structure(rep(-1, length(neg)), names = neg))
+}
+
+unused_dots <- function(...) {
+    arg <- names(list(...))
+    if (length(arg) == 1) {
+        warning(arg[1], " argument is not used.\n", call. = FALSE)
+    } else if (length(arg) > 1) {
+        warning(paste0(arg, collapse = ", "), " arguments are not used.\n", call. = FALSE)
+    }
 }
 

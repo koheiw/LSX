@@ -59,7 +59,7 @@ corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
 toks_sent <- corp %>% 
     corpus_reshape("sentences") %>% 
     tokens(remove_punct = TRUE) %>% 
-    tokens_remove(stopwords(), padding = TRUE)
+    tokens_remove(stopwords("en"), padding = TRUE)
 dfmt_sent <- toks_sent %>% 
     dfm(remove = "") %>% 
     dfm_select("^\\p{L}+$", valuetype = "regex", min_nchar = 2) %>% 
@@ -67,10 +67,10 @@ dfmt_sent <- toks_sent %>%
 
 eco <- char_keyness(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
-                     feature = eco, cache = TRUE, k = 300)
+                     terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Reading cache file: lss_cache/svds_c3045a252fc8786c.RDS
+    ## Writing cache file: lss_cache/svds_365ae974a33cb811.RDS
 
 ### Sentiment seed words
 
