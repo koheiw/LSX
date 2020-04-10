@@ -16,11 +16,9 @@ knitr::opts_chunk$set(
 
 # Latent Semantic Scaling
 
-In machine learning, the cost for users to train a model and the control they have over its outputs usually correlate: supervised models are high in control but high in cost; unsupervised models are low in cost but low in control. However, social social scientists have to perform analysis based on existing theories and concepts with very limited computational, financial and human resources.
+In quantitative text analysis, the cost to train supervised machine learning models tend to be very high when the corpus is large. LSS is a semisupervised document scaling method that I developed to perform large scale analysis at low cost. Taking user-provided *seed words* as weak supervision, it estimates polarity of words in the corpus by latent semantic analysis and locates documents on a unidimensional scale (e.g. sentiment). 
 
-LSS is a semi-supervised document scaling model developed by Kohei Watanabe to perform large scale analysis of textual data by keeping the balance between the cost and control for [his PhD thesis](http://etheses.lse.ac.uk/3658/). Taking pre-defined *seed words* as weak supervision, it estimates word parameters in a latent semantic space. 
-
-This model has been used for large scale analysis of media content in recent research projects:
+I used LSS for large scale analysis of media content in several research projects:
 
 * Kohei Watanabe, 2017. "[Measuring News Bias: Russia’s Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)", *European Journal Communication*
 * Kohei Watanabe, 2017. "[The spread of the Kremlin’s narratives by a western news agency during the Ukraine crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*
