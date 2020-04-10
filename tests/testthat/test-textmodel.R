@@ -5,7 +5,8 @@ toks_test <- tokens(corp_sent, remove_punct = TRUE)
 feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
 seed <- as.seedwords(data_dictionary_sentiment)
-lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300)
+lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
+                          include_data = TRUE)
 lss_test_nd <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
                              include_data = FALSE)
 lss_test_ss <- textmodel_lss(dfmt_test, seed[1], terms = feat_test, k = 300)
@@ -187,12 +188,12 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
     expect_equal(length(pred), ndoc(data_corpus_inaugural))
     expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
                       c("1789-Washington" = -0.762, "1797-Adams" = NA, "1825-Adams" = NA),
-                 tolerance = 0.01)
+                 tolerance = 0.05)
 
     pred2 <- predict(lss_test, newdata = as.dfm(mt), se.fit = TRUE)
     expect_equal(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")],
                  c("1789-Washington" = -0.762, "1797-Adams" = NA, "1825-Adams" = NA),
-                 tolerance = 0.01)
+                 tolerance = 0.05)
     expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.931129, NA, NA), tolerance = 0.01)
     expect_equal(pred2$n[c(1, 3, 10)], c(33, 0, 0))
 })
