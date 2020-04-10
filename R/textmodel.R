@@ -349,12 +349,13 @@ weight_seeds <- function(seed, weight, type) {
 #' @param ... not used
 #' @keywords internal
 #' @import methods
-#' @importFrom Matrix rowSums t
+#' @importFrom Matrix Matrix rowSums t
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
                                   density = FALSE, rescaling = TRUE, ...){
 
-    model <- rbind(object$beta)
+    model <- Matrix(object$beta, nrow = 1, sparse = TRUE,
+                    dimnames = list(NULL, names(object$beta)))
 
     if (is.null(newdata)) {
         if (!any("data" == names(object)))
