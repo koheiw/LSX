@@ -5,10 +5,10 @@ toks_test <- tokens(corp_sent, remove_punct = TRUE)
 feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
 seed <- as.seedwords(data_dictionary_sentiment)
-lss_test <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300)
-lss_test_nd <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300,
+lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300)
+lss_test_nd <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
                              include_data = FALSE)
-lss_test_ss <- textmodel_lss(dfmt_test, seed[1], features = feat_test, k = 300)
+lss_test_ss <- textmodel_lss(dfmt_test, seed[1], terms = feat_test, k = 300)
 
 test_that("char_keyness is working", {
 
@@ -47,18 +47,18 @@ test_that("textmodel_lss has all the attributes", {
 
     expect_equal(
         names(lss_test),
-        c("beta", "k", "s", "frequency", "features", "seeds", "seeds_weighted",
+        c("beta", "k", "slice", "frequency", "terms", "seeds",
           "embedding", "similarity", "relevance", "importance", "call",  "data")
     )
 
     expect_true(is.numeric(lss_test$beta))
     expect_true(is.dfm(lss_test$data))
-    expect_identical(lss_test$features, feat_test)
+    expect_identical(lss_test$terms, feat_test)
     expect_identical(names(lss_test$seeds), names(seedwords("pos-neg")))
 
     expect_equal(
         names(lss_test_nd),
-        c("beta", "k", "s", "frequency", "features", "seeds", "seeds_weighted",
+        c("beta", "k", "slice", "frequency", "terms", "seeds",
           "embedding", "similarity", "relevance", "importance", "call")
     )
 
@@ -152,21 +152,21 @@ test_that("calculation of fit and se.fit are correct", {
 })
 
 test_that("as.textmodel_lss works with only with single seed", {
-    expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test, k = 10))
-    expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = character(), k = 10))
+    expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], terms = feat_test, k = 10))
+    expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], terms = character(), k = 10))
     expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], k = 10))
 })
 
 
 test_that("simil_method works", {
 
-    lss_cos <- textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test,
+    lss_cos <- textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], terms = feat_test,
                              k = 10)
-    lss_cor <- textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test,
+    lss_cor <- textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], terms = feat_test,
                              simil_method = "correlation", k = 10)
 
     expect_false(identical(lss_cos, lss_cor))
-    expect_error(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], features = feat_test,
+    expect_error(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], terms = feat_test,
                                simil_method = "something", k = 10), "'arg' should be one of")
 })
 
@@ -202,8 +202,8 @@ test_that("textmodel_lss works with glob patterns", {
     mt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(mt, seed, k = 10)
-    expect_equal(names(lss$seeds_weighted), names(seed))
-    expect_equal(lengths(lss$seeds_weighted),
+    expect_equal(names(lss$seeds), names(seed))
+    expect_equal(lengths(lss$seeds),
                  c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
 })
 
@@ -222,59 +222,43 @@ test_that("RSpectra and irlba work", {
     expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
     expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "irlba"))
 
-    fcmt <- fcm(dfmt_test)
-    expect_silent(textmodel_lss(fcmt, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
-    expect_silent(textmodel_lss(fcmt, seedwords("pos-neg"), k = 10, engine = "irlba"))
 })
 
 test_that("text2vec works", {
-    dfmt <- dfm(toks_test)
-    expect_error(textmodel_lss(dfmt, seedwords("pos-neg"), engine = "text2vec"),
-                 "x must be a fcm for text2vec")
-    fcmat <- fcm(toks_test)
-    suppressMessages({
-        lss <- textmodel_lss(fcmat, seedwords("pos-neg"), engine = "text2vec")
-    })
+    fcmt <- fcm(toks_test)
+    lss <- textmodel_lss(fcmt, seedwords("pos-neg"), engine = "rsparse")
     expect_equal(
-        names(predict(lss, dfmt)),
-        docnames(dfmt)
+        names(predict(lss, dfmt_test)),
+        docnames(dfmt_test)
     )
     expect_error(
         predict(lss),
         "LSS model includes no data"
     )
-    expect_true(setequal(names(coef(lss)), colnames(fcmat)))
-})
-
-test_that("d is working", {
-    dfmt <- dfm(toks_test)
-    lss1 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, d = 0)
-    lss2 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, d = 1.0)
-    expect_false(identical(lss1, lss2))
+    expect_true(setequal(names(coef(lss)), colnames(fcmt)))
 })
 
 test_that("weight is working", {
-    dfmt <- dfm(toks_test)
 
-    lss1 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, weight = "count")
-    lss2 <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, weight = "logcount")
+    lss1 <- textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, weight = "count")
+    lss2 <- textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, weight = "logcount")
     expect_false(identical(lss1, lss2))
     expect_error(
-        textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, weight = "xxx")
+        textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, weight = "xxx")
     )
 })
 
-test_that("s argument is working", {
+test_that("slice argument is working", {
     expect_identical(
-        dim(textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 100)$embedding),
-        dim(textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 1:100)$embedding)
+        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 100)$embedding),
+        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:100)$embedding)
     )
     expect_silent(
-        textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 1:100)
+        textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:100)
     )
     expect_error(
-        textmodel_lss(dfmt_test, seed, features = feat_test, k = 300, s = 1:400),
-        "s must be between 1 and k"
+        textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:400),
+        "'slice' must be between 1 and k"
     )
 })
 
@@ -307,7 +291,7 @@ test_that("test smooth_lss", {
 })
 
 test_that("test with single seed", {
-    expect_silent(cohesion(lss_test_ss))
-    expect_silent(strength(lss_test_ss))
+    expect_silent(cohesion(lss_test))
+    expect_silent(strength(lss_test))
 })
 
