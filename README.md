@@ -65,7 +65,7 @@ corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
 toks_sent <- corp %>% 
     corpus_reshape("sentences") %>% 
     tokens(remove_punct = TRUE) %>% 
-    tokens_remove(stopwords(), padding = TRUE)
+    tokens_remove(stopwords("en"), padding = TRUE)
 dfmt_sent <- toks_sent %>% 
     dfm(remove = "") %>% 
     dfm_select("^\\p{L}+$", valuetype = "regex", min_nchar = 2) %>% 
@@ -73,10 +73,10 @@ dfmt_sent <- toks_sent %>%
 
 eco <- char_keyness(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
-                     feature = eco, cache = TRUE, k = 300)
+                     terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Reading cache file: lss_cache/svds_34e08f32419c9eca.RDS
+    ## Reading cache file: lss_cache/svds_365ae974a33cb811.RDS
 
 ### Sentiment seed words
 
@@ -103,26 +103,26 @@ head(coef(lss), 20) # most positive words
 ```
 
     ##       shape      either    positive      monday   expecting sustainable 
-    ##  0.04017038  0.03745197  0.03602651  0.03352895  0.03307553  0.03277666 
+    ##  0.04020799  0.03744890  0.03601425  0.03336808  0.03307447  0.03276316 
     ##      decent     several    emerging        york   candidate challenging 
-    ##  0.03084942  0.03080686  0.03046641  0.02925947  0.02883487  0.02801757 
+    ##  0.03084397  0.03076411  0.03047059  0.02929349  0.02883675  0.02800941 
     ##      argued        able  powerhouse        asia       thing        drag 
-    ##  0.02770138  0.02753339  0.02724199  0.02715581  0.02663417  0.02638054 
-    ##       stock         aid 
-    ##  0.02608997  0.02603547
+    ##  0.02774260  0.02751587  0.02719956  0.02716442  0.02661455  0.02635362 
+    ##         aid       stock 
+    ##  0.02610316  0.02607838
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
     ##     actually        allow      nothing      cutting       shrink        grows 
-    ##  -0.03527976  -0.03671954  -0.03702909  -0.03735588  -0.03815107  -0.03851795 
+    ##  -0.03531395  -0.03665382  -0.03701008  -0.03737425  -0.03813055  -0.03854666 
     ##         debt implications policymakers    suggested     interest    something 
-    ##  -0.03872739  -0.03942620  -0.04015681  -0.04115879  -0.04288522  -0.04311322 
+    ##  -0.03872572  -0.03944662  -0.04014394  -0.04113985  -0.04290556  -0.04311326 
     ##    borrowing unemployment         hike        rates         rate          rba 
-    ##  -0.04490576  -0.04508967  -0.04572553  -0.04857283  -0.04878567  -0.05076572 
+    ##  -0.04490317  -0.04505639  -0.04570329  -0.04859105  -0.04875628  -0.05079627 
     ##          cut     negative 
-    ##  -0.05599481  -0.06169430
+    ##  -0.05596225  -0.06174176
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,
