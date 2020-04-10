@@ -354,7 +354,7 @@ weight_seeds <- function(seed, weight, type) {
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
                                   density = FALSE, rescaling = TRUE, ...){
 
-    model <- Matrix(object$beta, nrow = 1, sparse = TRUE,
+    beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,
                     dimnames = list(NULL, names(object$beta)))
 
     if (is.null(newdata)) {
@@ -368,13 +368,13 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     }
 
     if (density)
-        d <- unname(rowSums(dfm_select(data, object$terms)) / rowSums(data))
+        den <- unname(rowSums(dfm_select(data, object$terms)) / rowSums(data))
 
-    data <- dfm_match(data, colnames(model))
+    data <- dfm_match(data, colnames(beta))
     n <- unname(rowSums(data))
-    data <- dfm_weight(data, "prop")
-    fit <- rowSums(data %*% t(model)) # mean scores of documents
-    fit[n == 0] <- NA
+    # mean scores of documents excluding zeros
+    fit <- ifelse(n > 0, rowSums(data %*% t(beta)) / n, NA)
+    names(fit) <- rownames(data)
 
     if (rescaling) {
         fit_scaled <- scale(fit)
@@ -384,17 +384,18 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     }
 
     if (se.fit) {
-        m <- matrix(rep(fit, ncol(data)), nrow = ncol(data), byrow = TRUE)
-        error <- t(m - model[,colnames(data)]) ^ 2
-        var <- unname(rowSums(data * error))
-        se <- ifelse(n == 0, NA, sqrt(var) / sqrt(n))
+        # sparse variance computation
+        weight <- t(t(data > 0) * colSums(beta))
+        var <- (rowSums(weight ^ 2 * data) / n) - (rowSums(weight * data) / n) ^ 2
+        var <- zapsmall(var)
+        se <- ifelse(n > 1, unname(sqrt(var) / sqrt(n)), NA)
         if (rescaling)
             se <- se / attr(fit_scaled, "scaled:scale")
         result$se.fit <- se
         result$n <- n
     }
     if (density)
-        result$density <- d
+        result$density <- den
 
     if (!se.fit && !density) {
         return(result$fit)
@@ -555,4 +556,58 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
     )
     result <- cbind(dummy[c("date", "time")], temp[c("fit", "se.fit")])
     return(result)
+}
+
+
+#' @export
+predict_old <- function(object, newdata = NULL, se.fit = FALSE,
+                                  density = FALSE, rescaling = TRUE, ...){
+
+    model <- Matrix(object$beta, nrow = 1, sparse = TRUE,
+                    dimnames = list(NULL, names(object$beta)))
+
+    if (is.null(newdata)) {
+        if (!any("data" == names(object)))
+            stop("LSS model includes no data, please supply a dfm using newdata.\n")
+        data <- object$data
+    } else {
+        if (!is.dfm(newdata))
+            stop("newdata must be a dfm\n", call. = FALSE)
+        data <- newdata
+    }
+
+    if (density)
+        d <- unname(rowSums(dfm_select(data, object$terms)) / rowSums(data))
+
+    data <- dfm_match(data, colnames(model))
+    n <- unname(rowSums(data))
+    data <- dfm_weight(data, "prop")
+    fit <- rowSums(data %*% t(model)) # mean scores of documents
+    fit[n == 0] <- NA
+
+    if (rescaling) {
+        fit_scaled <- scale(fit)
+        result <- list(fit = rowSums(fit_scaled))
+    } else {
+        result <- list(fit = fit)
+    }
+
+    if (se.fit) {
+        m <- matrix(rep(fit, ncol(data)), nrow = ncol(data), byrow = TRUE)
+        error <- t(m - model[,colnames(data)]) ^ 2
+        var <- unname(rowSums(data * error))
+        se <- ifelse(n == 0, NA, sqrt(var) / sqrt(n))
+        if (rescaling)
+            se <- se / attr(fit_scaled, "scaled:scale")
+        result$se.fit <- se
+        result$n <- n
+    }
+    if (density)
+        result$density <- d
+
+    if (!se.fit && !density) {
+        return(result$fit)
+    } else {
+        return(result)
+    }
 }
