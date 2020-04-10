@@ -2,21 +2,36 @@
 % Please edit documentation in R/textmodel.R
 \name{textmodel_lss}
 \alias{textmodel_lss}
-\title{A vector-space model for subject specific sentiment-analysis}
+\alias{textmodel_lss.dfm}
+\alias{textmodel_lss.fcm}
+\title{A word embeddings-based semisupervised model for document scaling}
 \usage{
-textmodel_lss(
+textmodel_lss(x, ...)
+
+\method{textmodel_lss}{dfm}(
   x,
   seeds,
-  features = NULL,
+  terms = NULL,
   k = 300,
+  slice = NULL,
   weight = "count",
   cache = FALSE,
   simil_method = "cosine",
-  include_data = TRUE,
-  engine = c("RSpectra", "rsvd", "irlba", "text2vec"),
-  s = NULL,
+  engine = c("RSpectra", "irlba", "rsvd"),
+  include_data = FALSE,
+  verbose = FALSE,
+  ...
+)
+
+\method{textmodel_lss}{fcm}(
+  x,
+  seeds,
+  terms = NULL,
   w = 50,
-  d = 0,
+  weight = "count",
+  cache = FALSE,
+  simil_method = "cosine",
+  engine = c("rsparse"),
   verbose = FALSE,
   ...
 )
@@ -24,75 +39,74 @@ textmodel_lss(
 \arguments{
 \item{x}{a dfm or fcm created by \code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}}}
 
+\item{...}{additional argument passed to the SVD engine}
+
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
 
-\item{features}{features of a dfm to be included in the model as terms. This
-argument is used to make models only sensitive to subject specific words.}
+\item{terms}{words weighted as model terms. All the features of
+\code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}} will be used if not specified.}
 
 \item{k}{the number of singular values requested to the SVD engine. Only used
 when \code{x} is a \code{dfm}.}
 
+\item{slice}{a number or indices of the components of word vectors used to
+compute similarity; \code{slice < k} to truncate word vectors; useful for diagnosys
+and simulation.}
+
 \item{weight}{weighting scheme passed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}. Ignored
-when \code{engine} is "text2vec".}
+when \code{engine} is "rsparse".}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with identical
-\code{x} and \code{k}.}
+\code{x} and settings.}
 
 \item{simil_method}{specifies method to compute similarity between features.
 The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is used
 otherwise.}
 
-\item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as \code{x}.}
-
 \item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}},
-and \code{\link[text2vec:GlobalVectors]{text2vec::GlobalVectors()}}.}
+and \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
 
-\item{s}{a number or indices of the components of word vectors used to
-compute similarity; \code{s < k} to truncate word vectors; useful for diagnosys
-and simulation.}
-
-\item{w}{the size of word vectors. Only used when \code{engine} is "text2vec".}
-
-\item{d}{eigen value weighting. Only used when \code{engine} is "RSpectra" or
-"irlba".}
+\item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as \code{x}.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
-\item{...}{additional argument passed to the SVD engine}
+\item{w}{the size of word vectors. Only used when \code{x} is a \code{fcm}}
 }
 \description{
-A vector-space model for subject specific sentiment-analysis
+A word embeddings-based semisupervised model for document scaling
 }
 \examples{
 \dontrun{
 require(quanteda)
 
 # Available at https://bit.ly/2GZwLcN
-corp <- readRDS("data_corpus_guardian2016-10k.rds") \%>\%
-                 corpus_reshape('sentences')
-toks <- tokens(corp, remove_punct = TRUE) \%>\%
-        tokens_remove(stopwords()) \%>\%
+corp <- readRDS("data_corpus_guardian2016-10k.rds")
+
+toks <- corpus_reshape(corp, "sentences") \%>\%
+        tokens(remove_punct = TRUE) \%>\%
+        tokens_remove(stopwords("en")) \%>\%
         tokens_select("^[\\\\p{L}]+$", valuetype = "regex", padding = TRUE)
-dfmat <- dfm(toks) \%>\%
-         dfm_trim(dfmat, min_termfreq = 10)
+dfmt <- dfm(toks) \%>\%
+        dfm_trim(min_termfreq = 10)
 
 # SVD
-lss <- textmodel_lss(dfmat, seedwords('pos-neg'))
+svd <- textmodel_lss(dfmt, seedwords("pos-neg"))
 summary(lss)
 
 # sentiment model on economy
 eco <- head(char_keyness(toks, 'econom*'), 500)
-lss_eco <- textmodel_lss(dfmat, seedwords('pos-neg'), features = eco)
+svd_eco <- textmodel_lss(dfmt, seedwords('pos-neg'), terms = eco)
 
 # sentiment model on politics
 pol <- head(char_keyness(toks, 'politi*'), 500)
-lss_pol <- textmodel_lss(dfmat, seedwords('pos-neg'), features = pol)
+svd_pol <- textmodel_lss(dfmt, seedwords('pos-neg'), terms = pol)
 
 # GloVe
-fcmat  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
-lss <- textmodel_lss(fcmat, seedwords('pos-neg'))
+fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
+glov <- textmodel_lss(fcmt, seedwords('pos-neg'))
 }
+
 }
 \references{
 Watanabe, Kohei. "Measuring News Bias: Russia's Official News

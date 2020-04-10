@@ -20,8 +20,8 @@
 
 \item{se.fit}{if \code{TRUE}, it returns standard error of document scores.}
 
-\item{density}{if \code{TRUE}, returns frequency of features in documents.
-Density distribution of features can be used to remove documents about
+\item{density}{if \code{TRUE}, returns frequency of model terms in documents.
+Density distribution of model terms can be used to remove documents about
 unrelated subjects.}
 
 \item{rescaling}{if \code{TRUE}, scores are normalized using \code{scale()}.}
