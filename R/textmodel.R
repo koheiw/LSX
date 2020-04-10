@@ -36,21 +36,23 @@
 #' dfmt <- dfm(toks) %>%
 #'         dfm_trim(min_termfreq = 10)
 #'
+#' seed <- as.seedwords(data_dictionary_sentiment)
+#'
 #' # SVD
-#' svd <- textmodel_lss(dfmt, seedwords("pos-neg"))
+#' svd <- textmodel_lss(dfmt, seed)
 #' summary(lss)
 #'
 #' # sentiment model on economy
 #' eco <- head(char_keyness(toks, 'econom*'), 500)
-#' svd_eco <- textmodel_lss(dfmt, seedwords('pos-neg'), terms = eco)
+#' svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
 #'
 #' # sentiment model on politics
 #' pol <- head(char_keyness(toks, 'politi*'), 500)
-#' svd_pol <- textmodel_lss(dfmt, seedwords('pos-neg'), terms = pol)
+#' svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
 #'
 #' # GloVe
 #' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
-#' glov <- textmodel_lss(fcmt, seedwords('pos-neg'))
+#' glov <- textmodel_lss(fcmt, seed)
 #' }
 #'
 #' @export
