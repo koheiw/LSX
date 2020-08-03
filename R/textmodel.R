@@ -11,7 +11,8 @@
 #'   The value is passed to [quanteda::textstat_simil()], "cosine" is used
 #'   otherwise.
 #' @param cache if `TRUE`, save retult of SVD for next execution with identical
-#'   `x` and settings.
+#'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
+#'   location cache files to be save.
 #' @param engine choose SVD engine between [RSpectra::svds()], [irlba::irlba()],
 #'   and [rsparse::GloVe()].
 #' @param verbose show messages if `TRUE`.
@@ -222,14 +223,16 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
     hash <- digest::digest(list(as(x, "dgCMatrix"), k,
                                 utils::packageVersion("LSS")),
                            algo = "xxhash64")
-    if (cache && !dir.exists("lss_cache"))
-        dir.create("lss_cache")
+
+    dir_cache <- getOption("lss_cache_dir", "lss_cache")
+    if (cache && !dir.exists(dir_cache))
+        dir.create(dir_cache)
     if (engine == "RSpectra") {
-        file_cache <- paste0("lss_cache/svds_", hash, ".RDS")
+        file_cache <- paste0(dir_cache, "/svds_", hash, ".RDS")
     } else if (engine == "rsvd") {
-        file_cache <- paste0("lss_cache/rsvd_", hash, ".RDS")
+        file_cache <- paste0(dir_cache, "/rsvd_", hash, ".RDS")
     } else {
-        file_cache <- paste0("lss_cache/irlba_", hash, ".RDS")
+        file_cache <- paste0(dir_cache, "/irlba_", hash, ".RDS")
     }
 
     if (cache && file.exists(file_cache)){
@@ -256,9 +259,11 @@ cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
     hash <- digest::digest(list(as(x, "dgCMatrix"), w, x_max, n_iter,
                                 utils::packageVersion("LSS")),
                            algo = "xxhash64")
-    if (cache && !dir.exists("lss_cache"))
-        dir.create("lss_cache")
-    file_cache <- paste0("lss_cache/rsparse_", hash, ".RDS")
+
+    dir_cache <- getOption("lss_cache_dir", "lss_cache")
+    if (cache && !dir.exists(dir_cache))
+        dir.create(dir_cache)
+    file_cache <- paste0(dir_cache, "/rsparse_", hash, ".RDS")
 
     if (cache && file.exists(file_cache)){
         message("Reading cache file: ", file_cache)

@@ -58,7 +58,8 @@ and simulation.}
 when \code{engine} is "rsparse".}
 
 \item{cache}{if \code{TRUE}, save retult of SVD for next execution with identical
-\code{x} and settings.}
+\code{x} and settings. Use the \code{base::options(lss_cache_dir)} to change the
+location cache files to be save.}
 
 \item{simil_method}{specifies method to compute similarity between features.
 The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is used
