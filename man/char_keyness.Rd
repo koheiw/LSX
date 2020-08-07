@@ -2,7 +2,7 @@
 % Please edit documentation in R/textmodel.R
 \name{char_keyness}
 \alias{char_keyness}
-\title{Identify keywords occur frequently with target words}
+\title{Identify context words using user-provided patterns}
 \usage{
 char_keyness(
   x,
@@ -39,14 +39,14 @@ considered as collocations.}
 \item{...}{additional arguments passed to \code{\link[=textstat_keyness]{textstat_keyness()}}.}
 }
 \description{
-Identify keywords occur frequently with target words
+Identify context words using user-provided patterns
 }
 \examples{
 \dontrun{
 require(quanteda)
 # Available at https://bit.ly/2GZwLcN
 corp <- readRDS("data_corpus_guardian2016-10k.rds")
-corp <- corpus_reshape(data_corpus_guardian, 'sentences')
+corp <- corpus_reshape(corp, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE)
 toks <- tokens_remove(toks, stopwords())
 

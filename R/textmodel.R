@@ -409,7 +409,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     }
 }
 
-#' Identify keywords occur frequently with target words
+#' Identify context words using user-provided patterns
 #'
 #' @param x tokens object created by [quanteda::tokens()].
 #' @param pattern to specify target words. See [quanteda::pattern()] for details.
@@ -430,7 +430,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' require(quanteda)
 #' # Available at https://bit.ly/2GZwLcN
 #' corp <- readRDS("data_corpus_guardian2016-10k.rds")
-#' corp <- corpus_reshape(data_corpus_guardian, 'sentences')
+#' corp <- corpus_reshape(corp, 'sentences')
 #' toks <- tokens(corp, remove_punct = TRUE)
 #' toks <- tokens_remove(toks, stopwords())
 #'
@@ -468,7 +468,7 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     if (nfeat(tar) == 0)
         return(character())
     ref <- dfm_match(ref, featnames(tar))
-    key <- textstat_keyness(rbind(tar, ref), target = seq_len(ndoc(tar)), ...)
+    key <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))))
     key <- key[key$p < p,]
     return(key$feature)
 }
