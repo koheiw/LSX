@@ -469,7 +469,7 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
         return(character())
     ref <- dfm_match(ref, featnames(tar))
 
-    result <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))))
+    result <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))), ...)
     result <- result[result$p < p,]
     return(result$feature)
 }
