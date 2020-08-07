@@ -451,7 +451,7 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     # reference
     ref <- dfm(tokens_remove(x, pattern, valuetype = valuetype,
                              case_insensitive = case_insensitive,
-                             window = window), remove = "")
+                             window = window))
 
     # target
     x <- tokens_select(x, pattern, valuetype = valuetype,
@@ -461,16 +461,17 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
 
-    tar <- dfm(x, remove = "")
+    tar <- dfm_remove(dfm(x), pattern = "")
     if (nfeat(tar) == 0)
         stop(paste(unlist(pattern), collapse = ", "), " is not found\n", call. = FALSE)
     tar <- dfm_trim(tar, min_termfreq = min_count)
     if (nfeat(tar) == 0)
         return(character())
     ref <- dfm_match(ref, featnames(tar))
-    key <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))))
-    key <- key[key$p < p,]
-    return(key$feature)
+
+    result <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))))
+    result <- result[result$p < p,]
+    return(result$feature)
 }
 
 #' Seed words for Latent Semantci Analysis
