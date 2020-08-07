@@ -1,10 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github/
 ^README.Rmd
 ^dict/
 ^testthat
 ^README_cache
 ^images/*
 ^lss_cache/*
-^\.travis\.yml$
 ^cran-comments.md$
