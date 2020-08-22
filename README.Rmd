@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 
 # Latent Semantic Scaling
 
+**NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN submission.
+
 In quantitative text analysis, the cost to train supervised machine learning models tend to be very high when the corpus is large. LSS is a semisupervised document scaling method that I developed to perform large scale analysis at low cost. Taking user-provided *seed words* as weak supervision, it estimates polarity of words in the corpus by latent semantic analysis and locates documents on a unidimensional scale (e.g. sentiment). 
 
 I used LSS for large scale analysis of media content in several research projects:
@@ -29,7 +31,7 @@ Please read [my working paper](https://blog.koheiw.net/wp-content/uploads/2020/0
 ## How to install
 
 ```{r, eval=FALSE}
-devtools::install_github("koheiw/LSS")
+devtools::install_github("koheiw/LSX")
 ```
 
 ## How to use
@@ -40,7 +42,7 @@ LSS estimates semantic similarity of words based on their surrounding contexts, 
 
 ```{r, message=FALSE}
 require(quanteda)
-require(LSS)
+require(LSX) # changed from LSS to LSX
 ```
 
 ```{r, cache=TRUE}

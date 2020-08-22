@@ -1,6 +1,9 @@
 
 # Latent Semantic Scaling
 
+**NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN
+submission.
+
 In quantitative text analysis, the cost to train supervised machine
 learning models tend to be very high when the corpus is large. LSS is a
 semisupervised document scaling method that I developed to perform large
@@ -33,7 +36,7 @@ for the algorithm and methodology.
 ## How to install
 
 ``` r
-devtools::install_github("koheiw/LSS")
+devtools::install_github("koheiw/LSX")
 ```
 
 ## How to use
@@ -50,7 +53,7 @@ semantic proximity. The [sample corpus](https://bit.ly/2GZwLcN) contains
 
 ``` r
 require(quanteda)
-require(LSS)
+require(LSX) # changed from LSS to LSX
 ```
 
 ``` r
@@ -89,8 +92,7 @@ data_dictionary_sentiment
 ### Economic sentiment words
 
 Economic words are weighted in terms of sentiment based on the proximity
-to seed
-    words.
+to seed words.
 
 ``` r
 head(coef(lss), 20) # most positive words
