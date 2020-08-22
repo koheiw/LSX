@@ -221,7 +221,7 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
 
     x <- dfm_weight(x, scheme = weight)
     hash <- digest::digest(list(as(x, "dgCMatrix"), k,
-                                utils::packageVersion("LSS")),
+                                utils::packageVersion("LSX")),
                            algo = "xxhash64")
 
     dir_cache <- getOption("lss_cache_dir", "lss_cache")
@@ -257,7 +257,7 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
 cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
 
     hash <- digest::digest(list(as(x, "dgCMatrix"), w, x_max, n_iter,
-                                utils::packageVersion("LSS")),
+                                utils::packageVersion("LSX")),
                            algo = "xxhash64")
 
     dir_cache <- getOption("lss_cache_dir", "lss_cache")

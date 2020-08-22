@@ -1,2 +1,2 @@
 require(testthat)
-test_check("LSS")
+test_check("LSX")
