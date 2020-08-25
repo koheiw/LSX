@@ -101,7 +101,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     # identify relevance to seed words
     seed <- unlist(unname(seeds))
-    cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
+    cos <- proxyC::simil(embed[, names(seed), drop = FALSE],
                          Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
                          margin = 1)
     relev <- abs(as.numeric(cos))
