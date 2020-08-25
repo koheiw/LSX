@@ -8,7 +8,10 @@ Make the package avaiale on CRAN
 
 * local KDE neon User Edition 5.13, R 3.5.2
 * local Windows 10, R 3.5
-* win-builder (devel and release)
+* Github Actions Windows latest (release)
+* Github Actions MacOS latest (release)
+* Github Actions Linux 18.04 (release)
+* Github Actions Linux 18.04 (devel)
 
 ## R CMD check results
 
