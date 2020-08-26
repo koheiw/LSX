@@ -7,5 +7,5 @@
 ^testthat
 ^README_cache
 ^images/*
-^lss_cache/*
+lss_cache/*
 ^cran-comments.md$
