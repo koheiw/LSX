@@ -16,22 +16,23 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
         stop("Invalid textmodel_lss object")
 
     temp <- reshape2::melt(x$similarity, as.is = TRUE)
+    names(temp) <- c("seed1", "seed2", "simil")
     if (group) {
         seed <- rep(names(x$seeds), lengths(x$seeds))
         names(seed) <- names(unlist(unname(x$seeds)))
-        temp$var1 <- seed[temp$var1]
-        temp$var2 <- seed[temp$var2]
-        temp <- stats::aggregate(list(value = temp$value),
-                                 by = list(var1 = temp$var1,
-                                           var2 = temp$var2), mean)
+        temp$seed1 <- seed[temp$seed1]
+        temp$seed2 <- seed[temp$seed2]
+        temp <- stats::aggregate(list(simil = temp$simil),
+                                 by = list(seed1 = temp$seed1,
+                                           seed2 = temp$seed2), mean)
     }
-    temp$var1 <- factor(temp$var1, levels = unique(temp$var2))
-    temp$var2 <- factor(temp$var2, levels = unique(temp$var2))
-    temp$color <- factor(temp$value > 0, levels = c(TRUE, FALSE),
+    temp$seed1 <- factor(temp$seed1, levels = unique(temp$seed2))
+    temp$seed2 <- factor(temp$seed2, levels = unique(temp$seed2))
+    temp$color <- factor(temp$simil > 0, levels = c(TRUE, FALSE),
                          labels = c("positive", "negative"))
-    temp$size <- abs(temp$value)
-    var1 <- var2 <- value <- size <- color <- NULL
-    ggplot(data = temp, aes(x = var1, y = var2)) +
+    temp$size <- abs(temp$simil)
+    seed1 <- seed2 <- simil <- size <- color <- NULL
+    ggplot(data = temp, aes(x = seed1, y = seed2)) +
         geom_point(aes(colour = color, cex = size)) +
         guides(cex = guide_legend(order = 1),
                colour = guide_legend(order = 2)) +
