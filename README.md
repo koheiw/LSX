@@ -89,8 +89,7 @@ data_dictionary_sentiment
 ### Economic sentiment words
 
 Economic words are weighted in terms of sentiment based on the proximity
-to seed
-    words.
+to seed words.
 
 ``` r
 head(coef(lss), 20) # most positive words
@@ -123,10 +122,10 @@ neutral while less frequent words such as “borrowing”, “unemployment”,
 “emerging” and “efficient” are either negative or positive.
 
 ``` r
-textplot_scale1d(lss, 
-                 highlighted = c("said", "people", "also",
-                                 "borrowing", "unemployment",
-                                 "emerging", "efficient"))
+textplot_terms(lss, 
+               highlighted = c("said", "people", "also",
+                               "borrowing", "unemployment",
+                               "emerging", "efficient"))
 ```
 
 ![](images/words-1.png)<!-- -->
