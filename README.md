@@ -125,10 +125,10 @@ neutral while less frequent words such as “borrowing”, “unemployment”,
 “emerging” and “efficient” are either negative or positive.
 
 ``` r
-textplot_scale1d(lss, 
-                 highlighted = c("said", "people", "also",
-                                 "borrowing", "unemployment",
-                                 "emerging", "efficient"))
+textplot_terms(lss, 
+               highlighted = c("said", "people", "also",
+                               "borrowing", "unemployment",
+                               "emerging", "efficient"))
 ```
 
 ![](images/words-1.png)<!-- -->

@@ -26,6 +26,7 @@ Imports:
     grDevices,
     stats,
     ggplot2,
+    ggrepel,
     reshape2,
     e1071
 Suggests:
