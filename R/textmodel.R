@@ -563,3 +563,14 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
     result <- cbind(dummy[c("date", "time")], temp[c("fit", "se.fit")])
     return(result)
 }
+
+#' @export
+#' @method print textmodel_lss
+print.textmodel_lss <- function(x, ...) {
+    cat("\nCall:\n")
+    print(x$call)
+    cat("\n",
+        "Seeds:", names(x$seed), ";",
+        "k:", x$k, ";",
+        "\n", sep = " ")
+}

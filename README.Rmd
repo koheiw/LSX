@@ -80,10 +80,10 @@ tail(coef(lss), 20) # most negative words
 This plot shows that frequent words ("said", "people", "also") are neutral while less frequent words such as "borrowing", "unemployment", "emerging" and "efficient" are  either negative or positive.
 
 ```{r words}
-textplot_scale1d(lss, 
-                 highlighted = c("said", "people", "also",
-                                 "borrowing", "unemployment",
-                                 "emerging", "efficient"))
+textplot_terms(lss, 
+               highlighted = c("said", "people", "also",
+                               "borrowing", "unemployment",
+                               "emerging", "efficient"))
 ```
 
 ## Result of analysis

@@ -16,22 +16,23 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
         stop("Invalid textmodel_lss object")
 
     temp <- reshape2::melt(x$similarity, as.is = TRUE)
+    names(temp) <- c("seed1", "seed2", "simil")
     if (group) {
         seed <- rep(names(x$seeds), lengths(x$seeds))
         names(seed) <- names(unlist(unname(x$seeds)))
-        temp$Var1 <- seed[temp$Var1]
-        temp$Var2 <- seed[temp$Var2]
-        temp <- stats::aggregate(list(value = temp$value),
-                                 by = list(Var1 = temp$Var1,
-                                           Var2 = temp$Var2), mean)
+        temp$seed1 <- seed[temp$seed1]
+        temp$seed2 <- seed[temp$seed2]
+        temp <- stats::aggregate(list(simil = temp$simil),
+                                 by = list(seed1 = temp$seed1,
+                                           seed2 = temp$seed2), mean)
     }
-    temp$Var1 <- factor(temp$Var1, levels = unique(temp$Var2))
-    temp$Var2 <- factor(temp$Var2, levels = unique(temp$Var2))
-    temp$color <- factor(temp$value > 0, levels = c(TRUE, FALSE),
+    temp$seed1 <- factor(temp$seed1, levels = unique(temp$seed2))
+    temp$seed2 <- factor(temp$seed2, levels = unique(temp$seed2))
+    temp$color <- factor(temp$simil > 0, levels = c(TRUE, FALSE),
                          labels = c("positive", "negative"))
-    temp$size <- abs(temp$value)
-    Var1 <- Var2 <- value <- size <- color <- NULL
-    ggplot(data = temp, aes(x = Var1, y = Var2)) +
+    temp$size <- abs(temp$simil)
+    seed1 <- seed2 <- simil <- size <- color <- NULL
+    ggplot(data = temp, aes(x = seed1, y = seed2)) +
         geom_point(aes(colour = color, cex = size)) +
         guides(cex = guide_legend(order = 1),
                colour = guide_legend(order = 2)) +
@@ -85,7 +86,7 @@ textplot_scale1d.textmodel_lss <- function(x,
                                            highlighted = NULL,
                                            alpha = 0.7,
                                            highlighted_color = "black") {
-
+    .Deprecated("textplot_terms")
     margin <- match.arg(margin)
     if (margin == "documents") {
         stop("There is no document margin in a LSS model.")
@@ -129,4 +130,39 @@ textplot_scale1d_features <- function(x, weight, featlabels,
               axis.ticks.y = element_blank(),
               # panel.spacing = grid::unit(0.1, "lines"),
               panel.grid.major.y = element_line(linetype = "dotted"))
+}
+
+#' Plot polarity scores of words
+#' @param x fitted textmodel_lss object
+#' @param highlighted a character vector to specify words to be highlighted
+#' @export
+textplot_terms <- function(x, highlighted = NULL) {
+    UseMethod("textplot_terms")
+}
+
+#' @method textplot_terms textmodel_lss
+#' @import ggplot2 ggrepel
+#' @export
+textplot_terms.textmodel_lss <- function(x, highlighted = NULL) {
+
+    if (is.null(highlighted))
+        highlighted <- character()
+
+    beta <- frequency <- word <- NULL
+    temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),
+                      stringsAsFactors = FALSE)
+    is_hl <- temp$word %in% highlighted
+    temp_black <- subset(temp, is_hl)
+    temp_gray <- subset(temp, !is_hl)
+    ggplot(data = temp_gray, aes(x = beta, y = frequency, label = word)) +
+           geom_text(colour = "grey70", alpha = 0.7) +
+           labs(x = "Polarity", y = "Frequency (log)") +
+           theme_bw() +
+           theme(panel.grid= element_blank(),
+                 axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                 axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+           geom_text_repel(data = temp_black, aes(x = beta, y = frequency, label = word),
+                           segment.size = 0.25, colour = "black") +
+           geom_point(data = temp_black, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
+
 }
