@@ -19,19 +19,19 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
     if (group) {
         seed <- rep(names(x$seeds), lengths(x$seeds))
         names(seed) <- names(unlist(unname(x$seeds)))
-        temp$Var1 <- seed[temp$Var1]
-        temp$Var2 <- seed[temp$Var2]
+        temp$var1 <- seed[temp$var1]
+        temp$var2 <- seed[temp$var2]
         temp <- stats::aggregate(list(value = temp$value),
-                                 by = list(Var1 = temp$Var1,
-                                           Var2 = temp$Var2), mean)
+                                 by = list(var1 = temp$var1,
+                                           var2 = temp$var2), mean)
     }
-    temp$Var1 <- factor(temp$Var1, levels = unique(temp$Var2))
-    temp$Var2 <- factor(temp$Var2, levels = unique(temp$Var2))
+    temp$var1 <- factor(temp$var1, levels = unique(temp$var2))
+    temp$var2 <- factor(temp$var2, levels = unique(temp$var2))
     temp$color <- factor(temp$value > 0, levels = c(TRUE, FALSE),
                          labels = c("positive", "negative"))
     temp$size <- abs(temp$value)
-    Var1 <- Var2 <- value <- size <- color <- NULL
-    ggplot(data = temp, aes(x = Var1, y = Var2)) +
+    var1 <- var2 <- value <- size <- color <- NULL
+    ggplot(data = temp, aes(x = var1, y = var2)) +
         geom_point(aes(colour = color, cex = size)) +
         guides(cex = guide_legend(order = 1),
                colour = guide_legend(order = 2)) +
@@ -85,7 +85,7 @@ textplot_scale1d.textmodel_lss <- function(x,
                                            highlighted = NULL,
                                            alpha = 0.7,
                                            highlighted_color = "black") {
-
+    .Deprecated("textplot_terms")
     margin <- match.arg(margin)
     if (margin == "documents") {
         stop("There is no document margin in a LSS model.")
@@ -129,4 +129,39 @@ textplot_scale1d_features <- function(x, weight, featlabels,
               axis.ticks.y = element_blank(),
               # panel.spacing = grid::unit(0.1, "lines"),
               panel.grid.major.y = element_line(linetype = "dotted"))
+}
+
+#' Plot polarity scores of words
+#' @param x fitted textmodel_lss object
+#' @param highlighted a character vector to specify words to be highlighted
+#' @export
+textplot_terms <- function(x, highlighted = NULL) {
+    UseMethod("textplot_terms")
+}
+
+#' @method textplot_terms textmodel_lss
+#' @import ggplot2 ggrepel
+#' @export
+textplot_terms.textmodel_lss <- function(x, highlighted = NULL) {
+
+    if (is.null(highlighted))
+        highlighted <- character()
+
+    beta <- frequency <- word <- NULL
+    temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),
+                      stringsAsFactors = FALSE)
+    is_hl <- temp$word %in% highlighted
+    temp_black <- subset(temp, is_hl)
+    temp_gray <- subset(temp, !is_hl)
+    ggplot(data = temp_gray, aes(x = beta, y = frequency, label = word)) +
+           geom_text(colour = "grey70", alpha = 0.7) +
+           labs(x = "Polarity", y = "Frequency (log)") +
+           theme_bw() +
+           theme(panel.grid= element_blank(),
+                 axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                 axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+           geom_text_repel(data = temp_black, aes(x = beta, y = frequency, label = word),
+                           segment.size = 0.25, colour = "black") +
+           geom_point(data = temp_black, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
+
 }
