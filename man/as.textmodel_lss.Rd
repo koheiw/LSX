@@ -9,7 +9,14 @@ as.textmodel_lss(x)
 \arguments{
 \item{x}{named numeric vector}
 }
+\value{
+a textmodel_lss object with \code{x} as polarity words
+}
 \description{
 Create a dummy textmodel_lss object from numeric vector
+}
+\examples{
+v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
+lss <- as.textmodel_lss(v)
 }
 \keyword{internal}

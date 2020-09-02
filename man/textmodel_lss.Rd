@@ -78,11 +78,10 @@ and \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
 A word embeddings-based semisupervised model for document scaling
 }
 \examples{
-\dontrun{
+\donttest{
 require(quanteda)
-
-# Available at https://bit.ly/2GZwLcN
-corp <- readRDS("data_corpus_guardian2016-10k.rds")
+# available at https://bit.ly/2GZwLcN
+corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
 
 toks <- corpus_reshape(corp, "sentences") \%>\%
         tokens(remove_punct = TRUE) \%>\%
@@ -94,8 +93,8 @@ dfmt <- dfm(toks) \%>\%
 seed <- as.seedwords(data_dictionary_sentiment)
 
 # SVD
-svd <- textmodel_lss(dfmt, seed)
-summary(lss)
+lss_svd <- textmodel_lss(dfmt, seed)
+summary(lss_svd)
 
 # sentiment model on economy
 eco <- head(char_keyness(toks, 'econom*'), 500)
@@ -107,7 +106,8 @@ svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
 
 # GloVe
 fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
-glov <- textmodel_lss(fcmt, seed)
+lss_glov <- textmodel_lss(fcmt, seed)
+summary(lss_glov)
 }
 
 }
