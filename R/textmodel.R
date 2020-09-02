@@ -24,11 +24,10 @@
 #'   Communication 32, no. 3 (March 20, 2017): 224–41.
 #'   https://doi.org/10.1177/0267323117695735.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' require(quanteda)
-#'
-#' # Available at https://bit.ly/2GZwLcN
-#' corp <- readRDS("data_corpus_guardian2016-10k.rds")
+#' # available at https://bit.ly/2GZwLcN
+#' corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
 #'
 #' toks <- corpus_reshape(corp, "sentences") %>%
 #'         tokens(remove_punct = TRUE) %>%
@@ -40,8 +39,8 @@
 #' seed <- as.seedwords(data_dictionary_sentiment)
 #'
 #' # SVD
-#' svd <- textmodel_lss(dfmt, seed)
-#' summary(lss)
+#' lss_svd <- textmodel_lss(dfmt, seed)
+#' summary(lss_svd)
 #'
 #' # sentiment model on economy
 #' eco <- head(char_keyness(toks, 'econom*'), 500)
@@ -53,7 +52,8 @@
 #'
 #' # GloVe
 #' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
-#' glov <- textmodel_lss(fcmt, seed)
+#' lss_glov <- textmodel_lss(fcmt, seed)
+#' summary(lss_glov)
 #' }
 #'
 #' @export
@@ -412,10 +412,11 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' Identify context words using user-provided patterns
 #'
 #' @param x tokens object created by [quanteda::tokens()].
-#' @param pattern to specify target words. See [quanteda::pattern()] for details.
-#' @param valuetype the type of pattern matching: `"glob"` for
-#'   "glob"-style wildcard expressions; `"regex"` for regular expressions;
-#'   or `"fixed"` for exact matching. See [quanteda::valuetype()] for details.
+#' @param pattern to specify target words. See [quanteda::pattern()] for
+#'   details.
+#' @param valuetype the type of pattern matching: `"glob"` for "glob"-style
+#'   wildcard expressions; `"regex"` for regular expressions; or `"fixed"` for
+#'   exact matching. See [quanteda::valuetype()] for details.
 #' @param case_insensitive ignore case when matching, if `TRUE`
 #' @param window size of window for collocation analysis.
 #' @param p threshold for statistical significance of collocations.
@@ -426,10 +427,10 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' require(quanteda)
-#' # Available at https://bit.ly/2GZwLcN
-#' corp <- readRDS("data_corpus_guardian2016-10k.rds")
+#' # available at https://bit.ly/2GZwLcN
+#' corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
 #' corp <- corpus_reshape(corp, 'sentences')
 #' toks <- tokens(corp, remove_punct = TRUE)
 #' toks <- tokens_remove(toks, stopwords())
@@ -504,6 +505,10 @@ seedwords <- function(type) {
 #' @param x named numeric vector
 #' @keywords internal
 #' @export
+#' @examples
+#' v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
+#' lss <- as.textmodel_lss(v)
+#' @return a textmodel_lss object with `x` as polarity words
 as.textmodel_lss <- function(x) {
 
     stopifnot(is.numeric(x))
