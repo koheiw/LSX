@@ -7,7 +7,7 @@
 as.textmodel_lss(x)
 }
 \arguments{
-\item{x}{named numeric vector}
+\item{x}{a named numeric vector}
 }
 \value{
 a textmodel_lss object with \code{x} as polarity words

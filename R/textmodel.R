@@ -411,16 +411,15 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 
 #' Identify context words using user-provided patterns
 #'
-#' @param x tokens object created by [quanteda::tokens()].
-#' @param pattern to specify target words. See [quanteda::pattern()] for
-#'   details.
+#' @param x a tokens object created by [quanteda::tokens()].
+#' @param pattern [quanteda::pattern()] to specify target words
 #' @param valuetype the type of pattern matching: `"glob"` for "glob"-style
 #'   wildcard expressions; `"regex"` for regular expressions; or `"fixed"` for
 #'   exact matching. See [quanteda::valuetype()] for details.
 #' @param case_insensitive ignore case when matching, if `TRUE`
 #' @param window size of window for collocation analysis.
 #' @param p threshold for statistical significance of collocations.
-#' @param min_count minimum frequency for words within the window to be
+#' @param min_count minimum frequency of words within the window to be
 #'   considered as collocations.
 #' @param remove_pattern if `TRUE`, keywords do not containe target words.
 #' @param ... additional arguments passed to [textstat_keyness()].
@@ -502,7 +501,7 @@ seedwords <- function(type) {
 }
 
 #' Create a dummy textmodel_lss object from numeric vector
-#' @param x named numeric vector
+#' @param x a named numeric vector
 #' @keywords internal
 #' @export
 #' @examples
