@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Make the package avaiale on CRAN
+Address error on Solaris due to changes in dependencies by using locally created objects in tests.
 
 ## Test environments
 
@@ -12,11 +12,13 @@ Make the package avaiale on CRAN
 * Github Actions MacOS latest (release)
 * Github Actions Linux 18.04 (release)
 * Github Actions Linux 18.04 (devel)
+* Rhub Solaris 10 (release)
+* Rhub Solaris 10 ODS (release)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 notes
 
 ## Downstream dependencies
 
-This is the first CRAN submission.
+There is no reverse dependency on this package.
