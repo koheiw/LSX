@@ -1,10 +1,10 @@
-Package: LSS
+Package: LSX
 Type: Package
 Title: Latent Semantic Scaling
-Date: 2020-08-28
-Version: 0.8.7
-Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre"))
-Description: A word embeddings-based semisupervised model for document scaling <doi.org/10.1177/0267323117695735>.
+Date: 2020-09-14
+Version: 0.9.1
+Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre", "cph"))
+Description: A word embeddings-based semisupervised model for document scaling Watanabe (2017) <doi:10.1177/0267323117695735>.
     LSS allows users to analyze large and complex corpora on arbitrary dimensions with seed words exploiting efficiency of word embeddings (SVD, Glove).
 License: GPL-3
 LazyData: TRUE
@@ -22,7 +22,6 @@ Imports:
     rsvd,
     rsparse,
     proxyC,
-    stringi,
     grDevices,
     stats,
     ggplot2,

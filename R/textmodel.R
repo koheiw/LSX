@@ -24,12 +24,11 @@
 #'   Communication 32, no. 3 (March 20, 2017): 224–41.
 #'   https://doi.org/10.1177/0267323117695735.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' require(quanteda)
-#'
-#' # Available at https://bit.ly/2GZwLcN
-#' corp <- readRDS("data_corpus_guardian2016-10k.rds")
-#'
+#' con <- url("https://bit.ly/2GZwLcN", "rb")
+#' corp <- readRDS(con)
+#' close(con)
 #' toks <- corpus_reshape(corp, "sentences") %>%
 #'         tokens(remove_punct = TRUE) %>%
 #'         tokens_remove(stopwords("en")) %>%
@@ -40,8 +39,8 @@
 #' seed <- as.seedwords(data_dictionary_sentiment)
 #'
 #' # SVD
-#' svd <- textmodel_lss(dfmt, seed)
-#' summary(lss)
+#' lss_svd <- textmodel_lss(dfmt, seed)
+#' summary(lss_svd)
 #'
 #' # sentiment model on economy
 #' eco <- head(char_keyness(toks, 'econom*'), 500)
@@ -53,7 +52,8 @@
 #'
 #' # GloVe
 #' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
-#' glov <- textmodel_lss(fcmt, seed)
+#' lss_glov <- textmodel_lss(fcmt, seed)
+#' summary(lss_glov)
 #' }
 #'
 #' @export
@@ -101,7 +101,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     # identify relevance to seed words
     seed <- unlist(unname(seeds))
-    cos <- proxyC::simil(embed[,names(seed),drop = FALSE],
+    cos <- proxyC::simil(embed[, names(seed), drop = FALSE],
                          Matrix::Matrix(seed, nrow = 1, sparse = TRUE),
                          margin = 1)
     relev <- abs(as.numeric(cos))
@@ -221,7 +221,7 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
 
     x <- dfm_weight(x, scheme = weight)
     hash <- digest::digest(list(as(x, "dgCMatrix"), k,
-                                utils::packageVersion("LSS")),
+                                utils::packageVersion("LSX")),
                            algo = "xxhash64")
 
     dir_cache <- getOption("lss_cache_dir", "lss_cache")
@@ -257,7 +257,7 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
 cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
 
     hash <- digest::digest(list(as(x, "dgCMatrix"), w, x_max, n_iter,
-                                utils::packageVersion("LSS")),
+                                utils::packageVersion("LSX")),
                            algo = "xxhash64")
 
     dir_cache <- getOption("lss_cache_dir", "lss_cache")
@@ -411,25 +411,26 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 
 #' Identify context words using user-provided patterns
 #'
-#' @param x tokens object created by [quanteda::tokens()].
-#' @param pattern to specify target words. See [quanteda::pattern()] for details.
-#' @param valuetype the type of pattern matching: `"glob"` for
-#'   "glob"-style wildcard expressions; `"regex"` for regular expressions;
-#'   or `"fixed"` for exact matching. See [quanteda::valuetype()] for details.
+#' @param x a tokens object created by [quanteda::tokens()].
+#' @param pattern [quanteda::pattern()] to specify target words
+#' @param valuetype the type of pattern matching: `"glob"` for "glob"-style
+#'   wildcard expressions; `"regex"` for regular expressions; or `"fixed"` for
+#'   exact matching. See [quanteda::valuetype()] for details.
 #' @param case_insensitive ignore case when matching, if `TRUE`
 #' @param window size of window for collocation analysis.
 #' @param p threshold for statistical significance of collocations.
-#' @param min_count minimum frequency for words within the window to be
+#' @param min_count minimum frequency of words within the window to be
 #'   considered as collocations.
 #' @param remove_pattern if `TRUE`, keywords do not containe target words.
 #' @param ... additional arguments passed to [textstat_keyness()].
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' require(quanteda)
-#' # Available at https://bit.ly/2GZwLcN
-#' corp <- readRDS("data_corpus_guardian2016-10k.rds")
+#' con <- url("https://bit.ly/2GZwLcN", "rb")
+#' corp <- readRDS(con)
+#' close(con)
 #' corp <- corpus_reshape(corp, 'sentences')
 #' toks <- tokens(corp, remove_punct = TRUE)
 #' toks <- tokens_remove(toks, stopwords())
@@ -501,9 +502,13 @@ seedwords <- function(type) {
 }
 
 #' Create a dummy textmodel_lss object from numeric vector
-#' @param x named numeric vector
+#' @param x a named numeric vector
 #' @keywords internal
 #' @export
+#' @examples
+#' v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
+#' lss <- as.textmodel_lss(v)
+#' @return a textmodel_lss object with `x` as polarity words
 as.textmodel_lss <- function(x) {
 
     stopifnot(is.numeric(x))

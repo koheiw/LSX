@@ -145,6 +145,7 @@ strength <- function(object) {
 #' @param upper numeric index or key for seed words for higher scores
 #' @param lower numeric index or key for seed words for lower scores
 #' @export
+#' @return named numeric vector for seed words with polarity scores
 as.seedwords <- function(x, upper = 1, lower = 2) {
     if (!"list" %in% class(x) && !quanteda::is.dictionary(x))
         stop("x must be a list or dictionary object")

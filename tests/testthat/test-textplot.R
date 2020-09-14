@@ -1,8 +1,7 @@
 context("test textplot_*")
 
-corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
-test_toks <- tokens(corp_sent, remove_punct = TRUE) %>%
-    tokens_remove(stopwords())
+toks_test <- readRDS("../data/tokens_test.RDS")
+test_toks <- tokens_remove(toks_test, stopwords())
 
 test_that("textplot_* works", {
     dfmt <- dfm(test_toks)
