@@ -10,23 +10,23 @@ semisupervised document scaling method that I developed to perform large
 scale analysis at low cost. Taking user-provided *seed words* as weak
 supervision, it estimates polarity of words in the corpus by latent
 semantic analysis and locates documents on a unidimensional scale
-(e.g. sentiment).
+(e.g. sentiment).
 
 I used LSS for large scale analysis of media content in several research
 projects:
 
   - Kohei Watanabe, 2017. “[Measuring News Bias: Russia’s Official News
     Agency ITAR-TASS’s Coverage of the Ukraine
-    Crisis](https://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)”,
+    Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)”,
     *European Journal Communication*
   - Kohei Watanabe, 2017. “[The spread of the Kremlin’s narratives by a
     western news agency during the Ukraine
-    crisis](https://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)”,
+    crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)”,
     *Journal of International Communication*
   - Tomila Lankina and Kohei Watanabe. 2017. ["Russian Spring’ or
     ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving
     Strategy in
-    Ukraine](https://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)",
+    Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)",
     *Europe-Asia Studies*
 
 Please read [my working
@@ -57,8 +57,10 @@ require(LSX) # changed from LSS to LSX
 ```
 
 ``` r
-corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
+corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
+```
 
+``` r
 toks_sent <- corp %>% 
     corpus_reshape("sentences") %>% 
     tokens(remove_punct = TRUE) %>% 
@@ -73,7 +75,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_365ae974a33cb811.RDS
+    ## Writing cache file: lss_cache/svds_8e72ad5098cf6376.RDS
 
 ### Sentiment seed words
 
@@ -98,27 +100,27 @@ to seed words.
 head(coef(lss), 20) # most positive words
 ```
 
-    ##       shape      either    positive      monday   expecting sustainable 
-    ##  0.04020799  0.03744890  0.03601425  0.03336808  0.03307447  0.03276316 
-    ##      decent     several    emerging        york   candidate challenging 
-    ##  0.03084397  0.03076411  0.03047059  0.02929349  0.02883675  0.02800941 
-    ##      argued        able  powerhouse        asia       thing        drag 
-    ##  0.02774260  0.02751587  0.02719956  0.02716442  0.02661455  0.02635362 
-    ##         aid       stock 
-    ##  0.02610316  0.02607838
+    ##       shape      either    positive     several sustainable      monday 
+    ##  0.04050151  0.03805443  0.03643996  0.03248623  0.03244807  0.03240911 
+    ##   expecting    emerging      decent   candidate challenging        york 
+    ##  0.03229806  0.03086714  0.03079337  0.02899715  0.02867746  0.02791129 
+    ##        able        asia       thing  powerhouse        drag      argued 
+    ##  0.02787632  0.02772680  0.02733644  0.02727044  0.02715067  0.02712570 
+    ##         aid       china 
+    ##  0.02640394  0.02634768
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
-    ##     actually        allow      nothing      cutting       shrink        grows 
-    ##  -0.03531395  -0.03665382  -0.03701008  -0.03737425  -0.03813055  -0.03854666 
-    ##         debt implications policymakers    suggested     interest    something 
-    ##  -0.03872572  -0.03944662  -0.04014394  -0.04113985  -0.04290556  -0.04311326 
-    ##    borrowing unemployment         hike        rates         rate          rba 
-    ##  -0.04490317  -0.04505639  -0.04570329  -0.04859105  -0.04875628  -0.05079627 
+    ##     actually      nothing        allow      cutting        grows       shrink 
+    ##  -0.03599093  -0.03620681  -0.03629741  -0.03694543  -0.03784115  -0.03813461 
+    ## implications         debt policymakers    suggested    something     interest 
+    ##  -0.03883518  -0.03948326  -0.03985111  -0.04133722  -0.04274804  -0.04315672 
+    ## unemployment    borrowing         hike         rate          rba        rates 
+    ##  -0.04439511  -0.04554508  -0.04612325  -0.04799337  -0.04836243  -0.04877024 
     ##          cut     negative 
-    ##  -0.05596225  -0.06174176
+    ##  -0.05523845  -0.06236406
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,

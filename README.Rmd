@@ -45,9 +45,15 @@ require(quanteda)
 require(LSX) # changed from LSS to LSX
 ```
 
-```{r, cache=TRUE}
+```{r include=FALSE}
 corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
+```
 
+```{r eval=FALSE}
+corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
+```
+
+```{r, cache=TRUE}
 toks_sent <- corp %>% 
     corpus_reshape("sentences") %>% 
     tokens(remove_punct = TRUE) %>% 
