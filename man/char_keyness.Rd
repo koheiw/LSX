@@ -44,7 +44,9 @@ Identify context words using user-provided patterns
 \examples{
 \donttest{
 require(quanteda)
-corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
+con <- url("https://bit.ly/2GZwLcN", "rb")
+corp <- readRDS(con)
+close(con)
 corp <- corpus_reshape(corp, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE)
 toks <- tokens_remove(toks, stopwords())

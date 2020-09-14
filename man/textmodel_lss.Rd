@@ -80,7 +80,9 @@ A word embeddings-based semisupervised model for document scaling
 \examples{
 \donttest{
 require(quanteda)
-corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
+con <- url("https://bit.ly/2GZwLcN", "rb")
+corp <- readRDS(con)
+close(con)
 toks <- corpus_reshape(corp, "sentences") \%>\%
         tokens(remove_punct = TRUE) \%>\%
         tokens_remove(stopwords("en")) \%>\%
