@@ -1,9 +1,14 @@
 context("test textmodel_lss")
 
-corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
-toks_test <- tokens(corp_sent, remove_punct = TRUE)
+# require(quanteda)
+# corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
+# toks_test <- tokens(corp_sent, remove_punct = TRUE)
+# saveRDS(toks_test, "tests/data/tokens_test.RDS")
+
+toks_test <- readRDS("../data/tokens_test.RDS")
 feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
+
 seed <- as.seedwords(data_dictionary_sentiment)
 lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
                           include_data = TRUE)

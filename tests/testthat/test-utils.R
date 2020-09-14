@@ -1,7 +1,6 @@
-context("test utilities")
+context("test utils")
 
-corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
-toks_test <- tokens(corp_sent, remove_punct = TRUE)
+toks_test <- readRDS("../data/tokens_test.RDS")
 feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
 seed_test <- as.seedwords(data_dictionary_sentiment)
