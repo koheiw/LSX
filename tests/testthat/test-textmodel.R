@@ -1,6 +1,6 @@
 context("test textmodel_lss")
 
-# require(quanteda)
+require(quanteda)
 # corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
 # toks_test <- tokens(corp_sent, remove_punct = TRUE)
 # saveRDS(toks_test, "tests/data/tokens_test.RDS")
@@ -109,20 +109,19 @@ test_that("predict.textmodel_lss is working", {
 
 test_that("density is correct", {
 
-    test_dfm <- dfm(data_corpus_inaugural)
-    pred <- predict(lss_test, newdata = test_dfm, density = TRUE)
+    dfmt <- dfm_group(dfm(toks_test))
+    pred <- predict(lss_test, newdata = dfmt, density = TRUE)
 
     expect_equal(
         pred$density,
-        unname(rowSums(dfm_select(dfm_weight(test_dfm, "prop"), feat_test)))
+        unname(rowSums(dfm_select(dfm_weight(dfmt, "prop"), feat_test)))
     )
 })
 
 test_that("predict.textmodel_lss works with newdata", {
-
-    pred <- predict(lss_test, newdata = dfm(data_corpus_inaugural))
-    expect_equal(length(pred), ndoc(data_corpus_inaugural))
-
+    dfmt <- dfm_group(dfm(toks_test))
+    pred <- predict(lss_test, newdata = dfmt)
+    expect_equal(length(pred), ndoc(dfmt))
 })
 
 test_that("data object is valid", {
@@ -133,23 +132,23 @@ test_that("data object is valid", {
 test_that("calculation of fit and se.fit are correct", {
 
     lss <- as.textmodel_lss(c("a" = 0.1, "b" = 0.1, "c" = 0.3))
-    mt <- dfm(c("a a a", "a b", "a a b c c d e"))
-    pred <- predict(lss, newdata = mt, se.fit = TRUE, rescaling = FALSE)
+    dfmt <- dfm(c("a a a", "a b", "a a b c c d e"))
+    pred <- predict(lss, newdata = dfmt, se.fit = TRUE, rescaling = FALSE)
 
     expect_equal(pred$fit[1], c(text1 = 0.10))
     expect_equal(pred$fit[2], c(text2 = 0.10))
     expect_equal(pred$fit[3], c(text3 = 0.1 * (2 / 5) + 0.1 * (1 / 5) + 0.3 * (2 / 5)))
 
     beta <- coef(lss)
-    mt_sub <- dfm_select(mt, names(beta))
-    mt_prop <- dfm_weight(mt_sub, "prop")
+    dfmt_sub <- dfm_select(dfmt, names(beta))
+    dfmt_prop <- dfm_weight(dfmt_sub, "prop")
 
     expect_equal(pred$se.fit[1],
-                 unname(sqrt(sum(as.numeric(mt_prop[1,]) * (pred$fit[1] - beta) ^ 2)) / sqrt(rowSums(mt_sub)[1])))
+                 unname(sqrt(sum(as.numeric(dfmt_prop[1,]) * (pred$fit[1] - beta) ^ 2)) / sqrt(rowSums(dfmt_sub)[1])))
     expect_equal(pred$se.fit[2],
-                 unname(sqrt(sum(as.numeric(mt_prop[2,]) * (pred$fit[2] - beta) ^ 2)) / sqrt(rowSums(mt_sub)[2])))
+                 unname(sqrt(sum(as.numeric(dfmt_prop[2,]) * (pred$fit[2] - beta) ^ 2)) / sqrt(rowSums(dfmt_sub)[2])))
     expect_equal(pred$se.fit[3],
-                 unname(sqrt(sum(as.numeric(mt_prop[3,]) * (pred$fit[3] - beta) ^ 2)) / sqrt(rowSums(mt_sub)[3])))
+                 unname(sqrt(sum(as.numeric(dfmt_prop[3,]) * (pred$fit[3] - beta) ^ 2)) / sqrt(rowSums(dfmt_sub)[3])))
 
     expect_equal(pred$n[1], 3)
     expect_equal(pred$n[2], 2)
@@ -178,36 +177,35 @@ test_that("simil_method works", {
 
 
 test_that("include_data is working", {
-    mt <- dfm(toks_test)
-    lss <- textmodel_lss(mt, seedwords("pos-neg"), include_data = TRUE, k = 10)
-    lss_nd <- textmodel_lss(mt, seedwords("pos-neg"), include_data = FALSE, k = 10)
+    dfmt <- dfm_group(dfm(toks_test))
+    lss <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = TRUE, k = 10)
+    lss_nd <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = FALSE, k = 10)
     expect_error(predict(lss_nd), "LSS model includes no data")
-    expect_identical(predict(lss), predict(lss_nd, newdata = mt))
+    expect_identical(predict(lss), predict(lss_nd, newdata = dfmt))
 })
 
 test_that("predict.textmodel_lss retuns NA for empty documents", {
 
-    mt <- dfm(data_corpus_inaugural)
-    mt[c(3, 10),] <- 0
-    pred <- predict(lss_test, newdata = as.dfm(mt))
-    expect_equal(length(pred), ndoc(data_corpus_inaugural))
-    expect_equal(pred[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                      c("1789-Washington" = -0.762, "1797-Adams" = NA, "1825-Adams" = NA),
-                 tolerance = 0.05)
+    dfmt <- dfm_group(dfm(toks_test))
+    dfmt[c(3, 10),] <- 0
+    dfmt <- as.dfm(dfmt)
+    pred <- predict(lss_test, newdata = dfmt)
+    expect_equal(length(pred), ndoc(dfmt))
+    expect_equal(is.na(pred[c("1789-Washington", "1797-Adams", "1825-Adams")]),
+                 c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
 
-    pred2 <- predict(lss_test, newdata = as.dfm(mt), se.fit = TRUE)
-    expect_equal(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")],
-                 c("1789-Washington" = -0.762, "1797-Adams" = NA, "1825-Adams" = NA),
-                 tolerance = 0.05)
-    expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.931129, NA, NA), tolerance = 0.01)
-    expect_equal(pred2$n[c(1, 3, 10)], c(33, 0, 0))
+    pred2 <- predict(lss_test, newdata = dfmt, se.fit = TRUE)
+    expect_equal(is.na(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")]),
+                 c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
+    expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.9, NA, NA), tolerance = 0.01)
+    expect_equal(pred2$n[c(1, 3, 10)], c(31, 0, 0))
 })
 
 
 test_that("textmodel_lss works with glob patterns", {
-    mt <- dfm(toks_test)
+    dfmt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
-    lss <- textmodel_lss(mt, seed, k = 10)
+    lss <- textmodel_lss(dfmt, seed, k = 10)
     expect_equal(names(lss$seeds), names(seed))
     expect_equal(lengths(lss$seeds),
                  c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
