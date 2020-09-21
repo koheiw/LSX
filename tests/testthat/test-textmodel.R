@@ -197,8 +197,8 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
     pred2 <- predict(lss_test, newdata = dfmt, se.fit = TRUE)
     expect_equal(is.na(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")]),
                  c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
-    expect_equal(pred2$se.fit[c(1, 3, 10)], c(0.9, NA, NA), tolerance = 0.01)
-    expect_equal(pred2$n[c(1, 3, 10)], c(31, 0, 0))
+    expect_equal(is.na(pred2$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
+    expect_equal(pred2$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
 })
 
 
