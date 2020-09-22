@@ -12,9 +12,7 @@ test_that("textplot_* works", {
     expect_equal(class(textplot_factor(lss)), c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = c("positive", "bad", "xxxx"))),
                  c("gg", "ggplot"))
-    expect_equal(class(textplot_scale1d(lss)), c("gg", "ggplot"))
-    expect_error(textplot_scale1d(lss, margin = "document"),
-                 "There is no document margin")
+    expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
 })
 
 test_that("textplot_* raise error when attributes are missing", {

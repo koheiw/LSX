@@ -20,7 +20,11 @@ test_that("diagnosys works", {
                     dupli = c(FALSE, FALSE, FALSE, TRUE),
                     noise = c(0.5, 0.8, 0.25, 0.25),
                     stringsAsFactors = FALSE)
-    expect_equal(diagnosys(txt), dat)
+    suppressWarnings(
+        expect_equal(diagnosys(txt), dat)
+    )
+    expect_warning(diagnosys(txt),
+                   "'diagnosys.corpus' is deprecated")
 
 })
 

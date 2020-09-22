@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Address error on Solaris due to changes in dependencies by using locally created objects in tests.
+Address error due to changes in dependencies by using locally created objects in tests.
 
 ## Test environments
 
