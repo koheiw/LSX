@@ -2,9 +2,11 @@
 ^\.Rproj\.user$
 ^\.github/
 ^README.Rmd
+^README.md
 ^dict/
 ^testthat
 ^README_cache
 ^images/*
-^lss_cache/*
+^lss_cache
+^tests/testthat/lss_cache
 ^cran-comments.md$

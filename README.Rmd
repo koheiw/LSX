@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 
 # Latent Semantic Scaling
 
+**NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN submission.
+
 In quantitative text analysis, the cost to train supervised machine learning models tend to be very high when the corpus is large. LSS is a semisupervised document scaling method that I developed to perform large scale analysis at low cost. Taking user-provided *seed words* as weak supervision, it estimates polarity of words in the corpus by latent semantic analysis and locates documents on a unidimensional scale (e.g. sentiment). 
 
 I used LSS for large scale analysis of media content in several research projects:
@@ -29,7 +31,7 @@ Please read [my working paper](https://blog.koheiw.net/wp-content/uploads/2020/0
 ## How to install
 
 ```{r, eval=FALSE}
-devtools::install_github("koheiw/LSS")
+devtools::install_github("koheiw/LSX")
 ```
 
 ## How to use
@@ -40,12 +42,18 @@ LSS estimates semantic similarity of words based on their surrounding contexts, 
 
 ```{r, message=FALSE}
 require(quanteda)
-require(LSS)
+require(LSX) # changed from LSS to LSX
+```
+
+```{r include=FALSE}
+corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
+```
+
+```{r eval=FALSE}
+corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
 ```
 
 ```{r, cache=TRUE}
-corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
-
 toks_sent <- corp %>% 
     corpus_reshape("sentences") %>% 
     tokens(remove_punct = TRUE) %>% 
@@ -80,10 +88,10 @@ tail(coef(lss), 20) # most negative words
 This plot shows that frequent words ("said", "people", "also") are neutral while less frequent words such as "borrowing", "unemployment", "emerging" and "efficient" are  either negative or positive.
 
 ```{r words}
-textplot_scale1d(lss, 
-                 highlighted = c("said", "people", "also",
-                                 "borrowing", "unemployment",
-                                 "emerging", "efficient"))
+textplot_terms(lss, 
+               highlighted = c("said", "people", "also",
+                               "borrowing", "unemployment",
+                               "emerging", "efficient"))
 ```
 
 ## Result of analysis

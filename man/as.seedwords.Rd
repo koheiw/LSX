@@ -13,6 +13,9 @@ as.seedwords(x, upper = 1, lower = 2)
 
 \item{lower}{numeric index or key for seed words for lower scores}
 }
+\value{
+named numeric vector for seed words with polarity scores
+}
 \description{
 Convinient function to convert a list to seed words
 }

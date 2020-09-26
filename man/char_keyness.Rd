@@ -17,13 +17,13 @@ char_keyness(
 )
 }
 \arguments{
-\item{x}{tokens object created by \code{\link[quanteda:tokens]{quanteda::tokens()}}.}
+\item{x}{a tokens object created by \code{\link[quanteda:tokens]{quanteda::tokens()}}.}
 
-\item{pattern}{to specify target words. See \code{\link[quanteda:pattern]{quanteda::pattern()}} for details.}
+\item{pattern}{\code{\link[quanteda:pattern]{quanteda::pattern()}} to specify target words}
 
-\item{valuetype}{the type of pattern matching: \code{"glob"} for
-"glob"-style wildcard expressions; \code{"regex"} for regular expressions;
-or \code{"fixed"} for exact matching. See \code{\link[quanteda:valuetype]{quanteda::valuetype()}} for details.}
+\item{valuetype}{the type of pattern matching: \code{"glob"} for "glob"-style
+wildcard expressions; \code{"regex"} for regular expressions; or \code{"fixed"} for
+exact matching. See \code{\link[quanteda:valuetype]{quanteda::valuetype()}} for details.}
 
 \item{case_insensitive}{ignore case when matching, if \code{TRUE}}
 
@@ -31,7 +31,7 @@ or \code{"fixed"} for exact matching. See \code{\link[quanteda:valuetype]{quante
 
 \item{p}{threshold for statistical significance of collocations.}
 
-\item{min_count}{minimum frequency for words within the window to be
+\item{min_count}{minimum frequency of words within the window to be
 considered as collocations.}
 
 \item{remove_pattern}{if \code{TRUE}, keywords do not containe target words.}
@@ -42,10 +42,11 @@ considered as collocations.}
 Identify context words using user-provided patterns
 }
 \examples{
-\dontrun{
+\donttest{
 require(quanteda)
-# Available at https://bit.ly/2GZwLcN
-corp <- readRDS("data_corpus_guardian2016-10k.rds")
+con <- url("https://bit.ly/2GZwLcN", "rb")
+corp <- readRDS(con)
+close(con)
 corp <- corpus_reshape(corp, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE)
 toks <- tokens_remove(toks, stopwords())

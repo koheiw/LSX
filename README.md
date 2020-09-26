@@ -1,6 +1,9 @@
 
 # Latent Semantic Scaling
 
+**NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN
+submission.
+
 In quantitative text analysis, the cost to train supervised machine
 learning models tend to be very high when the corpus is large. LSS is a
 semisupervised document scaling method that I developed to perform large
@@ -33,7 +36,7 @@ for the algorithm and methodology.
 ## How to install
 
 ``` r
-devtools::install_github("koheiw/LSS")
+devtools::install_github("koheiw/LSX")
 ```
 
 ## How to use
@@ -50,12 +53,14 @@ semantic proximity. The [sample corpus](https://bit.ly/2GZwLcN) contains
 
 ``` r
 require(quanteda)
-require(LSS)
+require(LSX) # changed from LSS to LSX
 ```
 
 ``` r
-corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
+corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
+```
 
+``` r
 toks_sent <- corp %>% 
     corpus_reshape("sentences") %>% 
     tokens(remove_punct = TRUE) %>% 
@@ -70,7 +75,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_365ae974a33cb811.RDS
+    ## Writing cache file: lss_cache/svds_8e72ad5098cf6376.RDS
 
 ### Sentiment seed words
 
@@ -89,44 +94,43 @@ data_dictionary_sentiment
 ### Economic sentiment words
 
 Economic words are weighted in terms of sentiment based on the proximity
-to seed
-    words.
+to seed words.
 
 ``` r
 head(coef(lss), 20) # most positive words
 ```
 
-    ##       shape      either    positive      monday   expecting sustainable 
-    ##  0.04020799  0.03744890  0.03601425  0.03336808  0.03307447  0.03276316 
-    ##      decent     several    emerging        york   candidate challenging 
-    ##  0.03084397  0.03076411  0.03047059  0.02929349  0.02883675  0.02800941 
-    ##      argued        able  powerhouse        asia       thing        drag 
-    ##  0.02774260  0.02751587  0.02719956  0.02716442  0.02661455  0.02635362 
-    ##         aid       stock 
-    ##  0.02610316  0.02607838
+    ##       shape      either    positive     several sustainable      monday 
+    ##  0.04050151  0.03805443  0.03643996  0.03248623  0.03244807  0.03240911 
+    ##   expecting    emerging      decent   candidate challenging        york 
+    ##  0.03229806  0.03086714  0.03079337  0.02899715  0.02867746  0.02791129 
+    ##        able        asia       thing  powerhouse        drag      argued 
+    ##  0.02787632  0.02772680  0.02733644  0.02727044  0.02715067  0.02712570 
+    ##         aid       china 
+    ##  0.02640394  0.02634768
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
-    ##     actually        allow      nothing      cutting       shrink        grows 
-    ##  -0.03531395  -0.03665382  -0.03701008  -0.03737425  -0.03813055  -0.03854666 
-    ##         debt implications policymakers    suggested     interest    something 
-    ##  -0.03872572  -0.03944662  -0.04014394  -0.04113985  -0.04290556  -0.04311326 
-    ##    borrowing unemployment         hike        rates         rate          rba 
-    ##  -0.04490317  -0.04505639  -0.04570329  -0.04859105  -0.04875628  -0.05079627 
+    ##     actually      nothing        allow      cutting        grows       shrink 
+    ##  -0.03599093  -0.03620681  -0.03629741  -0.03694543  -0.03784115  -0.03813461 
+    ## implications         debt policymakers    suggested    something     interest 
+    ##  -0.03883518  -0.03948326  -0.03985111  -0.04133722  -0.04274804  -0.04315672 
+    ## unemployment    borrowing         hike         rate          rba        rates 
+    ##  -0.04439511  -0.04554508  -0.04612325  -0.04799337  -0.04836243  -0.04877024 
     ##          cut     negative 
-    ##  -0.05596225  -0.06174176
+    ##  -0.05523845  -0.06236406
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,
 “emerging” and “efficient” are either negative or positive.
 
 ``` r
-textplot_scale1d(lss, 
-                 highlighted = c("said", "people", "also",
-                                 "borrowing", "unemployment",
-                                 "emerging", "efficient"))
+textplot_terms(lss, 
+               highlighted = c("said", "people", "also",
+                               "borrowing", "unemployment",
+                               "emerging", "efficient"))
 ```
 
 ![](images/words-1.png)<!-- -->
