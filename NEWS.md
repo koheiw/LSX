@@ -1,3 +1,7 @@
+# Changes in v0.9.3
+
+* Add `engine` to `smooth_lss()` to apply `locfit()` to large datasets
+
 # Changes in v0.9.2
 
 * Updated unit tests for the new versions of stringi and quanteda
