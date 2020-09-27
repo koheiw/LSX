@@ -29,7 +29,7 @@ smooth_lss(
 \item{to}{end of the time period}
 
 \item{engine}{specifies the function to smooth LSS scores: \code{\link[=loess]{loess()}} or \code{\link[=locfit]{locfit()}}.
-The latter should be used for n > 10000.}
+The latter should be used when n > 10000.}
 
 \item{...}{extra arguments passed to \code{\link[=loess]{loess()}} or \code{\link[=lp]{lp()}}}
 }
