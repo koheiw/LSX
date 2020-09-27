@@ -292,6 +292,15 @@ test_that("test smooth_lss", {
         smooth_lss(data.frame(score = lss, published = date),
                    lss_var = "score", "date_var" = "published")
     )
+
+    dat_loess <- smooth_lss(data.frame(score = lss, published = date),
+                            lss_var = "score", "date_var" = "published",
+                            engine = "loess")
+    dat_locfit <- smooth_lss(data.frame(score = lss, published = date),
+                             lss_var = "score", "date_var" = "published",
+                             engine = "locfit")
+    expect_true(cor(dat_loess$fit, dat_locfit$fit) > 0.90)
+    expect_true(cor(dat_loess$se.fit, dat_locfit$se.fit) > 0.90)
 })
 
 test_that("test with single seed", {

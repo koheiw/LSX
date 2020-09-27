@@ -525,17 +525,21 @@ as.textmodel_lss <- function(x) {
 
 #' Smooth predicted LSS scores by local polynomial regression
 #'
-#' @param x a `data.frame` containing variables for LSS scores and dates
+#' @param x a `data.frame` containing LSS scores and dates
 #' @param lss_var the name of the column for LSS scores
 #' @param date_var the name of the columns for dates
-#' @param span determines the level of smoothing
+#' @param span determines the level of smoothing.
 #' @param from start of the time period
 #' @param to end of the time period
-#' @param ... extra arguments passed to [loess()]
+#' @param engine specifies the function to smooth LSS scores: [loess()] or [locfit()].
+#' The latter should be used when n > 10000.
+#' @param ... extra arguments passed to [loess()] or [lp()]
 #' @export
-#' @import stats
+#' @import stats locfit
 smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
-                       from = NULL, to = NULL, ...) {
+                       from = NULL, to = NULL, engine = c("loess", "locfit"), ...) {
+
+    engine <- match.arg(engine)
 
     if (lss_var %in% names(x)) {
         if (!identical(class(x[[lss_var]]), "numeric"))
@@ -561,10 +565,17 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
     dummy <- data.frame(date = seq(from, to, '1 day'))
     dummy$time <- as.numeric(difftime(dummy$date, from, units = "days"))
     dummy$fit <- NA
-    suppressWarnings(
-        temp <- predict(loess(lss ~ time, data = x, span = span, ...),
-                        newdata = dummy, se = TRUE)
-    )
+    if (engine == "loess") {
+        suppressWarnings(
+            temp <- predict(loess(lss ~ time, data = x, span = span, ...),
+                            newdata = dummy, se = TRUE)
+        )
+    } else {
+        suppressWarnings(
+            temp <- predict(locfit(lss ~ lp(time, nn = span, ...), data = x),
+                            newdata = dummy, se = TRUE)
+        )
+    }
     result <- cbind(dummy[c("date", "time")], temp[c("fit", "se.fit")])
     return(result)
 }

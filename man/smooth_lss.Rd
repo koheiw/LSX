@@ -11,23 +11,27 @@ smooth_lss(
   span = 0.1,
   from = NULL,
   to = NULL,
+  engine = c("loess", "locfit"),
   ...
 )
 }
 \arguments{
-\item{x}{a \code{data.frame} containing variables for LSS scores and dates}
+\item{x}{a \code{data.frame} containing LSS scores and dates}
 
 \item{lss_var}{the name of the column for LSS scores}
 
 \item{date_var}{the name of the columns for dates}
 
-\item{span}{determines the level of smoothing}
+\item{span}{determines the level of smoothing.}
 
 \item{from}{start of the time period}
 
 \item{to}{end of the time period}
 
-\item{...}{extra arguments passed to \code{\link[=loess]{loess()}}}
+\item{engine}{specifies the function to smooth LSS scores: \code{\link[=loess]{loess()}} or \code{\link[=locfit]{locfit()}}.
+The latter should be used for n > 10000.}
+
+\item{...}{extra arguments passed to \code{\link[=loess]{loess()}} or \code{\link[=lp]{lp()}}}
 }
 \description{
 Smooth predicted LSS scores by local polynomial regression
