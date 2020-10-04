@@ -18,20 +18,23 @@ projects:
   - Kohei Watanabe, 2017. “[Measuring News Bias: Russia’s Official News
     Agency ITAR-TASS’s Coverage of the Ukraine
     Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)”,
-    *European Journal Communication*
+    *European Journal Communication*.
   - Kohei Watanabe, 2017. “[The spread of the Kremlin’s narratives by a
     western news agency during the Ukraine
     crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)”,
-    *Journal of International Communication*
+    *Journal of International Communication*.
   - Tomila Lankina and Kohei Watanabe. 2017. ["Russian Spring’ or
     ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving
     Strategy in
     Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)",
-    *Europe-Asia Studies*
+    *Europe-Asia Studies*.
 
-Please read [my working
-paper](https://blog.koheiw.net/wp-content/uploads/2020/04/LSS-06.pdf)
-for the algorithm and methodology.
+Please read my paper for the algorithm and methodology:
+
+  - Kohei Watanabe, forthcoming, “[Latent Semantic Scaling: A
+    Semisupervised Text Analysis Technique for New Domains and
+    Languages](https://blog.koheiw.net/wp-content/uploads/2020/10/LSS-09-PREPRINT.pdf)”,
+    *Communication Methods and Measures*.
 
 ## How to install
 
@@ -75,7 +78,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_8e72ad5098cf6376.RDS
+    ## Writing cache file: lss_cache/svds_8385b4b1a785d189.RDS
 
 ### Sentiment seed words
 
@@ -151,7 +154,6 @@ dfmt <- dfm(corp)
 # predict sentiment scores
 pred <- as.data.frame(predict(lss, se.fit = TRUE, newdata = dfmt))
 pred$date <- docvars(dfmt, "date")
-pred <- na.omit(pred)
 
 # smooth LSS scores
 pred_sm <- smooth_lss(pred, from = as.Date("2016-01-01"), to = as.Date("2016-12-31"))
