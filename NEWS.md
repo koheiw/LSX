@@ -1,5 +1,6 @@
 # Changes in v0.9.3
 
+* `char_keyness()` no longer raise error when no patter is found in tokens object
 * Add `engine` to `smooth_lss()` to apply `locfit()` to large datasets
 
 # Changes in v0.9.2
