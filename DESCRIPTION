@@ -1,7 +1,7 @@
 Package: LSX
 Type: Package
 Title: Model for Semisupervised Text Analysis Based on Word Embeddings
-Date: 2020-09-27
+Date: 2020-10-07
 Version: 0.9.3
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre", "cph"))
 Description: A word embeddings-based semisupervised models for document scaling Watanabe (2017) <doi:10.1177/0267323117695735>.
