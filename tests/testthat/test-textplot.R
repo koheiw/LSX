@@ -2,6 +2,7 @@ context("test textplot_*")
 
 toks_test <- readRDS("../data/tokens_test.RDS")
 test_toks <- tokens_remove(toks_test, stopwords())
+dict <- dictionary(list("keywords" = c("positive", "bad", "xxxx")))
 
 test_that("textplot_* works", {
     dfmt <- dfm(test_toks)
@@ -10,7 +11,9 @@ test_that("textplot_* works", {
     expect_equal(class(textplot_simil(lss, group = TRUE)), c("gg", "ggplot"))
     expect_equal(class(textplot_simil(lss, group = FALSE)), c("gg", "ggplot"))
     expect_equal(class(textplot_factor(lss)), c("gg", "ggplot"))
-    expect_equal(class(textplot_terms(lss, highlighted = c("positive", "bad", "xxxx"))),
+    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords)),
+                 c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
 })

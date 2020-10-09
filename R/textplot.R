@@ -134,24 +134,41 @@ textplot_scale1d_features <- function(x, weight, featlabels,
 
 #' Plot polarity scores of words
 #' @param x fitted textmodel_lss object
-#' @param highlighted a character vector to specify words to be highlighted
+#' @param highlighted [quanteda::pattern] to specify words to highlight
 #' @export
 textplot_terms <- function(x, highlighted = NULL) {
     UseMethod("textplot_terms")
 }
 
 #' @method textplot_terms textmodel_lss
-#' @import ggplot2 ggrepel
+#' @import ggplot2 ggrepel stringi
 #' @export
 textplot_terms.textmodel_lss <- function(x, highlighted = NULL) {
 
     if (is.null(highlighted))
         highlighted <- character()
+    if (is.dictionary(highlighted)) {
+        separator <- meta(highlighted, field = "separator", type = "object")
+        valuetype <- meta(highlighted, field = "valuetype", type = "object")
+        highlighted <- stri_replace_all_fixed(
+            unlist(highlighted, use.names = FALSE),
+            separator, x$concatenator
+        )
+    } else {
+        highlighted <- unlist(highlighted, use.names = FALSE)
+        valuetype <- "glob"
+    }
+    words_hl <- quanteda::pattern2fixed(
+        highlighted,
+        types = names(x$beta),
+        valuetype = valuetype,
+        case_insensitive = TRUE
+    )
 
     beta <- frequency <- word <- NULL
     temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),
-                      stringsAsFactors = FALSE)
-    is_hl <- temp$word %in% highlighted
+                       stringsAsFactors = FALSE)
+    is_hl <- temp$word %in% unlist(words_hl, use.names = FALSE)
     temp_black <- subset(temp, is_hl)
     temp_gray <- subset(temp, !is_hl)
     ggplot(data = temp_gray, aes(x = beta, y = frequency, label = word)) +

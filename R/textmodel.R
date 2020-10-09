@@ -123,6 +123,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                    similarity = simil$seed,
                    relevance = relev,
                    importance = import,
+                   concatenator = meta(x, field = "concatenator", type = "object"),
                    call = match.call())
 
     if (include_data)
