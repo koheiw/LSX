@@ -4,7 +4,7 @@ Title: Model for Semisupervised Text Analysis Based on Word Embeddings
 Date: 2020-10-07
 Version: 0.9.3
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre", "cph"))
-Description: A word embeddings-based semisupervised models for document scaling Watanabe (2017) <doi:10.1177/0267323117695735>.
+Description: A word embeddings-based semisupervised models for document scaling Watanabe (2020) <doi:10.1080/19312458.2020.1832976>.
     LSS allows users to analyze large and complex corpora on arbitrary dimensions with seed words exploiting efficiency of word embeddings (SVD, Glove).
 License: GPL-3
 LazyData: TRUE
@@ -15,6 +15,7 @@ Depends:
     methods,
     R (>= 3.5.0)
 Imports:
+    stringi,
     digest,
     Matrix,
     RSpectra,
