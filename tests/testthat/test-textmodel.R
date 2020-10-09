@@ -32,7 +32,7 @@ test_that("char_keyness is working", {
     expect_identical(feat4, character())
 
     expect_warning(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05),
-                  "xxxxx is not found")
+                  "pattern is not found in the object")
 
 })
 
