@@ -150,10 +150,10 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL) {
     if (is.dictionary(highlighted)) {
         separator <- meta(highlighted, field = "separator", type = "object")
         valuetype <- meta(highlighted, field = "valuetype", type = "object")
-        highlighted <- stri_replace_all_fixed(
-            unlist(highlighted, use.names = FALSE),
-            separator, x$concatenator
-        )
+        concatenator <- x$concatenator
+        highlighted <- unlist(highlighted, use.names = FALSE)
+        if (!nzchar(separator) && !is.null(concatenator)) # for backward compatibility
+            highlighted <- stri_replace_all_fixed(highlighted, separator, concatenator)
     } else {
         highlighted <- unlist(highlighted, use.names = FALSE)
         valuetype <- "glob"
