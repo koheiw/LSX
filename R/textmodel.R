@@ -465,7 +465,7 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
 
     tar <- dfm_remove(dfm(x), pattern = "")
     if (nfeat(tar) == 0)
-        warning(paste(unlist(pattern), collapse = ", "), " is not found\n", call. = FALSE)
+        warning("pattern is not found in the object\n", call. = FALSE)
     tar <- dfm_trim(tar, min_termfreq = min_count)
     if (nfeat(tar) == 0)
         return(character())
