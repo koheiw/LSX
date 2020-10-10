@@ -9,7 +9,7 @@ textplot_terms(x, highlighted = NULL)
 \arguments{
 \item{x}{fitted textmodel_lss object}
 
-\item{highlighted}{a character vector to specify words to be highlighted}
+\item{highlighted}{\link[quanteda:pattern]{quanteda::pattern} to specify words to highlight}
 }
 \description{
 Plot polarity scores of words

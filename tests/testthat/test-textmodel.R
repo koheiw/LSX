@@ -54,7 +54,8 @@ test_that("textmodel_lss has all the attributes", {
     expect_equal(
         names(lss_test),
         c("beta", "k", "slice", "frequency", "terms", "seeds",
-          "embedding", "similarity", "relevance", "importance", "call",  "data")
+          "embedding", "similarity", "relevance", "importance",
+          "concatenator", "call",  "data")
     )
 
     expect_true(is.numeric(lss_test$beta))
@@ -65,7 +66,8 @@ test_that("textmodel_lss has all the attributes", {
     expect_equal(
         names(lss_test_nd),
         c("beta", "k", "slice", "frequency", "terms", "seeds",
-          "embedding", "similarity", "relevance", "importance", "call")
+          "embedding", "similarity", "relevance", "importance",
+          "concatenator", "call")
     )
 
 })
