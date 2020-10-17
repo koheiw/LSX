@@ -103,27 +103,27 @@ to seed words.
 head(coef(lss), 20) # most positive words
 ```
 
-    ##        good       shape      driver      either    positive   challenge 
-    ##  0.10086678  0.08100301  0.07652619  0.07610887  0.07287992  0.06801746 
-    ##      expert  continuing     several sustainable      monday   expecting 
-    ##  0.06578380  0.06577131  0.06497246  0.06489614  0.06481823  0.06459612 
-    ##      remain    emerging      decent   continued      shares   candidate 
-    ##  0.06327885  0.06173428  0.06158674  0.05958519  0.05804870  0.05799429 
-    ## challenging          de 
-    ##  0.05735492  0.05725742
+    ##       shape      either    positive     several sustainable      monday 
+    ##  0.08100301  0.07610887  0.07287992  0.06497246  0.06489614  0.06481823 
+    ##   expecting      remain    emerging      decent   candidate challenging 
+    ##  0.06459612  0.06327885  0.06173428  0.06158674  0.05799429  0.05735492 
+    ##        york        able        asia       thing  powerhouse        drag 
+    ##  0.05582258  0.05575264  0.05545359  0.05467288  0.05454087  0.05430134 
+    ##      argued       china 
+    ##  0.05425140  0.05269536
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
-    ##     compared implications        basic    americans       happen         debt 
-    ##  -0.07677553  -0.07767036  -0.07848986  -0.07850078  -0.07874437  -0.07896652 
-    ## policymakers    suggested    something     interest unemployment    borrowing 
-    ##  -0.07970222  -0.08267444  -0.08549609  -0.08631343  -0.08879022  -0.09109017 
-    ##         hike         poor         rate          rba        rates          cut 
-    ##  -0.09224650  -0.09393369  -0.09598675  -0.09672486  -0.09754047  -0.11047689 
-    ##     negative        wrong 
-    ##  -0.12472812  -0.13293973
+    ##     sterling      nothing        allow      cutting        grows       shrink 
+    ##  -0.07220668  -0.07241361  -0.07259483  -0.07389086  -0.07568230  -0.07626922 
+    ## implications        basic         debt policymakers    suggested     interest 
+    ##  -0.07767036  -0.07848986  -0.07896652  -0.07970222  -0.08267444  -0.08631343 
+    ## unemployment    borrowing         hike         rate          rba        rates 
+    ##  -0.08879022  -0.09109017  -0.09224650  -0.09598675  -0.09672486  -0.09754047 
+    ##          cut     negative 
+    ##  -0.11047689  -0.12472812
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,
