@@ -1,5 +1,6 @@
 # Changes in v0.9.3
 
+* Make the absolute sum of seed weight equal to 1.0 in both upper and lower ends. 
 * `textplot_terms()` takes glob patterns in character vector or a dictionary object.
 * `char_keyness()` no longer raise error when no patter is found in tokens object.
 * Add `engine` to `smooth_lss()` to apply `locfit()` to large datasets.
