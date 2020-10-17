@@ -438,6 +438,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
+#' #' @examples
 #' \donttest{
 #' require(quanteda)
 #' con <- url("https://bit.ly/2GZwLcN", "rb")
@@ -448,43 +449,64 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' toks <- tokens_remove(toks, stopwords())
 #'
 #' # economy keywords
-#' eco <- char_keyness(toks, 'econom*')
+#' eco <- char_context(toks, 'econom*')
 #' head(eco, 20)
 #'
+#' tstat_eco <- textstat_context(toks, 'econom*')
+#' head(tstat_eco)
+#'
 #' # politics keywords
-#' pol <- char_keyness(toks, 'politi*')
+#' pol <- char_context(toks, 'politi*')
 #' head(pol, 20)
+#'
+#' # politics keywords
+#' tstat_pol <- textstat_context(toks, 'politi*')
+#' head(tstat_pol)
 #' }
-char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
-                         case_insensitive = TRUE, window = 10, p = 0.001, min_count = 10,
+textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
+                         case_insensitive = TRUE, window = 10, min_count = 10,
                          remove_pattern = TRUE, ...) {
     if (!is.tokens(x))
         stop("x must be a tokens object\n", call. = FALSE)
 
     # reference
-    ref <- dfm(tokens_remove(x, pattern, valuetype = valuetype,
-                             case_insensitive = case_insensitive,
-                             window = window))
+    y <- tokens_remove(x, pattern, valuetype = valuetype,
+                       case_insensitive = case_insensitive,
+                       window = window, padding = FALSE)
+    y <- dfm(y, remove = "")
 
     # target
     x <- tokens_select(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
-                       window = window)
+                       window = window, padding = FALSE)
     if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
+    x <- dfm(x, remove = "")
 
-    tar <- dfm_remove(dfm(x), pattern = "")
-    if (nfeat(tar) == 0)
-        warning("pattern is not found in the object\n", call. = FALSE)
-    tar <- dfm_trim(tar, min_termfreq = min_count)
-    if (nfeat(tar) == 0)
-        return(character())
-    ref <- dfm_match(ref, featnames(tar))
+    x <- dfm_trim(x, min_termfreq = min_count)
+    y <- dfm_match(y, featnames(x))
+    if (sum(x) > 0) {
+        result <- textstat_keyness(as.dfm(rbind(colSums(x), colSums(y))), ...)
+    } else {
+        result <- head(textstat_keyness(as.dfm(matrix(c(1, 0))), ...), 0) # dummy object
+    }
+    colnames(result)[c(4, 5)] <- c("n_inside", "n_outside")
+    return(result)
+}
 
-    result <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))), ...)
+#' @rdname textstat_context
+#' @export
+char_context <- function(x, ..., p = 0.001) {
+    result <- textstat_context(x, ...)
     result <- result[result$p < p,]
     return(result$feature)
+}
+
+#' @rdname textstat_context
+#' @export
+char_keyness <- function(x, ..., p = 0.001) {
+    char_context(x, ..., p = p)
 }
 
 #' Seed words for Latent Semantci Analysis
