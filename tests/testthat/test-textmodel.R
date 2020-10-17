@@ -31,8 +31,7 @@ test_that("char_keyness is working", {
     feat4 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = FALSE)
     expect_identical(feat4, character())
 
-    expect_warning(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05),
-                  "pattern is not found in the object")
+    expect_silent(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05))
 
 })
 

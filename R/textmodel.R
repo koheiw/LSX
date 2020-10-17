@@ -479,8 +479,6 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     x <- tokens_select(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
                        window = window, padding = FALSE)
-    if (!length(types(x)))
-        warning("pattern is not found in the object\n", call. = FALSE)
     if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
