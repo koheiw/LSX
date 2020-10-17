@@ -48,11 +48,7 @@ require(quanteda)
 require(LSX) # changed from LSS to LSX
 ```
 
-```{r include=FALSE}
-corp <- readRDS("/home/kohei/Dropbox/Public/data_corpus_guardian2016-10k.rds")
-```
-
-```{r eval=FALSE}
+```{r eval=TRUE}
 corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
 ```
 
@@ -66,7 +62,7 @@ dfmt_sent <- toks_sent %>%
     dfm_select("^\\p{L}+$", valuetype = "regex", min_nchar = 2) %>% 
     dfm_trim(min_termfreq = 5)
 
-eco <- char_keyness(toks_sent, "econom*", p = 0.05)
+eco <- char_context(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
