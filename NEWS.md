@@ -1,5 +1,6 @@
 # Changes in v0.9.3
 
+* Add `textstat_context()` and `char_context()` to replace `char_keyness()`.
 * `textplot_terms()` takes glob patterns in character vector or a dictionary object.
 * `char_keyness()` no longer raise error when no patter is found in tokens object.
 * Add `engine` to `smooth_lss()` to apply `locfit()` to large datasets.

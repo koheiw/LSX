@@ -427,6 +427,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
+#' #' @examples
 #' \donttest{
 #' require(quanteda)
 #' con <- url("https://bit.ly/2GZwLcN", "rb")
@@ -437,15 +438,15 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' toks <- tokens_remove(toks, stopwords())
 #'
 #' # economy keywords
-#' eco <- char_keyness(toks, 'econom*')
-#' head(eco, 20)
+#' tstat_eco <- textstat_context(toks, 'econom*')
+#' head(tstat_eco)
 #'
 #' # politics keywords
-#' pol <- char_keyness(toks, 'politi*')
-#' head(pol, 20)
+#' tstat_pol <- textstat_context(toks, 'politi*')
+#' head(tstat_pol)
 #' }
-char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
-                         case_insensitive = TRUE, window = 10, p = 0.001, min_count = 10,
+textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
+                         case_insensitive = TRUE, window = 10, min_count = 10,
                          remove_pattern = TRUE, ...) {
     if (!is.tokens(x))
         stop("x must be a tokens object\n", call. = FALSE)
@@ -470,10 +471,33 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     if (nfeat(tar) == 0)
         return(character())
     ref <- dfm_match(ref, featnames(tar))
-
     result <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))), ...)
+    colnames(result)[c(4, 5)] <- c("n_inside", "n_outside")
+    return(result)
+}
+
+#' @rdname textstat_context
+#' @export
+char_context <- function(x, ..., p = 0.001) {
+    result <- textstat_context(x, ...)
     result <- result[result$p < p,]
     return(result$feature)
+}
+
+#' @rdname textstat_context
+#' @export
+#' @examples
+#' \donttest{
+#' # economy keywords
+#' eco <- char_keyness(toks, 'econom*')
+#' head(eco, 20)
+#'
+#' # politics keywords
+#' pol <- char_keyness(toks, 'politi*')
+#' head(pol, 20)
+#' }
+char_keyness <- function(x, ..., p = 0.001) {
+    char_context(x, ..., p = p)
 }
 
 #' Seed words for Latent Semantci Analysis
