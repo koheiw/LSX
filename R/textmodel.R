@@ -449,8 +449,15 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 #' toks <- tokens_remove(toks, stopwords())
 #'
 #' # economy keywords
+#' eco <- char_context(toks, 'econom*')
+#' head(eco, 20)
+#'
 #' tstat_eco <- textstat_context(toks, 'econom*')
 #' head(tstat_eco)
+#'
+#' # politics keywords
+#' pol <- char_context(toks, 'politi*')
+#' head(pol, 20)
 #'
 #' # politics keywords
 #' tstat_pol <- textstat_context(toks, 'politi*')
@@ -463,26 +470,27 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
         stop("x must be a tokens object\n", call. = FALSE)
 
     # reference
-    ref <- dfm(tokens_remove(x, pattern, valuetype = valuetype,
-                             case_insensitive = case_insensitive,
-                             window = window))
+    y <- tokens_remove(x, pattern, valuetype = valuetype,
+                       case_insensitive = case_insensitive,
+                       window = window, padding = TRUE)
+    y <- dfm(y)
 
     # target
     x <- tokens_select(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
-                       window = window)
+                       window = window, padding = TRUE)
     if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
-
-    tar <- dfm_remove(dfm(x), pattern = "")
-    if (nfeat(tar) == 0)
+    x <- dfm(x)
+    if (identical(featnames(x), "")) # padding is used to avoid empty DFM
         warning("pattern is not found in the object\n", call. = FALSE)
-    tar <- dfm_trim(tar, min_termfreq = min_count)
-    if (nfeat(tar) == 0)
-        return(character())
-    ref <- dfm_match(ref, featnames(tar))
-    result <- textstat_keyness(as.dfm(rbind(colSums(tar), colSums(ref))), ...)
+
+    x <- dfm_trim(x, min_termfreq = min_count)
+    y <- dfm_match(y, featnames(x))
+
+    result <- textstat_keyness(as.dfm(rbind(colSums(x), colSums(y))), ...)
+    result <- subset(result, feature != "")
     colnames(result)[c(4, 5)] <- c("n_inside", "n_outside")
     return(result)
 }
@@ -497,16 +505,6 @@ char_context <- function(x, ..., p = 0.001) {
 
 #' @rdname textstat_context
 #' @export
-#' @examples
-#' \donttest{
-#' # economy keywords
-#' eco <- char_keyness(toks, 'econom*')
-#' head(eco, 20)
-#'
-#' # politics keywords
-#' pol <- char_keyness(toks, 'politi*')
-#' head(pol, 20)
-#' }
 char_keyness <- function(x, ..., p = 0.001) {
     char_context(x, ..., p = p)
 }

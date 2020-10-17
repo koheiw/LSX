@@ -38,13 +38,15 @@ test_that("char_keyness is working", {
 
 test_that("char_keyness removes multi-word target", {
 
-    feat_rp <- char_keyness(toks_test, phrase("united states"), "regex",
-                            min_count = 1, p = 0.05)
+    suppressWarnings({
+        feat_rp <- char_keyness(toks_test, phrase("united states"),
+                                min_count = 1, p = 0.05, window = 0)
+    })
     expect_identical(c("united", "states") %in% feat_rp,
                      c(FALSE, FALSE))
 
-    feat_kp <- char_keyness(toks_test, phrase("united states"), "regex",
-                            min_count = 1, p = 0.05, remove_pattern = FALSE)
+    feat_kp <- char_keyness(toks_test, phrase("united states"),
+                            min_count = 1, p = 0.05, , window = 0, remove_pattern = FALSE)
     expect_identical(c("united", "states") %in% feat_kp,
                      c(TRUE, TRUE))
 })
