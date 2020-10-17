@@ -58,21 +58,19 @@ toks <- tokens(corp, remove_punct = TRUE)
 toks <- tokens_remove(toks, stopwords())
 
 # economy keywords
+eco <- char_context(toks, 'econom*')
+head(eco, 20)
+
 tstat_eco <- textstat_context(toks, 'econom*')
 head(tstat_eco)
 
 # politics keywords
-tstat_pol <- textstat_context(toks, 'politi*')
-head(tstat_pol)
-}
-\donttest{
-# economy keywords
-eco <- char_keyness(toks, 'econom*')
-head(eco, 20)
+pol <- char_context(toks, 'politi*')
+head(pol, 20)
 
 # politics keywords
-pol <- char_keyness(toks, 'politi*')
-head(pol, 20)
+tstat_pol <- textstat_context(toks, 'politi*')
+head(tstat_pol)
 }
 }
 \seealso{

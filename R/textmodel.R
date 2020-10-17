@@ -473,22 +473,24 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     y <- tokens_remove(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
                        window = window, padding = FALSE)
-    y <- dfm(y)
+    y <- dfm(y, remove = "")
 
     # target
     x <- tokens_select(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
                        window = window, padding = FALSE)
+    if (!length(types(x)))
+        warning("pattern is not found in the object\n", call. = FALSE)
     if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
-    x <- dfm(x)
-    if (nfeat(x)) {
-        x <- dfm_trim(x, min_termfreq = min_count)
-        y <- dfm_match(y, featnames(x))
+    x <- dfm(x, remove = "")
+
+    x <- dfm_trim(x, min_termfreq = min_count)
+    y <- dfm_match(y, featnames(x))
+    if (sum(x) > 0) {
         result <- textstat_keyness(as.dfm(rbind(colSums(x), colSums(y))), ...)
     } else {
-        warning("pattern is not found in the object\n", call. = FALSE)
         result <- head(textstat_keyness(as.dfm(matrix(c(1, 0))), ...), 0) # dummy object
     }
     colnames(result)[c(4, 5)] <- c("n_inside", "n_outside")
