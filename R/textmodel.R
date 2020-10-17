@@ -187,9 +187,9 @@ check_terms <- function(terms, features) {
 }
 
 check_seeds <- function(seeds, features, verbose = FALSE) {
+
     seeds <- get_seeds(seeds)
-    seeds_weighted <- mapply(weight_seeds, names(seeds), unname(seeds) / length(seeds),
-                             MoreArgs = list(features), USE.NAMES = TRUE, SIMPLIFY = FALSE)
+    seeds_weighted <- weight_seeds(seeds, features)
 
     if (all(lengths(seeds_weighted) == 0))
         stop("No seed word is found in the dfm", call. = FALSE)
@@ -335,11 +335,22 @@ coefficients.textmodel_lss <- function(object, ...) {
 #' Internal function to generate equally-weighted seed set
 #'
 #' @keywords internal
-weight_seeds <- function(seed, weight, type) {
-    s <- unlist(pattern2fixed(seed, type, "glob", FALSE))
-    v <- rep(weight / length(s), length(s))
-    names(v) <- s
-    return(v)
+weight_seeds <- function(seeds, type) {
+    seeds_fix <- lapply(names(seeds), function(x) {
+        s <- unlist(pattern2fixed(x, type, "glob", FALSE))
+        if (is.null(s))
+            return(character())
+        return(s)
+    })
+    weight <- 1 / table(seeds > 0)
+    mapply(function(x, y) {
+              if (!length(y))
+                  return(numeric())
+              v <- unname(x * weight[as.character(x > 0)]) / length(y)
+              v <- rep(v, length(y))
+              names(v) <- y
+              return(v)
+           }, seeds, seeds_fix, SIMPLIFY = FALSE)
 }
 
 #' Prediction method for textmodel_lss

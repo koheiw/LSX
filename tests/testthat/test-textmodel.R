@@ -211,6 +211,8 @@ test_that("textmodel_lss works with glob patterns", {
     expect_equal(names(lss$seeds), names(seed))
     expect_equal(lengths(lss$seeds),
                  c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
+
+
 })
 
 test_that("textmodel_lss works with non-existent seeds", {
@@ -305,8 +307,42 @@ test_that("test smooth_lss", {
     expect_true(cor(dat_loess$se.fit, dat_locfit$se.fit) > 0.90)
 })
 
-test_that("test with single seed", {
+test_that("works with single seed", {
     expect_silent(cohesion(lss_test))
     expect_silent(strength(lss_test))
 })
 
+test_that("weight_seeds() works", {
+    expect_equal(
+        LSX:::weight_seeds(c("a*" = 1, "b*" = -1), c("aa", "aaa", "bb", "bbb")),
+        list("a*" = c("aa" = 0.5, "aaa" = 0.5),
+             "b*" = c("bb" = -0.5, "bbb" = -0.5))
+    )
+    expect_equal(
+        LSX:::weight_seeds(c("a*" = 1), c("aa", "aaa", "bb", "bbb")),
+        list("a*" = c("aa" = 0.5, "aaa" = 0.5))
+    )
+    expect_equal(
+        LSX:::weight_seeds(c("a*" = 1, "c*" = -1), c("aa", "aaa", "bb", "bbb")),
+        list("a*" = c("aa" = 0.5, "aaa" = 0.5),
+             "c*" = numeric())
+    )
+    expect_equal(
+        LSX:::weight_seeds(c("a*" = 1, "b*" = 1), c("aa", "aaa", "bb", "bbb")),
+        list("a*" = c("aa" = 0.25, "aaa" = 0.25),
+             "b*" = c("bb" = 0.25, "bbb" = 0.25))
+    )
+    expect_equal(
+        LSX:::weight_seeds(c("aa" = 1, "aaa" = 1, "bb" = 1), c("aa", "aaa", "bb", "bbb")),
+        list("aa" = c("aa" = 0.333),
+             "aaa" = c("aaa" = 0.333),
+             "bb" = c("bb" = 0.333)),
+        tolerance = 0.01
+    )
+    expect_equal(
+        LSX:::weight_seeds(c("aa" = 1, "aaa" = 1, "bb" = -1), c("aa", "aaa", "bb", "bbb")),
+        list("aa" = c("aa" = 0.5),
+             "aaa" = c("aaa" = 0.5),
+             "bb" = c("bb" = -1)),
+    )
+})
