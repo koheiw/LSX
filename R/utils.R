@@ -180,3 +180,17 @@ unused_dots <- function(...) {
     }
 }
 
+
+#' @export
+#' @method print textmodel_lss
+print.textmodel_lss <- function(x, ...) {
+  cat("\nCall:\n")
+  print(x$call)
+  cat("\n")
+  if (!is.null(x$seed)) {
+    cat("Seeds:\n", sep = "")
+    print(x$seed)
+  }
+  if (!is.null(x$k))
+    cat("K:", x$k, "\n\n")
+}
