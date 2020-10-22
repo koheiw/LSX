@@ -12,14 +12,14 @@ textplot_simil <- function(x, group = FALSE) {
 #' @export
 textplot_simil.textmodel_lss <- function(x, group = FALSE) {
 
-    if (!all(c("similarity", "seeds") %in% names(x)))
-        stop("Invalid textmodel_lss object")
+    if (is.null(x$similarity) || is.null(x$seeds_weighted))
+        stop("textplot_simil() does not work with dummy models")
 
     temp <- reshape2::melt(x$similarity, as.is = TRUE)
     names(temp) <- c("seed1", "seed2", "simil")
     if (group) {
-        seed <- rep(names(x$seeds), lengths(x$seeds))
-        names(seed) <- names(unlist(unname(x$seeds)))
+        seed <- rep(names(x$seeds_weighted), lengths(x$seeds_weighted))
+        names(seed) <- names(unlist(unname(x$seeds_weighted)))
         temp$seed1 <- seed[temp$seed1]
         temp$seed2 <- seed[temp$seed2]
         temp <- stats::aggregate(list(simil = temp$simil),
@@ -39,35 +39,6 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
         theme(axis.title.x = element_blank(),
               axis.title.y = element_blank(),
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-}
-
-#' Plot factors of latent semantic space
-#' @param x fitted textmodel_lss object
-#' @param sort sort factors by relevance if `TRUE`
-#' @export
-textplot_factor <- function(x, sort = TRUE) {
-    UseMethod("textplot_factor")
-}
-
-#' @method textplot_factor textmodel_lss
-#' @export
-#' @import grDevices
-textplot_factor.textmodel_lss <- function(x, sort = TRUE) {
-
-    if (!all(c("relevance", "importance") %in% names(x)))
-        stop("Invalid textmodel_lss object")
-
-    temp <- data.frame(relevance = x$relevance,
-                       importance = scale(x$importance, center = FALSE))
-    if (sort)
-        temp <- temp[order(temp$relevance, decreasing = TRUE),]
-    temp$factor <- seq_len(nrow(temp))
-
-    factor <- relevance <- importance <- color <- NULL
-    ggplot(temp, aes(x = factor, y = relevance)) +
-        geom_point(aes(size = importance), color = "black", alpha = 0.2) +
-        ylim(0, 1)
-
 }
 
 #' @export
