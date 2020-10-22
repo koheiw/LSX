@@ -67,8 +67,9 @@ divergence <- function(object) {
 #' @importFrom Matrix rowMeans rowSums tcrossprod tril
 cohesion <- function(object, bandwidth = 10) {
     stopifnot("textmodel_lss" %in% class(object))
-    seed <- unlist(unname(object$seeds))
-    cross <- tcrossprod(object$embedding[,names(seed), drop = FALSE])
+    seed <- unlist(unname(object$seeds_weighted))
+    embed <- as(object$embedding, "dgCMatrix")
+    cross <- tcrossprod(embed[,names(seed), drop = FALSE])
     cross <- tril(cross, -1)
     n <- seq_len(nrow(cross))
     h <- rowSums(abs(cross)) / (n - 1)
@@ -119,9 +120,10 @@ discrimination <- function(object, newdata = NULL) {
 strength <- function(object) {
     stopifnot("textmodel_lss" %in% class(object))
     term <- object$terms
-    seed <- unlist(unname(object$seeds))
-    sim <- proxyC::simil(object$embedding[object$slice,, drop = FALSE],
-                         object$embedding[object$slice, names(seed), drop = FALSE], margin = 2)
+    seed <- unlist(unname(object$seeds_weighted))
+    embed <- as(object$embedding, "dgCMatrix")
+    sim <- proxyC::simil(embed[object$slice,, drop = FALSE],
+                         embed[object$slice, names(seed), drop = FALSE], margin = 2)
     diag(sim) <- NA
     temp <- data.frame(seed = colnames(sim),
                        selected = log(1 / abs(colMeans(sim[term,,drop = FALSE], na.rm = TRUE))),
