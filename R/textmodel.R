@@ -112,7 +112,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                    frequency = colSums(x)[names(beta)],
                    terms = args$terms,
                    seeds = args$seeds,
-
+                   seeds_weighted = seeds,
                    embedding = embed,
                    similarity = simil$seed,
                    importance = import,
