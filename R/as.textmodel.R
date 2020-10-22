@@ -41,8 +41,9 @@ as.textmodel_lss.matrix <- function(x, seeds,
 
 #' @export
 #' @method as.textmodel_lss numeric
-as.textmodel_lss.numeric <- function(x) {
+as.textmodel_lss.numeric <- function(x, ...) {
 
+    unused_dots(...)
     stopifnot(!is.null(names(x)))
 
     result <- list(beta = x,
@@ -50,7 +51,9 @@ as.textmodel_lss.numeric <- function(x) {
                    data = NULL,
                    terms = names(x),
                    seeds = NULL,
+                   seeds_weighted = NULL,
                    embedding = NULL,
+                   similarity = NULL,
                    call = match.call())
     class(result) <- "textmodel_lss"
     return(result)
