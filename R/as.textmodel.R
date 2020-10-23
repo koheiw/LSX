@@ -1,11 +1,20 @@
-#' Create a dummy textmodel_lss object from numeric vector
-#' @param x a named numeric vector
+#' Create a dummy textmodel_lss object from external objects
+#'
+#' Create a dummy textmodel_lss object from a numeric vector or matrix.
+#' Pre-trained word-embedding models could used to perform LSS.
+#' @param x an external object to construct dummy a dummy [textmodel_lss]
+#'   object.
+#' @param ... arguments used to construct a dummy object. `seeds` must be given
+#'   when `x` is a dense matrix.
+#' @details A named numeric vector and a dense matrix are set to `beta` and
+#'   `embedding` respectively. A dense matrix should have column names for words.
 #' @keywords internal
 #' @export
 #' @examples
 #' v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
 #' lss <- as.textmodel_lss(v)
-#' @return a textmodel_lss object with `x` as polarity words
+#'
+#' @return a dummy [textmodel_lss] object
 as.textmodel_lss <- function(x, ...) {
     UseMethod("as.textmodel_lss")
 }
@@ -18,7 +27,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
                                     verbose = FALSE, ...) {
 
     unused_dots(...)
-    args <- list(terms = terms, seeds = seeds, ...)
+    args <- list(terms = terms, seeds = seeds)
     stopifnot(!is.null(colnames(x)))
 
     terms <- check_terms(terms, colnames(x))

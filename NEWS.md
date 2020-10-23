@@ -1,6 +1,10 @@
-# Changes in v0.9.3
+# Changes in v0.9.4
 
 * Experimental `textplot_factor()` has been removed.
+* `as.textmodel_lss()` takes a pre-trained word-embedding.
+
+# Changes in v0.9.3
+
 * Add `textstat_context()` and `char_context()` to replace `char_keyness()`.
 * Make the absolute sum of seed weight equal to 1.0 in both upper and lower ends. 
 * `textplot_terms()` takes glob patterns in character vector or a dictionary object.

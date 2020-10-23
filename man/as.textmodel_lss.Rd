@@ -2,21 +2,31 @@
 % Please edit documentation in R/as.textmodel.R
 \name{as.textmodel_lss}
 \alias{as.textmodel_lss}
-\title{Create a dummy textmodel_lss object from numeric vector}
+\title{Create a dummy textmodel_lss object from external objects}
 \usage{
 as.textmodel_lss(x, ...)
 }
 \arguments{
-\item{x}{a named numeric vector}
+\item{x}{an external object to construct dummy a dummy \link{textmodel_lss}
+object.}
+
+\item{...}{arguments used to construct a dummy object. \code{seeds} must be given
+when \code{x} is a dense matrix.}
 }
 \value{
-a textmodel_lss object with \code{x} as polarity words
+a dummy \link{textmodel_lss} object
 }
 \description{
-Create a dummy textmodel_lss object from numeric vector
+Create a dummy textmodel_lss object from a numeric vector or matrix.
+Pre-trained word-embedding models could used to perform LSS.
+}
+\details{
+A named numeric vector and a dense matrix are set to \code{beta} and
+\code{embedding} respectively. A dense matrix should have column names for words.
 }
 \examples{
 v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
 lss <- as.textmodel_lss(v)
+
 }
 \keyword{internal}
