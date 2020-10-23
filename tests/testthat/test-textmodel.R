@@ -191,7 +191,7 @@ test_that("include_data is working", {
     expect_identical(predict(lss), predict(lss_nd, newdata = dfmt))
 })
 
-test_that("predict.textmodel_lss retuns NA for empty documents", {
+test_that("predict.textmodel_lss computes scores correctly", {
 
     dfmt <- dfm_group(dfm(toks_test))
     dfmt[c(3, 10),] <- 0
@@ -206,6 +206,12 @@ test_that("predict.textmodel_lss retuns NA for empty documents", {
                  c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
     expect_equal(is.na(pred2$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
     expect_equal(pred2$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
+
+    load("../data/prediction_v0.93.RDA")
+    expect_equal(pred, pred_v093, tolerance = 0.0001)
+    expect_equal(pred2$fit, pred2_v093$fit, tolerance = 0.0001)
+    expect_equal(pred2$se.fit, pred2_v093$se.fit, tolerance = 0.0001)
+    expect_equal(pred2$n, pred2_v093$n)
 })
 
 
