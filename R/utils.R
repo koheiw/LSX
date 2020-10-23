@@ -272,9 +272,11 @@ print.textmodel_lss <- function(x, ...) {
   print(x$call)
   cat("\n")
   if (!is.null(x$seed)) {
-    cat("Seeds:\n", sep = "")
+    cat("Seeds words:\n", sep = "")
     print(x$seed)
   }
-  if (!is.null(x$k))
-    cat("K:", x$k, "\n\n")
+  if (!is.null(x$k)) {
+    cat("Hyperparameters: ", sep = "")
+    cat("k =", x$k, "\n")
+  }
 }
