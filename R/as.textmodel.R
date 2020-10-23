@@ -26,16 +26,16 @@ as.textmodel_lss.matrix <- function(x, seeds,
     simil <- get_simil(x, seeds, terms, seq_len(nrow(x)), simil_method)
     beta <- get_beta(simil$terms, seeds)
 
-    result <- list(beta = beta,
-                   k = nrow(x),
-                   data = NULL,
-                   terms = args$terms,
-                   seeds = args$seeds,
-                   seeds_weighted = seeds,
-                   embedding = x,
-                   similarity = simil$seed,
-                   call = match.call())
-    class(result) <- "textmodel_lss"
+    result <- build_lss(
+        beta = beta,
+        k = nrow(x),
+        terms = args$terms,
+        seeds = args$seeds,
+        seeds_weighted = seeds,
+        embedding = x,
+        similarity = simil$seed,
+        call = match.call()
+    )
     return(result)
 }
 
@@ -46,15 +46,10 @@ as.textmodel_lss.numeric <- function(x, ...) {
     unused_dots(...)
     stopifnot(!is.null(names(x)))
 
-    result <- list(beta = x,
-                   k = NULL,
-                   data = NULL,
-                   terms = names(x),
-                   seeds = NULL,
-                   seeds_weighted = NULL,
-                   embedding = NULL,
-                   similarity = NULL,
-                   call = match.call())
-    class(result) <- "textmodel_lss"
+    result <- build_lss(
+        beta = x,
+        terms = names(x),
+        call = match.call()
+    )
     return(result)
 }

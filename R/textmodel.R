@@ -107,18 +107,20 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         slice <- seq_len(slice)
     simil <- get_simil(embed, seeds, terms, slice, simil_method)
     beta <- get_beta(simil$terms, seeds)
-    result <- list(beta = beta,
-                   k = k, slice = slice,
-                   frequency = colSums(x)[names(beta)],
-                   terms = args$terms,
-                   seeds = args$seeds,
-                   seeds_weighted = seeds,
-                   embedding = embed,
-                   similarity = simil$seed,
-                   importance = import,
-                   concatenator = meta(x, field = "concatenator", type = "object"),
-                   call = match.call())
-
+    result <- build_lss(
+        beta = beta,
+        k = k,
+        slice = slice,
+        frequency = colSums(x)[names(beta)],
+        terms = args$terms,
+        seeds = args$seeds,
+        seeds_weighted = seeds,
+        embedding = embed,
+        similarity = simil$seed,
+        importance = import,
+        concatenator = meta(x, field = "concatenator", type = "object"),
+        call = match.call()
+    )
     if (include_data)
         result$data <- x
     class(result) <- "textmodel_lss"
@@ -158,15 +160,42 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     simil <- get_simil(embed, seeds, terms, seq_len(w), simil_method)
     beta <- get_beta(simil$terms, seeds)
 
-    result <- list(beta = beta,
-                   w = w,
-                   terms = args$terms,
-                   seeds = args$seeds,
-                   seeds_weighted = seeds,
-                   embedding = embed,
-                   similarity = simil$seed,
-                   call = match.call())
+    result <- build_lss(
+        beta = beta,
+        w = w,
+        terms = args$terms,
+        seeds = args$seeds,
+        seeds_weighted = seeds,
+        embedding = embed,
+        similarity = simil$seed,
+        call = match.call()
+    )
+    class(result) <- "textmodel_lss"
+    return(result)
+}
 
+build_lss <- function(...) {
+
+    args <- list(...)
+    result <- list(
+        data = NULL,
+        beta = NULL,
+        k = NULL,
+        slice = NULL,
+        frequency = NULL,
+        terms = NULL,
+        seeds = NULL,
+        seeds_weighted = NULL,
+        embedding = NULL,
+        similarity = NULL,
+        importance = NULL,
+        concatenator = "_",
+        dummy = FALSE,
+        call = NULL
+    )
+    for (m in intersect(names(result), names(args))) {
+        result[m] <- args[m]
+    }
     class(result) <- "textmodel_lss"
     return(result)
 }
@@ -369,7 +398,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
                     dimnames = list(NULL, names(object$beta)))
 
     if (is.null(newdata)) {
-        if (!any("data" == names(object)))
+        if (is.null(object$data))
             stop("LSS model includes no data, please supply a dfm using newdata.\n")
         data <- object$data
     } else {
