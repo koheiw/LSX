@@ -10,7 +10,7 @@ test_that("as.textmodel_lss works with matrix", {
     term <- c("decision", "instance", "universal", "foundations", "the")
     lss <- as.textmodel_lss(mat_test, seed, term)
     expect_equal(names(lss), names(LSX:::build_lss()))
-    expect_equal(dim(lss$embedding), dim(mat_test))
+    expect_equal(dim(lss$embedding), c(100, 7))
     pred <- predict(lss, dfmt_test)
     expect_equal(names(pred), rownames(dfmt_test))
     expect_false(any(is.na(pred)))

@@ -30,9 +30,15 @@ as.textmodel_lss.matrix <- function(x, seeds,
     args <- list(terms = terms, seeds = seeds)
     stopifnot(!is.null(colnames(x)))
 
-    terms <- check_terms(terms, colnames(x))
-    seeds <- check_seeds(seeds, colnames(x), verbose)
-    simil <- get_simil(x, seeds, terms, seq_len(nrow(x)), simil_method)
+    terms <- expand_terms(terms, colnames(x))
+    seeds <- expand_seeds(seeds, colnames(x), verbose)
+
+    term <- unlist(unname(terms))
+    seed <- names(unlist(unname(seeds)))
+    feat <- union(term, seed)
+
+    x <- x[,feat, drop = FALSE]
+    simil <- get_simil(x, seed, term, seq_len(nrow(x)), simil_method)
     beta <- get_beta(simil$terms, seeds)
 
     result <- build_lss(

@@ -159,12 +159,16 @@ test_that("calculation of fit and se.fit are correct", {
 
 })
 
-test_that("as.textmodel_lss works with only with single seed", {
+test_that("textmodel_lss works with only with single seed", {
     expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], terms = feat_test, k = 10))
     expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], terms = character(), k = 10))
     expect_silent(textmodel_lss(dfm(toks_test), seedwords("pos-neg")[1], k = 10))
 })
 
+test_that("terms work with glob", {
+    lss <- textmodel_lss(dfmt_test, seed, terms = "poli*", k = 300)
+    expect_true(all(stringi::stri_startswith_fixed(names(coef(lss)), "poli")))
+})
 
 test_that("simil_method works", {
 

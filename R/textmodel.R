@@ -85,8 +85,12 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     }
 
     engine <- match.arg(engine)
-    terms <- check_terms(terms, featnames(x))
-    seeds <- check_seeds(seeds, featnames(x), verbose)
+    terms <- expand_terms(terms, featnames(x))
+    seeds <- expand_seeds(seeds, featnames(x), verbose)
+
+    term <- unlist(unname(terms))
+    seed <- names(unlist(unname(seeds)))
+    feat <- union(term, seed)
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
         if (verbose)
@@ -94,6 +98,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         svd <- cache_svd(x, k, weight, engine, cache, ...)
         embed <- t(svd$v)
         colnames(embed) <- featnames(x)
+        embed <- embed[,feat, drop = FALSE]
         import <- svd$d
     }
     if (is.null(slice))
@@ -105,8 +110,10 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         stop("'slice' must be between 1 and k")
     if (length(slice) == 1)
         slice <- seq_len(slice)
-    simil <- get_simil(embed, seeds, terms, slice, simil_method)
+
+    simil <- get_simil(embed, seed, term, slice, simil_method)
     beta <- get_beta(simil$terms, seeds)
+
     result <- build_lss(
         beta = beta,
         k = k,
@@ -147,17 +154,22 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         .Deprecated(msg = "GloVe engine has been moved to from text2vec to rsparse.\n")
         engine <- "rsparse"
     }
-    engine <- match.arg(engine)
-    terms <- check_terms(terms, featnames(x))
-    seeds <- check_seeds(seeds, featnames(x), verbose)
+
+    terms <- expand_terms(terms, featnames(x))
+    seeds <- expand_seeds(seeds, featnames(x), verbose)
+
+    term <- unlist(unname(terms))
+    seed <- names(unlist(unname(seeds)))
+    feat <- union(term, seed)
 
     if (engine == "rsparse") {
         if (verbose)
             cat("Fitting GloVe model by rsparse...\n")
         embed <- cache_glove(x, w, cache, ...)
+        embed <- embed[,feat, drop = FALSE]
     }
 
-    simil <- get_simil(embed, seeds, terms, seq_len(w), simil_method)
+    simil <- get_simil(embed, seed, term, seq_len(w), simil_method)
     beta <- get_beta(simil$terms, seeds)
 
     result <- build_lss(
@@ -200,15 +212,16 @@ build_lss <- function(...) {
     return(result)
 }
 
-check_terms <- function(terms, features) {
+expand_terms <- function(terms, features) {
+
     if (is.null(terms))
         terms <- features
     if (!is.character(terms))
         stop("features must be a character vector\n", call. = FALSE)
-    intersect(terms, features)
+    pattern2fixed(terms, features, "glob", FALSE)
 }
 
-check_seeds <- function(seeds, features, verbose = FALSE) {
+expand_seeds <- function(seeds, features, verbose = FALSE) {
 
     seeds <- get_seeds(seeds)
     seeds_weighted <- weight_seeds(seeds, features)
@@ -223,15 +236,13 @@ check_seeds <- function(seeds, features, verbose = FALSE) {
     return(seeds_weighted)
 }
 
-get_simil <- function(embed, seeds, terms, slice, method = "cosine") {
-    seed <- unlist(unname(seeds))
+get_simil <- function(embed, seed, term, slice, method = "cosine") {
     embed <- as(embed, "dgCMatrix")
     simil <- as.matrix(proxyC::simil(embed[slice,,drop = FALSE],
-                                     embed[slice,names(seed),drop = FALSE],
+                                     embed[slice,seed,drop = FALSE],
                                      margin = 2, method = method))
-    list("terms" = simil[unlist(pattern2fixed(terms, rownames(simil), "glob", FALSE)),,drop = FALSE],
-         "seeds" = simil[rownames(simil) %in% names(seed),
-                         colnames(simil) %in% names(seed), drop = FALSE])
+    list("terms" = simil[term,, drop = FALSE],
+         "seeds" = simil[seed, seed, drop = FALSE])
 }
 
 get_beta <- function(simil, seeds) {
