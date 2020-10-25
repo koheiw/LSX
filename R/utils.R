@@ -74,27 +74,10 @@ cohesion <- function(object, bandwidth = 10) {
     n <- seq_len(nrow(cross))
     h <- rowSums(abs(cross)) / (n - 1)
     h[1] <- NA # no similarity for k = 1
-    temp <- data.frame(k = n, raw = log(h))
-    temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
-                                    bandwidth = bandwidth)$y
-    result <- list(
-      "overall" = c("selected" = mean(temp$raw[object$slice], na.rm = TRUE),
-                    "all" = mean(temp$raw, na.rm = TRUE)),
-      "component" = temp
-    )
-
-    # d <- tcrossprod(object$embedding[, f, drop = FALSE])
-    # d <- tril(d)
-    # h <- abs(rowMeans(band(d, -1, -1)))
-    # temp <- data.frame(k = seq_along(h), raw = log(h))
-    # temp$smoothed <- stats::ksmooth(temp$k, temp$raw, kernel = "normal",
-    #                                 bandwidth = bandwidth)$y
-    # result <- list(
-    #   "overall" = c("selected" = mean(temp$raw[object$s]),
-    #                 "all" = mean(temp$raw)),
-    #   "component" = temp
-    # )
-    class(result) <- "listof"
+    result <- data.frame(k = n, raw = log(h))
+    result$smoothed <- stats::ksmooth(
+      result$k, result$raw, kernel = "normal",
+      bandwidth = bandwidth)$y
     return(result)
 }
 
