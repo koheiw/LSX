@@ -282,6 +282,9 @@ test_that("slice argument is working", {
 })
 
 test_that("test smooth_lss", {
+
+    testthat::skip_on_cran() # avoid error on Ubuntu 18
+
     lss <- sample(1:10 / 100, size = 1000, replace = TRUE)
     date <- sample(seq(as.Date("2020-01-01"), as.Date("2020-12-31"), by = "1 day"),
                    size = 1000, replace = TRUE)
