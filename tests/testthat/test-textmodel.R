@@ -283,42 +283,32 @@ test_that("slice argument is working", {
 
 test_that("test smooth_lss", {
 
-    testthat::skip_on_cran() # avoid error on Ubuntu 18
-
-    lss <- sample(1:10 / 100, size = 1000, replace = TRUE)
-    date <- sample(seq(as.Date("2020-01-01"), as.Date("2020-12-31"), by = "1 day"),
-                   size = 1000, replace = TRUE)
-    char <- sample(letters, size = 1000, replace = TRUE)
-    expect_silent(smooth_lss(data.frame(fit = lss, date = date)))
+    dat <- docvars(dfmt_test)
+    dat$lss <- predict(lss_test)
+    dat$time <- as.Date(paste0(dat$Year, "-01-01"))
+    expect_silent(smooth_lss(dat, lss_var = "lss", date_var = "time"))
     expect_error(
-        smooth_lss(data.frame(score = lss, date = date)),
+        smooth_lss(dat),
         "fit does not exist in x"
     )
     expect_error(
-        smooth_lss(data.frame(fit = char, date = date)),
-        "fit must be a numeric column"
+        smooth_lss(smooth_lss(dat, lss_var = "President")),
+        "lss_var must be a numeric column"
     )
     expect_error(
-        smooth_lss(data.frame(fit = lss, published = date)),
+        smooth_lss(dat, lss_var = "lss"),
         "date does not exist in x"
     )
     expect_error(
-        smooth_lss(data.frame(fit = lss, date = char)),
-        "date must be a date column"
-    )
-    expect_silent(
-        smooth_lss(data.frame(score = lss, published = date),
-                   lss_var = "score", "date_var" = "published")
+        smooth_lss(dat, lss_var = "lss", date_var = "Year"),
+        "date_var must be a date column"
     )
 
-    dat_loess <- smooth_lss(data.frame(score = lss, published = date),
-                            lss_var = "score", "date_var" = "published",
+    dat_loess <- smooth_lss(dat, lss_var = "lss", date_var = "time",
                             engine = "loess")
-    dat_locfit <- smooth_lss(data.frame(score = lss, published = date),
-                             lss_var = "score", "date_var" = "published",
+    dat_locfit <- smooth_lss(dat, lss_var = "lss", date_var = "time",
                              engine = "locfit")
     expect_true(cor(dat_loess$fit, dat_locfit$fit) > 0.90)
-    expect_true(cor(dat_loess$se.fit, dat_locfit$se.fit) > 0.90)
 })
 
 test_that("works with single seed", {
