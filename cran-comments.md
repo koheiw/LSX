@@ -8,8 +8,8 @@
 
 ## Test environments
 
-* local KDE neon User Edition 5.13, R 3.5.2
-* local Windows 10, R 3.5
+* local KDE neon User Edition 5.13, R 4.0.3
+* local Windows 10, R 4.0.3
 * Github Actions Windows latest (release)
 * Github Actions MacOS latest (release)
 * Github Actions Linux 18.04 (release)
