@@ -31,9 +31,9 @@ projects:
 
 Please read my paper for the algorithm and methodology:
 
-  - Kohei Watanabe, forthcoming, “[Latent Semantic Scaling: A
-    Semisupervised Text Analysis Technique for New Domains and
-    Languages](https://blog.koheiw.net/wp-content/uploads/2020/10/LSS-09-PREPRINT.pdf)”,
+  - Kohei Watanabe, 2020, “[Latent Semantic Scaling: A Semisupervised
+    Text Analysis Technique for New Domains and
+    Languages](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976)”,
     *Communication Methods and Measures*.
 
 ## How to install
