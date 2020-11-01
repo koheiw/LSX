@@ -211,14 +211,14 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
 
   if (lss_var %in% names(x)) {
     if (!identical(class(x[[lss_var]]), "numeric"))
-      stop(lss_var, " must be a numeric column")
+      stop("lss_var must be a numeric column")
   } else {
     stop(lss_var, " does not exist in x")
   }
 
   if (date_var %in% names(x)) {
     if (!identical(class(x[[date_var]]), "Date"))
-      stop(date_var, " must be a date column")
+      stop("date_var must be a date column")
   } else {
     stop(date_var, " does not exist in x")
   }
