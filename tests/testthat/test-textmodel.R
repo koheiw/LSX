@@ -283,8 +283,10 @@ test_that("slice argument is working", {
 
 test_that("test smooth_lss", {
 
-    dat <- docvars(dfmt_test)
-    dat$lss <- predict(lss_test)
+    set.seed(1234)
+    dfmt <- dfm_sample(dfmt_test, size = 1000)
+    dat <- docvars(dfmt)
+    dat$lss <- predict(lss_test, newdata = dfmt)
     dat$time <- as.Date(paste0(dat$Year, "-01-01"))
     expect_silent(smooth_lss(dat, lss_var = "lss", date_var = "time"))
     expect_error(
