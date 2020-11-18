@@ -59,7 +59,8 @@ cohesion <- function(object, bandwidth = 10) {
     return(result)
 }
 
-#' @rdname discrimination
+#' Experimental function to test quality of seed words
+#' @param object a fitted `textmodel_lss`
 #' @export
 #' @keywords internal
 #' @importFrom Matrix rowMeans colMeans diag band
