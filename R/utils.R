@@ -38,28 +38,6 @@ diagnosys.corpus <- function(x, ...) {
     return(result)
 }
 
-#' Function to test quality of word vectors
-
-#' Computes similarity between and within seed words
-#'
-#' Gauge the quality of word vectors given know seed words by the computing
-#' similarities within and between antonyms.
-#' @param object a fitted `textmodel_lss`
-#' @export
-#' @keywords internal
-divergence <- function(object) {
-    .Deprecated("cohesion")
-    stopifnot("textmodel_lss" %in% class(object))
-    seed <- unlist(unname(object$seeds))
-    seed_sign <- sign(seed)
-    temp <- object$similarity[names(seed_sign), names(seed_sign)]
-    l <- tcrossprod(seed_sign) > 0
-    diag(l) <- NA
-    b <- mean(temp[!l], na.rm = TRUE) # between
-    w <- mean(temp[l], na.rm = TRUE) # within
-    c("within" = w, "between" = b, "diff" = w - b)
-}
-
 #' Computes cohesion of components of latent semantic analysis
 #' @param object a fitted `textmodel_lss`
 #' @param bandwidth size of window for smoothing
@@ -81,21 +59,6 @@ cohesion <- function(object, bandwidth = 10) {
     return(result)
 }
 
-
-#' Function to test quality of seed words
-#'
-#' Gauge seed words' ability to discriminate unit texts by computing kurtosis of
-#' document scores and terms weights.
-#' @export
-#' @keywords internal
-discrimination <- function(object, newdata = NULL) {
-    .Deprecated("cohesion")
-    stopifnot("textmodel_lss" %in% class(object))
-    p <- predict(object, newdata, rescaling = FALSE)
-    t <- e1071::kurtosis(coef(object), na.rm = TRUE)
-    d <- e1071::kurtosis(p, na.rm = TRUE)
-    c("document" = d, "term" = t)
-}
 #' @rdname discrimination
 #' @export
 #' @keywords internal
