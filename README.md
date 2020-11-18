@@ -15,22 +15,26 @@ semantic analysis and locates documents on a unidimensional scale
 I used LSS for large scale analysis of media content in several research
 projects:
 
+  - Kinoshita, Hiroko. 2020. [“A Quantitative Text Analysis Approach on
+    LGBTQ Issues in Contemporary
+    Indonesia”](https://so03.tci-thaijo.org/index.php/jpss/article/view/241133).
+    *Journal of Population and Social Studies*.
   - Yamao, Dai. 2020. [“Re-securitization as Evasion of Responsibility:
     A Quantitative Text Analysis of Refugee Crisis in Major Arabic
     Newspapers”](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130),
     *Journal of Population and Social Studies*.
-  - Watanabe, Kohei. 2017. “[Measuring News Bias: Russia’s Official News
+  - Watanabe, Kohei. 2017. [“Measuring News Bias: Russia’s Official News
     Agency ITAR-TASS’s Coverage of the Ukraine
-    Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)”,
+    Crisis”](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full),
     *European Journal Communication*.
-  - Watanabe, Kohei. 2017. “[The spread of the Kremlin’s narratives by a
+  - Watanabe, Kohei. 2017. [“The spread of the Kremlin’s narratives by a
     western news agency during the Ukraine
-    crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)”,
+    crisis”](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)",
     *Journal of International Communication*.
-  - Lankina, Tomila and Watanabe, Kohei. 2017. [‘Russian Spring’ or
+  - Lankina, Tomila and Watanabe, Kohei. 2017. [“‘Russian Spring’ or
     ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving
     Strategy in
-    Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)",
+    Ukraine”](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full),
     *Europe-Asia Studies*.
 
 Please read my paper for the algorithm and methodology:
