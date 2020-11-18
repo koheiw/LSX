@@ -15,23 +15,31 @@ semantic analysis and locates documents on a unidimensional scale
 I used LSS for large scale analysis of media content in several research
 projects:
 
-  - Kohei Watanabe, 2017. “[Measuring News Bias: Russia’s Official News
+  - Kinoshita, Hiroko. 2020. [“A Quantitative Text Analysis Approach on
+    LGBTQ Issues in Contemporary
+    Indonesia”](https://so03.tci-thaijo.org/index.php/jpss/article/view/241133).
+    *Journal of Population and Social Studies*.
+  - Yamao, Dai. 2020. [“Re-securitization as Evasion of Responsibility:
+    A Quantitative Text Analysis of Refugee Crisis in Major Arabic
+    Newspapers”](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130),
+    *Journal of Population and Social Studies*.
+  - Watanabe, Kohei. 2017. [“Measuring News Bias: Russia’s Official News
     Agency ITAR-TASS’s Coverage of the Ukraine
-    Crisis](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full)”,
+    Crisis”](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full),
     *European Journal Communication*.
-  - Kohei Watanabe, 2017. “[The spread of the Kremlin’s narratives by a
+  - Watanabe, Kohei. 2017. [“The spread of the Kremlin’s narratives by a
     western news agency during the Ukraine
-    crisis](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)”,
+    crisis”](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)",
     *Journal of International Communication*.
-  - Tomila Lankina and Kohei Watanabe. 2017. ["Russian Spring’ or
+  - Lankina, Tomila and Watanabe, Kohei. 2017. [“‘Russian Spring’ or
     ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving
     Strategy in
-    Ukraine](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full)",
+    Ukraine”](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full),
     *Europe-Asia Studies*.
 
 Please read my paper for the algorithm and methodology:
 
-  - Kohei Watanabe, 2020, “[Latent Semantic Scaling: A Semisupervised
+  - Watanabe, Kohei. 2020. “[Latent Semantic Scaling: A Semisupervised
     Text Analysis Technique for New Domains and
     Languages](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976)”,
     *Communication Methods and Measures*.
@@ -78,7 +86,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Reading cache file: lss_cache/svds_819846d785c15a7a.RDS
+    ## Reading cache file: lss_cache/svds_9876efc1e365cfd0.RDS
 
 ### Sentiment seed words
 
