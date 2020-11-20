@@ -79,7 +79,7 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
 #' @export
 char_context <- function(x, ..., p = 0.001) {
     result <- textstat_context(x, ...)
-    result <- result[result$p < p,]
+    result <- result[result[[2]] > 0 & result$p < p,]
     return(result$feature)
 }
 
