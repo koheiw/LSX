@@ -17,9 +17,27 @@ textstat_context(
   ...
 )
 
-char_context(x, ..., p = 0.001)
+char_context(
+  x,
+  pattern,
+  valuetype = c("glob", "regex", "fixed"),
+  case_insensitive = TRUE,
+  window = 10,
+  min_count = 10,
+  remove_pattern = TRUE,
+  p = 0.001
+)
 
-char_keyness(x, ..., p = 0.001)
+char_keyness(
+  x,
+  pattern,
+  valuetype = c("glob", "regex", "fixed"),
+  case_insensitive = TRUE,
+  window = 10,
+  min_count = 10,
+  remove_pattern = TRUE,
+  p = 0.001
+)
 }
 \arguments{
 \item{x}{a tokens object created by \code{\link[quanteda:tokens]{quanteda::tokens()}}.}
