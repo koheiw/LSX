@@ -15,15 +15,20 @@ test_that("textstat_context works", {
 
 test_that("char_context removes multi-word target", {
 
+    key_rp <- textstat_context(toks_test, phrase("united states"),
+                               min_count = 1, window = 0)
+    expect_identical(nrow(key_rp), 0)
     suppressWarnings({
         feat_rp <- char_context(toks_test, phrase("united states"),
                                 min_count = 1, p = 0.05, window = 0)
     })
-    expect_identical(c("united", "states") %in% feat_rp,
-                     c(FALSE, FALSE))
+    expect_identical(length(feat_rp), 0)
+
+    key_kp <- textstat_context(toks_test, phrase("united states"),
+                               min_count = 1, window = 0, remove_pattern = FALSE)
+    expect_identical(nrow(key_kp), 2)
 
     feat_kp <- char_keyness(toks_test, phrase("united states"),
-                            min_count = 1, p = 0.05, , window = 0, remove_pattern = FALSE)
-    expect_identical(c("united", "states") %in% feat_kp,
-                     c(TRUE, TRUE))
+                            min_count = 1, p = 0.05, window = 0, remove_pattern = FALSE)
+    expect_identical(feat_kp == "united")
 })

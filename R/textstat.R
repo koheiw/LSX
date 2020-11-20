@@ -77,15 +77,23 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
 
 #' @rdname textstat_context
 #' @export
-char_context <- function(x, ..., p = 0.001) {
-    result <- textstat_context(x, ...)
+char_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
+                         case_insensitive = TRUE, window = 10, min_count = 10,
+                         remove_pattern = TRUE, p = 0.001) {
+    result <- textstat_context(x, pattern = pattern, valuetype = valuetype,
+                               case_insensitive = case_insensitive, window = window,
+                               min_count = min_count, remove_pattern = remove_pattern)
     result <- result[result[[2]] > 0 & result$p < p,]
     return(result$feature)
 }
 
 #' @rdname textstat_context
 #' @export
-char_keyness <- function(x, ..., p = 0.001) {
-    char_context(x, ..., p = p)
+char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
+                         case_insensitive = TRUE, window = 10, min_count = 10,
+                         remove_pattern = TRUE, p = 0.001) {
+    char_context(x, pattern = pattern, valuetype = valuetype,
+                 case_insensitive = case_insensitive, window = window,
+                 min_count = min_count, remove_pattern = remove_pattern, p = p)
 }
 
