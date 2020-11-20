@@ -2,6 +2,7 @@
 
 ## Purpose
 
+- Fix bugs
 - Add several new functions
 - Update the description to link to the latest paper
 - Improve consistency in fitted objects
