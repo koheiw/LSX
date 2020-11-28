@@ -86,7 +86,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Reading cache file: lss_cache/svds_9876efc1e365cfd0.RDS
+    ## Writing cache file: lss_cache/svds_8db7aff46eb4a7f7.RDS
 
 ### Sentiment seed words
 
@@ -112,26 +112,26 @@ head(coef(lss), 20) # most positive words
 ```
 
     ##       shape      either    positive     several sustainable      monday 
-    ##  0.08100301  0.07610887  0.07287992  0.06497246  0.06489614  0.06481823 
+    ##  0.04050151  0.03805443  0.03643996  0.03248623  0.03244807  0.03240911 
     ##   expecting    emerging      decent   candidate challenging        york 
-    ##  0.06459612  0.06173428  0.06158674  0.05799429  0.05735492  0.05582258 
+    ##  0.03229806  0.03086714  0.03079337  0.02899715  0.02867746  0.02791129 
     ##        able        asia       thing  powerhouse        drag      argued 
-    ##  0.05575264  0.05545359  0.05467288  0.05454087  0.05430134  0.05425140 
+    ##  0.02787632  0.02772680  0.02733644  0.02727044  0.02715067  0.02712570 
     ##         aid       china 
-    ##  0.05280788  0.05269536
+    ##  0.02640394  0.02634768
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
     ##     actually      nothing        allow      cutting        grows       shrink 
-    ##  -0.07198187  -0.07241361  -0.07259483  -0.07389086  -0.07568230  -0.07626922 
+    ##  -0.03599093  -0.03620681  -0.03629741  -0.03694543  -0.03784115  -0.03813461 
     ## implications         debt policymakers    suggested    something     interest 
-    ##  -0.07767036  -0.07896652  -0.07970222  -0.08267444  -0.08549609  -0.08631343 
+    ##  -0.03883518  -0.03948326  -0.03985111  -0.04133722  -0.04274804  -0.04315672 
     ## unemployment    borrowing         hike         rate          rba        rates 
-    ##  -0.08879022  -0.09109017  -0.09224650  -0.09598675  -0.09672486  -0.09754047 
+    ##  -0.04439511  -0.04554508  -0.04612325  -0.04799337  -0.04836243  -0.04877024 
     ##          cut     negative 
-    ##  -0.11047689  -0.12472812
+    ##  -0.05523845  -0.06236406
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,
