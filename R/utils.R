@@ -16,7 +16,7 @@ diagnosys.character <- function(x, ...) {
 #' @import quanteda
 diagnosys.corpus <- function(x, ...) {
 
-    .Deprecated("quanteda::textstat_summary")
+    .Deprecated("quanteda.textstats::textstat_summary")
     dict <- dictionary(list(
         "number" = "\\p{N}",
         "punct" = "\\p{P}",

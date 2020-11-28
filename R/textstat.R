@@ -13,6 +13,7 @@
 #'   considered as collocations.
 #' @param remove_pattern if `TRUE`, keywords do not containe target words.
 #' @param ... additional arguments passed to [textstat_keyness()].
+#' @importFrom quanteda.textstats textstat_keyness
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples

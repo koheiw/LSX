@@ -62,7 +62,7 @@ when \code{engine} is "rsparse".}
 location cache files to be save.}
 
 \item{simil_method}{specifies method to compute similarity between features.
-The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is used
+The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is used
 otherwise.}
 
 \item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}},

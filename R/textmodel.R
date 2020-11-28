@@ -8,7 +8,7 @@
 #' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
 #'   when `engine` is "rsparse".
 #' @param simil_method specifies method to compute similarity between features.
-#'   The value is passed to [quanteda::textstat_simil()], "cosine" is used
+#'   The value is passed to [quanteda.textstats::textstat_simil()], "cosine" is used
 #'   otherwise.
 #' @param cache if `TRUE`, save retult of SVD for next execution with identical
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
