@@ -28,7 +28,12 @@ as.textmodel_lss.matrix <- function(x, seeds,
 
     unused_dots(...)
     args <- list(terms = terms, seeds = seeds)
-    stopifnot(!is.null(colnames(x)))
+    if (is.null(colnames(x)))
+        stop("x must have column names for features")
+    if (any(is.na(colnames(x))))
+        stop("x must not have NA in the column names")
+    if (any(is.na(x)))
+        stop("x must not have NA")
 
     terms <- expand_terms(terms, colnames(x))
     seeds <- expand_seeds(seeds, colnames(x), verbose)
@@ -59,7 +64,12 @@ as.textmodel_lss.matrix <- function(x, seeds,
 as.textmodel_lss.numeric <- function(x, ...) {
 
     unused_dots(...)
-    stopifnot(!is.null(names(x)))
+    if (is.null(names(x)))
+        stop("x must have names for features")
+    if (any(is.na(names(x))))
+        stop("x must not have NA in the names")
+    if (any(is.na(x)))
+        stop("x must not have NA")
 
     result <- build_lss(
         beta = x,
