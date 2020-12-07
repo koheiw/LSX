@@ -3,7 +3,7 @@ context("test as.textmodel_lss")
 mat_test <- readRDS("../data/matrix_embedding.RDS")
 toks_test <- readRDS("../data/tokens_test.RDS")
 feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
-dfmt_test <- dfm_group(dfm(toks_test))
+dfmt_test <- quanteda::dfm_group(quanteda::dfm(toks_test))
 
 test_that("as.textmodel_lss works with matrix", {
     seed <- as.seedwords(data_dictionary_sentiment)

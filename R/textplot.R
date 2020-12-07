@@ -41,13 +41,10 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 }
 
-#' @export
-#' @importFrom quanteda.textmodels textplot_scale1d
-quanteda.textmodels::textplot_scale1d
-
 #' @method textplot_scale1d textmodel_lss
 #' @export
 #' @noRd
+#' @importFrom quanteda.textmodels textplot_scale1d
 #' @import ggplot2
 textplot_scale1d.textmodel_lss <- function(x,
                                            margin = c("features", "documents"),
@@ -76,6 +73,7 @@ textplot_terms <- function(x, highlighted = NULL) {
 
 #' @method textplot_terms textmodel_lss
 #' @import ggplot2 ggrepel stringi
+#' @importFrom quanteda is.dictionary meta
 #' @export
 textplot_terms.textmodel_lss <- function(x, highlighted = NULL) {
 

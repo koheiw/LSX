@@ -33,4 +33,3 @@ NULL
 #' @name data_dictionary_ideology
 #' @docType data
 NULL
-

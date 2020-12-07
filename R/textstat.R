@@ -11,9 +11,10 @@
 #' @param p threshold for statistical significance of collocations.
 #' @param min_count minimum frequency of words within the window to be
 #'   considered as collocations.
-#' @param remove_pattern if `TRUE`, keywords do not containe target words.
+#' @param remove_pattern if `TRUE`, keywords do not contain target words.
 #' @param ... additional arguments passed to [textstat_keyness()].
 #' @importFrom quanteda.textstats textstat_keyness
+#' @importFrom quanteda is.tokens tokens_remove tokens_select dfm dfm_trim dfm_match featnames as.dfm
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
@@ -68,7 +69,7 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     x <- dfm_trim(x, min_termfreq = min_count)
     y <- dfm_match(y, featnames(x))
     if (sum(x) > 0) {
-        result <- textstat_keyness(as.dfm(rbind(colSums(x), colSums(y))), ...)
+        result <- textstat_keyness(as.dfm(rbind(quanteda::colSums(x), quanteda::colSums(y))), ...)
     } else {
         result <- head(textstat_keyness(as.dfm(matrix(c(1, 0))), ...), 0) # dummy object
     }
@@ -97,4 +98,3 @@ char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                  case_insensitive = case_insensitive, window = window,
                  min_count = min_count, remove_pattern = remove_pattern, p = p)
 }
-

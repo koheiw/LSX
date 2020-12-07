@@ -55,7 +55,7 @@ exact matching. See \code{\link[quanteda:valuetype]{quanteda::valuetype()}} for 
 \item{min_count}{minimum frequency of words within the window to be
 considered as collocations.}
 
-\item{remove_pattern}{if \code{TRUE}, keywords do not containe target words.}
+\item{remove_pattern}{if \code{TRUE}, keywords do not contain target words.}
 
 \item{...}{additional arguments passed to \code{\link[=textstat_keyness]{textstat_keyness()}}.}
 

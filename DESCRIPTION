@@ -10,11 +10,11 @@ License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
 Depends:
-    quanteda (>= 2.9),
-    quanteda.textmodels,
     methods,
     R (>= 3.5.0)
 Imports:
+    quanteda (>= 2.0),
+    quanteda.textmodels,
     quanteda.textstats,
     stringi,
     digest,
@@ -31,8 +31,6 @@ Imports:
     reshape2,
     e1071,
     locfit
-Remotes:
-    quanteda/quanteda@modularise
 Suggests:
     testthat
 RoxygenNote: 7.1.1
