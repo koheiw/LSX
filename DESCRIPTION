@@ -4,8 +4,9 @@ Title: Model for Semisupervised Text Analysis Based on Word Embeddings
 Date: 2020-12-07
 Version: 0.9.6
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre", "cph"))
-Description: A word embeddings-based semisupervised models for document scaling Watanabe (2020) <doi:10.1080/19312458.2020.1832976>.
+Description: A word embeddings-based semisupervised model for document scaling Watanabe (2020) <doi:10.1080/19312458.2020.1832976>.
     LSS allows users to analyze large and complex corpora on arbitrary dimensions with seed words exploiting efficiency of word embeddings (SVD, Glove).
+    It can generate word vectors on a users-provided corpus or incorporate a pre-trained word vectors.
 License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
@@ -35,3 +36,5 @@ Suggests:
     testthat
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
+BugReports: https://github.com/koheiw/LSX/issues
+
