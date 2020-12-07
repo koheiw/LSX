@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{as.seedwords}
 \alias{as.seedwords}
-\title{Convinient function to convert a list to seed words}
+\title{Convenient function to convert a list to seed words}
 \usage{
 as.seedwords(x, upper = 1, lower = 2)
 }
@@ -17,5 +17,5 @@ as.seedwords(x, upper = 1, lower = 2)
 named numeric vector for seed words with polarity scores
 }
 \description{
-Convinient function to convert a list to seed words
+Convenient function to convert a list to seed words
 }

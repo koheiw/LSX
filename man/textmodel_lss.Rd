@@ -57,12 +57,12 @@ and simulation.}
 \item{weight}{weighting scheme passed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}. Ignored
 when \code{engine} is "rsparse".}
 
-\item{cache}{if \code{TRUE}, save retult of SVD for next execution with identical
+\item{cache}{if \code{TRUE}, save result of SVD for next execution with identical
 \code{x} and settings. Use the \code{base::options(lss_cache_dir)} to change the
 location cache files to be save.}
 
 \item{simil_method}{specifies method to compute similarity between features.
-The value is passed to \code{\link[quanteda:textstat_simil]{quanteda::textstat_simil()}}, "cosine" is used
+The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is used
 otherwise.}
 
 \item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}},
@@ -79,7 +79,7 @@ A word embeddings-based semisupervised model for document scaling
 }
 \examples{
 \donttest{
-require(quanteda)
+library("quanteda")
 con <- url("https://bit.ly/2GZwLcN", "rb")
 corp <- readRDS(con)
 close(con)

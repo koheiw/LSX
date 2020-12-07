@@ -2,21 +2,21 @@
 #' @param x character or [corpus] object whose texts will be diagnosed
 #' @param ... extra arguments passed to `tokens`
 #' @export
+#' @importFrom quanteda corpus tokens texts
 diagnosys <- function(x, ...) {
     UseMethod("diagnosys")
 }
 
 #' @export
-#' @import quanteda
 diagnosys.character <- function(x, ...) {
     diagnosys(corpus(x), ...)
 }
 
 #' @export
-#' @import quanteda
+#' @importFrom quanteda dictionary ntoken dfm convert dfm_lookup
 diagnosys.corpus <- function(x, ...) {
 
-    .Deprecated("quanteda::textstat_summary")
+    .Deprecated("quanteda.textstats::textstat_summary")
     dict <- dictionary(list(
         "number" = "\\p{N}",
         "punct" = "\\p{P}",
@@ -89,7 +89,7 @@ strength <- function(object) {
     return(result)
 }
 
-#' Convinient function to convert a list to seed words
+#' Convenient function to convert a list to seed words
 #' @param x a list of characters vectors or a [dictionary][quanteda::dictionary] object
 #' @param upper numeric index or key for seed words for higher scores
 #' @param lower numeric index or key for seed words for lower scores
@@ -128,7 +128,7 @@ unused_dots <- function(...) {
 }
 
 
-#' Seed words for Latent Semantci Analysis
+#' Seed words for Latent Semantic Analysis
 #'
 #' @param type type of seed words currently only for sentiment (`sentiment`)
 #'   or political ideology (`ideology`).

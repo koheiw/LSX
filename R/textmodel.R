@@ -8,16 +8,15 @@
 #' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
 #'   when `engine` is "rsparse".
 #' @param simil_method specifies method to compute similarity between features.
-#'   The value is passed to [quanteda::textstat_simil()], "cosine" is used
+#'   The value is passed to [quanteda.textstats::textstat_simil()], "cosine" is used
 #'   otherwise.
-#' @param cache if `TRUE`, save retult of SVD for next execution with identical
+#' @param cache if `TRUE`, save result of SVD for next execution with identical
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
 #' @param engine choose SVD engine between [RSpectra::svds()], [irlba::irlba()],
 #'   and [rsparse::GloVe()].
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional argument passed to the SVD engine
-#' @import quanteda
 #' @export
 #' @references Watanabe, Kohei. "Measuring News Bias: Russia's Official News
 #'   Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
@@ -25,7 +24,7 @@
 #'   https://doi.org/10.1177/0267323117695735.
 #' @examples
 #' \donttest{
-#' require(quanteda)
+#' library("quanteda")
 #' con <- url("https://bit.ly/2GZwLcN", "rb")
 #' corp <- readRDS(con)
 #' close(con)
@@ -69,6 +68,7 @@ textmodel_lss <- function(x, ...) {
 #'   and simulation.
 #' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
 #' @method textmodel_lss dfm
+#' @importFrom quanteda featnames meta colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
@@ -137,6 +137,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 #' @rdname textmodel_lss
 #' @param w the size of word vectors. Only used when `x` is a `fcm`
 #' @method textmodel_lss fcm
+#' @importFrom quanteda featnames
 #' @export
 textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
                               weight = "count", cache = FALSE,
@@ -218,7 +219,7 @@ expand_terms <- function(terms, features) {
         terms <- features
     if (!is.character(terms))
         stop("features must be a character vector\n", call. = FALSE)
-    pattern2fixed(terms, features, "glob", FALSE)
+    quanteda::pattern2fixed(terms, features, "glob", FALSE)
 }
 
 expand_seeds <- function(seeds, features, verbose = FALSE) {
@@ -254,7 +255,7 @@ get_beta <- function(simil, seeds) {
 
 cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
 
-    x <- dfm_weight(x, scheme = weight)
+    x <- quanteda::dfm_weight(x, scheme = weight)
     hash <- digest::digest(list(as(x, "dgCMatrix"), k,
                                 utils::packageVersion("LSX")),
                            algo = "xxhash64")
@@ -371,7 +372,7 @@ coefficients.textmodel_lss <- function(object, ...) {
 #' @keywords internal
 weight_seeds <- function(seeds, type) {
     seeds_fix <- lapply(names(seeds), function(x) {
-        s <- unlist(pattern2fixed(x, type, "glob", FALSE))
+        s <- unlist(quanteda::pattern2fixed(x, type, "glob", FALSE))
         if (is.null(s))
             return(character())
         return(s)
@@ -401,12 +402,13 @@ weight_seeds <- function(seeds, type) {
 #' @keywords internal
 #' @import methods
 #' @importFrom Matrix Matrix rowSums t
+#' @importFrom quanteda is.dfm dfm_select
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
                                   density = FALSE, rescaling = TRUE, ...){
 
     beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,
-                    dimnames = list(NULL, names(object$beta)))
+                   dimnames = list(NULL, names(object$beta)))
 
     if (is.null(newdata)) {
         if (is.null(object$data))

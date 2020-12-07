@@ -2,10 +2,7 @@
 
 ## Purpose
 
-- Fix bugs
-- Add several new functions
-- Update the description to link to the latest paper
-- Improve consistency in fitted objects
+- Update to reflect new modular structure of quanteda + quanteda.textstats
 
 ## Test environments
 
@@ -20,8 +17,8 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 notes
+0 errors | 0 warnings | 0 notes
 
 ## Downstream dependencies
 
-There is no reverse dependency on this package.
+There are no reverse dependencies on this package.

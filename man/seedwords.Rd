@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{seedwords}
 \alias{seedwords}
-\title{Seed words for Latent Semantci Analysis}
+\title{Seed words for Latent Semantic Analysis}
 \usage{
 seedwords(type)
 }
@@ -11,7 +11,7 @@ seedwords(type)
 or political ideology (\code{ideology}).}
 }
 \description{
-Seed words for Latent Semantci Analysis
+Seed words for Latent Semantic Analysis
 }
 \examples{
 seedwords('sentiment')

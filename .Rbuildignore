@@ -10,3 +10,4 @@
 ^lss_cache
 ^tests/testthat/lss_cache
 ^cran-comments.md$
+^lss_cache
