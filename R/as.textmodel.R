@@ -37,11 +37,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
 
     seeds <- expand_seeds(seeds, colnames(x), verbose)
     seed <- names(unlist(unname(seeds)))
-    if (is.null(terms)) {
-        term <- colnames(x)
-    } else {
-        term <- unlist(expand_terms(terms, colnames(x)), use.names = FALSE)
-    }
+    term <- expand_terms(terms, colnames(x))
     feat <- union(term, seed)
 
     x <- x[,feat, drop = FALSE]

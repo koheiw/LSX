@@ -85,11 +85,9 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     }
 
     engine <- match.arg(engine)
-    terms <- expand_terms(terms, featnames(x))
     seeds <- expand_seeds(seeds, featnames(x), verbose)
-
-    term <- unlist(unname(terms))
     seed <- names(unlist(unname(seeds)))
+    term <- expand_terms(terms, featnames(x))
     feat <- union(term, seed)
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
@@ -156,11 +154,9 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         engine <- "rsparse"
     }
 
-    terms <- expand_terms(terms, featnames(x))
     seeds <- expand_seeds(seeds, featnames(x), verbose)
-
-    term <- unlist(unname(terms))
     seed <- names(unlist(unname(seeds)))
+    term <- expand_terms(terms, featnames(x))
     feat <- union(term, seed)
 
     if (engine == "rsparse") {
@@ -214,11 +210,13 @@ build_lss <- function(...) {
 }
 
 expand_terms <- function(terms, features) {
-    if (!is.character(features))
-        stop("features must be a character vector\n", call. = FALSE)
-    if (is.null(terms))
-        terms <- features
-    quanteda::pattern2fixed(terms, features, valuetype = "glob", case_insensitive = FALSE)
+    if (is.null(terms)) {
+        result <- features
+    } else {
+        temp <- quanteda::pattern2fixed(terms, features, valuetype = "glob", case_insensitive = FALSE)
+        result <- unlist(unname(temp))
+    }
+    return(result)
 }
 
 expand_seeds <- function(seeds, features, verbose = FALSE) {
