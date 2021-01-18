@@ -1,7 +1,10 @@
+# Changes in v0.9.7
+
+* Make `as.textmodel_lss.matrix()` more reliable
+
 # Changes in v0.9.6
 
-* Updated to reflect changes in **quanteda** (creation of
-  **quanteda.textstats**).
+* Updated to reflect changes in **quanteda** (creation of **quanteda.textstats**).
 
 # Changes in v0.9.4
 
