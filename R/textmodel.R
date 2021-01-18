@@ -214,12 +214,11 @@ build_lss <- function(...) {
 }
 
 expand_terms <- function(terms, features) {
-
+    if (!is.character(features))
+        stop("features must be a character vector\n", call. = FALSE)
     if (is.null(terms))
         terms <- features
-    if (!is.character(terms))
-        stop("features must be a character vector\n", call. = FALSE)
-    quanteda::pattern2fixed(terms, features, "glob", FALSE)
+    quanteda::pattern2fixed(terms, features, valuetype = "glob", case_insensitive = FALSE)
 }
 
 expand_seeds <- function(seeds, features, verbose = FALSE) {
