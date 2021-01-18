@@ -8,8 +8,8 @@
 #' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
 #'   when `engine` is "rsparse".
 #' @param simil_method specifies method to compute similarity between features.
-#'   The value is passed to [quanteda.textstats::textstat_simil()], "cosine" is used
-#'   otherwise.
+#'   The value is passed to [quanteda.textstats::textstat_simil()], "cosine" is
+#'   used otherwise.
 #' @param cache if `TRUE`, save result of SVD for next execution with identical
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
@@ -18,10 +18,13 @@
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional argument passed to the SVD engine
 #' @export
-#' @references Watanabe, Kohei. "Measuring News Bias: Russia's Official News
-#'   Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
-#'   Communication 32, no. 3 (March 20, 2017): 224–41.
-#'   https://doi.org/10.1177/0267323117695735.
+#' @references
+#' Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
+#'   Text Analysis Technique for New Domains and Languages", Communication
+#'   Methods and Measures. https://doi.org/10.1080/19312458.2020.1832976.
+#' Watanabe, Kohei. 2017. "Measuring News Bias: Russia's
+#'   Official News Agency ITAR-TASS' Coverage of the Ukraine Crisis" European
+#'   Journal of Communication. https://doi.org/10.1177/0267323117695735.
 #' @examples
 #' \donttest{
 #' library("quanteda")
