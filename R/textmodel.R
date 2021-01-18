@@ -214,7 +214,7 @@ build_lss <- function(...) {
 
 expand_terms <- function(terms, features) {
     if (is.null(terms)) {
-        result <- features
+        result <- setdiff(features, "")
     } else {
         temp <- quanteda::pattern2fixed(terms, features, valuetype = "glob", case_insensitive = FALSE)
         result <- unlist(unname(temp))
