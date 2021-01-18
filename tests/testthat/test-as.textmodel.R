@@ -26,6 +26,13 @@ test_that("as.textmodel_lss works with matrix", {
     pred2 <- predict(lss2, dfmt_test)
     expect_equal(names(pred2), rownames(dfmt_test))
     expect_false(any(is.na(pred2)))
+
+    # with special features
+    mat_special <- mat_test
+    colnames(mat_special)[1:2] <- c("", "*")
+    lss3 <- as.textmodel_lss(mat_special, seed)
+    expect_equal(sum("" == names(coef(lss3))), 0)
+    expect_equal(sum("*" == names(coef(lss3))), 1)
 })
 
 test_that("as.textmodel_lss errors with invalid columns", {
