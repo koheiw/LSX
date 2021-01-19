@@ -35,11 +35,9 @@ as.textmodel_lss.matrix <- function(x, seeds,
     if (any(is.na(x)))
         stop("x must not have NA")
 
-    terms <- expand_terms(terms, colnames(x))
     seeds <- expand_seeds(seeds, colnames(x), verbose)
-
-    term <- unlist(unname(terms))
     seed <- names(unlist(unname(seeds)))
+    term <- expand_terms(terms, colnames(x))
     feat <- union(term, seed)
 
     x <- x[,feat, drop = FALSE]

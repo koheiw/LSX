@@ -8,12 +8,31 @@ dfmt_test <- quanteda::dfm_group(quanteda::dfm(toks_test))
 test_that("as.textmodel_lss works with matrix", {
     seed <- as.seedwords(data_dictionary_sentiment)
     term <- c("decision", "instance", "universal", "foundations", "the")
-    lss <- as.textmodel_lss(mat_test, seed, term)
-    expect_equal(names(lss), names(LSX:::build_lss()))
-    expect_equal(dim(lss$embedding), c(100, 7))
-    pred <- predict(lss, dfmt_test)
-    expect_equal(names(pred), rownames(dfmt_test))
-    expect_false(any(is.na(pred)))
+
+    # with terms
+    lss1 <- as.textmodel_lss(mat_test, seed, term)
+    expect_equal(names(lss1), names(LSX:::build_lss()))
+    expect_equal(dim(lss1$embedding), c(100, 7))
+    expect_false(any(duplicated(names(coef(lss1)))))
+    pred1 <- predict(lss1, dfmt_test)
+    expect_equal(names(pred1), rownames(dfmt_test))
+    expect_false(any(is.na(pred1)))
+
+    # without terms
+    lss2 <- as.textmodel_lss(mat_test, seed)
+    expect_equal(names(lss2), names(LSX:::build_lss()))
+    expect_equal(dim(lss2$embedding), dim(mat_test))
+    expect_false(any(duplicated(names(coef(lss2)))))
+    pred2 <- predict(lss2, dfmt_test)
+    expect_equal(names(pred2), rownames(dfmt_test))
+    expect_false(any(is.na(pred2)))
+
+    # with special features
+    mat_special <- mat_test
+    colnames(mat_special)[1:2] <- c("", "*")
+    lss3 <- as.textmodel_lss(mat_special, seed)
+    expect_equal(sum("" == names(coef(lss3))), 0)
+    expect_equal(sum("*" == names(coef(lss3))), 1)
 })
 
 test_that("as.textmodel_lss errors with invalid columns", {
