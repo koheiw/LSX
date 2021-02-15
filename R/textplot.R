@@ -44,7 +44,7 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
 #' @method textplot_scale1d textmodel_lss
 #' @export
 #' @noRd
-#' @importFrom quanteda.textmodels textplot_scale1d
+#' @importFrom quanteda.textplots textplot_scale1d
 #' @import ggplot2
 textplot_scale1d.textmodel_lss <- function(x,
                                            margin = c("features", "documents"),

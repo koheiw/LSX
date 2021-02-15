@@ -17,6 +17,7 @@ Imports:
     quanteda (>= 2.0),
     quanteda.textmodels,
     quanteda.textstats,
+    quanteda.textplots,
     stringi,
     digest,
     Matrix,
