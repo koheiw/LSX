@@ -12,7 +12,7 @@
 #' @references Lankina, Tomila, and Kohei Watanabe. “'Russian Spring' or 'Spring
 #'   Betrayal'? The Media as a Mirror of Putin's Evolving Strategy in Ukraine.”
 #'   Europe-Asia Studies 69, no. 10 (2017): 1526–56.
-#'   https://doi.org/10.1080/09668136.2017.1397603.
+#'   \doi{10.1080/09668136.2017.1397603}.
 NULL
 
 #' Seed words for analysis of positive-negative sentiment
@@ -23,7 +23,7 @@ NULL
 #' @docType data
 #' @references Turney, P. D., & Littman, M. L. (2003). Measuring Praise and
 #'   Criticism: Inference of Semantic Orientation from Association. ACM Trans.
-#'   Inf. Syst., 21(4), 315–346. https://doi.org/10.1145/944012.944013
+#'   Inf. Syst., 21(4), 315–346. \doi{10.1145/944012.944013}
 NULL
 
 #' Seed words for analysis of left-right political ideology

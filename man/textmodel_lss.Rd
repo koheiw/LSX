@@ -62,8 +62,8 @@ when \code{engine} is "rsparse".}
 location cache files to be save.}
 
 \item{simil_method}{specifies method to compute similarity between features.
-The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is used
-otherwise.}
+The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is
+used otherwise.}
 
 \item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}},
 and \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
@@ -112,8 +112,10 @@ summary(lss_glov)
 
 }
 \references{
-Watanabe, Kohei. "Measuring News Bias: Russia's Official News
-Agency ITAR-TASS' Coverage of the Ukraine Crisis." European Journal of
-Communication 32, no. 3 (March 20, 2017): 224–41.
-https://doi.org/10.1177/0267323117695735.
+Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
+Text Analysis Technique for New Domains and Languages", Communication
+Methods and Measures. \doi{10.1080/19312458.2020.1832976}.
+Watanabe, Kohei. 2017. "Measuring News Bias: Russia's
+Official News Agency ITAR-TASS' Coverage of the Ukraine Crisis" European
+Journal of Communication. \doi{10.1177/0267323117695735}.
 }

@@ -21,10 +21,10 @@
 #' @references
 #' Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 #'   Text Analysis Technique for New Domains and Languages", Communication
-#'   Methods and Measures. https://doi.org/10.1080/19312458.2020.1832976.
+#'   Methods and Measures. \doi{10.1080/19312458.2020.1832976}.
 #' Watanabe, Kohei. 2017. "Measuring News Bias: Russia's
 #'   Official News Agency ITAR-TASS' Coverage of the Ukraine Crisis" European
-#'   Journal of Communication. https://doi.org/10.1177/0267323117695735.
+#'   Journal of Communication. \doi{10.1177/0267323117695735}.
 #' @examples
 #' \donttest{
 #' library("quanteda")
