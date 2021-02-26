@@ -1,6 +1,8 @@
 context("test textmodel_lss")
 
 require(quanteda)
+
+# create and save test object
 # corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
 # toks_test <- tokens(corp_sent, remove_punct = TRUE)
 # saveRDS(toks_test, "tests/data/tokens_test.RDS")
@@ -25,16 +27,13 @@ test_that("char_keyness is working", {
     feat2 <- char_keyness(toks_test, "America*", case_insensitive = FALSE, min_count = 1, p = 0.05)
     expect_identical(head(feat2, 100), feat_test)
 
-    # BREAKS
-    # feat3 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = TRUE)
-    # expect_identical(feat3, character())
+    feat3 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = TRUE)
+    expect_identical(feat3, character())
 
-    # BREAKS
-    # feat4 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = FALSE)
-    # expect_identical(feat4, character())
+    feat4 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = FALSE)
+    expect_identical(feat4, character())
 
-    # BREAKS
-    # expect_silent(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05))
+    expect_silent(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05))
 })
 
 test_that("textmodel_lss has all the attributes", {
