@@ -1,6 +1,7 @@
 # Changes in v0.9.7
 
-* Make `as.textmodel_lss.matrix()` more reliable
+* Make `as.textmodel_lss.matrix()` more reliable.
+* Remove **quanteda.textplots** from dependencies. 
 
 # Changes in v0.9.6
 
@@ -8,7 +9,7 @@
 
 # Changes in v0.9.4
 
-* Fix `char_context()` to always return more frequent words in context 
+* Fix `char_context()` to always return more frequent words in context. 
 * Experimental `textplot_factor()` has been removed.
 * `as.textmodel_lss()` takes a pre-trained word-embedding.
 
