@@ -121,7 +121,8 @@ test_that("data object is valid", {
 test_that("calculation of fit and se.fit are correct", {
 
     lss <- as.textmodel_lss(c("a" = 0.1, "b" = 0.1, "c" = 0.3))
-    dfmt <- dfm(c("a a a", "a b", "a a b c c d e"))
+    toks <- tokens(c("a a a", "a b", "a a b c c d e"))
+    dfmt <- dfm(toks)
     pred <- predict(lss, newdata = dfmt, se.fit = TRUE, rescaling = FALSE)
 
     expect_equal(pred$fit[1], c(text1 = 0.10))
