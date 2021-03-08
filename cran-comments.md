@@ -2,7 +2,8 @@
 
 ## Purpose
 
-- Update to reflect new modular structure of quanteda + quanteda.textstats
+- Update to reflect new modular structure of quanteda and quanteda.textstats
+- Remove quanteda.textmodels from dependencies
 
 ## Test environments
 
@@ -12,12 +13,10 @@
 * Github Actions MacOS latest (release)
 * Github Actions Linux 18.04 (release)
 * Github Actions Linux 18.04 (devel)
-* Rhub Solaris 10 (release)
-* Rhub Solaris 10 ODS (release)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 notes
 
 ## Downstream dependencies
 
