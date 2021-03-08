@@ -335,8 +335,6 @@ get_seeds <- function(seeds) {
 #' @noRd
 #' @importFrom stats coef
 #' @importFrom utils head
-#' @importFrom quanteda.textmodels as.coefficients_textmodel
-#' @importFrom quanteda.textmodels as.summary.textmodel
 #' @method summary textmodel_lss
 summary.textmodel_lss <- function(object, n = 30L, ...) {
     result <- list(
