@@ -14,7 +14,7 @@
 #' @param remove_pattern if `TRUE`, keywords do not contain target words.
 #' @param ... additional arguments passed to [textstat_keyness()].
 #' @importFrom quanteda.textstats textstat_keyness
-#' @importFrom quanteda is.tokens tokens_remove tokens_select dfm dfm_trim dfm_match featnames as.dfm
+#' @importFrom quanteda is.tokens tokens_remove tokens_select dfm dfm_trim dfm_match featnames as.dfm dfm_remove
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
@@ -55,7 +55,7 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     y <- tokens_remove(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
                        window = window, padding = FALSE)
-    y <- dfm(y, remove = "")
+    y <- dfm_remove(dfm(y), "")
 
     # target
     x <- tokens_select(x, pattern, valuetype = valuetype,
@@ -64,7 +64,7 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
-    x <- dfm(x, remove = "")
+    x <- dfm_remove(dfm(x), "")
 
     x <- dfm_trim(x, min_termfreq = min_count)
     y <- dfm_match(y, featnames(x))
