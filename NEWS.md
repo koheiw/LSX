@@ -1,3 +1,7 @@
+# Changes in v0.9.8
+
+* Stop using functions and arguments deprecated in quanteda v3.0.0.
+
 # Changes in v0.9.7
 
 * Make `as.textmodel_lss.matrix()` more reliable.
