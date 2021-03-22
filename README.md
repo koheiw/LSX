@@ -15,23 +15,23 @@ semantic analysis and locates documents on a unidimensional scale
 I used LSS for large scale analysis of media content in several research
 projects:
 
-  - Kinoshita, Hiroko. 2020. [“A Quantitative Text Analysis Approach on
+-   Kinoshita, Hiroko. 2020. [“A Quantitative Text Analysis Approach on
     LGBTQ Issues in Contemporary
     Indonesia”](https://so03.tci-thaijo.org/index.php/jpss/article/view/241133).
     *Journal of Population and Social Studies*.
-  - Yamao, Dai. 2020. [“Re-securitization as Evasion of Responsibility:
+-   Yamao, Dai. 2020. [“Re-securitization as Evasion of Responsibility:
     A Quantitative Text Analysis of Refugee Crisis in Major Arabic
     Newspapers”](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130),
     *Journal of Population and Social Studies*.
-  - Watanabe, Kohei. 2017. [“Measuring News Bias: Russia’s Official News
+-   Watanabe, Kohei. 2017. [“Measuring News Bias: Russia’s Official News
     Agency ITAR-TASS’s Coverage of the Ukraine
     Crisis”](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full),
     *European Journal Communication*.
-  - Watanabe, Kohei. 2017. [“The spread of the Kremlin’s narratives by a
+-   Watanabe, Kohei. 2017. [“The spread of the Kremlin’s narratives by a
     western news agency during the Ukraine
     crisis”](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)",
     *Journal of International Communication*.
-  - Lankina, Tomila and Watanabe, Kohei. 2017. [“‘Russian Spring’ or
+-   Lankina, Tomila and Watanabe, Kohei. 2017. [“‘Russian Spring’ or
     ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving
     Strategy in
     Ukraine”](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full),
@@ -39,7 +39,7 @@ projects:
 
 Please read my paper for the algorithm and methodology:
 
-  - Watanabe, Kohei. 2020. “[Latent Semantic Scaling: A Semisupervised
+-   Watanabe, Kohei. 2020. “[Latent Semantic Scaling: A Semisupervised
     Text Analysis Technique for New Domains and
     Languages](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976)”,
     *Communication Methods and Measures*.
@@ -87,7 +87,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_8db7aff46eb4a7f7.RDS
+    ## Writing cache file: lss_cache/svds_0d423b4ea615ab8a.RDS
 
 ### Sentiment seed words
 
@@ -112,27 +112,27 @@ to seed words.
 head(coef(lss), 20) # most positive words
 ```
 
-    ##       shape      either    positive     several sustainable      monday 
-    ##  0.04050151  0.03805443  0.03643996  0.03248623  0.03244807  0.03240911 
-    ##   expecting    emerging      decent   candidate challenging        york 
-    ##  0.03229806  0.03086714  0.03079337  0.02899715  0.02867746  0.02791129 
-    ##        able        asia       thing  powerhouse        drag      argued 
-    ##  0.02787632  0.02772680  0.02733644  0.02727044  0.02715067  0.02712570 
-    ##         aid       china 
-    ##  0.02640394  0.02634768
+    ##       shape    positive sustainable   expecting    emerging      decent 
+    ##  0.08100301  0.07287992  0.06489614  0.06459612  0.06173428  0.06158674 
+    ## challenging        asia  powerhouse        drag      argued       china 
+    ##  0.05735492  0.05545359  0.05454087  0.05430134  0.05425140  0.05269536 
+    ##         hit       stock   weakening consultancy cooperation  principles 
+    ##  0.05213953  0.05177975  0.05153202  0.05108261  0.05068110  0.04953984 
+    ##     markets       larry 
+    ##  0.04940963  0.04937380
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
-    ##     actually      nothing        allow      cutting        grows       shrink 
-    ##  -0.03599093  -0.03620681  -0.03629741  -0.03694543  -0.03784115  -0.03813461 
-    ## implications         debt policymakers    suggested    something     interest 
-    ##  -0.03883518  -0.03948326  -0.03985111  -0.04133722  -0.04274804  -0.04315672 
+    ##       yellen    reduction       shocks         rise      cutting        grows 
+    ##  -0.06807648  -0.06932724  -0.06945467  -0.07106325  -0.07389086  -0.07568230 
+    ##       shrink implications         debt policymakers    suggested     interest 
+    ##  -0.07626922  -0.07767036  -0.07896652  -0.07970222  -0.08267444  -0.08631343 
     ## unemployment    borrowing         hike         rate          rba        rates 
-    ##  -0.04439511  -0.04554508  -0.04612325  -0.04799337  -0.04836243  -0.04877024 
+    ##  -0.08879022  -0.09109017  -0.09224650  -0.09598675  -0.09672486  -0.09754047 
     ##          cut     negative 
-    ##  -0.05523845  -0.06236406
+    ##  -0.11047689  -0.12472812
 
 This plot shows that frequent words (“said”, “people”, “also”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,
@@ -158,7 +158,7 @@ newspaper’s sentiment became less stable, although it became close to
 neutral (overall mean) on the day of voting (broken line).
 
 ``` r
-dfmt <- dfm(corp)
+dfmt <- dfm_group(dfmt_sent)
 
 # predict sentiment scores
 pred <- as.data.frame(predict(lss, se.fit = TRUE, newdata = dfmt))

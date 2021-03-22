@@ -105,7 +105,7 @@ textplot_terms(lss,
 In the plots, circles indicate sentiment of individual news articles and lines are their local average (solid line) with a confidence band (dotted lines). According to the plot, economic sentiment in the Guardian news stories became negative from February to April, but it become more positive in April. As the referendum approaches, the newspaper's sentiment became less stable, although it became close to neutral (overall mean) on the day of voting (broken line).
 
 ```{r trend}
-dfmt <- dfm(corp)
+dfmt <- dfm_group(dfmt_sent)
 
 # predict sentiment scores
 pred <- as.data.frame(predict(lss, se.fit = TRUE, newdata = dfmt))
