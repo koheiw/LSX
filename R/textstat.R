@@ -55,7 +55,7 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     y <- tokens_remove(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
                        window = window, padding = FALSE)
-    y <- dfm_remove(dfm(y), "")
+    y <- dfm(tokens_remove(y, ""))
 
     # target
     x <- tokens_select(x, pattern, valuetype = valuetype,
@@ -64,7 +64,7 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
-    x <- dfm_remove(dfm(x), "")
+    x <- dfm(tokens_remove(x, ""))
 
     x <- dfm_trim(x, min_termfreq = min_count)
     y <- dfm_match(y, featnames(x))
