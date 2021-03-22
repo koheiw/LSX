@@ -64,7 +64,8 @@ toks_sent <- corp %>%
     tokens(remove_punct = TRUE) %>% 
     tokens_remove(stopwords("en"), padding = TRUE)
 dfmt_sent <- toks_sent %>% 
-    dfm(remove = "") %>% 
+    dfm() %>%
+    dfm_remove("") %>% 
     dfm_select("^\\p{L}+$", valuetype = "regex", min_nchar = 2) %>% 
     dfm_trim(min_termfreq = 5)
 
