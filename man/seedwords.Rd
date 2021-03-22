@@ -19,5 +19,5 @@ seedwords('sentiment')
 \references{
 Turney, P. D., & Littman, M. L. (2003). Measuring Praise and
 Criticism: Inference of Semantic Orientation from Association. ACM Trans.
-Inf. Syst., 21(4), 315–346. https://doi.org/10.1145/944012.944013
+Inf. Syst., 21(4), 315–346. \doi{10.1145/944012.944013}
 }

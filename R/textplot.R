@@ -41,28 +41,6 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 }
 
-#' @method textplot_scale1d textmodel_lss
-#' @export
-#' @noRd
-#' @importFrom quanteda.textmodels textplot_scale1d
-#' @import ggplot2
-textplot_scale1d.textmodel_lss <- function(x,
-                                           margin = c("features", "documents"),
-                                           doclabels = NULL,
-                                           sort = TRUE,
-                                           groups = NULL,
-                                           highlighted = NULL,
-                                           alpha = 0.7,
-                                           highlighted_color = "black") {
-    .Deprecated("textplot_terms")
-    margin <- match.arg(margin)
-    if (margin == "documents") {
-        stop("There is no document margin in a LSS model.")
-    } else if (margin == "features") {
-        textplot_terms(x, highlighted = highlighted)
-    }
-}
-
 #' Plot polarity scores of words
 #' @param x fitted textmodel_lss object
 #' @param highlighted [quanteda::pattern] to specify words to highlight

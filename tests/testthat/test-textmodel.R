@@ -1,6 +1,8 @@
 context("test textmodel_lss")
 
 require(quanteda)
+
+# create and save test object
 # corp_sent <- corpus_reshape(data_corpus_inaugural, "sentence")
 # toks_test <- tokens(corp_sent, remove_punct = TRUE)
 # saveRDS(toks_test, "tests/data/tokens_test.RDS")
@@ -32,7 +34,6 @@ test_that("char_keyness is working", {
     expect_identical(feat4, character())
 
     expect_silent(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05))
-
 })
 
 test_that("textmodel_lss has all the attributes", {
@@ -120,7 +121,8 @@ test_that("data object is valid", {
 test_that("calculation of fit and se.fit are correct", {
 
     lss <- as.textmodel_lss(c("a" = 0.1, "b" = 0.1, "c" = 0.3))
-    dfmt <- dfm(c("a a a", "a b", "a a b c c d e"))
+    toks <- tokens(c("a a a", "a b", "a a b c c d e"))
+    dfmt <- dfm(toks)
     pred <- predict(lss, newdata = dfmt, se.fit = TRUE, rescaling = FALSE)
 
     expect_equal(pred$fit[1], c(text1 = 0.10))
