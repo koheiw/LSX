@@ -100,7 +100,9 @@ char_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
 char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                          case_insensitive = TRUE, window = 10, min_count = 10,
                          remove_pattern = TRUE, p = 0.001, n = 1, skip = 0) {
+    .Deprecated(msg = "char_keyness() is deprecated. Use char_context() instead.")
     char_context(x, pattern = pattern, valuetype = valuetype,
                  case_insensitive = case_insensitive, window = window,
-                 min_count = min_count, remove_pattern = remove_pattern, p = p)
+                 min_count = min_count, remove_pattern = remove_pattern, p = p,
+                 n = n, skip = skip)
 }
