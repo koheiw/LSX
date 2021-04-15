@@ -14,7 +14,8 @@
 #' @param remove_pattern if `TRUE`, keywords do not contain target words.
 #' @param ... additional arguments passed to [textstat_keyness()].
 #' @importFrom quanteda.textstats textstat_keyness
-#' @importFrom quanteda is.tokens tokens_remove tokens_select dfm dfm_trim dfm_match featnames as.dfm dfm_remove
+#' @importFrom quanteda is.tokens tokens_remove tokens_select tokens_ngrams dfm
+#'   dfm_trim dfm_match featnames as.dfm dfm_remove
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
@@ -26,7 +27,7 @@
 #' close(con)
 #' corp <- corpus_reshape(corp, 'sentences')
 #' toks <- tokens(corp, remove_punct = TRUE)
-#' toks <- tokens_remove(toks, stopwords())
+#' toks <- tokens_remove(toks, stopwords("en"))
 #'
 #' # economy keywords
 #' eco <- char_context(toks, 'econom*')
@@ -45,7 +46,7 @@
 #' }
 textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                              case_insensitive = TRUE, window = 10, min_count = 10,
-                             remove_pattern = TRUE, ...) {
+                             remove_pattern = TRUE, n = 1, skip = 0, ...) {
 
     valuetype <- match.arg(valuetype)
     if (!is.tokens(x))
@@ -55,6 +56,8 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     y <- tokens_remove(x, pattern, valuetype = valuetype,
                        case_insensitive = case_insensitive,
                        window = window, padding = FALSE)
+    if (any(n > 1))
+        y <- tokens_ngrams(y, n = n, skip = skip)
     y <- dfm(tokens_remove(y, ""))
 
     # target
@@ -64,6 +67,8 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
     if (remove_pattern)
         x <- tokens_remove(x, pattern, valuetype = valuetype,
                            case_insensitive = case_insensitive)
+    if (any(n > 1))
+        x <- tokens_ngrams(x, n = n, skip = skip)
     x <- dfm(tokens_remove(x, ""))
 
     x <- dfm_trim(x, min_termfreq = min_count)
@@ -81,10 +86,11 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
 #' @export
 char_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                          case_insensitive = TRUE, window = 10, min_count = 10,
-                         remove_pattern = TRUE, p = 0.001) {
+                         remove_pattern = TRUE, p = 0.001, n = 1, skip = 0) {
     result <- textstat_context(x, pattern = pattern, valuetype = valuetype,
                                case_insensitive = case_insensitive, window = window,
-                               min_count = min_count, remove_pattern = remove_pattern)
+                               min_count = min_count, remove_pattern = remove_pattern,
+                               n = n, skip = skip)
     result <- result[result[[2]] > 0 & result$p < p,]
     return(result$feature)
 }
@@ -93,7 +99,7 @@ char_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
 #' @export
 char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                          case_insensitive = TRUE, window = 10, min_count = 10,
-                         remove_pattern = TRUE, p = 0.001) {
+                         remove_pattern = TRUE, p = 0.001, n = 1, skip = 0) {
     char_context(x, pattern = pattern, valuetype = valuetype,
                  case_insensitive = case_insensitive, window = window,
                  min_count = min_count, remove_pattern = remove_pattern, p = p)
