@@ -8,7 +8,7 @@ require(quanteda)
 # saveRDS(toks_test, "tests/data/tokens_test.RDS")
 
 toks_test <- readRDS("../data/tokens_test.RDS")
-feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
+feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
 
 seed <- as.seedwords(data_dictionary_sentiment)
@@ -18,22 +18,22 @@ lss_test_nd <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
                              include_data = FALSE)
 lss_test_ss <- textmodel_lss(dfmt_test, seed[1], terms = feat_test, k = 300)
 
-test_that("char_keyness is working", {
+test_that("char_context is working", {
 
     expect_identical(length(feat_test), 100L)
-    feat1 <- char_keyness(toks_test, "america.*", "regex", min_count = 1, p = 0.05)
+    feat1 <- char_context(toks_test, "america.*", "regex", min_count = 1, p = 0.05)
     expect_identical(head(feat1, 100), feat_test)
 
-    feat2 <- char_keyness(toks_test, "America*", case_insensitive = FALSE, min_count = 1, p = 0.05)
+    feat2 <- char_context(toks_test, "America*", case_insensitive = FALSE, min_count = 1, p = 0.05)
     expect_identical(head(feat2, 100), feat_test)
 
-    feat3 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = TRUE)
+    feat3 <- char_context(toks_test, "america*", min_count = 1000, remove_pattern = TRUE)
     expect_identical(feat3, character())
 
-    feat4 <- char_keyness(toks_test, "america*", min_count = 1000, remove_pattern = FALSE)
+    feat4 <- char_context(toks_test, "america*", min_count = 1000, remove_pattern = FALSE)
     expect_identical(feat4, character())
 
-    expect_silent(char_keyness(toks_test, "xxxxx", min_count = 1, p = 0.05))
+    expect_silent(char_context(toks_test, "xxxxx", min_count = 1, p = 0.05))
 })
 
 test_that("textmodel_lss has all the attributes", {
@@ -194,11 +194,11 @@ test_that("predict.textmodel_lss computes scores correctly", {
     expect_equal(is.na(pred2$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
     expect_equal(pred2$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
 
-    load("../data/prediction_v0.93.RDA")
-    expect_equal(pred, pred_v093, tolerance = 0.0001)
-    expect_equal(pred2$fit, pred2_v093$fit, tolerance = 0.0001)
-    expect_equal(pred2$se.fit, pred2_v093$se.fit, tolerance = 0.0001)
-    expect_equal(pred2$n, pred2_v093$n)
+    load("../data/prediction_v0.95.RDA")
+    expect_equal(pred, pred_v095, tolerance = 0.0001)
+    expect_equal(pred2$fit, pred2_v095$fit, tolerance = 0.0001)
+    expect_equal(pred2$se.fit, pred2_v095$se.fit, tolerance = 0.0001)
+    expect_equal(pred2$n, pred2_v095$n)
 })
 
 
