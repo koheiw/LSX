@@ -29,7 +29,26 @@ test_that("char_context removes multi-word target", {
                                min_count = 1, window = 0, remove_pattern = FALSE)
     expect_equal(nrow(key_kp), 2)
 
-    feat_kp <- char_keyness(toks_test, phrase("united states"),
+    feat_kp <- char_context(toks_test, phrase("united states"),
                             min_count = 1, p = 0.05, window = 0, remove_pattern = FALSE)
-    expect_identical(feat_kp, "united")
+    expect_identical(feat_kp, c("united", "states"))
+})
+
+test_that("char_context removes multi-word target", {
+
+    # unigram
+    txt <- "a a b b z b c c d d"
+    toks <- tokens(txt)
+    cont_uni <- textstat_context(toks, "z", window = 2, min_count = 0)
+    dfmt_uni <- tokens(c(inside = "b b b c", outside = "a a c d d")) %>% dfm()
+    key_uni <- textstat_keyness(dfmt_uni)
+    expect_equivalent(cont_uni, key_uni)
+
+    # bigram
+    cont_bi <- textstat_context(toks, "z", window = 2, min_count = 0, n = 2)
+    dfmt_bi <- tokens(c(inside = "b b b c", outside = "a a c d d")) %>%
+        tokens_ngrams(n = 2) %>%
+        dfm()
+    key_bi <- textstat_keyness(dfmt_bi)
+    expect_equivalent(cont_bi, cont_bi)
 })
