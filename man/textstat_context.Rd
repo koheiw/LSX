@@ -14,6 +14,8 @@ textstat_context(
   window = 10,
   min_count = 10,
   remove_pattern = TRUE,
+  n = 1,
+  skip = 0,
   ...
 )
 
@@ -25,7 +27,9 @@ char_context(
   window = 10,
   min_count = 10,
   remove_pattern = TRUE,
-  p = 0.001
+  p = 0.001,
+  n = 1,
+  skip = 0
 )
 
 char_keyness(
@@ -36,19 +40,21 @@ char_keyness(
   window = 10,
   min_count = 10,
   remove_pattern = TRUE,
-  p = 0.001
+  p = 0.001,
+  n = 1,
+  skip = 0
 )
 }
 \arguments{
 \item{x}{a tokens object created by \code{\link[quanteda:tokens]{quanteda::tokens()}}.}
 
-\item{pattern}{\code{\link[quanteda:pattern]{quanteda::pattern()}} to specify target words}
+\item{pattern}{\code{\link[quanteda:pattern]{quanteda::pattern()}} to specify target words.}
 
 \item{valuetype}{the type of pattern matching: \code{"glob"} for "glob"-style
 wildcard expressions; \code{"regex"} for regular expressions; or \code{"fixed"} for
 exact matching. See \code{\link[quanteda:valuetype]{quanteda::valuetype()}} for details.}
 
-\item{case_insensitive}{ignore case when matching, if \code{TRUE}}
+\item{case_insensitive}{if \code{TRUE}, ignore case when matching.}
 
 \item{window}{size of window for collocation analysis.}
 
@@ -56,6 +62,19 @@ exact matching. See \code{\link[quanteda:valuetype]{quanteda::valuetype()}} for 
 considered as collocations.}
 
 \item{remove_pattern}{if \code{TRUE}, keywords do not contain target words.}
+
+\item{n}{integer vector specifying the number of elements to be concatenated
+in each ngram.  Each element of this vector will define a \eqn{n} in the
+\eqn{n}-gram(s) that are produced.}
+
+\item{skip}{integer vector specifying the adjacency skip size for tokens
+forming the ngrams, default is 0 for only immediately neighbouring words.
+For \code{skipgrams}, \code{skip} can be a vector of integers, as the
+"classic" approach to forming skip-grams is to set skip = \eqn{k} where
+\eqn{k} is the distance for which \eqn{k} or fewer skips are used to
+construct the \eqn{n}-gram.  Thus a "4-skip-n-gram" defined as \code{skip = 0:4} produces results that include 4 skips, 3 skips, 2 skips, 1 skip, and 0
+skips (where 0 skips are typical n-grams formed from adjacent words).  See
+Guthrie et al (2006).}
 
 \item{...}{additional arguments passed to \code{\link[=textstat_keyness]{textstat_keyness()}}.}
 
@@ -73,7 +92,7 @@ corp <- readRDS(con)
 close(con)
 corp <- corpus_reshape(corp, 'sentences')
 toks <- tokens(corp, remove_punct = TRUE)
-toks <- tokens_remove(toks, stopwords())
+toks <- tokens_remove(toks, stopwords("en"))
 
 # economy keywords
 eco <- char_context(toks, 'econom*')

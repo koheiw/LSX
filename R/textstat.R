@@ -2,16 +2,17 @@
 #' Identify context words using user-provided patterns
 #'
 #' @param x a tokens object created by [quanteda::tokens()].
-#' @param pattern [quanteda::pattern()] to specify target words
+#' @param pattern [quanteda::pattern()] to specify target words.
 #' @param valuetype the type of pattern matching: `"glob"` for "glob"-style
 #'   wildcard expressions; `"regex"` for regular expressions; or `"fixed"` for
 #'   exact matching. See [quanteda::valuetype()] for details.
-#' @param case_insensitive ignore case when matching, if `TRUE`
+#' @param case_insensitive if `TRUE`, ignore case when matching.
 #' @param window size of window for collocation analysis.
 #' @param p threshold for statistical significance of collocations.
 #' @param min_count minimum frequency of words within the window to be
 #'   considered as collocations.
 #' @param remove_pattern if `TRUE`, keywords do not contain target words.
+#' @inheritParams quanteda::tokens_ngrams
 #' @param ... additional arguments passed to [textstat_keyness()].
 #' @importFrom quanteda.textstats textstat_keyness
 #' @importFrom quanteda is.tokens tokens_remove tokens_select tokens_ngrams dfm
@@ -58,7 +59,6 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
                        window = window, padding = FALSE)
     if (any(n > 1))
         y <- tokens_ngrams(y, n = n, skip = skip)
-    y <- dfm(tokens_remove(y, ""))
 
     # target
     x <- tokens_select(x, pattern, valuetype = valuetype,
@@ -69,12 +69,17 @@ textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed")
                            case_insensitive = case_insensitive)
     if (any(n > 1))
         x <- tokens_ngrams(x, n = n, skip = skip)
-    x <- dfm(tokens_remove(x, ""))
 
-    x <- dfm_trim(x, min_termfreq = min_count)
-    y <- dfm_match(y, featnames(x))
+    y <- dfm_remove(dfm(y), pattern = "")
+    x <- dfm_remove(dfm(x), pattern = "")
+
+    f <- union(featnames(x), featnames(y))
+    x <- dfm_match(x, f)
+    y <- dfm_match(y, f)
+
     if (sum(x) > 0) {
         result <- textstat_keyness(as.dfm(rbind(quanteda::colSums(x), quanteda::colSums(y))), ...)
+        result <- result[result$n_target >= min_count,]
     } else {
         result <- head(textstat_keyness(as.dfm(matrix(c(1, 0))), ...), 0) # dummy object
     }
