@@ -1,3 +1,8 @@
+# Changes in v0.9.9
+
+* Correct how `textstat_context()` and `char_context()` computes statistics.
+* Deprecate `char_keyness()`.
+
 # Changes in v0.9.8
 
 * Stop using functions and arguments deprecated in quanteda v3.0.0.
