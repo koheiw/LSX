@@ -194,11 +194,11 @@ test_that("predict.textmodel_lss computes scores correctly", {
     expect_equal(is.na(pred2$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
     expect_equal(pred2$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
 
-    load("../data/prediction_v0.95.RDA")
-    expect_equal(pred, pred_v095, tolerance = 0.0001)
-    expect_equal(pred2$fit, pred2_v095$fit, tolerance = 0.0001)
-    expect_equal(pred2$se.fit, pred2_v095$se.fit, tolerance = 0.0001)
-    expect_equal(pred2$n, pred2_v095$n)
+    load("../data/prediction_v0.99.RDA")
+    expect_equal(pred, pred_v099, tolerance = 0.0001)
+    expect_equal(pred2$fit, pred2_v099$fit, tolerance = 0.0001)
+    expect_equal(pred2$se.fit, pred2_v099$se.fit, tolerance = 0.0001)
+    expect_equal(pred2$n, pred2_v099$n)
 })
 
 
