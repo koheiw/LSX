@@ -87,7 +87,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_0d423b4ea615ab8a.RDS
+    ## Writing cache file: lss_cache/svds_42bac24341f7ddce.RDS
 
 ### Sentiment seed words
 
@@ -112,23 +112,23 @@ to seed words.
 head(coef(lss), 20) # most positive words
 ```
 
-    ##       shape    positive sustainable   expecting    emerging      decent 
-    ##  0.08100301  0.07287992  0.06489614  0.06459612  0.06173428  0.06158674 
-    ## challenging        asia  powerhouse        drag      argued       china 
-    ##  0.05735492  0.05545359  0.05454087  0.05430134  0.05425140  0.05269536 
-    ##         hit       stock   weakening consultancy cooperation  principles 
-    ##  0.05213953  0.05177975  0.05153202  0.05108261  0.05068110  0.04953984 
-    ##     markets       larry 
-    ##  0.04940963  0.04937380
+    ##        good       shape    positive sustainable   expecting      remain 
+    ##  0.10086678  0.08100301  0.07287992  0.06489614  0.06459612  0.06327885 
+    ##    emerging      decent   continued challenging        asia  powerhouse 
+    ##  0.06173428  0.06158674  0.05958519  0.05735492  0.05545359  0.05454087 
+    ##        drag      argued       china         hit       stock       start 
+    ##  0.05430134  0.05425140  0.05269536  0.05213953  0.05177975  0.05162649 
+    ##   weakening consultancy 
+    ##  0.05153202  0.05108261
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
-    ##       yellen    reduction       shocks         rise      cutting        grows 
-    ##  -0.06807648  -0.06932724  -0.06945467  -0.07106325  -0.07389086  -0.07568230 
-    ##       shrink implications         debt policymakers    suggested     interest 
-    ##  -0.07626922  -0.07767036  -0.07896652  -0.07970222  -0.08267444  -0.08631343 
+    ##      raising         rise     sterling      cutting        grows       shrink 
+    ##  -0.07002333  -0.07106325  -0.07220668  -0.07389086  -0.07568230  -0.07626922 
+    ## implications        basic         debt policymakers    suggested     interest 
+    ##  -0.07767036  -0.07848986  -0.07896652  -0.07970222  -0.08267444  -0.08631343 
     ## unemployment    borrowing         hike         rate          rba        rates 
     ##  -0.08879022  -0.09109017  -0.09224650  -0.09598675  -0.09672486  -0.09754047 
     ##          cut     negative 
