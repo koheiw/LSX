@@ -20,14 +20,6 @@ knitr::opts_chunk$set(
 
 In quantitative text analysis, the cost to train supervised machine learning models tend to be very high when the corpus is large. LSS is a semisupervised document scaling method that I developed to perform large scale analysis at low cost. Taking user-provided *seed words* as weak supervision, it estimates polarity of words in the corpus by latent semantic analysis and locates documents on a unidimensional scale (e.g. sentiment). 
 
-I used LSS for large scale analysis of media content in several research projects:
-
-- Kinoshita, Hiroko. 2020. ["A Quantitative Text Analysis Approach on LGBTQ Issues in Contemporary Indonesia"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241133). *Journal of Population and Social Studies*.
-- Yamao, Dai. 2020. ["Re-securitization as Evasion of Responsibility: A Quantitative Text Analysis of Refugee Crisis in Major Arabic Newspapers"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130), *Journal of Population and Social Studies*.
-- Watanabe, Kohei. 2017. ["Measuring News Bias: Russia's Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis"](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full), *European Journal Communication*.
-- Watanabe, Kohei. 2017. ["The spread of the Kremlin's narratives by a western news agency during the Ukraine crisis"](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*.
-- Lankina, Tomila and Watanabe, Kohei. 2017. ["'Russian Spring' or 'Spring Betrayal'? The Media as a Mirror of Putin’s Evolving Strategy in Ukraine"](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full), *Europe-Asia Studies*.
-
 Please read my paper for the algorithm and methodology:
 
 - Watanabe, Kohei. 2020. "[Latent Semantic Scaling: A Semisupervised Text Analysis Technique for New Domains and Languages](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976)", *Communication Methods and Measures*.
@@ -124,3 +116,13 @@ abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 2))
 text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 ```
 
+## Examples
+
+Please read the following papers for how to use LSS in social science research:
+
+- Vydra, Simon and Kantorowicz, Jaroslaw. ["Tracing Policy-relevant Information in Social Media: The Case of Twitter before and during the COVID-19 Crisis"](https://www.degruyter.com/document/doi/10.1515/spp-2020-0013/html). *Statistics, Politics and Policy*.
+- Kinoshita, Hiroko. 2020. ["A Quantitative Text Analysis Approach on LGBTQ Issues in Contemporary Indonesia"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241133). *Journal of Population and Social Studies*.
+- Yamao, Dai. 2020. ["Re-securitization as Evasion of Responsibility: A Quantitative Text Analysis of Refugee Crisis in Major Arabic Newspapers"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130), *Journal of Population and Social Studies*.
+- Watanabe, Kohei. 2017. ["Measuring News Bias: Russia's Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis"](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full), *European Journal Communication*.
+- Watanabe, Kohei. 2017. ["The spread of the Kremlin's narratives by a western news agency during the Ukraine crisis"](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*.
+- Lankina, Tomila and Watanabe, Kohei. 2017. ["'Russian Spring' or 'Spring Betrayal'? The Media as a Mirror of Putin’s Evolving Strategy in Ukraine"](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full), *Europe-Asia Studies*.
