@@ -1,3 +1,6 @@
+
+* Add `concatenator` to `as.seedwords()`.
+
 # Changes in v0.9.9
 
 * Correct how `textstat_context()` and `char_context()` computes statistics.
