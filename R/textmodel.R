@@ -397,7 +397,6 @@ weight_seeds <- function(seeds, type) {
 #'   unrelated subjects.
 #' @param rescaling if `TRUE`, scores are normalized using `scale()`.
 #' @param ... not used
-#' @keywords internal
 #' @import methods
 #' @importFrom Matrix Matrix rowSums t
 #' @importFrom quanteda is.dfm dfm_select
