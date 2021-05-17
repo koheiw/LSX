@@ -4,7 +4,7 @@
 \alias{as.seedwords}
 \title{Convenient function to convert a list to seed words}
 \usage{
-as.seedwords(x, upper = 1, lower = 2)
+as.seedwords(x, upper = 1, lower = 2, concatenator = "_")
 }
 \arguments{
 \item{x}{a list of characters vectors or a \link[quanteda:dictionary]{dictionary} object}
@@ -12,6 +12,8 @@ as.seedwords(x, upper = 1, lower = 2)
 \item{upper}{numeric index or key for seed words for higher scores}
 
 \item{lower}{numeric index or key for seed words for lower scores}
+
+\item{concatenator}{character to replace separators of multi-word seed words}
 }
 \value{
 named numeric vector for seed words with polarity scores

@@ -93,29 +93,27 @@ strength <- function(object) {
 #' @param x a list of characters vectors or a [dictionary][quanteda::dictionary] object
 #' @param upper numeric index or key for seed words for higher scores
 #' @param lower numeric index or key for seed words for lower scores
+#' @param concatenator character to replace separators of multi-word seed words
 #' @export
 #' @return named numeric vector for seed words with polarity scores
-as.seedwords <- function(x, upper = 1, lower = 2) {
+as.seedwords <- function(x, upper = 1, lower = 2, concatenator = "_") {
     if (!"list" %in% class(x) && !quanteda::is.dictionary(x))
         stop("x must be a list or dictionary object")
-    if (quanteda::is.dictionary(x))
+    if (quanteda::is.dictionary(x)){
+        x <- quanteda::as.dictionary(x) # upgrade object
+        separator <- x@meta$object$separator
         x <- quanteda::as.list(x)
-    if (is.null(upper)) {
-        pos <- character()
     } else {
-        pos <- unlist(x[[upper]])
-        if(!is.character(pos))
-            stop("x must contain character vectors")
+        separator <- " "
     }
-    if (is.null(lower)) {
-        neg <- character()
-    } else {
-        neg <- unlist(x[[lower]])
-        if(!is.character(neg))
-            stop("x must contain character vectors")
-    }
-    c(structure(rep(1, length(pos)), names = pos),
-      structure(rep(-1, length(neg)), names = neg))
+    pos <- neg <- character()
+    if (!is.null(upper))
+        pos <- as.character(unique(unlist(x[[upper]])))
+    if (!is.null(lower))
+        neg <- as.character(unique(unlist(x[[lower]])))
+    result <- rep(c(1, -1), c(length(pos), length(neg)))
+    names(result) <- stringi::stri_replace_all_fixed(c(pos, neg), separator, concatenator)
+    return(result)
 }
 
 unused_dots <- function(...) {

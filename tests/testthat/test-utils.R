@@ -38,13 +38,22 @@ test_that("as.seedwords works", {
     lis3 <- list("pos" = c("a", "b", "c"), "neg" = c("d", "e", "f"))
     expect_equal(as.seedwords(lis3, upper = "pos", lower = "neg"),
                  c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
-    dict <- dictionary(lis3)
-    expect_equal(as.seedwords(dict, upper = "pos", lower = "neg"),
+    lis4 <- list("pos" = c("a", "a"), "neg" = c("b", "b"))
+    expect_equal(as.seedwords(lis4, upper = "pos", lower = "neg"),
+                 c("a" = 1, "b" = -1))
+
+    dict1 <- dictionary(lis3)
+    expect_equal(as.seedwords(dict1, upper = "pos", lower = "neg"),
                  c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
     expect_error(as.seedwords(data.frame(1:3)), "x must be a list or dictionary object")
-    expect_error(as.seedwords(list(1:3, 8:10)), "x must contain character vectors")
-})
 
+    dict2 <- dictionary(list("pos" = "very good", "neg" = "very bad"))
+    expect_equal(as.seedwords(dict2),
+                 c("very_good" = 1, "very_bad" = -1))
+    expect_equal(as.seedwords(dict2, concatenator = "+"),
+                 c("very+good" = 1, "very+bad" = -1))
+
+})
 
 test_that("cohesion works", {
     coh <- cohesion(lss_test)
