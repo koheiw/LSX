@@ -42,6 +42,9 @@ require(quanteda)
 require(LSX) # changed from LSS to LSX
 ```
 
+    ## Warning in .recacheSubclasses(def@className, def, env): undefined subclass
+    ## "numericVector" of class "Mnumeric"; definition not updated
+
 ``` r
 corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
 ```
@@ -159,6 +162,11 @@ text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 Please read the following papers for how to use LSS in social science
 research:
 
+-   Trubowitz, Peter and Watanabe, Kohei. 2021. [“The Geopolitical
+    Threat Index: A Text-Based Computational Approach to Identifying
+    Foreign
+    Threats”](https://academic.oup.com/isq/advance-article/doi/10.1093/isq/sqab029/6278490),
+    *International Studies Quarterly*.
 -   Vydra, Simon and Kantorowicz, Jaroslaw. [“Tracing Policy-relevant
     Information in Social Media: The Case of Twitter before and during
     the COVID-19

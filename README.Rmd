@@ -120,6 +120,7 @@ text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 
 Please read the following papers for how to use LSS in social science research:
 
+- Trubowitz, Peter and Watanabe, Kohei. 2021. ["The Geopolitical Threat Index: A Text-Based Computational Approach to Identifying Foreign  Threats"](https://academic.oup.com/isq/advance-article/doi/10.1093/isq/sqab029/6278490), *International Studies Quarterly*.
 - Vydra, Simon and Kantorowicz, Jaroslaw. ["Tracing Policy-relevant Information in Social Media: The Case of Twitter before and during the COVID-19 Crisis"](https://www.degruyter.com/document/doi/10.1515/spp-2020-0013/html). *Statistics, Politics and Policy*.
 - Kinoshita, Hiroko. 2020. ["A Quantitative Text Analysis Approach on LGBTQ Issues in Contemporary Indonesia"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241133). *Journal of Population and Social Studies*.
 - Yamao, Dai. 2020. ["Re-securitization as Evasion of Responsibility: A Quantitative Text Analysis of Refugee Crisis in Major Arabic Newspapers"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130), *Journal of Population and Social Studies*.
