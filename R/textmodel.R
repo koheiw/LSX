@@ -94,9 +94,10 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     feat <- union(term, seed)
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
+        x <- quanteda::dfm_weight(x, scheme = weight)
         if (verbose)
             cat(sprintf("Performing SVD by %s...\n", engine))
-        svd <- cache_svd(x, k, weight, engine, cache, ...)
+        svd <- cache_svd(x, k, engine, cache = cache, ...)
         embed <- t(svd$v)
         colnames(embed) <- featnames(x)
         embed <- embed[,feat, drop = FALSE]
@@ -143,7 +144,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
-                              engine = c("rsparse"),
+                              engine = c("rsparse", "RSpectra", "irlba", "rsvd"),
                               verbose = FALSE, ...) {
 
     unused_dots(...)
@@ -167,6 +168,14 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
             cat("Fitting GloVe model by rsparse...\n")
         embed <- cache_glove(x, w, cache = cache, ...)
         embed <- embed[,feat, drop = FALSE]
+    } else if (engine %in% c("RSpectra", "irlba", "rsvd")) {
+        if (verbose)
+            cat(sprintf("Performing SVD by %s...\n", engine))
+        svd <- cache_svd(x, w, engine, cache = cache, ...)
+        embed <- t(svd$v)
+        colnames(embed) <- featnames(x)
+        embed <- embed[,feat, drop = FALSE]
+        import <- svd$d
     }
 
     simil <- get_simil(embed, seed, term, seq_len(w), simil_method)
@@ -253,9 +262,8 @@ get_beta <- function(simil, seeds) {
     sort(Matrix::rowMeans(simil %*% seed), decreasing = TRUE)
 }
 
-cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
+cache_svd <- function(x, k, engine, cache = TRUE, ...) {
 
-    x <- quanteda::dfm_weight(x, scheme = weight)
     hash <- digest::digest(list(as(x, "dgCMatrix"), k,
                                 utils::packageVersion("LSX")),
                            algo = "xxhash64")
