@@ -31,7 +31,7 @@ textmodel_lss(x, ...)
   weight = "count",
   cache = FALSE,
   simil_method = "cosine",
-  engine = c("rsparse"),
+  engine = c("rsparse", "RSpectra", "irlba", "rsvd"),
   verbose = FALSE,
   ...
 )
