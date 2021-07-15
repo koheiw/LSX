@@ -185,6 +185,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     result <- build_lss(
         beta = beta,
         w = w,
+        frequency = x@meta$object$margin[names(beta)],
         terms = args$terms,
         seeds = args$seeds,
         seeds_weighted = seeds,

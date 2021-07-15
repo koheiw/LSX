@@ -1,4 +1,6 @@
 
+* Fix `textmodel_lss.fcm()` to pass value to `x_max` in `rsparse::GloVe$new()`.
+* Make `textplot_terms()` work with objects from `textmodel_lss.fcm()`.
 * Add `concatenator` to `as.seedwords()`.
 
 # Changes in v0.9.9

@@ -1,4 +1,3 @@
-context("test utils")
 
 toks_test <- readRDS("../data/tokens_test.RDS")
 feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
