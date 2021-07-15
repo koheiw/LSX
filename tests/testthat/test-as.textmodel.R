@@ -1,4 +1,3 @@
-context("test as.textmodel_lss")
 
 mat_test <- readRDS("../data/matrix_embedding.RDS")
 toks_test <- readRDS("../data/tokens_test.RDS")

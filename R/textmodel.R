@@ -95,7 +95,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
         if (verbose)
-            cat("Performing SVD by ", engine, "...\n")
+            cat(sprintf("Performing SVD by %s...\n", engine))
         svd <- cache_svd(x, k, weight, engine, cache, ...)
         embed <- t(svd$v)
         colnames(embed) <- featnames(x)
@@ -165,7 +165,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     if (engine == "rsparse") {
         if (verbose)
             cat("Fitting GloVe model by rsparse...\n")
-        embed <- cache_glove(x, w, cache, ...)
+        embed <- cache_glove(x, w, cache = cache, ...)
         embed <- embed[,feat, drop = FALSE]
     }
 
@@ -175,6 +175,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     result <- build_lss(
         beta = beta,
         w = w,
+        frequency = x@meta$object$margin[names(beta)],
         terms = args$terms,
         seeds = args$seeds,
         seeds_weighted = seeds,
@@ -231,8 +232,8 @@ expand_seeds <- function(seeds, features, verbose = FALSE) {
         stop("No seed word is found in the dfm", call. = FALSE)
 
     if (verbose)
-        cat("Calculating term-term similarity to", sum(lengths(seeds_weighted)),
-            "seed words...\n")
+        cat(sprintf("Calculating term-term similarity to %d seed words...\n",
+            sum(lengths(seeds_weighted))))
 
     return(seeds_weighted)
 }
