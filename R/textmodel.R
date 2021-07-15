@@ -231,8 +231,8 @@ expand_seeds <- function(seeds, features, verbose = FALSE) {
         stop("No seed word is found in the dfm", call. = FALSE)
 
     if (verbose)
-        cat(sprintf("Calculating term-term similarity to %d seed words...\n"),
-            sum(lengths(seeds_weighted)))
+        cat(sprintf("Calculating term-term similarity to %d seed words...\n",
+            sum(lengths(seeds_weighted))))
 
     return(seeds_weighted)
 }
