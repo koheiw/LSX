@@ -172,6 +172,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     } else if (engine %in% c("RSpectra", "irlba", "rsvd")) {
         if (verbose)
             cat(sprintf("Performing SVD by %s...\n", engine))
+        x <- Matrix::forceSymmetric(x)
         svd <- cache_svd(x, w, engine, cache = cache, ...)
         embed <- t(svd$v)
         colnames(embed) <- featnames(x)
