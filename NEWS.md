@@ -1,4 +1,5 @@
 
+* Make `textplot_terms()` work with objects from `textmodel_lss.fcm()`.
 * Add `concatenator` to `as.seedwords()`.
 
 # Changes in v0.9.9
