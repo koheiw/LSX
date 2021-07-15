@@ -165,7 +165,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     if (engine == "rsparse") {
         if (verbose)
             cat("Fitting GloVe model by rsparse...\n")
-        embed <- cache_glove(x, w, cache, ...)
+        embed <- cache_glove(x, w, cache = cache, ...)
         embed <- embed[,feat, drop = FALSE]
     }
 
