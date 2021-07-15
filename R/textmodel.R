@@ -147,6 +147,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
                               engine = c("rsparse", "RSpectra", "irlba", "rsvd"),
                               verbose = FALSE, ...) {
 
+    engine <- match.arg(engine)
     unused_dots(...)
     args <- list(terms = terms, seeds = seeds, ...)
     if ("features" %in% names(args)) {
@@ -175,7 +176,6 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         embed <- t(svd$v)
         colnames(embed) <- featnames(x)
         embed <- embed[,feat, drop = FALSE]
-        import <- svd$d
     }
 
     simil <- get_simil(embed, seed, term, seq_len(w), simil_method)
