@@ -1,4 +1,3 @@
-context("test textstat_context")
 
 require(quanteda)
 toks_test <- readRDS("../data/tokens_test.RDS")

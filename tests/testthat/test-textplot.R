@@ -1,4 +1,3 @@
-context("test textplot_*")
 
 require(quanteda)
 toks_test <- readRDS("../data/tokens_test.RDS")

@@ -1,4 +1,3 @@
-context("test textmodel_lss")
 
 require(quanteda)
 
