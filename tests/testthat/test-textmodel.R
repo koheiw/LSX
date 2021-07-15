@@ -223,15 +223,23 @@ test_that("textmodel_lss works with non-existent seeds", {
                  "No seed word is found in the dfm")
 })
 
-test_that("RSpectra and irlba work", {
+test_that("rsvd and irlba work", {
 
-    expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
-    expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "irlba"))
+    expect_s3_class(
+        textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "rsvd"),
+        "textmodel_lss"
+    )
+    expect_s3_class(
+        textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "irlba"),
+        "textmodel_lss"
+    )
 
 })
 
-test_that("text2vec works", {
+test_that("textmodel_lss works with fcm", {
     fcmt <- fcm(toks_test)
+
+    # Glove
     lss <- textmodel_lss(fcmt, seedwords("pos-neg"), engine = "rsparse")
     expect_equal(
         names(predict(lss, dfmt_test)),
@@ -242,6 +250,20 @@ test_that("text2vec works", {
         "LSS model includes no data"
     )
     expect_true(setequal(names(coef(lss)), colnames(fcmt)))
+
+    # SVD
+    expect_s3_class(
+        textmodel_lss(fcmt, seedwords("pos-neg"), w = 10, engine = "RSpectra"),
+        "textmodel_lss"
+    )
+    expect_s3_class(
+        textmodel_lss(fcmt, seedwords("pos-neg"), w = 10, engine = "rsvd"),
+        "textmodel_lss"
+    )
+    expect_s3_class(
+        textmodel_lss(fcmt, seedwords("pos-neg"), w = 10, engine = "irlba"),
+        "textmodel_lss"
+    )
 })
 
 test_that("weight is working", {
