@@ -42,10 +42,12 @@ textplot_simil.textmodel_lss <- function(x, group = FALSE) {
 }
 
 #' Plot polarity scores of words
-#' @param x fitted textmodel_lss object
-#' @param highlighted [quanteda::pattern] to specify words to highlight
+#' @param x a fitted textmodel_lss object.
+#' @param highlighted [quanteda::pattern] to select words to highlight.
+#' @param limit the maximum number of words to plot. Words are randomly sampled
+#'   to keep the number below the limit.
 #' @export
-textplot_terms <- function(x, highlighted = NULL) {
+textplot_terms <- function(x, highlighted = NULL, limit = 10000) {
     UseMethod("textplot_terms")
 }
 
@@ -53,7 +55,7 @@ textplot_terms <- function(x, highlighted = NULL) {
 #' @import ggplot2 ggrepel stringi
 #' @importFrom quanteda is.dictionary meta
 #' @export
-textplot_terms.textmodel_lss <- function(x, highlighted = NULL) {
+textplot_terms.textmodel_lss <- function(x, highlighted = NULL, limit = 10000) {
 
     if (is.null(highlighted))
         highlighted <- character()
@@ -75,12 +77,14 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL) {
         case_insensitive = TRUE
     )
 
+
     beta <- frequency <- word <- NULL
     temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),
                        stringsAsFactors = FALSE)
     is_hl <- temp$word %in% unlist(words_hl, use.names = FALSE)
+    is_sm <- temp$word %in% sample(temp$word, min(length(temp$word), limit))
     temp_black <- subset(temp, is_hl)
-    temp_gray <- subset(temp, !is_hl)
+    temp_gray <- subset(temp, !is_hl & is_sm)
     ggplot(data = temp_gray, aes(x = beta, y = frequency, label = word)) +
            geom_text(colour = "grey70", alpha = 0.7) +
            labs(x = "Polarity", y = "Frequency (log)") +

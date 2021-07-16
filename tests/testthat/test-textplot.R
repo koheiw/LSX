@@ -12,6 +12,8 @@ test_that("textplot_* works with SVD", {
     expect_equal(class(textplot_simil(lss, group = FALSE)), c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords)),
                  c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, limit = 2)),
+                 c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
@@ -24,6 +26,8 @@ test_that("textplot_* works with Glove", {
     expect_equal(class(textplot_simil(lss, group = TRUE)), c("gg", "ggplot"))
     expect_equal(class(textplot_simil(lss, group = FALSE)), c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords)),
+                 c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, limit = 2)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
@@ -39,4 +43,10 @@ test_that("textplot_* raise error when attributes are missing", {
                  "textplot_simil() does not work with dummy models", fixed = TRUE)
     expect_error(textplot_simil(lss, group = FALSE),
                  "textplot_simil() does not work with dummy models", fixed = TRUE)
+})
+
+
+test_that("max_print is working", {
+
+
 })
