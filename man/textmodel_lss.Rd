@@ -39,7 +39,7 @@ textmodel_lss(x, ...)
 \arguments{
 \item{x}{a dfm or fcm created by \code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}}}
 
-\item{...}{additional argument passed to the SVD engine}
+\item{...}{additional argument passed to the underlying engine}
 
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
@@ -65,8 +65,8 @@ location cache files to be save.}
 The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is
 used otherwise.}
 
-\item{engine}{choose SVD engine between \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}},
-and \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
+\item{engine}{select the engine to factorize \code{x} to get word vectors. Choose
+from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}}, \code{\link[rsvd:rsvd]{rsvd::rsvd()}}, and \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
 
 \item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as \code{x}.}
 
