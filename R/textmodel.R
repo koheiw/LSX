@@ -13,10 +13,10 @@
 #' @param cache if `TRUE`, save result of SVD for next execution with identical
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
-#' @param engine choose SVD engine between [RSpectra::svds()], [irlba::irlba()],
-#'   and [rsparse::GloVe()].
+#' @param engine select the engine to factorize `x` to get word vectors. Choose
+#' from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and [rsparse::GloVe()].
 #' @param verbose show messages if `TRUE`.
-#' @param ... additional argument passed to the SVD engine
+#' @param ... additional argument passed to the underlying engine
 #' @export
 #' @references
 #' Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
@@ -80,7 +80,6 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               include_data = FALSE,
                               verbose = FALSE, ...) {
 
-    unused_dots(...)
     args <- list(terms = terms, seeds = seeds, ...)
     if ("features" %in% names(args)) {
         .Deprecated(msg = "'features' is deprecated; use 'terms'\n")
@@ -146,7 +145,6 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
                               engine = c("rsparse"),
                               verbose = FALSE, ...) {
 
-    unused_dots(...)
     args <- list(terms = terms, seeds = seeds, ...)
     if ("features" %in% names(args)) {
         .Deprecated(msg = "'features' is deprecated; use 'terms'.\n")
@@ -306,8 +304,8 @@ cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
         message("Reading cache file: ", file_cache)
         result <- readRDS(file_cache)
     } else {
-        glove <- rsparse::GloVe$new(rank = w, x_max = x_max)
-        result <- t(glove$fit_transform(Matrix::drop0(x), n_iter = n_iter, ...))
+        glove <- rsparse::GloVe$new(rank = w, x_max = x_max, ...)
+        result <- t(glove$fit_transform(Matrix::drop0(x), n_iter = n_iter))
         result <- result + glove$components
         if (cache) {
             message("Writing cache file: ", file_cache)
