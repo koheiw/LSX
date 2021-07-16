@@ -255,7 +255,7 @@ get_beta <- function(simil, seeds) {
 cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
 
     x <- quanteda::dfm_weight(x, scheme = weight)
-    hash <- digest::digest(list(as(x, "dgCMatrix"), k,
+    hash <- digest::digest(list(as(x, "dgCMatrix"), k, engine, ...,
                                 utils::packageVersion("LSX")),
                            algo = "xxhash64")
 
@@ -289,9 +289,9 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
     return(result)
 }
 
-cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
+cache_glove <- function(x, w, n_iter = 10, cache = TRUE, ...) {
 
-    hash <- digest::digest(list(as(x, "dgCMatrix"), w, x_max, n_iter,
+    hash <- digest::digest(list(as(x, "dgCMatrix"), w, n_iter, ...,
                                 utils::packageVersion("LSX")),
                            algo = "xxhash64")
 
@@ -304,7 +304,7 @@ cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
         message("Reading cache file: ", file_cache)
         result <- readRDS(file_cache)
     } else {
-        glove <- rsparse::GloVe$new(rank = w, x_max = x_max, ...)
+        glove <- rsparse::GloVe$new(rank = w, ...)
         result <- t(glove$fit_transform(Matrix::drop0(x), n_iter = n_iter))
         result <- result + glove$components
         if (cache) {
