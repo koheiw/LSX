@@ -28,7 +28,7 @@ textmodel_lss(x, ...)
   seeds,
   terms = NULL,
   w = 50,
-  max_count = 1000,
+  max_count = 10,
   weight = "count",
   cache = FALSE,
   simil_method = "cosine",
@@ -40,7 +40,7 @@ textmodel_lss(x, ...)
 \arguments{
 \item{x}{a dfm or fcm created by \code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}}}
 
-\item{...}{additional argument passed to the underlying engine}
+\item{...}{additional arguments passed to the underlying engine.}
 
 \item{seeds}{a character vector, named numeric vector or dictionary that
 contains seed words.}
@@ -73,11 +73,11 @@ from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irl
 
 \item{verbose}{show messages if \code{TRUE}.}
 
-\item{w}{the size of word vectors. Only used when \code{x} is a \code{fcm}}
+\item{w}{the size of word vectors. Used only when \code{x} is a \code{fcm}.}
 
 \item{max_count}{passed to \code{x_max} in \code{rsparse::GloVe$new()} where cooccurrence
 counts are ceiled to this threshold. It should be changed according to the
-size of the corpus.}
+size of the corpus. Used only when \code{x} is a \code{fcm}.}
 }
 \description{
 A word embeddings-based semisupervised model for document scaling

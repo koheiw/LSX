@@ -146,7 +146,7 @@ test_that("calculation of fit and se.fit are correct", {
     expect_equal(pred$fit[2], c(text2 = 0.10))
     expect_equal(pred$fit[3], c(text3 = 0.1 * (2 / 5) + 0.1 * (1 / 5) + 0.3 * (2 / 5)))
 
-    beta <- coef(lss)
+    beta <- lss$beta
     dfmt_sub <- dfm_select(dfmt, names(beta))
     dfmt_prop <- dfm_weight(dfmt_sub, "prop")
 

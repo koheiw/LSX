@@ -1,6 +1,6 @@
 
-* Add `limit` to `textplot_terms()` to avoid overcrowding.
-* Fix `textmodel_lss.fcm()` to pass value to `x_max` in `rsparse::GloVe$new()`.
+* Add `max_count` to `textmodel_lss.fcm()` that will be passed to `x_max` in `rsparse::GloVe$new()`.
+* Add `max_words` to `textplot_terms()` to avoid overcrowding.
 * Make `textplot_terms()` work with objects from `textmodel_lss.fcm()`.
 * Add `concatenator` to `as.seedwords()`.
 
