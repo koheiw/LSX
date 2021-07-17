@@ -136,10 +136,14 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
 #' @rdname textmodel_lss
 #' @param w the size of word vectors. Only used when `x` is a `fcm`
+#' @param max_count passed to `x_max` in `rsparse::GloVe$new()` where cooccurrence
+#'   counts are ceiled to this threshold. It should be changed according to the
+#'   size of the corpus.
 #' @method textmodel_lss fcm
 #' @importFrom quanteda featnames
 #' @export
 textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
+                              max_count = 1000,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("rsparse"),
@@ -163,7 +167,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     if (engine == "rsparse") {
         if (verbose)
             cat("Fitting GloVe model by rsparse...\n")
-        embed <- cache_glove(x, w, cache = cache, ...)
+        embed <- cache_glove(x, w, x_max = max_count, cache = cache, ...)
         embed <- embed[,feat, drop = FALSE]
     }
 

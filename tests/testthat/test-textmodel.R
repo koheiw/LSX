@@ -172,8 +172,10 @@ test_that("textmodel_lss works with only with single seed", {
 
 test_that("textmodel_lss.fcm works with ...", {
     skip_on_cran()
-    expect_warning(textmodel_lss(fcmt_test, seedwords("pos-neg"), terms = feat_test, x_max = 5), NA)
-    expect_warning(textmodel_lss(fcmt_test, seedwords("pos-neg"), terms = feat_test, alpha = 1), NA)
+    expect_warning(textmodel_lss(fcmt_test, seedwords("pos-neg"),
+                                 terms = feat_test, learning_rate = 0.1), NA)
+    expect_warning(textmodel_lss(fcmt_test, seedwords("pos-neg"),
+                                 terms = feat_test, alpha = 1), NA)
 })
 
 test_that("terms work with glob", {
