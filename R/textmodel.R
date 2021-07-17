@@ -16,7 +16,7 @@
 #' @param engine select the engine to factorize `x` to get word vectors. Choose
 #' from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and [rsparse::GloVe()].
 #' @param verbose show messages if `TRUE`.
-#' @param ... additional argument passed to the underlying engine
+#' @param ... additional arguments passed to the underlying engine.
 #' @export
 #' @references
 #' Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
@@ -135,15 +135,15 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 }
 
 #' @rdname textmodel_lss
-#' @param w the size of word vectors. Only used when `x` is a `fcm`
+#' @param w the size of word vectors. Used only when `x` is a `fcm`.
 #' @param max_count passed to `x_max` in `rsparse::GloVe$new()` where cooccurrence
 #'   counts are ceiled to this threshold. It should be changed according to the
-#'   size of the corpus.
+#'   size of the corpus. Used only when `x` is a `fcm`.
 #' @method textmodel_lss fcm
 #' @importFrom quanteda featnames
 #' @export
 textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
-                              max_count = 1000,
+                              max_count = 10,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("rsparse"),
@@ -253,7 +253,7 @@ get_beta <- function(simil, seeds) {
     seed <- unlist(unname(seeds))
     if (!identical(colnames(simil), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
-    sort(Matrix::rowMeans(simil %*% seed), decreasing = TRUE)
+    Matrix::rowMeans(simil %*% seed)
 }
 
 cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
@@ -360,7 +360,7 @@ summary.textmodel_lss <- function(object, n = 30L, ...) {
 #' @keywords textmodel internal
 #' @export
 coef.textmodel_lss <- function(object, ...) {
-    object$beta
+    sort(object$beta, decreasing = TRUE)
 }
 
 #' @rdname coef.textmodel_lss
