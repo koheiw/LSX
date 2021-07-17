@@ -12,7 +12,7 @@ test_that("textplot_* works with SVD", {
     expect_equal(class(textplot_simil(lss, group = FALSE)), c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords)),
                  c("gg", "ggplot"))
-    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, limit = 2)),
+    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, max_words = 2)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
@@ -27,7 +27,7 @@ test_that("textplot_* works with Glove", {
     expect_equal(class(textplot_simil(lss, group = FALSE)), c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords)),
                  c("gg", "ggplot"))
-    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, limit = 2)),
+    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, max_words = 2)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
