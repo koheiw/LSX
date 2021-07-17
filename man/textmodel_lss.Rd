@@ -28,6 +28,7 @@ textmodel_lss(x, ...)
   seeds,
   terms = NULL,
   w = 50,
+  max_count = 1000,
   weight = "count",
   cache = FALSE,
   simil_method = "cosine",
@@ -73,6 +74,10 @@ from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irl
 \item{verbose}{show messages if \code{TRUE}.}
 
 \item{w}{the size of word vectors. Only used when \code{x} is a \code{fcm}}
+
+\item{max_count}{passed to \code{x_max} in \code{rsparse::GloVe$new()} where cooccurrence
+counts are ceiled to this threshold. It should be changed according to the
+size of the corpus.}
 }
 \description{
 A word embeddings-based semisupervised model for document scaling
