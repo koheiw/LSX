@@ -1,3 +1,4 @@
+# Changes in v1.0.0
 
 * Add `max_count` to `textmodel_lss.fcm()` that will be passed to `x_max` in `rsparse::GloVe$new()`.
 * Add `max_words` to `textplot_terms()` to avoid overcrowding.
