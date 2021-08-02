@@ -40,6 +40,9 @@ test_that("as.seedwords works", {
     lis4 <- list("pos" = c("a", "a"), "neg" = c("b", "b"))
     expect_equal(as.seedwords(lis4, upper = "pos", lower = "neg"),
                  c("a" = 1, "b" = -1))
+    lis5 <- list("pos1" = c("a", "b"), "pos2" = c("c"), "neg" = c("d", "e", "f"))
+    expect_equal(as.seedwords(lis5, upper = c("pos1", "pos2"), lower = "neg"),
+                 c("a" = 1, "b" = 1, "c" = 1, "d" = -1, "e" = -1, "f" = -1))
 
     dict1 <- dictionary(lis3)
     expect_equal(as.seedwords(dict1, upper = "pos", lower = "neg"),

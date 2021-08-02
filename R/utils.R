@@ -108,9 +108,9 @@ as.seedwords <- function(x, upper = 1, lower = 2, concatenator = "_") {
     }
     pos <- neg <- character()
     if (!is.null(upper))
-        pos <- as.character(unique(unlist(x[[upper]])))
+        pos <- as.character(unique(unlist(x[upper], use.names = FALSE)))
     if (!is.null(lower))
-        neg <- as.character(unique(unlist(x[[lower]])))
+        neg <- as.character(unique(unlist(x[lower], use.names = FALSE)))
     result <- rep(c(1, -1), c(length(pos), length(neg)))
     names(result) <- stringi::stri_replace_all_fixed(c(pos, neg), separator, concatenator)
     return(result)
