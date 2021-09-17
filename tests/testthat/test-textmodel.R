@@ -328,7 +328,6 @@ test_that("test smooth_lss", {
 
 test_that("works with single seed", {
     expect_silent(cohesion(lss_test))
-    expect_silent(strength(lss_test))
 })
 
 test_that("weight_seeds() works", {
@@ -365,3 +364,32 @@ test_that("weight_seeds() works", {
              "bb" = c("bb" = -1)),
     )
 })
+
+test_that("auto_weight is working", {
+
+    skip_on_cran()
+    lss1 <- textmodel_lss(dfmt_test, seed, k = 300)
+    lss2 <- textmodel_lss(dfmt_test, seed, k = 300, auto_weight = TRUE)
+    expect_true(
+        all(lss1$seeds_weighted != lss2$seeds_weighted)
+    )
+    expect_true(
+        all(sign(lss1$seeds_weighted) == sign(lss2$seeds_weighted))
+    )
+    expect_true(
+        all(abs(lss2$beta[names(lss2$seeds_weighted)] - lss1$seeds_weighted) < 0.05)
+    )
+
+    lss3 <- textmodel_lss(fcmt_test, seed, w = 50)
+    lss4 <- textmodel_lss(fcmt_test, seed, w = 50, auto_weight = TRUE)
+    expect_true(
+        all(lss3$seeds_weighted != lss4$seeds_weighted)
+    )
+    expect_true(
+        all(sign(lss3$seeds_weighted) == sign(lss4$seeds_weighted))
+    )
+    expect_true(
+        all(abs(lss4$beta[names(lss4$seeds_weighted)] - lss3$seeds_weighted) < 0.05)
+    )
+})
+
