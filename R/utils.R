@@ -45,7 +45,7 @@ diagnosys.corpus <- function(x, ...) {
 #' @importFrom Matrix rowMeans rowSums tcrossprod tril
 cohesion <- function(object, bandwidth = 10) {
     stopifnot("textmodel_lss" %in% class(object))
-    seed <- unlist(unname(object$seeds_weighted))
+    seed <- object$seeds_weighted
     embed <- as(object$embedding, "dgCMatrix")
     cross <- tcrossprod(embed[,names(seed), drop = FALSE])
     cross <- tril(cross, -1)
@@ -56,36 +56,6 @@ cohesion <- function(object, bandwidth = 10) {
     result$smoothed <- stats::ksmooth(
       result$k, result$raw, kernel = "normal",
       bandwidth = bandwidth)$y
-    return(result)
-}
-
-#' Experimental function to test quality of seed words
-#' @param object a fitted `textmodel_lss`
-#' @export
-#' @keywords internal
-#' @importFrom Matrix rowMeans colMeans diag band
-strength <- function(object) {
-    stopifnot("textmodel_lss" %in% class(object))
-    term <- object$terms
-    seed <- unlist(unname(object$seeds_weighted))
-    embed <- as(object$embedding, "dgCMatrix")
-    sim <- proxyC::simil(embed[object$slice,, drop = FALSE],
-                         embed[object$slice, names(seed), drop = FALSE], margin = 2)
-    diag(sim) <- NA
-    temp <- data.frame(seed = colnames(sim),
-                       selected = log(1 / abs(colMeans(sim[term,,drop = FALSE], na.rm = TRUE))),
-                       all = log(1 / abs(colMeans(sim, na.rm = TRUE))),
-                       stringsAsFactors = FALSE)
-    sim_mean <- rowMeans(sim, na.rm = TRUE)
-    temp <- temp[order(temp$selected, decreasing = TRUE),, drop = FALSE]
-    rownames(temp) <- NULL
-    result <- list(
-      "overall" = c("selected" =  log(1 / mean(abs(sim_mean[term]))),
-                    "all" = log(1 / mean(abs(sim_mean)))
-      ),
-      "element" = temp
-    )
-    class(result) <- "listof"
     return(result)
 }
 
