@@ -1,8 +1,9 @@
 #' A word embeddings-based semisupervised model for document scaling
 #'
 #' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
-#' @param seeds a character vector, named numeric vector or dictionary that
-#'   contains seed words.
+#' @param seeds a character vector, named numeric vector that contains seed
+#'   words. If seed words contain "*", they are interpreted as glob patterns. See
+#'   [quanteda::valuetype].
 #' @param terms words weighted as model terms. All the features of
 #'   [quanteda::dfm()] or [quanteda::fcm()] will be used if not specified.
 #' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
@@ -14,17 +15,26 @@
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
 #' @param engine select the engine to factorize `x` to get word vectors. Choose
-#' from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and [rsparse::GloVe()].
+#'   from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and
+#'   [rsparse::GloVe()].
+#' @param auto_weight automatically determine weights to approximate the
+#'   polarity of terms to seed words. See details.
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional arguments passed to the underlying engine.
 #' @export
-#' @references
-#' Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
+#' @details LSS computes polarity scores based on weights given to seed words,
+#'   but they tend to receive varying polarity scores due to the unequal
+#'   semantic similarity between seed words. If `auto_weight = TRUE`, weights of
+#'   seed words are adjusted automatically using `optim()`. It attempts to
+#'   minimize the squared difference between their inverted weight and resulting
+#'   polarity scores. Weight's are saved in the `seed_weighted` in the
+#'   `textmodel_lss` object.
+#' @references Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 #'   Text Analysis Technique for New Domains and Languages", Communication
-#'   Methods and Measures. \doi{10.1080/19312458.2020.1832976}.
-#' Watanabe, Kohei. 2017. "Measuring News Bias: Russia's
-#'   Official News Agency ITAR-TASS' Coverage of the Ukraine Crisis" European
-#'   Journal of Communication. \doi{10.1177/0267323117695735}.
+#'   Methods and Measures. \doi{10.1080/19312458.2020.1832976}. Watanabe, Kohei.
+#'   2017. "Measuring News Bias: Russia's Official News Agency ITAR-TASS'
+#'   Coverage of the Ukraine Crisis" European Journal of Communication.
+#'   \doi{10.1177/0267323117695735}.
 #' @examples
 #' \donttest{
 #' library("quanteda")
@@ -77,6 +87,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("RSpectra", "irlba", "rsvd"),
+                              auto_weight = FALSE,
                               include_data = FALSE,
                               verbose = FALSE, ...) {
 
@@ -88,9 +99,9 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     engine <- match.arg(engine)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
-    seed <- names(unlist(unname(seeds)))
+    seed <- unlist(unname(seeds))
     term <- expand_terms(terms, featnames(x))
-    feat <- union(term, seed)
+    feat <- union(term, names(seed))
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
         if (verbose)
@@ -111,8 +122,10 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     if (length(slice) == 1)
         slice <- seq_len(slice)
 
-    simil <- get_simil(embed, seed, term, slice, simil_method)
-    beta <- get_beta(simil$terms, seeds)
+    simil <- get_simil(embed, names(seed), term, slice, simil_method)
+    if (auto_weight)
+        seed <- optimize_weight(seed, simil, verbose, ...)
+    beta <- get_beta(simil, seed)
 
     result <- build_lss(
         beta = beta,
@@ -121,7 +134,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         frequency = colSums(x)[names(beta)],
         terms = args$terms,
         seeds = args$seeds,
-        seeds_weighted = seeds,
+        seeds_weighted = seed,
         embedding = embed,
         similarity = simil$seed,
         importance = import,
@@ -147,6 +160,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("rsparse"),
+                              auto_weight = FALSE,
                               verbose = FALSE, ...) {
 
     args <- list(terms = terms, seeds = seeds, ...)
@@ -160,9 +174,9 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     }
 
     seeds <- expand_seeds(seeds, featnames(x), verbose)
-    seed <- names(unlist(unname(seeds)))
+    seed <- unlist(unname(seeds))
     term <- expand_terms(terms, featnames(x))
-    feat <- union(term, seed)
+    feat <- union(term, names(seed))
 
     if (engine == "rsparse") {
         if (verbose)
@@ -171,8 +185,10 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         embed <- embed[,feat, drop = FALSE]
     }
 
-    simil <- get_simil(embed, seed, term, seq_len(w), simil_method)
-    beta <- get_beta(simil$terms, seeds)
+    simil <- get_simil(embed, names(seed), term, seq_len(w), simil_method)
+    if (auto_weight)
+        seed <- optimize_weight(seed, simil, verbose, ...)
+    beta <- get_beta(simil, seed)
 
     result <- build_lss(
         beta = beta,
@@ -180,7 +196,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         frequency = x@meta$object$margin[names(beta)],
         terms = args$terms,
         seeds = args$seeds,
-        seeds_weighted = seeds,
+        seeds_weighted = seed,
         embedding = embed,
         similarity = simil$seed,
         call = match.call()
@@ -249,11 +265,10 @@ get_simil <- function(embed, seed, term, slice, method = "cosine") {
          "seeds" = simil[seed, seed, drop = FALSE])
 }
 
-get_beta <- function(simil, seeds) {
-    seed <- unlist(unname(seeds))
-    if (!identical(colnames(simil), names(seed)))
+get_beta <- function(simil, seed) {
+    if (!identical(colnames(simil$terms), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
-    Matrix::rowMeans(simil %*% seed)
+    Matrix::rowMeans(simil$terms %*% seed)
 }
 
 cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
@@ -457,3 +472,15 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
         return(result)
     }
 }
+
+# automatically align polarity score with original weight
+optimize_weight <- function(seed, simil, verbose, ...) {
+    if (verbose)
+        cat("Optimizing seed weights...\n")
+    result <- optim(seed, function(x) {
+        sum((rowSums(simil$seeds %*% x) - seed) ^ 2)
+    }, ...)
+    return(result$par)
+}
+
+
