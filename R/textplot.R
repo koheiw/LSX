@@ -1,9 +1,7 @@
 #' Plot similarity between seed words
 #' @param x fitted textmodel_lss object
-#' @param group if `TRUE` group seed words by seed patterns and show
-#'   average similarity
 #' @export
-textplot_simil <- function(x, group = FALSE) {
+textplot_simil <- function(x) {
     UseMethod("textplot_simil")
 }
 
@@ -67,7 +65,6 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
         valuetype = valuetype,
         case_insensitive = TRUE
     )
-
 
     beta <- frequency <- word <- NULL
     temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),
