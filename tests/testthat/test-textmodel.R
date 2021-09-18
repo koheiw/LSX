@@ -83,6 +83,25 @@ test_that("summary.textmodel_lss is working", {
 
 })
 
+test_that("textmodel_lss print progress", {
+    skip_on_cran()
+
+    expect_output(
+        textmodel_lss(dfmt_test, seed, verbose = TRUE),
+        paste0("Calculating term-term similarity to 12 seed words...\n",
+               "Performing SVD by RSpectra...\n", collapse = ""),
+        fixed = TRUE
+    )
+
+    expect_output(
+        textmodel_lss(fcmt_test, seed, verbose = TRUE),
+        paste0("Calculating term-term similarity to 12 seed words...\n",
+               "Fitting GloVe model by rsparse...\n", collapse = ""),
+        fixed = TRUE
+    )
+
+})
+
 test_that("predict.textmodel_lss is working", {
 
     pred1 <- predict(lss_test)
