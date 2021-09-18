@@ -16,6 +16,17 @@ knitr::opts_chunk$set(
 
 # Latent Semantic Scaling
 
+<!-- badges: start -->
+[![CRAN
+Version](https://www.r-pkg.org/badges/version/LSX)](https://CRAN.R-project.org/package=LSX)
+[![Downloads](https://cranlogs.r-pkg.org/badges/LSX)](https://CRAN.R-project.org/package=LSX)
+[![Total
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/LSX?color=orange)](https://CRAN.R-project.org/package=LSX)
+[![R build
+status](https://github.com/koheiw/LSX/workflows/R-CMD-check/badge.svg)](https://github.com/koheiw/LSX/actions)
+[![codecov](https://codecov.io/gh/koheiw/LSX/branch/master/graph/badge.svg)](https://codecov.io/gh/koheiw/LSX)
+<!-- badges: end -->
+
 **NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN submission.
 
 In quantitative text analysis, the cost to train supervised machine learning models tend to be very high when the corpus is large. LSS is a semisupervised document scaling method that I developed to perform large scale analysis at low cost. Taking user-provided *seed words* as weak supervision, it estimates polarity of words in the corpus by latent semantic analysis and locates documents on a unidimensional scale (e.g. sentiment). 
@@ -62,7 +73,7 @@ dfmt_sent <- toks_sent %>%
     dfm_trim(min_termfreq = 5)
 
 eco <- char_context(toks_sent, "econom*", p = 0.05)
-lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
+lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
                      terms = eco, k = 300, cache = TRUE)
 ```
 

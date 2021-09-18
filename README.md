@@ -1,6 +1,18 @@
 
 # Latent Semantic Scaling
 
+<!-- badges: start -->
+
+[![CRAN
+Version](https://www.r-pkg.org/badges/version/LSX)](https://CRAN.R-project.org/package=LSX)
+[![Downloads](https://cranlogs.r-pkg.org/badges/LSX)](https://CRAN.R-project.org/package=LSX)
+[![Total
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/LSX?color=orange)](https://CRAN.R-project.org/package=LSX)
+[![R build
+status](https://github.com/koheiw/LSX/workflows/R-CMD-check/badge.svg)](https://github.com/koheiw/LSX/actions)
+[![codecov](https://codecov.io/gh/koheiw/LSX/branch/master/graph/badge.svg)](https://codecov.io/gh/koheiw/LSX)
+<!-- badges: end -->
+
 **NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN
 submission.
 
@@ -42,9 +54,6 @@ require(quanteda)
 require(LSX) # changed from LSS to LSX
 ```
 
-    ## Warning in .recacheSubclasses(def@className, def, env): undefined subclass
-    ## "numericVector" of class "Mnumeric"; definition not updated
-
 ``` r
 corp <- readRDS(url("https://bit.ly/2GZwLcN", "rb"))
 ```
@@ -61,11 +70,11 @@ dfmt_sent <- toks_sent %>%
     dfm_trim(min_termfreq = 5)
 
 eco <- char_context(toks_sent, "econom*", p = 0.05)
-lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
+lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_42bac24341f7ddce.RDS
+    ## Reading cache file: lss_cache/svds_e5089465ba658d1a.RDS
 
 ### Sentiment seed words
 
