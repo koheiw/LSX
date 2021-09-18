@@ -24,6 +24,7 @@ as.textmodel_lss <- function(x, ...) {
 as.textmodel_lss.matrix <- function(x, seeds,
                                     terms = NULL,
                                     simil_method = "cosine",
+                                    auto_weight = FALSE,
                                     verbose = FALSE, ...) {
 
     unused_dots(...)
@@ -36,20 +37,22 @@ as.textmodel_lss.matrix <- function(x, seeds,
         stop("x must not have NA")
 
     seeds <- expand_seeds(seeds, colnames(x), verbose)
-    seed <- names(unlist(unname(seeds)))
+    seed <- unlist(unname(seeds))
     term <- expand_terms(terms, colnames(x))
-    feat <- union(term, seed)
+    feat <- union(term, names(seed))
 
     x <- x[,feat, drop = FALSE]
-    simil <- get_simil(x, seed, term, seq_len(nrow(x)), simil_method)
-    beta <- get_beta(simil$terms, seeds)
+    simil <- get_simil(x, names(seed), term, seq_len(nrow(x)), simil_method)
+    if (auto_weight)
+        seed <- optimize_weight(seed, simil, verbose, ...)
+    beta <- get_beta(simil, seed)
 
     result <- build_lss(
         beta = beta,
         k = nrow(x),
         terms = args$terms,
         seeds = args$seeds,
-        seeds_weighted = seeds,
+        seeds_weighted = seed,
         embedding = x,
         similarity = simil$seed,
         call = match.call()

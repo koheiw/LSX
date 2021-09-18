@@ -1,31 +1,20 @@
 #' Plot similarity between seed words
 #' @param x fitted textmodel_lss object
-#' @param group if `TRUE` group seed words by seed patterns and show
-#'   average similarity
 #' @export
-textplot_simil <- function(x, group = FALSE) {
+textplot_simil <- function(x) {
     UseMethod("textplot_simil")
 }
 
 #' @method textplot_simil textmodel_lss
 #' @import ggplot2
 #' @export
-textplot_simil.textmodel_lss <- function(x, group = FALSE) {
+textplot_simil.textmodel_lss <- function(x) {
 
     if (is.null(x$similarity) || is.null(x$seeds_weighted))
         stop("textplot_simil() does not work with dummy models")
 
     temp <- reshape2::melt(x$similarity, as.is = TRUE)
     names(temp) <- c("seed1", "seed2", "simil")
-    if (group) {
-        seed <- rep(names(x$seeds_weighted), lengths(x$seeds_weighted))
-        names(seed) <- names(unlist(unname(x$seeds_weighted)))
-        temp$seed1 <- seed[temp$seed1]
-        temp$seed2 <- seed[temp$seed2]
-        temp <- stats::aggregate(list(simil = temp$simil),
-                                 by = list(seed1 = temp$seed1,
-                                           seed2 = temp$seed2), mean)
-    }
     temp$seed1 <- factor(temp$seed1, levels = unique(temp$seed2))
     temp$seed2 <- factor(temp$seed2, levels = unique(temp$seed2))
     temp$color <- factor(temp$simil > 0, levels = c(TRUE, FALSE),
@@ -76,7 +65,6 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
         valuetype = valuetype,
         case_insensitive = TRUE
     )
-
 
     beta <- frequency <- word <- NULL
     temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),

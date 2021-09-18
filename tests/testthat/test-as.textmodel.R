@@ -3,9 +3,10 @@ mat_test <- readRDS("../data/matrix_embedding.RDS")
 toks_test <- readRDS("../data/tokens_test.RDS")
 feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- quanteda::dfm_group(quanteda::dfm(toks_test))
+seed <- as.seedwords(data_dictionary_sentiment)
 
 test_that("as.textmodel_lss works with matrix", {
-    seed <- as.seedwords(data_dictionary_sentiment)
+
     term <- c("decision", "instance", "universal", "foundations", "the")
 
     # with terms
@@ -73,3 +74,22 @@ test_that("as.textmodel_lss errors with vector", {
                  "x must not have NA")
 })
 
+test_that("auto_weight is working", {
+    skip_on_cran()
+
+    lss1 <- as.textmodel_lss(mat_test, seed)
+    lss2 <- as.textmodel_lss(mat_test, seed, auto_weight = TRUE)
+    expect_true(
+        all(lss1$seeds_weighted != lss2$seeds_weighted)
+    )
+    expect_true(
+        all(sign(lss1$seeds_weighted) == sign(lss2$seeds_weighted))
+    )
+    expect_true(
+        all(abs(lss2$beta[names(lss2$seeds_weighted)] - lss1$seeds_weighted) < 0.05)
+    )
+    expect_output(
+        as.textmodel_lss(mat_test, seed, auto_weight = TRUE, verbose = TRUE),
+        "Optimizing seed weights..."
+    )
+})

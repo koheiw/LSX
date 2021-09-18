@@ -63,14 +63,4 @@ test_that("cohesion works", {
     expect_identical(nrow(coh), lss_test$k)
 })
 
-test_that("strength works", {
-    lis <- strength(lss_test)
-    expect_identical(names(lis), c("overall", "element"))
-    expect_identical(names(lis$element), c("seed", "selected", "all"))
-    expect_identical(nrow(lis$element), length(unlist(lss_test$seeds_weighted)))
-
-    lss1 <- textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300, slice = 100)
-    lss2 <- textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300)
-    expect_true(all(strength(lss1)$overall != strength(lss2)$overall))
-})
 

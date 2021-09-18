@@ -1,3 +1,6 @@
+
+* Add the `auto_weight` argument to `textmodel_lss()` and `as.textmodel_lss()` to improve the accuracy of scaling.
+* Remove the `group` argument from `textplot_simil()` to simplify the object.
 * Make `as.seedwords()` to accept multiple indices for `upper` and `lower`.
 
 # Changes in v1.0.0

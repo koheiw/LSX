@@ -4,13 +4,10 @@
 \alias{textplot_simil}
 \title{Plot similarity between seed words}
 \usage{
-textplot_simil(x, group = FALSE)
+textplot_simil(x)
 }
 \arguments{
 \item{x}{fitted textmodel_lss object}
-
-\item{group}{if \code{TRUE} group seed words by seed patterns and show
-average similarity}
 }
 \description{
 Plot similarity between seed words
