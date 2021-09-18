@@ -2,8 +2,8 @@
 #'
 #' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
 #' @param seeds a character vector, named numeric vector that contains seed
-#'   words. If seed words contain "*", they are interpreted as glob patterns. See
-#'   [quanteda::valuetype].
+#'   words. If seed words contain "*", they are interpreted as glob patterns.
+#'   See [quanteda::valuetype].
 #' @param terms words weighted as model terms. All the features of
 #'   [quanteda::dfm()] or [quanteda::fcm()] will be used if not specified.
 #' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
@@ -22,13 +22,25 @@
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional arguments passed to the underlying engine.
 #' @export
-#' @details LSS computes polarity scores based on weights given to seed words,
-#'   but they tend to receive varying polarity scores due to the unequal
-#'   semantic similarity between seed words. If `auto_weight = TRUE`, weights of
-#'   seed words are adjusted automatically using `optim()`. It attempts to
-#'   minimize the squared difference between their inverted weight and resulting
-#'   polarity scores. Weight's are saved in the `seed_weighted` in the
-#'   `textmodel_lss` object.
+#' @details Latent Semantic Scaling (LSS) is a semisupervised document scaling
+#'   method. `textmodel_lss` constructs word vectors from use-provided documents
+#'   (`x`) and weight words (`terms`) based on their semantic proximity to seed
+#'   words (`seeds`). Seed words are any known polarity words (e.g. sentiment
+#'   words) that users should manually choose. The required number of seed words
+#'   are usually 5 to 10 for each end of the scale.
+#'
+#'   If `seeds` is a named numeric vector with positive and negative values, a
+#'   bipolar LSS model is construct; if `seeds` is a character vector, a
+#'   unipolar LSS model. Usually bipolar models perform better in document
+#'   scaling because both ends of the scale are defined by the user.
+#'
+#'   `textmodel_lss` computes polarity scores based on weights given to seed
+#'   words but the same words tend to receive varying polarity scores due to the
+#'   unequal semantic similarity between seed words. If `auto_weight = TRUE`,
+#'   the weights of seed words are adjusted automatically using `optim()`. It
+#'   attempts to minimize the squared difference between seed words' inverted
+#'   weight (1 / n) and resulting polarity scores. Weight's are saved in
+#'   `seed_weighted` in the object.
 #' @references Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 #'   Text Analysis Technique for New Domains and Languages", Communication
 #'   Methods and Measures. \doi{10.1080/19312458.2020.1832976}. Watanabe, Kohei.

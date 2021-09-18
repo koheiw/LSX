@@ -18,6 +18,7 @@ textmodel_lss(x, ...)
   cache = FALSE,
   simil_method = "cosine",
   engine = c("RSpectra", "irlba", "rsvd"),
+  auto_weight = FALSE,
   include_data = FALSE,
   verbose = FALSE,
   ...
@@ -33,6 +34,7 @@ textmodel_lss(x, ...)
   cache = FALSE,
   simil_method = "cosine",
   engine = c("rsparse"),
+  auto_weight = FALSE,
   verbose = FALSE,
   ...
 )
@@ -42,8 +44,9 @@ textmodel_lss(x, ...)
 
 \item{...}{additional arguments passed to the underlying engine.}
 
-\item{seeds}{a character vector, named numeric vector or dictionary that
-contains seed words.}
+\item{seeds}{a character vector, named numeric vector that contains seed
+words. If seed words contain "*", they are interpreted as glob patterns.
+See \link[quanteda:valuetype]{quanteda::valuetype}.}
 
 \item{terms}{words weighted as model terms. All the features of
 \code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}} will be used if not specified.}
@@ -67,7 +70,11 @@ The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.t
 used otherwise.}
 
 \item{engine}{select the engine to factorize \code{x} to get word vectors. Choose
-from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}}, \code{\link[rsvd:rsvd]{rsvd::rsvd()}}, and \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
+from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}}, \code{\link[rsvd:rsvd]{rsvd::rsvd()}}, and
+\code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
+
+\item{auto_weight}{automatically determine weights to approximate the
+polarity of terms to seed words. See details.}
 
 \item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as \code{x}.}
 
@@ -81,6 +88,27 @@ size of the corpus. Used only when \code{x} is a \code{fcm}.}
 }
 \description{
 A word embeddings-based semisupervised model for document scaling
+}
+\details{
+Latent Semantic Scaling (LSS) is a semisupervised document scaling
+method. \code{textmodel_lss} constructs word vectors from use-provided documents
+(\code{x}) and weight words (\code{terms}) based on their semantic proximity to seed
+words (\code{seeds}). Seed words are any known polarity (e.g. sentiment words)
+words that users should manually select. The required number of seed words
+are usually 5 to 10 for each end of the scale.
+
+If \code{seeds} is a named numeric vector with positive and negative numeric, a
+bipolar LSS model is construct; if \code{seeds} is a character vector, unipolar
+LSS model. Usually bipolar models perform well in document scaling becasue both
+end of the scale is defined by the user.
+
+LSS computes polarity scores based on weights given to seed words but the
+same words tend to receive varying polarity scores due to the unequal
+semantic similarity between seed words. If \code{auto_weight = TRUE}, the
+weights of seed words are adjusted automatically using \code{optim()}. It
+attempts to minimize the squared difference between their inverted weight
+and resulting polarity scores. Weight's are saved in the \code{seed_weighted} in
+the \code{textmodel_lss} object.
 }
 \examples{
 \donttest{
@@ -119,8 +147,8 @@ summary(lss_glov)
 \references{
 Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 Text Analysis Technique for New Domains and Languages", Communication
-Methods and Measures. \doi{10.1080/19312458.2020.1832976}.
-Watanabe, Kohei. 2017. "Measuring News Bias: Russia's
-Official News Agency ITAR-TASS' Coverage of the Ukraine Crisis" European
-Journal of Communication. \doi{10.1177/0267323117695735}.
+Methods and Measures. \doi{10.1080/19312458.2020.1832976}. Watanabe, Kohei.
+2017. "Measuring News Bias: Russia's Official News Agency ITAR-TASS'
+Coverage of the Ukraine Crisis" European Journal of Communication.
+\doi{10.1177/0267323117695735}.
 }
