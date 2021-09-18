@@ -51,7 +51,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_identical(names(lss_test$beta), names(lss_test$frequency))
     expect_true(is.dfm(lss_test$data))
     expect_identical(lss_test$terms, feat_test)
-    expect_identical(names(lss_test$seeds_weighted), names(seedwords("pos-neg")))
+    expect_identical(names(lss_test$seeds), names(seedwords("pos-neg")))
 
     expect_equal(
         names(lss_test_fcm),
@@ -65,7 +65,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_identical(names(lss_test_fcm$beta), names(lss_test_fcm$frequency))
     expect_true(is.null(lss_test_fcm$data))
     expect_identical(lss_test_fcm$terms, feat_test)
-    expect_identical(names(lss_test_fcm$seeds_weighted), names(seedwords("pos-neg")))
+    expect_identical(names(lss_test_fcm$seeds), names(seedwords("pos-neg")))
 
     expect_equal(
         names(lss_test_nd),
@@ -232,11 +232,11 @@ test_that("textmodel_lss works with glob patterns", {
     dfmt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(dfmt, seed, k = 10)
-    expect_equal(names(lss$seeds_weighted), names(seed))
-    expect_equal(lengths(lss$seeds_weighted),
-                 c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
-
-
+    expect_equal(names(lss$seeds), names(seed))
+    expect_equal(lss$seeds_weighted,
+                 c("positive" = 0.25, "positively" = 0.25,
+                   "badge" = -0.16, "bad" = -0.16, "badly" = -0.16,
+                   "negative" = -0.5), tolerance = 0.01)
 })
 
 test_that("textmodel_lss works with non-existent seeds", {
