@@ -89,14 +89,14 @@ test_that("textmodel_lss print progress", {
     expect_output(
         textmodel_lss(dfmt_test, seed, verbose = TRUE),
         paste0("Calculating term-term similarity to 12 seed words...\n",
-               "Performing SVD by RSpectra...\n", collapse = ""),
+               "Performing SVD by RSpectra...", collapse = ""),
         fixed = TRUE
     )
 
     expect_output(
         textmodel_lss(fcmt_test, seed, verbose = TRUE),
         paste0("Calculating term-term similarity to 12 seed words...\n",
-               "Fitting GloVe model by rsparse...\n", collapse = ""),
+               "Fitting GloVe model by rsparse...", collapse = ""),
         fixed = TRUE
     )
 
