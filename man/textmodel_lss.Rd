@@ -91,24 +91,24 @@ A word embeddings-based semisupervised model for document scaling
 }
 \details{
 Latent Semantic Scaling (LSS) is a semisupervised document scaling
-method. \code{textmodel_lss} constructs word vectors from use-provided documents
-(\code{x}) and weight words (\code{terms}) based on their semantic proximity to seed
-words (\code{seeds}). Seed words are any known polarity (e.g. sentiment words)
-words that users should manually select. The required number of seed words
-are usually 5 to 10 for each end of the scale.
+method. \code{textmodel_lss()} constructs word vectors from use-provided
+documents (\code{x}) and weights words (\code{terms}) based on their semantic
+proximity to seed words (\code{seeds}). Seed words are any known polarity words
+(e.g. sentiment words) that users should manually choose. The required
+number of seed words are usually 5 to 10 for each end of the scale.
 
-If \code{seeds} is a named numeric vector with positive and negative numeric, a
-bipolar LSS model is construct; if \code{seeds} is a character vector, unipolar
-LSS model. Usually bipolar models perform well in document scaling becasue both
-end of the scale is defined by the user.
+If \code{seeds} is a named numeric vector with positive and negative values, a
+bipolar LSS model is construct; if \code{seeds} is a character vector, a
+unipolar LSS model. Usually bipolar models perform better in document
+scaling because both ends of the scale are defined by the user.
 
-LSS computes polarity scores based on weights given to seed words but the
-same words tend to receive varying polarity scores due to the unequal
-semantic similarity between seed words. If \code{auto_weight = TRUE}, the
-weights of seed words are adjusted automatically using \code{optim()}. It
-attempts to minimize the squared difference between their inverted weight
-and resulting polarity scores. Weight's are saved in the \code{seed_weighted} in
-the \code{textmodel_lss} object.
+A seed word's polarity score computed by \code{textmodel_lss()} tends to diverge
+from its original score given by the user because it's score is affected
+not only by its original score but also by the original scores of all other
+seed words. If \code{auto_weight = TRUE}, the original scores are weighted
+automatically using \code{\link[stats:optim]{stats::optim()}} to minimize the squared difference
+between seed words' computed and original scores. Weighted scores are saved
+in \code{seed_weighted} in the object.
 }
 \examples{
 \donttest{
@@ -147,8 +147,9 @@ summary(lss_glov)
 \references{
 Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 Text Analysis Technique for New Domains and Languages", Communication
-Methods and Measures. \doi{10.1080/19312458.2020.1832976}. Watanabe, Kohei.
-2017. "Measuring News Bias: Russia's Official News Agency ITAR-TASS'
-Coverage of the Ukraine Crisis" European Journal of Communication.
-\doi{10.1177/0267323117695735}.
+Methods and Measures. \doi{10.1080/19312458.2020.1832976}.
+
+Watanabe, Kohei. 2017. "Measuring News Bias: Russia's Official News Agency
+ITAR-TASS' Coverage of the Ukraine Crisis" European Journal of
+Communication. \doi{10.1177/0267323117695735}.
 }
