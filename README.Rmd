@@ -67,14 +67,13 @@ toks_sent <- corp %>%
     tokens(remove_punct = TRUE) %>% 
     tokens_remove(stopwords("en"), padding = TRUE)
 dfmt_sent <- toks_sent %>% 
-    dfm() %>%
-    dfm_remove("") %>% 
+    dfm(revemo_padding = TRUE) %>%
     dfm_select("^\\p{L}+$", valuetype = "regex", min_nchar = 2) %>% 
     dfm_trim(min_termfreq = 5)
 
 eco <- char_context(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
-                     terms = eco, k = 300, cache = TRUE)
+                     terms = eco, auto_weight = TRUE, k = 300, cache = TRUE)
 ```
 
 ### Sentiment seed words
@@ -94,13 +93,13 @@ head(coef(lss), 20) # most positive words
 tail(coef(lss), 20) # most negative words
 ```
 
-This plot shows that frequent words ("said", "people", "also") are neutral while less frequent words such as "borrowing", "unemployment", "emerging" and "efficient" are  either negative or positive.
+This plot shows that frequent words ("world", "country", "uk") are neutral while less frequent words such as "borrowing", "unemployment", "debt", "emerging", "efficient" are "sustainable" are  either negative or positive.
 
 ```{r words}
 textplot_terms(lss, 
-               highlighted = c("said", "people", "also",
-                               "borrowing", "unemployment",
-                               "emerging", "efficient"))
+               highlighted = c("world", "business", "uk",
+                               "borrowing", "unemployment", "debt",
+                               "emerging", "efficient", "sustainable"))
 ```
 
 ## Result of analysis
