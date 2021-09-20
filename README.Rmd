@@ -73,7 +73,7 @@ dfmt_sent <- toks_sent %>%
 
 eco <- char_context(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
-                     terms = eco, auto_weight = TRUE, k = 300, cache = TRUE)
+                     terms = eco, k = 300, cache = TRUE)
 ```
 
 ### Sentiment seed words

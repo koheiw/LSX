@@ -74,7 +74,7 @@ dfmt_sent <- toks_sent %>%
 ``` r
 eco <- char_context(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
-                     terms = eco, auto_weight = TRUE, k = 300, cache = TRUE)
+                     terms = eco, k = 300, cache = TRUE)
 ```
 
     ## Reading cache file: lss_cache/svds_e5089465ba658d1a.RDS
@@ -102,27 +102,27 @@ to seed words.
 head(coef(lss), 20) # most positive words
 ```
 
-    ##        good    positive       shape        asia      remain sustainable 
-    ##  0.14692531  0.14625752  0.13157273  0.10045343  0.09826269  0.09702084 
-    ##    emerging   continued potentially challenging       china   expecting 
-    ##  0.09443049  0.09426020  0.09143613  0.08905550  0.08633932  0.08550641 
-    ##      decent     markets      expect       stock cooperation   uncertain 
-    ##  0.08506407  0.08497540  0.08486704  0.08273883  0.08127225  0.07949043 
-    ##      future         hit 
-    ##  0.07941483  0.07888814
+    ##        good       shape    positive sustainable   expecting      remain 
+    ##  0.10086678  0.08100301  0.07287992  0.06489614  0.06459612  0.06327885 
+    ##    emerging      decent   continued challenging        asia  powerhouse 
+    ##  0.06173428  0.06158674  0.05958519  0.05735492  0.05545359  0.05454087 
+    ##        drag      argued       china         hit       stock       start 
+    ##  0.05430134  0.05425140  0.05269536  0.05213953  0.05177975  0.05162649 
+    ##   weakening consultancy 
+    ##  0.05153202  0.05108261
 
 ``` r
 tail(coef(lss), 20) # most negative words
 ```
 
-    ##     pantheon         debt        trend       brexit         data     sterling 
-    ##   -0.1042108   -0.1049986   -0.1060193   -0.1064971   -0.1079335   -0.1081180 
-    ##        rates         hike       shrink          rba        basic        grows 
-    ##   -0.1082183   -0.1091890   -0.1127559   -0.1147965   -0.1156016   -0.1164406 
-    ## unemployment         rate    borrowing implications    suggested          bad 
-    ##   -0.1170247   -0.1176705   -0.1200251   -0.1220836   -0.1230534   -0.1441512 
-    ##     negative          cut 
-    ##   -0.1459998   -0.1469415
+    ##      raising         rise     sterling      cutting        grows       shrink 
+    ##  -0.07002333  -0.07106325  -0.07220668  -0.07389086  -0.07568230  -0.07626922 
+    ## implications        basic         debt policymakers    suggested     interest 
+    ##  -0.07767036  -0.07848986  -0.07896652  -0.07970222  -0.08267444  -0.08631343 
+    ## unemployment    borrowing         hike         rate          rba        rates 
+    ##  -0.08879022  -0.09109017  -0.09224650  -0.09598675  -0.09672486  -0.09754047 
+    ##          cut     negative 
+    ##  -0.11047689  -0.12472812
 
 This plot shows that frequent words (“world”, “country”, “uk”) are
 neutral while less frequent words such as “borrowing”, “unemployment”,
