@@ -76,10 +76,29 @@ test_that("textmodel_lss has all the attributes", {
 
 })
 
-test_that("summary.textmodel_lss is working", {
+test_that("print methods are working", {
 
-    expect_silent(summary(lss_test))
-    expect_silent(summary(lss_test_nd))
+    expect_output(print(lss_test),
+                  paste0(
+                      "Call:(\n)",
+                      "textmodel_lss\\.dfm(.*)",
+                      ".*",
+                      "Hyperparameters: k = 300(\\s+)"
+                  ))
+    expect_output(print(summary(lss_test)),
+                  paste0(
+                      "Call:(\n)",
+                      "textmodel_lss\\.dfm(.*)",
+                      ".*",
+                      "Seeds:(\n)",
+                      "(\\s+)good(\\s+)nice(\\s+)excellent(\\s+)(.*)",
+                      "(\\s+)1(\\s+)1(\\s+)1(\\s+)1(.*)",
+                      ".*",
+                      "Beta:(\n)",
+                      "\\(showing first 30 elements\\)(\n)",
+                      "(\\s+)idea(\\s+)met(\\s+)strange(\\s+)everyone(.*)",
+                      "(\\s+)0.07118(\\s+)0.06438(\\s+)0.05269(\\s+)0.04123(.*)")
+    )
 
 })
 
