@@ -374,7 +374,7 @@ summary.textmodel_lss <- function(object, n = 30L, ...) {
         "seeds" = object$seeds,
         "beta" = as.coefficients_textmodel(head(coef(object), n))
     )
-    if (!any("data" == names(object)))
+    if (!is.null(object$data))
         result$data.dimension <- dim(object$data)
     as.summary.textmodel(result)
 }
