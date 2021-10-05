@@ -81,23 +81,21 @@ test_that("print methods are working", {
     expect_output(print(lss_test),
                   paste0(
                       "Call:(\n)",
-                      "textmodel_lss\\.dfm(.*)",
-                      ".*",
-                      "Hyperparameters: k = 300(\\s+)"
+                      "textmodel_lss\\.dfm\\(.*\\)(\n)"
                   ))
     expect_output(print(summary(lss_test)),
                   paste0(
                       "Call:(\n)",
-                      "textmodel_lss\\.dfm(.*)",
-                      ".*",
+                      "textmodel_lss\\.dfm\\(.*\\)(\n)",
+                      "\n",
                       "Seeds:(\n)",
-                      "(\\s+)good(\\s+)nice(\\s+)excellent(\\s+)(.*)",
+                      "(\\s+)good(\\s+)nice(\\s+)excellent(\\s+)(.*\n)",
                       "(\\s+)1(\\s+)1(\\s+)1(\\s+)1(.*)",
-                      ".*",
+                      "\n",
                       "Beta:(\n)",
                       "\\(showing first 30 elements\\)(\n)",
-                      "(\\s+)idea(\\s+)met(\\s+)strange(\\s+)everyone(.*)",
-                      "(\\s+)0.07118(\\s+)0.06438(\\s+)0.05269(\\s+)0.04123(.*)")
+                      "(\\s+)idea(\\s+)met(\\s+)strange(\\s+)everyone(.*\n)",
+                      "(\\s+)0.07118(\\s+)0.06438(\\s+)0.05269(\\s+)0.04123(.*\n)")
     )
 
 })
