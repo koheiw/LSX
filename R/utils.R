@@ -59,6 +59,17 @@ cohesion <- function(object, bandwidth = 10) {
     return(result)
 }
 
+#' Experimental function to find
+#' @export
+#' @internal
+boundary <- function(x, n = 3, method = "ward.D2") {
+    seed <- unlist(unname(x$seeds_weighted))
+    emb <- x$embedding[,names(seed)]
+    dist <- as.dist(1 - as.matrix(proxyC::simil(Matrix(emb, sparse = TRUE))))
+    hc <- hclust(dist, method)
+    cutree(hc, k = n)
+}
+
 #' Convenient function to convert a list to seed words
 #' @param x a list of characters vectors or a [dictionary][quanteda::dictionary] object
 #' @param upper numeric index or key for seed words for higher scores
