@@ -63,8 +63,8 @@ cohesion <- function(object, bandwidth = 10) {
 #' @export
 #' @internal
 boundary <- function(x, n = 3, method = "ward.D2") {
-    seed <- unlist(unname(x$seeds_weighted))
-    emb <- x$embedding[,names(seed)]
+    seed <- names(x$seeds_weighted)
+    emb <- x$embedding[,seed]
     dist <- as.dist(1 - as.matrix(proxyC::simil(Matrix(emb, sparse = TRUE))))
     hc <- hclust(dist, method)
     cutree(hc, k = n)
