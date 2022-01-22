@@ -2,10 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{boundary}
 \alias{boundary}
-\title{Experimental function to find}
+\title{\link{Experimental} Find clusters of word vectors}
 \usage{
 boundary(x, n = 10, method = "ward.D2")
 }
-\description{
-Experimental function to find
+\arguments{
+\item{x}{a fitted \code{textmodel_lss}}
+
+\item{n}{the number of cluster}
+
+\item{method}{the method for hierarchical clustering}
 }
+\description{
+\link{Experimental} Find clusters of word vectors
+}
+\keyword{internal}

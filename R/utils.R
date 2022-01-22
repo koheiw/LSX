@@ -38,7 +38,7 @@ diagnosys.corpus <- function(x, ...) {
     return(result)
 }
 
-#' Computes cohesion of components of latent semantic analysis
+#' [Experimental] Computes cohesion of components of latent semantic analysis
 #' @param object a fitted `textmodel_lss`
 #' @param bandwidth size of window for smoothing
 #' @export
@@ -59,9 +59,12 @@ cohesion <- function(object, bandwidth = 10) {
     return(result)
 }
 
-#' Experimental function to find
+#' [Experimental] Find clusters of word vectors
+#' @param x a fitted `textmodel_lss`
+#' @param n the number of cluster
+#' @param method the method for hierarchical clustering
 #' @export
-#' @internal
+#' @keywords internal
 boundary <- function(x, n = 10, method = "ward.D2") { # change to region?
     seed <- unlist(unname(x$seeds_weighted))
     emb <- x$embedding[,names(seed)]
