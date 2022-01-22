@@ -55,8 +55,8 @@ See \link[quanteda:valuetype]{quanteda::valuetype}.}
 when \code{x} is a \code{dfm}.}
 
 \item{slice}{a number or indices of the components of word vectors used to
-compute similarity; \code{slice < k} to truncate word vectors; useful for diagnosys
-and simulation.}
+compute similarity; \code{slice < k} to further truncate word vectors; useful
+for diagnosys and simulation.}
 
 \item{weight}{weighting scheme passed to \code{\link[quanteda:dfm_weight]{quanteda::dfm_weight()}}. Ignored
 when \code{engine} is "rsparse".}
@@ -130,12 +130,15 @@ lss_svd <- textmodel_lss(dfmt, seed)
 summary(lss_svd)
 
 # sentiment model on economy
-eco <- head(char_keyness(toks, 'econom*'), 500)
+eco <- head(textstat_context(toks, 'econom*'), 500)
 svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
 
 # sentiment model on politics
-pol <- head(char_keyness(toks, 'politi*'), 500)
+pol <- head(textstat_context(toks, 'politi*'), 500)
 svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
+
+# modify settings of existing model
+svd_pol2 <- as.textmodel_lss(svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
 
 # GloVe
 fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)

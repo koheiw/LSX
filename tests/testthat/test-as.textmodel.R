@@ -79,6 +79,15 @@ test_that("as.textmodel_lss works with textmodel_lss", {
     expect_identical(coef(lss),
                      coef(as.textmodel_lss(lss_test, seed, slice = 1:10)))
     expect_equal(dim(lss$embedding), c(10, 112))
+
+    # with dummy LSS
+    weight <- c("decision" = 0.1, "instance" = -0.1,
+                "foundations" = 0.3, "the" = 0)
+    lss_dummy <- as.textmodel_lss(weight)
+    expect_error(
+        as.textmodel_lss(lss_dummy, seed),
+        "x must be a valid textmodel_lss object"
+    )
 })
 
 test_that("as.textmodel_lss works with vector", {

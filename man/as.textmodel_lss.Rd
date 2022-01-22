@@ -7,22 +7,23 @@
 as.textmodel_lss(x, ...)
 }
 \arguments{
-\item{x}{an external object to construct dummy a dummy \link{textmodel_lss}
-object.}
+\item{x}{an object from which a dummy \link{textmodel_lss} object is created.}
 
-\item{...}{arguments used to construct a dummy object. \code{seeds} must be given
+\item{...}{arguments used to create a dummy object. \code{seeds} must be given
 when \code{x} is a dense matrix.}
 }
 \value{
 a dummy \link{textmodel_lss} object
 }
 \description{
-Create a dummy textmodel_lss object from a numeric vector or matrix.
-Pre-trained word-embedding models could used to perform LSS.
+Create a dummy textmodel_lss object from a numeric vector, dense matrix or an
+existing textmodel_lss object. Pre-trained word-embedding models could used
+to perform LSS through this function.
 }
 \details{
 A named numeric vector and a dense matrix are set to \code{beta} and
-\code{embedding} respectively. A dense matrix should have column names for words.
+\code{embedding} respectively. A dense matrix should have column names for
+words.
 }
 \examples{
 v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)

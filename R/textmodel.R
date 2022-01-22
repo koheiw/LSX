@@ -68,12 +68,15 @@
 #' summary(lss_svd)
 #'
 #' # sentiment model on economy
-#' eco <- head(char_keyness(toks, 'econom*'), 500)
+#' eco <- head(textstat_context(toks, 'econom*'), 500)
 #' svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
 #'
 #' # sentiment model on politics
-#' pol <- head(char_keyness(toks, 'politi*'), 500)
+#' pol <- head(textstat_context(toks, 'politi*'), 500)
 #' svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
+#'
+#' # modify settings of existing model
+#' svd_pol2 <- as.textmodel_lss(svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
 #'
 #' # GloVe
 #' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
@@ -90,8 +93,8 @@ textmodel_lss <- function(x, ...) {
 #' @param k the number of singular values requested to the SVD engine. Only used
 #'   when `x` is a `dfm`.
 #' @param slice a number or indices of the components of word vectors used to
-#'   compute similarity; `slice < k` to truncate word vectors; useful for diagnosys
-#'   and simulation.
+#'   compute similarity; `slice < k` to further truncate word vectors; useful
+#'   for diagnosys and simulation.
 #' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
 #' @method textmodel_lss dfm
 #' @importFrom quanteda featnames meta check_integer
