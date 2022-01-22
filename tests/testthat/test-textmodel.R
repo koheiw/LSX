@@ -357,3 +357,17 @@ test_that("weight_seeds() works", {
              "bb" = c("bb" = -1)),
     )
 })
+
+test_that("old argument still works", {
+    skip_on_cran()
+    suppressWarnings({
+        lss <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300)
+    })
+    expect_equal(lss_test$terms, lss$terms)
+
+    suppressWarnings({
+        lss_fcm <- textmodel_lss(fcmt_test, seed, features = feat_test, w = 50)
+    })
+    expect_equal(lss_test$terms, lss_fcm$terms)
+})
+

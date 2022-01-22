@@ -108,7 +108,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     args <- list(terms = terms, seeds = seeds, ...)
     if ("features" %in% names(args)) {
         .Deprecated(msg = "'features' is deprecated; use 'terms'\n")
-        terms <- args$features
+        terms <- args$terms <- args$features
     }
 
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
@@ -180,7 +180,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     args <- list(terms = terms, seeds = seeds, ...)
     if ("features" %in% names(args)) {
         .Deprecated(msg = "'features' is deprecated; use 'terms'.\n")
-        terms <- args$features
+        terms <- args$terms <- args$features
     }
     if (engine == "text2vec") {
         .Deprecated(msg = "GloVe engine has been moved to from text2vec to rsparse.\n")
@@ -195,7 +195,9 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     if (engine == "rsparse") {
         if (verbose)
             cat("Fitting GloVe model by rsparse...\n")
-        embed <- cache_glove(x, w, x_max = max_count, cache = cache, ...)
+        embed <- (function(x, w, max_count, cache, features, ...) {
+            cache_glove(x, w, x_max = max_count, cache = cache, ...)
+        })(x, w, max_count, cache, ...) # trap old argument
         embed <- embed[,feat, drop = FALSE]
     }
 
