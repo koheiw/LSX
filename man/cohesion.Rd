@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{cohesion}
 \alias{cohesion}
-\title{\link{Experimental} Computes cohesion of components of latent semantic analysis}
+\title{Computes cohesion of components of latent semantic analysis}
 \usage{
 cohesion(object, bandwidth = 10)
 }
@@ -12,5 +12,5 @@ cohesion(object, bandwidth = 10)
 \item{bandwidth}{size of window for smoothing}
 }
 \description{
-\link{Experimental} Computes cohesion of components of latent semantic analysis
+Computes cohesion of components of latent semantic analysis
 }

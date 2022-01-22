@@ -38,7 +38,7 @@ diagnosys.corpus <- function(x, ...) {
     return(result)
 }
 
-#' [Experimental] Computes cohesion of components of latent semantic analysis
+#' Computes cohesion of components of latent semantic analysis
 #' @param object a fitted `textmodel_lss`
 #' @param bandwidth size of window for smoothing
 #' @export
@@ -59,7 +59,9 @@ cohesion <- function(object, bandwidth = 10) {
     return(result)
 }
 
-#' [Experimental] Find clusters of word vectors
+#' \[experimental\] Find clusters of word vectors
+#'
+#' Experimental function to find clusters of word vectors
 #' @param x a fitted `textmodel_lss`
 #' @param n the number of cluster
 #' @param method the method for hierarchical clustering

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{boundary}
 \alias{boundary}
-\title{\link{Experimental} Find clusters of word vectors}
+\title{[experimental] Find clusters of word vectors}
 \usage{
 boundary(x, n = 10, method = "ward.D2")
 }
@@ -14,6 +14,6 @@ boundary(x, n = 10, method = "ward.D2")
 \item{method}{the method for hierarchical clustering}
 }
 \description{
-\link{Experimental} Find clusters of word vectors
+Experimental function to find clusters of word vectors
 }
 \keyword{internal}
