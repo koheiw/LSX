@@ -63,4 +63,10 @@ test_that("cohesion works", {
     expect_identical(nrow(coh), lss_test$k)
 })
 
+test_that("boundary works", {
+    bou <- boundary(lss_test, n = 3)
+    expect_identical(length(bou), lss_test$k)
+    expect_true(all(bou %in% 1:3))
+})
+
 

@@ -4,7 +4,7 @@
 \alias{boundary}
 \title{Experimental function to find}
 \usage{
-boundary(x, n = 3, method = "ward.D2")
+boundary(x, n = 10, method = "ward.D2")
 }
 \description{
 Experimental function to find
