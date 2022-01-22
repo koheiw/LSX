@@ -1,8 +1,9 @@
+require(quanteda)
 
 mat_test <- readRDS("../data/matrix_embedding.RDS")
 toks_test <- readRDS("../data/tokens_test.RDS")
 feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
-dfmt_test <- quanteda::dfm_group(quanteda::dfm(toks_test))
+dfmt_test <- dfm_group(dfm(toks_test))
 seed <- as.seedwords(data_dictionary_sentiment)
 lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 50,
                           include_data = FALSE)

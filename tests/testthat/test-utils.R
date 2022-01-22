@@ -1,6 +1,7 @@
+require(quanteda)
 
 toks_test <- readRDS("../data/tokens_test.RDS")
-feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
+feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
 seed_test <- as.seedwords(data_dictionary_sentiment)
 lss_test <- textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300)
@@ -61,12 +62,14 @@ test_that("cohesion works", {
     coh <- cohesion(lss_test)
     expect_identical(names(coh), c("k", "raw", "smoothed"))
     expect_identical(nrow(coh), lss_test$k)
+    expect_error(cohesion(list()), "x must be a textmodel_lss object")
 })
 
 test_that("boundary works", {
     bou <- boundary(lss_test, n = 3)
     expect_identical(length(bou), lss_test$k)
     expect_true(all(bou %in% 1:3))
+    expect_error(boundary(list()), "x must be a textmodel_lss object")
 })
 
 
