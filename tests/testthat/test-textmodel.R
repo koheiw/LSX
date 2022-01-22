@@ -231,11 +231,9 @@ test_that("textmodel_lss works with glob patterns", {
     dfmt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(dfmt, seed, k = 10)
-    expect_equal(names(lss$seeds_weighted), names(seed))
-    expect_equal(lengths(lss$seeds_weighted),
-                 c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
-
-
+    expect_equal(lss$seeds, seed)
+    expect_equal(names(lss$seeds_weighted),
+                 c("positive", "positively", "badge", "bad", "badly", "negative"))
 })
 
 test_that("textmodel_lss works with non-existent seeds", {
@@ -323,11 +321,6 @@ test_that("test smooth_lss", {
     dat_locfit <- smooth_lss(dat, lss_var = "lss", date_var = "time",
                              engine = "locfit")
     expect_true(cor(dat_loess$fit, dat_locfit$fit) > 0.90)
-})
-
-test_that("works with single seed", {
-    expect_silent(cohesion(lss_test))
-    expect_silent(strength(lss_test))
 })
 
 test_that("weight_seeds() works", {
