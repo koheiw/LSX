@@ -1,4 +1,3 @@
-
 require(quanteda)
 
 # create and save test object
@@ -76,46 +75,10 @@ test_that("textmodel_lss has all the attributes", {
 
 })
 
-test_that("print methods are working", {
+test_that("summary.textmodel_lss is working", {
 
-    expect_output(print(lss_test),
-                  paste0(
-                      "Call:(\n)",
-                      "textmodel_lss\\.dfm\\(.*\\)(\n)"
-                  ))
-    expect_output(print(summary(lss_test)),
-                  paste0(
-                      "Call:(\n)",
-                      "textmodel_lss\\.dfm\\(.*\\)(\n)",
-                      "\n",
-                      "Seeds:(\n)",
-                      "(\\s+)good(\\s+)nice(\\s+)excellent(\\s+)(.*\n)",
-                      "(\\s+)1(\\s+)1(\\s+)1(\\s+)1(.*)",
-                      "\n",
-                      "Beta:(\n)",
-                      "\\(showing first 30 elements\\)(\n)",
-                      "(\\s+)idea(\\s+)met(\\s+)strange(\\s+)everyone(.*\n)",
-                      "(\\s+)0.07118(\\s+)0.06438(\\s+)0.05269(\\s+)0.04123(.*\n)")
-    )
-
-})
-
-test_that("textmodel_lss print progress", {
-    skip_on_cran()
-
-    expect_output(
-        textmodel_lss(dfmt_test, seed, verbose = TRUE),
-        paste0("Calculating term-term similarity to 12 seed words...\n",
-               "Performing SVD by RSpectra...", collapse = ""),
-        fixed = TRUE
-    )
-
-    expect_output(
-        textmodel_lss(fcmt_test, seed, verbose = TRUE),
-        paste0("Calculating term-term similarity to 12 seed words...\n",
-               "Fitting GloVe model by rsparse...", collapse = ""),
-        fixed = TRUE
-    )
+    expect_silent(summary(lss_test))
+    expect_silent(summary(lss_test_nd))
 
 })
 
@@ -268,11 +231,11 @@ test_that("textmodel_lss works with glob patterns", {
     dfmt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(dfmt, seed, k = 10)
-    expect_equal(names(lss$seeds), names(seed))
-    expect_equal(lss$seeds_weighted,
-                 c("positive" = 0.25, "positively" = 0.25,
-                   "badge" = -0.16, "bad" = -0.16, "badly" = -0.16,
-                   "negative" = -0.5), tolerance = 0.01)
+    expect_equal(names(lss$seeds_weighted), names(seed))
+    expect_equal(lengths(lss$seeds_weighted),
+                 c("nice*" = 0, "positive*" = 2, "bad*" = 3, "negative*" = 1))
+
+
 })
 
 test_that("textmodel_lss works with non-existent seeds", {
@@ -326,7 +289,7 @@ test_that("slice argument is working", {
     )
     expect_error(
         textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:400),
-        "'slice' must be between 1 and k"
+        "The length of slice must be between 1 and 300"
     )
 })
 
@@ -364,6 +327,7 @@ test_that("test smooth_lss", {
 
 test_that("works with single seed", {
     expect_silent(cohesion(lss_test))
+    expect_silent(strength(lss_test))
 })
 
 test_that("weight_seeds() works", {
@@ -400,32 +364,3 @@ test_that("weight_seeds() works", {
              "bb" = c("bb" = -1)),
     )
 })
-
-test_that("auto_weight is working", {
-
-    skip_on_cran()
-    lss1 <- textmodel_lss(dfmt_test, seed, k = 300)
-    lss2 <- textmodel_lss(dfmt_test, seed, k = 300, auto_weight = TRUE)
-    expect_true(
-        all(lss1$seeds_weighted != lss2$seeds_weighted)
-    )
-    expect_true(
-        all(sign(lss1$seeds_weighted) == sign(lss2$seeds_weighted))
-    )
-    expect_true(
-        all(abs(lss2$beta[names(lss2$seeds_weighted)] - lss1$seeds_weighted) < 0.05)
-    )
-
-    lss3 <- textmodel_lss(fcmt_test, seed, w = 50)
-    lss4 <- textmodel_lss(fcmt_test, seed, w = 50, auto_weight = TRUE)
-    expect_true(
-        all(lss3$seeds_weighted != lss4$seeds_weighted)
-    )
-    expect_true(
-        all(sign(lss3$seeds_weighted) == sign(lss4$seeds_weighted))
-    )
-    expect_true(
-        all(abs(lss4$beta[names(lss4$seeds_weighted)] - lss3$seeds_weighted) < 0.05)
-    )
-})
-

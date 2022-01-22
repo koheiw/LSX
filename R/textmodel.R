@@ -94,7 +94,8 @@ textmodel_lss <- function(x, ...) {
 #'   and simulation.
 #' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta colSums
+#' @importFrom quanteda featnames meta check_integer
+#' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
@@ -110,6 +111,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         terms <- args$features
     }
 
+    k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
     engine <- match.arg(engine)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
@@ -125,13 +127,12 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         embed <- embed[,feat, drop = FALSE]
         import <- svd$d
     }
-    if (is.null(slice))
-        slice <- k
 
-    k <- as.integer(k)
-    slice <- as.integer(slice)
-    if (any(slice < 1L) || any(k < slice))
-        stop("'slice' must be between 1 and k")
+    if (is.null(slice)) {
+        slice <- k
+    } else {
+        slice <- check_integer(slice, min_len = 1, max_len = k, min = 1, max = k)
+    }
     if (length(slice) == 1)
         slice <- seq_len(slice)
 

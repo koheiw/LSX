@@ -1,9 +1,11 @@
 
 mat_test <- readRDS("../data/matrix_embedding.RDS")
 toks_test <- readRDS("../data/tokens_test.RDS")
-feat_test <- head(char_keyness(toks_test, "america*", min_count = 1, p = 0.05), 100)
+feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- quanteda::dfm_group(quanteda::dfm(toks_test))
 seed <- as.seedwords(data_dictionary_sentiment)
+lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 50,
+                          include_data = FALSE)
 
 test_that("as.textmodel_lss works with matrix", {
 
@@ -33,6 +35,20 @@ test_that("as.textmodel_lss works with matrix", {
     lss3 <- as.textmodel_lss(mat_special, seed)
     expect_equal(sum("" == names(coef(lss3))), 0)
     expect_equal(sum("*" == names(coef(lss3))), 1)
+
+    # with slice
+    lss4 <- as.textmodel_lss(mat_test, seed, slice = 50)
+    expect_error(
+        as.textmodel_lss(mat_test, seed, slice = 150),
+        "The value of slice must be between 1 and 100"
+    )
+    expect_error(
+        as.textmodel_lss(mat_test, seed, slice = 1:150),
+        "The length of slice must be between 1 and 100"
+    )
+    expect_identical(coef(lss4),
+                     coef(as.textmodel_lss(mat_test, seed, slice = 1:50)))
+    expect_equal(dim(lss4$embedding), c(50, 1000))
 })
 
 test_that("as.textmodel_lss errors with invalid columns", {
@@ -47,6 +63,22 @@ test_that("as.textmodel_lss errors with invalid columns", {
     mat_na[1,1] <- NA
     expect_error(as.textmodel_lss(mat_na, seed),
                  "x must not have NA")
+})
+
+test_that("as.textmodel_lss works with textmodel_lss", {
+
+    lss <- as.textmodel_lss(lss_test, seed, slice = 10)
+    expect_error(
+        as.textmodel_lss(lss_test, seed, slice = 100),
+        "The value of slice must be between 1 and 50"
+    )
+    expect_error(
+        as.textmodel_lss(lss_test, seed, slice = 1:100),
+        "The length of slice must be between 1 and 50"
+    )
+    expect_identical(coef(lss),
+                     coef(as.textmodel_lss(lss_test, seed, slice = 1:10)))
+    expect_equal(dim(lss$embedding), c(10, 112))
 })
 
 test_that("as.textmodel_lss works with vector", {
