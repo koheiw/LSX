@@ -68,7 +68,7 @@ cohesion <- function(x, bandwidth = 10) {
 #' @param method the method for hierarchical clustering
 #' @export
 #' @keywords internal
-boundary <- function(x, n = 10, method = "ward.D2") { # change to region?
+boundary <- function(x, n = 10, method = "ward.D2") { # change to textplot_components()?
     if (!"textmodel_lss" %in% class(x))
         stop("x must be a textmodel_lss object")
     seed <- names(x$seeds_weighted)
@@ -77,7 +77,7 @@ boundary <- function(x, n = 10, method = "ward.D2") { # change to region?
         sim <- proxyC::simil(Matrix(emb, sparse = TRUE))
     })
     dist <- as.dist(1 - abs(as.matrix(sim)))
-    hc <- hclust(dist, method)
+    hc <- hclust(dist, method)  # return this with a spacial class?
     cutree(hc, k = n)
 }
 

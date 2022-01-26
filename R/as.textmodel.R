@@ -95,5 +95,8 @@ as.textmodel_lss.numeric <- function(x, ...) {
 as.textmodel_lss.textmodel_lss <- function(x, ...) {
     if (is.null(x$embedding))
         stop("x must be a valid textmodel_lss object")
-    as.textmodel_lss(x$embedding, ...)
+    result <- as.textmodel_lss(x$embedding, ...)
+    result$data <- x$data
+    result$frequency <- x$frequency
+    return(result)
 }

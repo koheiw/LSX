@@ -80,6 +80,8 @@ test_that("as.textmodel_lss works with textmodel_lss", {
     expect_identical(coef(lss),
                      coef(as.textmodel_lss(lss_test, seed, slice = 1:10)))
     expect_equal(dim(lss$embedding), c(10, 112))
+    expect_identical(lss_test$data, lss$data)
+    expect_identical(lss_test$frequency, lss$frequency)
 
     # with dummy LSS
     weight <- c("decision" = 0.1, "instance" = -0.1,
