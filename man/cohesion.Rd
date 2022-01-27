@@ -4,10 +4,10 @@
 \alias{cohesion}
 \title{Computes cohesion of components of latent semantic analysis}
 \usage{
-cohesion(object, bandwidth = 10)
+cohesion(x, bandwidth = 10)
 }
 \arguments{
-\item{object}{a fitted \code{textmodel_lss}}
+\item{x}{a fitted \code{textmodel_lss}}
 
 \item{bandwidth}{size of window for smoothing}
 }

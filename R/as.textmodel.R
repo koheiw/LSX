@@ -1,13 +1,14 @@
 #' Create a dummy textmodel_lss object from external objects
 #'
-#' Create a dummy textmodel_lss object from a numeric vector or matrix.
-#' Pre-trained word-embedding models could used to perform LSS.
-#' @param x an external object to construct dummy a dummy [textmodel_lss]
-#'   object.
-#' @param ... arguments used to construct a dummy object. `seeds` must be given
+#' Create a dummy textmodel_lss object from a numeric vector, dense matrix or an
+#' existing textmodel_lss object. Pre-trained word-embedding models could used
+#' to perform LSS through this function.
+#' @param x an object from which a dummy [textmodel_lss] object is created.
+#' @param ... arguments used to create a dummy object. `seeds` must be given
 #'   when `x` is a dense matrix.
 #' @details A named numeric vector and a dense matrix are set to `beta` and
-#'   `embedding` respectively. A dense matrix should have column names for words.
+#'   `embedding` respectively. A dense matrix should have column names for
+#'   words.
 #' @keywords internal
 #' @export
 #' @examples
@@ -22,7 +23,7 @@ as.textmodel_lss <- function(x, ...) {
 #' @export
 #' @method as.textmodel_lss matrix
 as.textmodel_lss.matrix <- function(x, seeds,
-                                    terms = NULL,
+                                    terms = NULL, slice = NULL,
                                     simil_method = "cosine",
                                     auto_weight = FALSE,
                                     verbose = FALSE, ...) {
@@ -41,7 +42,15 @@ as.textmodel_lss.matrix <- function(x, seeds,
     term <- expand_terms(terms, colnames(x))
     feat <- union(term, names(seed))
 
-    x <- x[,feat, drop = FALSE]
+    if (is.null(slice)) {
+        slice <- nrow(x)
+    } else {
+        slice <- check_integer(slice, min_len = 1, max_len = nrow(x), min = 1, max = nrow(x))
+    }
+    if (length(slice) == 1)
+        slice <- seq_len(slice)
+
+    x <- x[slice,feat, drop = FALSE]
     simil <- get_simil(x, names(seed), term, seq_len(nrow(x)), simil_method)
     if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose, ...)
@@ -50,6 +59,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
     result <- build_lss(
         beta = beta,
         k = nrow(x),
+        slice = slice,
         terms = args$terms,
         seeds = args$seeds,
         seeds_weighted = seed,
@@ -77,5 +87,16 @@ as.textmodel_lss.numeric <- function(x, ...) {
         terms = names(x),
         call = match.call()
     )
+    return(result)
+}
+
+#' @export
+#' @method as.textmodel_lss textmodel_lss
+as.textmodel_lss.textmodel_lss <- function(x, ...) {
+    if (is.null(x$embedding))
+        stop("x must be a valid textmodel_lss object")
+    result <- as.textmodel_lss(x$embedding, ...)
+    result$data <- x$data
+    result$frequency <- x$frequency
     return(result)
 }
