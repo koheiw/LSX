@@ -14,6 +14,8 @@
 #' @param cache if `TRUE`, save result of SVD for next execution with identical
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
+#' @param transform transform the distribution of the weight given to words. See
+#'   details.
 #' @param engine select the engine to factorize `x` to get word vectors. Choose
 #'   from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and
 #'   [rsparse::GloVe()].
@@ -33,6 +35,15 @@
 #'   bipolar LSS model is construct; if `seeds` is a character vector, a
 #'   unipolar LSS model. Usually bipolar models perform better in document
 #'   scaling because both ends of the scale are defined by the user.
+#'
+#'   When \eqn{e} is the value for `transform` and \eqn{beta} is the original
+#'   weight for the words, the transformation is performed:
+#'
+#'   \deqn{\beta^\prime = \frac{\beta}{abs(\beta)^e}}
+#'
+#'   As \eqn{e} gets closer to 1.0, the distance between \eqn{\beta > 0} and
+#'   \eqn{\beta < 0} expands while the distance within them contracts. You can
+#'   visualize the distribution using `textplot_terms()`.
 #'
 #'   A seed word's polarity score computed by `textmodel_lss()` tends to diverge
 #'   from its original score given by the user because it's score is affected
@@ -97,7 +108,7 @@ textmodel_lss <- function(x, ...) {
 #'   for diagnosys and simulation.
 #' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta check_integer check_numeric
+#' @importFrom quanteda featnames meta check_integer check_double
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
@@ -116,7 +127,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     }
 
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
-    transform <- check_numeric(transform, min_len = 1, max_len = 1)
+    transform <- check_double(transform, min_len = 1, max_len = 1)
     engine <- match.arg(engine)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
@@ -196,7 +207,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         engine <- "rsparse"
     }
 
-    transform <- check_numeric(transform, min_len = 1, max_len = 1)
+    transform <- check_double(transform, min_len = 1, max_len = 1)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
     term <- expand_terms(terms, featnames(x))

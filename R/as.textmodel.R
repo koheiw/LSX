@@ -37,7 +37,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
     if (any(is.na(x)))
         stop("x must not have NA")
 
-    transform <- check_numeric(transform, min_len = 1, max_len = 1)
+    transform <- check_double(transform, min_len = 1, max_len = 1)
     seeds <- expand_seeds(seeds, colnames(x), verbose)
     seed <- unlist(unname(seeds))
     term <- expand_terms(terms, colnames(x))

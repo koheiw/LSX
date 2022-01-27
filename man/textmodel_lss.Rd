@@ -16,6 +16,7 @@ textmodel_lss(x, ...)
   slice = NULL,
   weight = "count",
   cache = FALSE,
+  transform = 0,
   simil_method = "cosine",
   engine = c("RSpectra", "irlba", "rsvd"),
   auto_weight = FALSE,
@@ -32,6 +33,7 @@ textmodel_lss(x, ...)
   max_count = 10,
   weight = "count",
   cache = FALSE,
+  transform = 0,
   simil_method = "cosine",
   engine = c("rsparse"),
   auto_weight = FALSE,
@@ -64,6 +66,9 @@ when \code{engine} is "rsparse".}
 \item{cache}{if \code{TRUE}, save result of SVD for next execution with identical
 \code{x} and settings. Use the \code{base::options(lss_cache_dir)} to change the
 location cache files to be save.}
+
+\item{transform}{transform the distribution of the weight given to words. See
+details.}
 
 \item{simil_method}{specifies method to compute similarity between features.
 The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is
@@ -101,6 +106,15 @@ If \code{seeds} is a named numeric vector with positive and negative values, a
 bipolar LSS model is construct; if \code{seeds} is a character vector, a
 unipolar LSS model. Usually bipolar models perform better in document
 scaling because both ends of the scale are defined by the user.
+
+When \eqn{e} is the value for \code{transform} and \eqn{beta} is the original
+weight for the words, the transformation is performed:
+
+\deqn{\beta^\prime = \frac{\beta}{abs(\beta)^e}}
+
+As \eqn{e} gets closer to 1.0, the distance between \eqn{\beta > 0} and
+\eqn{\beta < 0} expands while the distance within them contracts. You can
+visualize the distribution using \code{textplot_terms()}.
 
 A seed word's polarity score computed by \code{textmodel_lss()} tends to diverge
 from its original score given by the user because it's score is affected
