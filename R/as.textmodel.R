@@ -24,11 +24,11 @@ as.textmodel_lss <- function(x, ...) {
 #' @method as.textmodel_lss matrix
 as.textmodel_lss.matrix <- function(x, seeds,
                                     terms = NULL, slice = NULL,
+                                    transform = 0,
                                     simil_method = "cosine",
                                     auto_weight = FALSE,
                                     verbose = FALSE, ...) {
 
-    unused_dots(...)
     args <- list(terms = terms, seeds = seeds)
     if (is.null(colnames(x)))
         stop("x must have column names for features")
@@ -37,6 +37,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
     if (any(is.na(x)))
         stop("x must not have NA")
 
+    transform <- check_numeric(transform, min_len = 1, max_len = 1)
     seeds <- expand_seeds(seeds, colnames(x), verbose)
     seed <- unlist(unname(seeds))
     term <- expand_terms(terms, colnames(x))
@@ -55,11 +56,14 @@ as.textmodel_lss.matrix <- function(x, seeds,
     if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose, ...)
     beta <- get_beta(simil, seed)
+    if (transform != 0)
+        beta <- beta / (abs(beta) ^ transform)
 
     result <- build_lss(
         beta = beta,
         k = nrow(x),
         slice = slice,
+        transform = transform,
         terms = args$terms,
         seeds = args$seeds,
         seeds_weighted = seed,

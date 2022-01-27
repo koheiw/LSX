@@ -97,11 +97,12 @@ textmodel_lss <- function(x, ...) {
 #'   for diagnosys and simulation.
 #' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta check_integer
+#' @importFrom quanteda featnames meta check_integer check_numeric
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
+                              transform = 0,
                               simil_method = "cosine",
                               engine = c("RSpectra", "irlba", "rsvd"),
                               auto_weight = FALSE,
@@ -115,6 +116,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     }
 
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
+    transform <- check_numeric(transform, min_len = 1, max_len = 1)
     engine <- match.arg(engine)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
@@ -143,11 +145,14 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose, ...)
     beta <- get_beta(simil, seed)
+    if (transform != 0)
+        beta <- beta / (abs(beta) ^ transform)
 
     result <- build_lss(
         beta = beta,
         k = k,
         slice = slice,
+        transform = transform,
         frequency = colSums(x)[names(beta)],
         terms = args$terms,
         seeds = args$seeds,
@@ -175,6 +180,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
                               max_count = 10,
                               weight = "count", cache = FALSE,
+                              transform = 0,
                               simil_method = "cosine",
                               engine = c("rsparse"),
                               auto_weight = FALSE,
@@ -190,6 +196,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         engine <- "rsparse"
     }
 
+    transform <- check_numeric(transform, min_len = 1, max_len = 1)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
     term <- expand_terms(terms, featnames(x))
@@ -208,10 +215,13 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose, ...)
     beta <- get_beta(simil, seed)
+    if (transform != 0)
+        beta <- beta / (abs(beta) ^ transform)
 
     result <- build_lss(
         beta = beta,
         w = w,
+        transform = transform,
         frequency = x@meta$object$margin[names(beta)],
         terms = args$terms,
         seeds = args$seeds,
@@ -232,6 +242,7 @@ build_lss <- function(...) {
         beta = NULL,
         k = NULL,
         slice = NULL,
+        transform = 0,
         frequency = NULL,
         terms = NULL,
         seeds = NULL,
