@@ -85,3 +85,35 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
            geom_point(data = temp_black, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
 
 }
+
+#' \[experimental\] Plots clusters of word vectors
+#'
+#' Experimental function to find clusters of word vectors
+#' @param x a fitted `textmodel_lss`
+#' @param n the number of cluster
+#' @param method the method for hierarchical clustering
+#' @export
+textplot_components <- function(x, n = 10, method = "ward.D2") {
+    UseMethod("textplot_components")
+}
+
+#' @method textplot_components textmodel_lss
+#' @import ggplot2
+#' @importFrom stats hclust cutree
+#' @keywords internal
+#' @export
+textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2") {
+
+    seed <- names(x$seeds_weighted)
+    emb <- x$embedding[,seed]
+    suppressWarnings({
+        sim <- proxyC::simil(Matrix(emb, sparse = TRUE))
+    })
+    dist <- as.dist(1 - abs(as.matrix(sim)))
+    hc <- hclust(dist, method)
+    b <- cutree(hc, k = n)
+    temp <- data.frame(index = seq_along(b), group = factor(b))
+    ggplot(temp, aes(x = index, fill = group)) +
+        labs(x = "Rank", y = "Density", fill = "Cluster") +
+        geom_density(alpha = 0.2)
+}
