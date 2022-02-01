@@ -46,7 +46,7 @@ test_that("textplot_components() works", {
     gg2 <- textplot_components(lss_svd, n = 3)
     expect_equal(length(levels(gg2$data$group)), 3)
 
-    expect_equal(class(textplot_components(lss)), c("gg", "ggplot"))
+    expect_equal(class(textplot_components(lss_svd)), c("gg", "ggplot"))
     expect_error(textplot_components(lss_svd, n = 20), "n cannot be greater than k")
     expect_error(textplot_components(lss_glove), "SVD must be used to generate word vectors")
 })

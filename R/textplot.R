@@ -117,6 +117,8 @@ textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2") {
     dist <- as.dist(1 - abs(as.matrix(sim)))
     hc <- hclust(dist, method)
     b <- cutree(hc, k = n)
+
+    index <- group <- NULL
     temp <- data.frame(index = seq_along(b), group = factor(b))
     ggplot(temp, aes(x = index, fill = group)) +
         labs(x = "Rank", y = "Density", fill = "Cluster") +
