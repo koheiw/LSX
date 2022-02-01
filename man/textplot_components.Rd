@@ -2,7 +2,7 @@
 % Please edit documentation in R/textplot.R
 \name{textplot_components}
 \alias{textplot_components}
-\title{[experimental] Plots clusters of word vectors}
+\title{[experimental] Plot clusters of word vectors}
 \usage{
 textplot_components(x, n = 10, method = "ward.D2")
 }

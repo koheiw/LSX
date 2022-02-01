@@ -14,7 +14,7 @@
 #' @param cache if `TRUE`, save result of SVD for next execution with identical
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
-#' @param engine select the engine to factorize `x` to get word vectors. Choose
+#' @param engine select the engine to factorize `x` to generate word vectors. Choose
 #'   from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and
 #'   [rsparse::GloVe()].
 #' @param auto_weight automatically determine weights to approximate the

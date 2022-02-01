@@ -86,7 +86,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
 
 }
 
-#' \[experimental\] Plots clusters of word vectors
+#' \[experimental\] Plot clusters of word vectors
 #'
 #' Experimental function to find clusters of word vectors
 #' @param x a fitted `textmodel_lss`
@@ -104,6 +104,11 @@ textplot_components <- function(x, n = 10, method = "ward.D2") {
 #' @export
 textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2") {
 
+    if (is.null(x$k))
+        stop("SVD must be used to generate word vectors", call. = FALSE)
+    if (n > x$k)
+        stop("n cannot be greater than k", call. = FALSE)
+
     seed <- names(x$seeds_weighted)
     emb <- x$embedding[,seed]
     suppressWarnings({
@@ -115,5 +120,7 @@ textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2") {
     temp <- data.frame(index = seq_along(b), group = factor(b))
     ggplot(temp, aes(x = index, fill = group)) +
         labs(x = "Rank", y = "Density", fill = "Cluster") +
+        theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+              axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
         geom_density(alpha = 0.2)
 }

@@ -69,7 +69,7 @@ location cache files to be save.}
 The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is
 used otherwise.}
 
-\item{engine}{select the engine to factorize \code{x} to get word vectors. Choose
+\item{engine}{select the engine to factorize \code{x} to generate word vectors. Choose
 from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}}, \code{\link[rsvd:rsvd]{rsvd::rsvd()}}, and
 \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
 
