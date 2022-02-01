@@ -102,7 +102,9 @@ textplot_components <- function(x, n = 10, method = "ward.D2") {
 #' @importFrom stats hclust cutree
 #' @keywords internal
 #' @export
-textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2") {
+textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2", type = c("cumsum", "density")) {
+
+    type <- match.arg(type)
 
     if (is.null(x$k))
         stop("SVD must be used to generate word vectors", call. = FALSE)
@@ -118,11 +120,20 @@ textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2") {
     hc <- hclust(dist, method)
     b <- cutree(hc, k = n)
 
-    index <- group <- NULL
+    index <- group <- cum <-NULL
     temp <- data.frame(index = seq_along(b), group = factor(b))
-    ggplot(temp, aes(x = index, fill = group)) +
-        labs(x = "Rank", y = "Density", fill = "Cluster") +
-        theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
-              axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-        geom_density(alpha = 0.2)
+    temp$cum <- ave(temp$group == temp$group, temp$group, FUN = cumsum)
+    if (type == "cumsum") {
+        ggplot(temp, aes(x = index, y = cum, col = group)) +
+            labs(x = "Rank", y = "Count", fill = "Cluster") +
+            theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+            geom_step()
+    } else {
+        ggplot(temp, aes(x = index, fill = group)) +
+            labs(x = "Rank", y = "Density", fill = "Cluster") +
+            theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+            geom_density(alpha = 0.2)
+    }
 }
