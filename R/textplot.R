@@ -42,9 +42,11 @@ textplot_terms <- function(x, highlighted = NULL, max_words = 10000) {
 
 #' @method textplot_terms textmodel_lss
 #' @import ggplot2 ggrepel stringi
-#' @importFrom quanteda is.dictionary meta
+#' @importFrom quanteda is.dictionary meta check_integer
 #' @export
 textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 10000) {
+
+    max_words <- check_integer(max_words, min_len = 1, max_len = 1, min = 1)
 
     if (is.null(highlighted))
         highlighted <- character()
@@ -102,17 +104,18 @@ textplot_components <- function(x, n = 5, method = "ward.D2",
 #' @method textplot_components textmodel_lss
 #' @import ggplot2
 #' @importFrom stats hclust cutree
+#' @importFrom quanteda check_integer
 #' @keywords internal
 #' @export
 textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
                                               scale = c("absolute", "relative")) {
 
-    scale <- match.arg(scale)
 
     if (is.null(x$k))
         stop("SVD must be used to generate word vectors", call. = FALSE)
-    if (n > x$k)
-        stop("n cannot be greater than k", call. = FALSE)
+
+    n <- check_integer(n, min_len = 1, max_len = 1, min = 2, max = x$k)
+    scale <- match.arg(scale)
 
     seed <- names(x$seeds_weighted)
     emb <- x$embedding[,seed]
