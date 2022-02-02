@@ -93,7 +93,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
 #' @param n the number of cluster
 #' @param method the method for hierarchical clustering
 #' @export
-textplot_components <- function(x, n = 10, method = "ward.D2",
+textplot_components <- function(x, n = 5, method = "ward.D2",
                                 type = c("cumsum", "density", "ecdf")) {
     UseMethod("textplot_components")
 }
@@ -103,7 +103,7 @@ textplot_components <- function(x, n = 10, method = "ward.D2",
 #' @importFrom stats hclust cutree
 #' @keywords internal
 #' @export
-textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2",
+textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
                                               type = c("cumsum", "density", "ecdf")) {
 
     type <- match.arg(type)
@@ -132,7 +132,7 @@ textplot_components.textmodel_lss <- function(x, n = 10, method = "ward.D2",
                             FUN = function(x) cumsum(x) / sum(x))
         }
         ggplot(temp, aes(x = index, y = cum, col = group)) +
-            labs(x = "Rank", y = "Sum (cumulative)", fill = "Cluster") +
+            labs(x = "Rank", y = "Sum (cumulative)", col = "Cluster") +
             theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                   axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
             geom_step()

@@ -4,7 +4,12 @@
 \alias{textplot_components}
 \title{[experimental] Plot clusters of word vectors}
 \usage{
-textplot_components(x, n = 10, method = "ward.D2")
+textplot_components(
+  x,
+  n = 5,
+  method = "ward.D2",
+  type = c("cumsum", "density", "ecdf")
+)
 }
 \arguments{
 \item{x}{a fitted \code{textmodel_lss}}
