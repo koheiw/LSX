@@ -92,9 +92,10 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
 #' @param x a fitted `textmodel_lss`
 #' @param n the number of cluster
 #' @param method the method for hierarchical clustering
+#' @param scale change the scale of y-axis
 #' @export
 textplot_components <- function(x, n = 5, method = "ward.D2",
-                                type = c("cumsum", "density", "ecdf")) {
+                                scale = c("absolute", "relative")) {
     UseMethod("textplot_components")
 }
 
@@ -104,9 +105,9 @@ textplot_components <- function(x, n = 5, method = "ward.D2",
 #' @keywords internal
 #' @export
 textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
-                                              type = c("cumsum", "density", "ecdf")) {
+                                              scale = c("absolute", "relative")) {
 
-    type <- match.arg(type)
+    scale <- match.arg(scale)
 
     if (is.null(x$k))
         stop("SVD must be used to generate word vectors", call. = FALSE)
@@ -124,27 +125,21 @@ textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
 
     index <- group <- cum <-NULL
     temp <- data.frame(index = seq_along(b), group = factor(b))
-    if (type == "cumsum" || type == "ecdf") {
-        if (type == "cumsum") {
-            temp$cum <- ave(temp$group == temp$group, temp$group, FUN = cumsum)
-            limit <- x$k / n
-        } else {
-            temp$cum <- ave(temp$group == temp$group, temp$group,
-                            FUN = function(x) cumsum(x) / sum(x))
-            limit <- 1.0
-        }
 
-        ggplot(temp, aes(x = index, y = cum, col = group)) +
-            labs(x = "Rank", y = "Sum (cumulative)", col = "Cluster") +
-            theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
-                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-            ylim(0, limit) +
-            geom_step()
+    if (scale == "absolute") {
+        temp$cum <- ave(temp$group == temp$group, temp$group, FUN = cumsum)
+        limit <- x$k / n
     } else {
-        ggplot(temp, aes(x = index, fill = group)) +
-            labs(x = "Rank", y = "Density", fill = "Cluster") +
-            theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
-                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-            geom_density(alpha = 0.2)
+        temp$cum <- ave(temp$group == temp$group, temp$group,
+                        FUN = function(x) cumsum(x) / sum(x))
+        limit <- 1.0
     }
+
+    ggplot(temp, aes(x = index, y = cum, col = group)) +
+        labs(x = "Rank", y = "Sum (cumulative)", col = "Cluster") +
+        theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+              axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+        ylim(0, limit) +
+        geom_step()
+
 }

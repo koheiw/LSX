@@ -8,7 +8,7 @@ textplot_components(
   x,
   n = 5,
   method = "ward.D2",
-  type = c("cumsum", "density", "ecdf")
+  scale = c("absolute", "relative")
 )
 }
 \arguments{
@@ -17,6 +17,8 @@ textplot_components(
 \item{n}{the number of cluster}
 
 \item{method}{the method for hierarchical clustering}
+
+\item{scale}{change the scale of y-axis}
 }
 \description{
 Experimental function to find clusters of word vectors
