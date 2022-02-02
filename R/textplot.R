@@ -127,14 +127,18 @@ textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
     if (type == "cumsum" || type == "ecdf") {
         if (type == "cumsum") {
             temp$cum <- ave(temp$group == temp$group, temp$group, FUN = cumsum)
+            limit <- x$k / n
         } else {
             temp$cum <- ave(temp$group == temp$group, temp$group,
                             FUN = function(x) cumsum(x) / sum(x))
+            limit <- 1.0
         }
+
         ggplot(temp, aes(x = index, y = cum, col = group)) +
             labs(x = "Rank", y = "Sum (cumulative)", col = "Cluster") +
             theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                   axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+            ylim(0, limit) +
             geom_step()
     } else {
         ggplot(temp, aes(x = index, fill = group)) +
