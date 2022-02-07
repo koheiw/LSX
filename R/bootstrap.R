@@ -11,9 +11,9 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 
     what <- match.arg(what)
     if (what == "seeds") {
-        sample <- as.list(names((x$seeds_weight)))
+        sample <- as.list(names(x$seeds_weight))
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
-        colname <- names(sample)
+        colname <- names(x$seeds_weight)
     } else if (what == "k") {
         sample <- as.list(seq(50, x$k, by = by))
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
@@ -29,8 +29,8 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
                    sample = matrix(unlist(sample), ncol = length(sample)),
                    beta = matrix(unlist(beta), ncol = length(beta),
                                  dimnames = list(names(beta[[1]]), colname)),
-                   term = matrix(unlist(term), ncol = length(term),
-                                 dimnames = list(NULL, colname)))
+                   terms = matrix(unlist(term), ncol = length(term),
+                                  dimnames = list(NULL, colname)))
     return(result)
 }
 
