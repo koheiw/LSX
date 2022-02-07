@@ -17,7 +17,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
     } else if (what == "k") {
         sample <- as.list(seq(50, x$k, by = by))
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
-        colname <- NULL
+        colname <- as.character(seq(50, x$k, by = by))
     } else {
         sample <- replicate(n, sample(x$k, size = size, replace = FALSE), simplify = FALSE)
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
