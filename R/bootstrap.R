@@ -25,12 +25,12 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
     }
 
     term <- lapply(beta, function(y) names(head(sort(y, decreasing = TRUE), 100)))
-    result <- list(what = what,
-                   sample = matrix(unlist(sample), ncol = length(sample)),
-                   beta = matrix(unlist(beta), ncol = length(beta),
-                                 dimnames = list(names(beta[[1]]), colname)),
-                   terms = matrix(unlist(term), ncol = length(term),
-                                  dimnames = list(NULL, colname)))
+    result <- list(matrix(unlist(sample), ncol = length(sample)),
+                   matrix(unlist(beta), ncol = length(beta),
+                          dimnames = list(names(beta[[1]]), colname)),
+                   matrix(unlist(term), ncol = length(term),
+                          dimnames = list(NULL, colname)))
+    names(result) <- c(what, "beta", "terms")
     return(result)
 }
 
