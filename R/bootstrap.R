@@ -1,31 +1,32 @@
 #' \[experimental\] Compute polarity scores of words with different hyper-parameters.
 #' @param x a fitted textmodel_lss object.
+#' @param what choose the target of bootstrapping.
+#' @param by only for "k"
 #' @param n only for "slice"
 #' @param size only for "slice"
-#' @param by only for "k"
 #' @keywords internal
 #' @export
-bootstrap_lss <- function(x, n = 10, parameter = c("seeds", "k", "slice"),
-                          size = 100, by = 50, ...) {
+bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
+                          by = 50, n = 10, size = 100, ...) {
 
-    parameter <- match.arg(parameter)
-    if (parameter == "seeds") {
-        param <- as.list(names((x$seeds_weight)))
-        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
-        colname <- names(param)
-    } else if (parameter == "k") {
-        param <- as.list(seq(50, x$k, by = by))
-        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
+    what <- match.arg(what)
+    if (what == "seeds") {
+        sample <- as.list(names((x$seeds_weight)))
+        beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
+        colname <- names(sample)
+    } else if (what == "k") {
+        sample <- as.list(seq(50, x$k, by = by))
+        beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
         colname <- NULL
     } else {
-        param <- replicate(n, sample(x$k, size = size, replace = FALSE), simplify = FALSE)
-        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
+        sample <- replicate(n, sample(x$k, size = size, replace = FALSE), simplify = FALSE)
+        beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
         colname <- NULL
     }
 
     term <- lapply(beta, function(y) names(head(sort(y, decreasing = TRUE), 100)))
-    result <- list(parameter = parameter,
-                   value = matrix(unlist(param), ncol = length(param)),
+    result <- list(what = what,
+                   sample = matrix(unlist(sample), ncol = length(sample)),
                    beta = matrix(unlist(beta), ncol = length(beta),
                                  dimnames = list(names(beta[[1]]), colname)),
                    term = matrix(unlist(term), ncol = length(term),
