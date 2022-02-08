@@ -10,13 +10,14 @@
   se.fit = FALSE,
   density = FALSE,
   rescaling = TRUE,
+  smooth = 0,
   ...
 )
 }
 \arguments{
 \item{object}{a fitted LSS textmodel}
 
-\item{newdata}{dfm on which prediction should be made}
+\item{newdata}{a dfm on which prediction should be made}
 
 \item{se.fit}{if \code{TRUE}, it returns standard error of document scores.}
 
@@ -25,6 +26,8 @@ Density distribution of model terms can be used to remove documents about
 unrelated subjects.}
 
 \item{rescaling}{if \code{TRUE}, scores are normalized using \code{scale()}.}
+
+\item{smooth}{the minimum value of denominator to compute scores.}
 
 \item{...}{not used}
 }

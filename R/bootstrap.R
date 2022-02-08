@@ -1,6 +1,6 @@
 #' \[experimental\] Compute polarity scores of words with different hyper-parameters.
 #' @param x a fitted textmodel_lss object.
-#' @param what choose the target of bootstrapping.
+#' @param what choose the parameter to resample in bootstrapping.
 #' @param by only for "k"
 #' @param n only for "slice"
 #' @param size only for "slice"
