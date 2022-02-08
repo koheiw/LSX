@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{bootstrap_lss}
 \alias{bootstrap_lss}
-\title{[experimental] Compute polarity scores of words with different hyper-parameters.}
+\title{[experimental] Compute polarity scores of words with different hyper-parameters}
 \usage{
 bootstrap_lss(
   x,
@@ -25,6 +25,6 @@ bootstrap_lss(
 \item{size}{only for "slice"}
 }
 \description{
-[experimental] Compute polarity scores of words with different hyper-parameters.
+[experimental] Compute polarity scores of words with different hyper-parameters
 }
 \keyword{internal}
