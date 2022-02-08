@@ -428,19 +428,20 @@ weight_seeds <- function(seeds, type) {
 #'
 #' @method predict textmodel_lss
 #' @param object a fitted LSS textmodel
-#' @param newdata dfm on which prediction should be made
+#' @param newdata a dfm on which prediction should be made
 #' @param se.fit if `TRUE`, it returns standard error of document scores.
 #' @param density if `TRUE`, returns frequency of model terms in documents.
 #'   Density distribution of model terms can be used to remove documents about
 #'   unrelated subjects.
 #' @param rescaling if `TRUE`, scores are normalized using `scale()`.
+#' @param smooth the minimum value of denominator to compute scores.
 #' @param ... not used
 #' @import methods
 #' @importFrom Matrix Matrix rowSums t
 #' @importFrom quanteda is.dfm dfm_select
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
-                                  density = FALSE, rescaling = TRUE, ...){
+                                  density = FALSE, rescaling = TRUE, smooth = 0, ...){
 
     beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,
                    dimnames = list(NULL, names(object$beta)))
@@ -461,7 +462,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
     data <- dfm_match(data, colnames(beta))
     n <- unname(rowSums(data))
     # mean scores of documents excluding zeros
-    fit <- ifelse(n > 0, rowSums(data %*% t(beta)) / n, NA)
+    fit <- ifelse(n > 0, rowSums(data %*% t(beta)) / pmax(n, smooth), NA)
     names(fit) <- rownames(data)
 
     if (rescaling) {
