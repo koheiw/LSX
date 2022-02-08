@@ -110,6 +110,11 @@ test_that("predict.textmodel_lss is working", {
     pred5 <- predict(lss_test, se.fit = TRUE, density = TRUE)
     expect_equal(names(pred5), c("fit", "se.fit", "n", "density"))
 
+    pred6 <- predict(lss_test, rescaling = FALSE, smooth = 2)
+    expect_true(all(is.na(pred4) == is.na(pred6)))
+    expect_true(all(abs(pred6[pred5$n == 1]) < abs(pred4[pred5$n == 1])))
+    expect_true(all(abs(pred6[pred5$n >= 2]) == abs(pred4[pred5$n >= 2])))
+
 })
 
 test_that("density is correct", {
