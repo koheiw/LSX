@@ -434,14 +434,16 @@ weight_seeds <- function(seeds, type) {
 #'   Density distribution of model terms can be used to remove documents about
 #'   unrelated subjects.
 #' @param rescaling if `TRUE`, scores are normalized using `scale()`.
-#' @param smooth the minimum value of denominator to compute scores.
+#' @param smooth set the minimum number of polarity words
+#'   to avoid short documents to receive extreme polarity scores. This does not
+#'   affect empty or longer documents.
 #' @param ... not used
 #' @import methods
 #' @importFrom Matrix Matrix rowSums t
 #' @importFrom quanteda is.dfm dfm_select
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
-                                  density = FALSE, rescaling = TRUE, smooth = 0, ...){
+                                  density = FALSE, rescaling = TRUE, smooth = 0L, ...){
 
     beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,
                    dimnames = list(NULL, names(object$beta)))
@@ -461,8 +463,10 @@ predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
 
     data <- dfm_match(data, colnames(beta))
     n <- unname(rowSums(data))
+    empty <- n == 0
+    n <- pmax(n, smooth)
     # mean scores of documents excluding zeros
-    fit <- ifelse(n > 0, rowSums(data %*% t(beta)) / pmax(n, smooth), NA)
+    fit <- ifelse(empty, NA, rowSums(data %*% t(beta)) / n)
     names(fit) <- rownames(data)
 
     if (rescaling) {

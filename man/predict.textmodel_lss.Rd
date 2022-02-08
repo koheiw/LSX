@@ -10,7 +10,7 @@
   se.fit = FALSE,
   density = FALSE,
   rescaling = TRUE,
-  smooth = 0,
+  smooth = 0L,
   ...
 )
 }
@@ -27,7 +27,9 @@ unrelated subjects.}
 
 \item{rescaling}{if \code{TRUE}, scores are normalized using \code{scale()}.}
 
-\item{smooth}{the minimum value of denominator to compute scores.}
+\item{smooth}{set the minimum number of polarity words
+to avoid short documents to receive extreme polarity scores. This does not
+affect empty or longer documents.}
 
 \item{...}{not used}
 }
