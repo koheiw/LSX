@@ -43,11 +43,13 @@ candidates <- function(x, rank = 10, ...) {
     result <- list()
     cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted)))
     for (seed in names(x$seeds_weighted)) {
-        cat("  ", seed, "...\n")
+        cat(sprintf("   %s ", seed))
         bs_slice <- bootstrap_lss(as.textmodel_lss(x, seeds = seed), what = "slice", ...)
         cand <- unique(as.character(head(bs_slice$terms, rank)))
         bs_seed <- bootstrap_lss(as.textmodel_lss(x, seeds = cand), what = "seeds")
-        result[[seed]] <- names(sort(proxyC::colSds(bs_seed$beta), decreasing = TRUE))
+        cand <- names(sort(proxyC::colSds(bs_seed$beta), decreasing = TRUE))
+        cat(sprintf("~ %s...\n", paste(head(cand), collapse = ", ")))
+        result[[seed]] <- cand
     }
     return(result)
 }
