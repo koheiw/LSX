@@ -4,12 +4,15 @@
 \alias{candidates}
 \title{[experimental] Find candidates for seed words through bootstrapping}
 \usage{
-candidates(x, rank = 10, ...)
+candidates(x, rank = 50, min_freq = 0.9, max_freq = 1, ...)
 }
 \arguments{
 \item{x}{a fitted textmodel_lss object.}
 
 \item{rank}{the lowest rank of candidates returned from \code{\link[=bootstrap_lss]{bootstrap_lss()}}.}
+
+\item{min_freq, max_freq}{the minimum and maximum frequency of the candidates
+specified in percentile. The frequency is obtained from the original corpus.}
 }
 \description{
 [experimental] Find candidates for seed words through bootstrapping

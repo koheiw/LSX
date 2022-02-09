@@ -37,20 +37,31 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 #' \[experimental\] Find candidates for seed words through bootstrapping
 #' @param x a fitted textmodel_lss object.
 #' @param rank the lowest rank of candidates returned from [bootstrap_lss()].
+#' @param min_freq,max_freq the minimum and maximum frequency of the candidates
+#'   specified in percentile. The frequency is obtained from the original corpus.
 #' @keywords internal
 #' @export
-candidates <- function(x, rank = 10, min_count = 100, ...) {
+candidates <- function(x, rank = 50, min_freq = 0.9, max_freq = 1.0, ...) {
 
     cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted)))
-    term <- names(x$frequency[x$frequency >= min_count])
+
+    q <- quantile(x$frequency, c(min_freq, max_freq))
+    l <- q[1] <= x$frequency & x$frequency <= q[2]
+    term <- names(x$frequency[l])
 
     result <- list()
     for (seed in names(x$seeds_weighted)) {
         cat(sprintf("   %s ", seed))
+
         bs_slice <- bootstrap_lss(as.textmodel_lss(x, seeds = seed, terms = term), what = "slice", ...)
-        cand <- unique(as.character(head(bs_slice$terms, rank)))
+        temp <- data.frame(word = as.character(bs_slice$terms), rank = as.integer(row(bs_slice$terms)))
+        temp <- temp[!duplicated(temp$word),]
+        temp <- temp[order(temp$rank),]
+        cand <- head(temp$word, rank)
+
         bs_seed <- bootstrap_lss(as.textmodel_lss(x, seeds = cand), what = "seeds")
         cand <- names(sort(proxyC::colSds(bs_seed$beta), decreasing = TRUE))
+
         cat(sprintf("~ %s...\n", paste(head(cand), collapse = ", ")))
         result[[seed]] <- cand
     }
