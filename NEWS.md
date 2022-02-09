@@ -1,6 +1,7 @@
 # Changes in v1.1.0
 
 * Add `as.textmodel_lss()` for textmodel_lss objects to allow modifying existing models.
+* Allow `terms` in `textmodel_lss()` to be a named numeric vector to give arbitrary weights.
 
 # Changes in v1.0.2
 

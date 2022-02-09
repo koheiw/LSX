@@ -137,3 +137,26 @@ test_that("auto_weight is working", {
         "Optimizing seed weights..."
     )
 })
+
+test_that("terms is working", {
+    skip_on_cran()
+
+    lss <- textmodel_lss(dfmt_test, seed, k = 300)
+
+    # glob pattern
+    lss1 <- as.textmodel_lss(lss, seed, terms = "poli*")
+    expect_true(all(stringi::stri_startswith_fixed(names(lss1$beta), "poli")))
+
+    # numeric vector
+    weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10
+    names(weight) <- names(lss1$beta)
+    lss2 <- as.textmodel_lss(lss, seed, terms = weight)
+    expect_true(all(lss2$beta == lss1$beta * weight))
+    expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = -0.1)),
+                 "terms must be positive non-NA values")
+    expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = NA)),
+                 "terms must be positive non-NA values")
+    expect_error(as.textmodel_lss(lss, seed, terms = c(01, 0.2)),
+                 "terms must be named")
+
+})
