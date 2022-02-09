@@ -39,12 +39,15 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 #' @param rank the lowest rank of candidates returned from [bootstrap_lss()].
 #' @keywords internal
 #' @export
-candidates <- function(x, rank = 10, ...) {
-    result <- list()
+candidates <- function(x, rank = 10, min_count = 100, ...) {
+
     cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted)))
+    term <- names(x$frequency[x$frequency >= min_count])
+
+    result <- list()
     for (seed in names(x$seeds_weighted)) {
         cat(sprintf("   %s ", seed))
-        bs_slice <- bootstrap_lss(as.textmodel_lss(x, seeds = seed), what = "slice", ...)
+        bs_slice <- bootstrap_lss(as.textmodel_lss(x, seeds = seed, terms = term), what = "slice", ...)
         cand <- unique(as.character(head(bs_slice$terms, rank)))
         bs_seed <- bootstrap_lss(as.textmodel_lss(x, seeds = cand), what = "seeds")
         cand <- names(sort(proxyC::colSds(bs_seed$beta), decreasing = TRUE))
