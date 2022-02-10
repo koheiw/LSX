@@ -64,6 +64,6 @@ candidates <- function(x, rank = 100, min_freq = 0.9, max_freq = 1.0, ...) {
         cat(sprintf("~ %s...\n", paste(head(cand, 10), collapse = ", ")))
         result[[seed]] <- cand
     }
-    result <- as.data.frame(result)
+    result <- as.data.frame(result, check.names = FALSE)
     return(result)
 }
