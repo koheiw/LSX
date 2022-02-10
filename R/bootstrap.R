@@ -39,6 +39,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 #' @param rank the lowest rank of candidates returned from [bootstrap_lss()].
 #' @param min_freq,max_freq the minimum and maximum frequency of the candidates
 #'   specified in percentile. The frequency is obtained from the original corpus.
+#' @param ... additional arguments to bootstrap "slice".
 #' @keywords internal
 #' @export
 candidates <- function(x, rank = 100, min_freq = 0.9, max_freq = 1.0, ...) {
