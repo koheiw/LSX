@@ -41,7 +41,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 #'   specified in percentile. The frequency is obtained from the original corpus.
 #' @keywords internal
 #' @export
-candidates <- function(x, rank = 50, min_freq = 0.9, max_freq = 1.0, ...) {
+candidates <- function(x, rank = 100, min_freq = 0.9, max_freq = 1.0, ...) {
 
     cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted)))
 
@@ -60,10 +60,10 @@ candidates <- function(x, rank = 50, min_freq = 0.9, max_freq = 1.0, ...) {
         cand <- head(temp$word, rank)
 
         bs_seed <- bootstrap_lss(as.textmodel_lss(x, seeds = cand), what = "seeds")
-        cand <- names(sort(proxyC::colSds(bs_seed$beta), decreasing = TRUE))
-
-        cat(sprintf("~ %s...\n", paste(head(cand), collapse = ", ")))
+        cand <- names(sort(colMeans(abs(bs_seed$beta)), decreasing = TRUE))
+        cat(sprintf("~ %s...\n", paste(head(cand, 10), collapse = ", ")))
         result[[seed]] <- cand
     }
+    result <- as.data.frame(result)
     return(result)
 }
