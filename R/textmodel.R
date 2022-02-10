@@ -445,6 +445,7 @@ weight_seeds <- function(seeds, type) {
 predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
                                   density = FALSE, rescaling = TRUE, min_n = 0L, ...){
 
+    unused_dots(...)
     beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,
                    dimnames = list(NULL, names(object$beta)))
 

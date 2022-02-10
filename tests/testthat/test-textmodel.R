@@ -84,6 +84,8 @@ test_that("summary.textmodel_lss is working", {
 
 test_that("predict.textmodel_lss is working", {
 
+    expect_warning(predict(lss_test, xxx = TRUE), "xxx argument is not used")
+
     pred1 <- predict(lss_test)
     expect_equal(length(pred1), ndoc(dfmt_test))
     expect_identical(names(pred1), docnames(dfmt_test))
@@ -110,7 +112,7 @@ test_that("predict.textmodel_lss is working", {
     pred5 <- predict(lss_test, se.fit = TRUE, density = TRUE)
     expect_equal(names(pred5), c("fit", "se.fit", "n", "density"))
 
-    pred6 <- predict(lss_test, rescaling = FALSE, smooth = 2)
+    pred6 <- predict(lss_test, rescaling = FALSE, min_n = 2)
     expect_true(all(is.na(pred4) == is.na(pred6)))
     expect_true(all(abs(pred6[pred5$n == 1]) < abs(pred4[pred5$n == 1])))
     expect_true(all(abs(pred6[pred5$n >= 2]) == abs(pred4[pred5$n >= 2])))
