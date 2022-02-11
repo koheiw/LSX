@@ -7,6 +7,10 @@
 #' @param size the number of word vectors to be resampled; only used  when `what
 #'   = "slice"`.
 #' @param ... additional arguments passed to `as.textmodel_lss()`.
+#' @return
+#' \item{seeds/k/slice}{sampled hyper-parameters.}
+#' \item{beta}{the polarity scores of words computed with the hyper-parameters.}
+#' \item{terms}{the most polarized words (only the top 100).}
 #' @export
 #' @importFrom quanteda check_integer
 bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
@@ -18,7 +22,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
         colname <- names(x$seeds_weight)
     } else if (what == "k") {
-        by <- check_integer(by, min = 1L, max = x$k)
+        by <- check_integer(by, min = 1, max = x$k)
         sample <- as.list(seq(50, x$k, by = by))
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
         colname <- as.character(seq(50, x$k, by = by))

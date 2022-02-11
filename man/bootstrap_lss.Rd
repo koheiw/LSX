@@ -27,6 +27,11 @@ bootstrap_lss(
 
 \item{...}{additional arguments passed to \code{as.textmodel_lss()}.}
 }
+\value{
+\item{seeds/k/slice}{sampled hyper-parameters.}
+\item{beta}{the polarity scores of words computed with the hyper-parameters.}
+\item{terms}{the most polarized words (only the top 100).}
+}
 \description{
 [experimental] Compute polarity scores of words with different
 hyper-parameters
