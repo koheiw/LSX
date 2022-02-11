@@ -10,7 +10,7 @@
   se.fit = FALSE,
   density = FALSE,
   rescaling = TRUE,
-  min_n = 0L,
+  min_n = 1L,
   ...
 )
 }
