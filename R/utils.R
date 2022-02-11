@@ -1,6 +1,7 @@
 #' Identify noisy documents in a corpus
 #' @param x character or [corpus] object whose texts will be diagnosed
 #' @param ... extra arguments passed to `tokens`
+#' @keywords internal
 #' @export
 #' @importFrom quanteda corpus tokens texts
 diagnosys <- function(x, ...) {
@@ -41,6 +42,7 @@ diagnosys.corpus <- function(x, ...) {
 #' Computes cohesion of components of latent semantic analysis
 #' @param x a fitted `textmodel_lss`
 #' @param bandwidth size of window for smoothing
+#' @keywords internal
 #' @export
 #' @importFrom Matrix rowMeans rowSums tcrossprod tril
 cohesion <- function(x, bandwidth = 10) {

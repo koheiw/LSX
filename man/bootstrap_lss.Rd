@@ -2,7 +2,8 @@
 % Please edit documentation in R/bootstrap.R
 \name{bootstrap_lss}
 \alias{bootstrap_lss}
-\title{[experimental] Compute polarity scores of words with different hyper-parameters}
+\title{[experimental] Compute polarity scores of words with different
+hyper-parameters}
 \usage{
 bootstrap_lss(
   x,
@@ -18,13 +19,13 @@ bootstrap_lss(
 
 \item{what}{choose the parameter to resample in bootstrapping.}
 
-\item{by}{only for "k"}
+\item{by}{the amount of increase in \code{k}; only used for when \code{what = "k"}.}
 
-\item{n}{only for "slice"}
+\item{n}{the number of resampling; only used for when \code{what = "slice"}.}
 
-\item{size}{only for "slice"}
+\item{size}{the number of word vectors to be resampled; only used  when \code{what = "slice"}.}
 }
 \description{
-[experimental] Compute polarity scores of words with different hyper-parameters
+[experimental] Compute polarity scores of words with different
+hyper-parameters
 }
-\keyword{internal}

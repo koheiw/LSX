@@ -1,13 +1,15 @@
-#' \[experimental\] Compute polarity scores of words with different hyper-parameters
+#' \[experimental\] Compute polarity scores of words with different
+#' hyper-parameters
 #' @param x a fitted textmodel_lss object.
 #' @param what choose the parameter to resample in bootstrapping.
-#' @param by only for "k"
-#' @param n only for "slice"
-#' @param size only for "slice"
-#' @keywords internal
+#' @param by the amount of increase in `k`; only used for when `what = "k"`.
+#' @param n the number of resampling; only used for when `what = "slice"`.
+#' @param size the number of word vectors to be resampled; only used  when `what
+#'   = "slice"`.
 #' @export
+#' @importFrom quanteda check_integer
 bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
-                          by = 50, n = 10, size = 100, ...) {
+                          by = 50L, n = 10L, size = 100L, ...) {
 
     what <- match.arg(what)
     if (what == "seeds") {
@@ -15,10 +17,13 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
         colname <- names(x$seeds_weight)
     } else if (what == "k") {
+        by <- check_integer(by, min = 1L, max = x$k)
         sample <- as.list(seq(50, x$k, by = by))
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
         colname <- as.character(seq(50, x$k, by = by))
     } else {
+        n <- check_integer(n, min = 1)
+        size <- check_integer(size, min = 50, max = x$k)
         sample <- replicate(n, sample(x$k, size = size, replace = FALSE), simplify = FALSE)
         beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
         colname <- NULL
