@@ -14,3 +14,4 @@ diagnosys(x, ...)
 \description{
 Identify noisy documents in a corpus
 }
+\keyword{internal}

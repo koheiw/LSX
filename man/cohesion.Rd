@@ -14,3 +14,4 @@ cohesion(x, bandwidth = 10)
 \description{
 Computes cohesion of components of latent semantic analysis
 }
+\keyword{internal}
