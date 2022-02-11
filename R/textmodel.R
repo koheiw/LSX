@@ -64,24 +64,31 @@
 #' seed <- as.seedwords(data_dictionary_sentiment)
 #'
 #' # SVD
-#' lss_svd <- textmodel_lss(dfmt, seed)
-#' summary(lss_svd)
+#' lss_svd <- textmodel_lss(dfmt, seed, include_data = TRUE)
+#' head(coef(lss_svd), 20)
+#' head(predict(lss_svd))
+#' head(predict(lss_svd, min_n = 10)) # more robust
+#'
+#' dfmt_grp <- dfm_group(dfmt) # group sentences
 #'
 #' # sentiment model on economy
 #' eco <- head(textstat_context(toks, 'econom*'), 500)
-#' svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
+#' lss_svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
+#' head(predict(lss_svd_eco, newdata = dfmt_grp))
 #'
 #' # sentiment model on politics
 #' pol <- head(textstat_context(toks, 'politi*'), 500)
-#' svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
+#' lss_svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
+#' head(predict(lss_svd_pol, newdata = dfmt_grp))
 #'
-#' # modify settings of existing model
-#' svd_pol2 <- as.textmodel_lss(svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
+#' # modify hyper-parameters of existing model
+#' lss_svd_pol2 <- as.textmodel_lss(lss_svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
+#' head(predict(lss_svd_pol2, newdata = dfmt_grp))
 #'
 #' # GloVe
-#' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
+#' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / 1:5, tri = TRUE)
 #' lss_glov <- textmodel_lss(fcmt, seed)
-#' summary(lss_glov)
+#' head(predict(lss_glov, newdata = dfmt_grp))
 #' }
 #'
 #' @export

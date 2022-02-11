@@ -1,18 +1,24 @@
-
 #' Prediction method for textmodel_lss
 #'
 #' @method predict textmodel_lss
 #' @param object a fitted LSS textmodel
 #' @param newdata a dfm on which prediction should be made
-#' @param se.fit if `TRUE`, it returns standard error of document scores.
-#' @param density if `TRUE`, returns frequency of model terms in documents.
-#'   Density distribution of model terms can be used to remove documents about
-#'   unrelated subjects.
-#' @param rescaling if `TRUE`, scores are normalized using `scale()`.
-#' @param min_n set the minimum number of polarity words
-#'   to avoid short documents to receive extreme polarity scores. This does not
-#'   affect empty or longer documents.
+#' @param se.fit if `TRUE`, returns standard error of document scores.
+#' @param density if `TRUE`, returns frequency of polarity words in documents.
+#' @param rescaling if `TRUE`, normalizes polarity scores using `scale()`.
+#' @param min_n set the minimum number of polarity words in documents.
 #' @param ... not used
+#' @details Polarity scores of documents are the means of polarity scores of
+#'   words weighted by their frequency. When `se.fit = TRUE`, this function
+#'   returns the weighted means, their standard errors, and the number of
+#'   polarity words in the documents. When `rescaling = TRUE`, it
+#'   converts the raw polarity scores to z sores for easier interpretation.
+#'
+#'   Documents tend to receive extreme polarity scores when they have only few
+#'   polarity word. This is problematic when LSS is applied to short documents
+#'   (e.g. social media posts) or individual sentences, but users can alleviate
+#'   this problem by setting the expected length of "normal" documents to
+#'   `min_n`. This stetting does not affect empty or longer documents.
 #' @import methods
 #' @importFrom Matrix Matrix rowSums t
 #' @importFrom quanteda is.dfm dfm_select
