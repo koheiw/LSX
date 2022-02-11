@@ -14,7 +14,7 @@ candidates(x, rank = 100, min_freq = 0.9, max_freq = 1, ...)
 \item{min_freq, max_freq}{the minimum and maximum frequency of the candidates
 specified in percentile. The frequency is obtained from the original corpus.}
 
-\item{...}{additional arguments to bootstrap "slice".}
+\item{...}{additional arguments to passed to \code{bootstrap_lss()} when \code{what = "slice"}.}
 }
 \description{
 [experimental] Find candidates for seed words through bootstrapping

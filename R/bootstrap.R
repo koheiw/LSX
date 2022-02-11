@@ -6,6 +6,7 @@
 #' @param n the number of resampling; only used for when `what = "slice"`.
 #' @param size the number of word vectors to be resampled; only used  when `what
 #'   = "slice"`.
+#' @param ... additional arguments passed to `as.textmodel_lss()`.
 #' @export
 #' @importFrom quanteda check_integer
 bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
@@ -44,7 +45,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 #' @param rank the lowest rank of candidates returned from [bootstrap_lss()].
 #' @param min_freq,max_freq the minimum and maximum frequency of the candidates
 #'   specified in percentile. The frequency is obtained from the original corpus.
-#' @param ... additional arguments to bootstrap "slice".
+#' @param ... additional arguments to passed to `bootstrap_lss()` when `what = "slice"`.
 #' @keywords internal
 #' @export
 candidates <- function(x, rank = 100, min_freq = 0.9, max_freq = 1.0, ...) {

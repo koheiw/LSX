@@ -8,9 +8,9 @@ hyper-parameters}
 bootstrap_lss(
   x,
   what = c("seeds", "k", "slice"),
-  by = 50,
-  n = 10,
-  size = 100,
+  by = 50L,
+  n = 10L,
+  size = 100L,
   ...
 )
 }
@@ -24,6 +24,8 @@ bootstrap_lss(
 \item{n}{the number of resampling; only used for when \code{what = "slice"}.}
 
 \item{size}{the number of word vectors to be resampled; only used  when \code{what = "slice"}.}
+
+\item{...}{additional arguments passed to \code{as.textmodel_lss()}.}
 }
 \description{
 [experimental] Compute polarity scores of words with different
