@@ -39,8 +39,8 @@ as.textmodel_lss.matrix <- function(x, seeds,
 
     seeds <- expand_seeds(seeds, colnames(x), verbose)
     seed <- unlist(unname(seeds))
-    term <- expand_terms(terms, colnames(x))
-    feat <- union(term, names(seed))
+    theta <- get_theta(terms, colnames(x))
+    feat <- union(names(theta), names(seed))
 
     if (is.null(slice)) {
         slice <- nrow(x)
@@ -51,10 +51,10 @@ as.textmodel_lss.matrix <- function(x, seeds,
         slice <- seq_len(slice)
 
     x <- x[slice,feat, drop = FALSE]
-    simil <- get_simil(x, names(seed), term, seq_len(nrow(x)), simil_method)
+    simil <- get_simil(x, names(seed), names(theta), seq_len(nrow(x)), simil_method)
     if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose, ...)
-    beta <- get_beta(simil, seed)
+    beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
         beta = beta,

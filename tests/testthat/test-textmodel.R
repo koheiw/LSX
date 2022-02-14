@@ -177,7 +177,28 @@ test_that("textmodel_lss.fcm works with ...", {
                                  terms = feat_test, alpha = 1), NA)
 })
 
-test_that("terms work with glob", {
+test_that("terms is working", {
+    skip_on_cran()
+
+    # glob pattern
+    lss1 <- textmodel_lss(dfmt_test, seed, terms = "poli*", k = 300)
+    expect_true(all(stringi::stri_startswith_fixed(names(lss1$beta), "poli")))
+
+    # numeric vector
+    weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10
+    names(weight) <- names(lss1$beta)
+    lss2 <- textmodel_lss(dfmt_test, seed, terms = weight, k = 300)
+    expect_true(all(lss2$beta == lss1$beta * weight))
+    expect_error(textmodel_lss(dfmt_test, seed, terms = c("polity" = 0.2, "politic" = -0.1), k = 300),
+                 "terms must be positive values without NA")
+    expect_error(textmodel_lss(dfmt_test, seed, terms = c("polity" = 0.2, "politic" = NA), k = 300),
+                 "terms must be positive values without NA")
+    expect_error(textmodel_lss(dfmt_test, seed, terms = c(01, 0.2), k = 300),
+                 "terms must be named")
+
+})
+
+test_that("terms work with numeric vector", {
     lss <- textmodel_lss(dfmt_test, seed, terms = "poli*", k = 300)
     expect_true(all(stringi::stri_startswith_fixed(names(coef(lss)), "poli")))
 })

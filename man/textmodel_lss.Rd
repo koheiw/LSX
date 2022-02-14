@@ -44,12 +44,14 @@ textmodel_lss(x, ...)
 
 \item{...}{additional arguments passed to the underlying engine.}
 
-\item{seeds}{a character vector, named numeric vector that contains seed
+\item{seeds}{a character vector or named numeric vector that contains seed
 words. If seed words contain "*", they are interpreted as glob patterns.
 See \link[quanteda:valuetype]{quanteda::valuetype}.}
 
-\item{terms}{words weighted as model terms. All the features of
-\code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}} will be used if not specified.}
+\item{terms}{a character vector or named numeric vector that specify words
+for which polarity scores will be computed; if a numeric vector, words' polarity
+scores will be weighted accordingly; if \code{NULL}, all the features of
+\code{\link[quanteda:dfm]{quanteda::dfm()}} or \code{\link[quanteda:fcm]{quanteda::fcm()}} will be used.}
 
 \item{k}{the number of singular values requested to the SVD engine. Only used
 when \code{x} is a \code{dfm}.}
