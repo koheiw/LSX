@@ -43,5 +43,5 @@ Documents tend to receive extreme polarity scores when they have only few
 polarity word. This is problematic when LSS is applied to short documents
 (e.g. social media posts) or individual sentences, but users can alleviate
 this problem by setting the expected length of "normal" documents to
-\code{min_n}. This stetting does not affect empty or longer documents.
+\code{min_n}. This setting does not affect empty or longer documents.
 }
