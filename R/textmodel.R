@@ -297,7 +297,7 @@ get_theta <- function(terms, feature) {
         if (is.null(names(terms)))
             stop("terms must be named", call. = FALSE)
         if (any(terms < 0) || any(is.na(terms)))
-            stop("terms must be positive non-NA values", call. = FALSE)
+            stop("terms must be positive values without NA", call. = FALSE)
         theta <- terms
     } else {
         terms <- expand_terms(terms, feature)

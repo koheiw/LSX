@@ -190,9 +190,9 @@ test_that("terms is working", {
     lss2 <- textmodel_lss(dfmt_test, seed, terms = weight, k = 300)
     expect_true(all(lss2$beta == lss1$beta * weight))
     expect_error(textmodel_lss(dfmt_test, seed, terms = c("polity" = 0.2, "politic" = -0.1), k = 300),
-                 "terms must be positive non-NA values")
+                 "terms must be positive values without NA")
     expect_error(textmodel_lss(dfmt_test, seed, terms = c("polity" = 0.2, "politic" = NA), k = 300),
-                 "terms must be positive non-NA values")
+                 "terms must be positive values without NA")
     expect_error(textmodel_lss(dfmt_test, seed, terms = c(01, 0.2), k = 300),
                  "terms must be named")
 
