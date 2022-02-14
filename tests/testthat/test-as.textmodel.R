@@ -32,7 +32,6 @@ test_that("as.textmodel_lss works with matrix", {
     expect_equal(rowSums(dfmt_test[,names(lss2$beta)]) == 0,
                  is.na(pred2))
 
-
     # with special features
     mat_special <- mat_test
     colnames(mat_special)[1:2] <- c("", "*")
