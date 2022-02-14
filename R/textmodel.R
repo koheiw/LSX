@@ -1,11 +1,13 @@
 #' A word embeddings-based semisupervised model for document scaling
 #'
 #' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
-#' @param seeds a character vector, named numeric vector that contains seed
+#' @param seeds a character vector or named numeric vector that contains seed
 #'   words. If seed words contain "*", they are interpreted as glob patterns.
 #'   See [quanteda::valuetype].
-#' @param terms words weighted as model terms. All the features of
-#'   [quanteda::dfm()] or [quanteda::fcm()] will be used if not specified.
+#' @param terms a character vector or named numeric vector that specify words
+#'   for which polarity scores will be computed; if a numeric vector, words' polarity
+#'   scores will be weighted accordingly; if `NULL`, all the features of
+#'   [quanteda::dfm()] or [quanteda::fcm()] will be used.
 #' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
 #'   when `engine` is "rsparse".
 #' @param simil_method specifies method to compute similarity between features.
@@ -125,8 +127,8 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     engine <- match.arg(engine)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
-    term <- expand_terms(terms, featnames(x))
-    feat <- union(term, names(seed))
+    theta <- get_theta(terms, featnames(x))
+    feat <- union(names(theta), names(seed))
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
         if (verbose)
@@ -146,10 +148,10 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     if (length(slice) == 1)
         slice <- seq_len(slice)
 
-    simil <- get_simil(embed, names(seed), term, slice, simil_method)
+    simil <- get_simil(embed, names(seed), names(theta), slice, simil_method)
     if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose, ...)
-    beta <- get_beta(simil, seed)
+    beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
         beta = beta,
@@ -295,6 +297,21 @@ get_beta <- function(simil, seed) {
     if (!identical(colnames(simil$terms), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
     Matrix::rowMeans(simil$terms %*% seed)
+}
+
+get_theta <- function(terms, feature) {
+    if (is.numeric(terms)) {
+        if (is.null(names(terms)))
+            stop("terms must be named", call. = FALSE)
+        if (any(terms < 0) || any(is.na(terms)))
+            stop("terms must be positive values without NA", call. = FALSE)
+        theta <- terms
+    } else {
+        terms <- expand_terms(terms, feature)
+        theta <- rep(1.0, length(terms))
+        names(theta) <- terms
+    }
+    return(theta)
 }
 
 cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
