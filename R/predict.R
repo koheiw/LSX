@@ -18,7 +18,7 @@
 #'   polarity word. This is problematic when LSS is applied to short documents
 #'   (e.g. social media posts) or individual sentences, but users can alleviate
 #'   this problem by setting the expected length of "normal" documents to
-#'   `min_n`. This stetting does not affect empty or longer documents.
+#'   `min_n`. This setting does not affect empty or longer documents.
 #' @import methods
 #' @importFrom Matrix Matrix rowSums t
 #' @importFrom quanteda is.dfm dfm_select
