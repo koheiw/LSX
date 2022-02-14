@@ -23,8 +23,9 @@
 #' @importFrom Matrix Matrix rowSums t
 #' @importFrom quanteda is.dfm dfm_select
 #' @export
-predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
-                                  density = FALSE, rescaling = TRUE, min_n = 1L, ...){
+predict.textmodel_lss <- function(object, newdata = NULL, se = FALSE,
+                                  density = FALSE, rescaling = TRUE, min_n = 0L, ...){
+
 
     unused_dots(...)
     beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,

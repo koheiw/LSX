@@ -114,8 +114,8 @@ test_that("predict.textmodel_lss is working", {
 
     pred6 <- predict(lss_test, rescaling = FALSE, min_n = 2)
     expect_true(all(is.na(pred4) == is.na(pred6)))
-    expect_true(all(abs(pred6[pred5$n == 1]) < abs(pred4[pred5$n == 1])))
-    expect_true(all(abs(pred6[pred5$n >= 2]) == abs(pred4[pred5$n >= 2])))
+    expect_true(all(abs(pred6[pred5$n == 1]) < abs(pred4[pred5$n == 1]), na.rm = TRUE))
+    expect_true(all(abs(pred6[pred5$n >= 2]) == abs(pred4[pred5$n >= 2]), na.rm = TRUE))
 
 })
 
@@ -246,6 +246,12 @@ test_that("predict.textmodel_lss computes scores correctly", {
                  c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
     expect_equal(is.na(pred2$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
     expect_equal(pred2$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
+
+    pred3 <- predict(lss_test, newdata = dfmt, se.fit = TRUE, min_n = 2)
+    expect_equal(is.na(pred3$fit[c("1789-Washington", "1797-Adams", "1825-Adams")]),
+                 c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
+    expect_equal(is.na(pred3$se.fit[c(1, 3, 10)]), c(FALSE, FALSE, FALSE))
+    expect_equal(pred3$n[c(1, 3, 10)] == 0, c(FALSE, FALSE, FALSE))
 
     load("../data/prediction_v0.99.RDA")
     expect_equal(pred, pred_v099, tolerance = 0.0001)
