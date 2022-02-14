@@ -3,7 +3,9 @@ require(quanteda)
 mat_test <- readRDS("../data/matrix_embedding.RDS")
 toks_test <- readRDS("../data/tokens_test.RDS")
 feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
-dfmt_test <- dfm_group(dfm(toks_test))
+#dfmt_test <- tokens_group(toks_test) %>% dfm(toks_test)
+dfmt_test <- dfm(toks_test)
+dfmt_test_grp <- dfm_group(dfmt_test)
 seed <- as.seedwords(data_dictionary_sentiment)
 lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 50,
                           include_data = FALSE)
@@ -17,8 +19,8 @@ test_that("as.textmodel_lss works with matrix", {
     expect_equal(names(lss1), names(LSX:::build_lss()))
     expect_equal(dim(lss1$embedding), c(100, 7))
     expect_false(any(duplicated(names(coef(lss1)))))
-    pred1 <- predict(lss1, dfmt_test)
-    expect_equal(names(pred1), rownames(dfmt_test))
+    pred1 <- predict(lss1, dfmt_test_grp)
+    expect_equal(names(pred1), rownames(dfmt_test_grp))
     expect_false(any(is.na(pred1)))
 
     # without terms
@@ -26,8 +28,8 @@ test_that("as.textmodel_lss works with matrix", {
     expect_equal(names(lss2), names(LSX:::build_lss()))
     expect_equal(dim(lss2$embedding), dim(mat_test))
     expect_false(any(duplicated(names(coef(lss2)))))
-    pred2 <- predict(lss2, dfmt_test)
-    expect_equal(names(pred2), rownames(dfmt_test))
+    pred2 <- predict(lss2, dfmt_test_grp)
+    expect_equal(names(pred2), rownames(dfmt_test_grp))
     expect_false(any(is.na(pred2)))
 
     # with special features
@@ -98,8 +100,8 @@ test_that("as.textmodel_lss works with vector", {
                 "foundations" = 0.3, "the" = 0)
     lss <- as.textmodel_lss(weight)
     expect_equal(names(lss), names(LSX:::build_lss()))
-    pred <- predict(lss, dfmt_test)
-    expect_equal(names(pred), rownames(dfmt_test))
+    pred <- predict(lss, dfmt_test_grp)
+    expect_equal(names(pred), rownames(dfmt_test_grp))
     expect_false(any(is.na(pred)))
 })
 
@@ -141,11 +143,11 @@ test_that("auto_weight is working", {
 test_that("terms is working", {
     skip_on_cran()
 
-    lss <- textmodel_lss(dfmt_test, seed, k = 300)
+    lss <- textmodel_lss(dfmt_test, seed, k = 50)
 
     # glob pattern
     lss1 <- as.textmodel_lss(lss, seed, terms = "poli*")
-    expect_true(all(stringi::stri_startswith_fixed(names(lss1$beta), "poli")))
+    expect_equal(sum(stringi::stri_startswith_fixed(names(lss1$beta), "poli")), 11)
 
     # numeric vector
     weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10
@@ -153,9 +155,9 @@ test_that("terms is working", {
     lss2 <- as.textmodel_lss(lss, seed, terms = weight)
     expect_true(all(lss2$beta == lss1$beta * weight))
     expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = -0.1)),
-                 "terms must be positive non-NA values")
+                 "terms must be positive values without NA")
     expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = NA)),
-                 "terms must be positive non-NA values")
+                 "terms must be positive values without NA")
     expect_error(as.textmodel_lss(lss, seed, terms = c(01, 0.2)),
                  "terms must be named")
 
