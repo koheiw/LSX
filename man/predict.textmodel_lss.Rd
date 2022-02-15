@@ -7,10 +7,10 @@
 \method{predict}{textmodel_lss}(
   object,
   newdata = NULL,
-  se.fit = FALSE,
+  se_fit = FALSE,
   density = FALSE,
   rescaling = TRUE,
-  min_n = 1L,
+  min_n = 0L,
   ...
 )
 }
@@ -19,7 +19,7 @@
 
 \item{newdata}{a dfm on which prediction should be made}
 
-\item{se.fit}{if \code{TRUE}, returns standard error of document scores.}
+\item{se_fit}{if \code{TRUE}, returns standard error of document scores.}
 
 \item{density}{if \code{TRUE}, returns frequency of polarity words in documents.}
 
@@ -34,14 +34,14 @@ Prediction method for textmodel_lss
 }
 \details{
 Polarity scores of documents are the means of polarity scores of
-words weighted by their frequency. When \code{se.fit = TRUE}, this function
+words weighted by their frequency. When \code{se_fit = TRUE}, this function
 returns the weighted means, their standard errors, and the number of
-polarity words in the documents. When \code{rescaling = TRUE}, it
-converts the raw polarity scores to z sores for easier interpretation.
+polarity words in the documents. When \code{rescaling = TRUE}, it converts the
+raw polarity scores to z sores for easier interpretation.
 
 Documents tend to receive extreme polarity scores when they have only few
 polarity word. This is problematic when LSS is applied to short documents
-(e.g. social media posts) or individual sentences, but users can alleviate
-this problem by setting the expected length of "normal" documents to
-\code{min_n}. This setting does not affect empty or longer documents.
+(e.g. social media posts) or individual sentences, but we can alleviate
+this problem by adding zero polarity words to short documents using
+\code{min_n}. This setting does not affect empty documents.
 }
