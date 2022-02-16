@@ -51,8 +51,8 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
         den <- unname(rowSums(dfm_select(data, object$terms)) / rowSums(data))
 
     data <- dfm_match(data, colnames(beta))
-    len <- unname(rowSums(data)) == 0
-    n <- ifelse(len == 0, 0L, pmax(len, min_n))
+    len <- unname(rowSums(data))
+    n <- ifelse(len == 0, 0, pmax(len, min_n))
     fit <- ifelse(len == 0, NA, rowSums(data %*% t(beta)) / n)
     names(fit) <- rownames(data)
 
