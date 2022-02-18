@@ -6,41 +6,44 @@
 #' @param n the number of resampling; only used for when `what = "slice"`.
 #' @param size the number of word vectors to be resampled; only used  when `what
 #'   = "slice"`.
+#' @param replace if `TRUE`, word vectors are resampled with replacement; only
+#'   used  when `what = "slice"`.
 #' @param ... additional arguments passed to `as.textmodel_lss()`.
-#' @return
-#' \item{seeds/k/slice}{sampled hyper-parameters.}
-#' \item{beta}{the polarity scores of words computed with the hyper-parameters.}
+#' @return \item{seeds/k/slice}{sampled hyper-parameters.} \item{beta}{the
+#' polarity scores of words computed with the hyper-parameters.}
 #' \item{terms}{the most polarized words (only the top 100).}
 #' @export
 #' @importFrom quanteda check_integer
 bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
-                          by = 50L, n = 10L, size = 100L, ...) {
+                          by = 50L, n = 10L, size = 100L, replace = FALSE, ...) {
 
     what <- match.arg(what)
     if (what == "seeds") {
-        sample <- as.list(names(x$seeds_weight))
-        beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
+        param <- as.list(names(x$seeds_weight))
+        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
         colname <- names(x$seeds_weight)
     } else if (what == "k") {
         by <- check_integer(by, min = 1, max = x$k)
-        sample <- as.list(seq(50, x$k, by = by))
-        beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
+        param <- as.list(seq(50, x$k, by = by))
+        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
         colname <- as.character(seq(50, x$k, by = by))
     } else {
         n <- check_integer(n, min = 1)
         size <- check_integer(size, min = 50, max = x$k)
-        sample <- replicate(n, sample(x$k, size = size, replace = FALSE), simplify = FALSE)
-        beta <- lapply(sample, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
+        param <- replicate(n, sample(x$k, size = size, replace = replace), simplify = FALSE)
+        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
         colname <- NULL
     }
 
     term <- lapply(beta, function(y) names(head(sort(y, decreasing = TRUE), 100)))
-    result <- list(matrix(unlist(sample), ncol = length(sample)),
+    result <- list(matrix(unlist(param), ncol = length(param)),
                    matrix(unlist(beta), ncol = length(beta),
                           dimnames = list(names(beta[[1]]), colname)),
+                   numeric(),
                    matrix(unlist(term), ncol = length(term),
                           dimnames = list(NULL, colname)))
-    names(result) <- c(what, "beta", "terms")
+    result[[2]] <- colMeans(abs(result[[2]]))
+    names(result) <- c(what, "beta", "strength", "terms")
     return(result)
 }
 
