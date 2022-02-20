@@ -36,14 +36,16 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
     }
 
     term <- lapply(beta, function(y) names(head(sort(y, decreasing = TRUE), 100)))
-    result <- list(matrix(unlist(param), ncol = length(param)),
-                   matrix(unlist(beta), ncol = length(beta),
-                          dimnames = list(names(beta[[1]]), colname)),
-                   numeric(),
-                   matrix(unlist(term), ncol = length(term),
-                          dimnames = list(NULL, colname)))
-    result[[2]] <- colMeans(abs(result[[2]]))
-    names(result) <- c(what, "beta", "strength", "terms")
+    term <- matrix(unlist(term), ncol = length(term),
+                   dimnames = list(NULL, colname))
+    beta <- matrix(unlist(beta), ncol = length(beta),
+                   dimnames = list(names(beta[[1]]), colname))
+    strength <- colMeans(abs(beta[names(x$seeds_weight),]))
+    result <- list("param" = matrix(unlist(param), ncol = length(param)),
+                   "beta" = beta,
+                   "strength" = strength,
+                   "term" = term)
+    names(result)[1] <- what
     return(result)
 }
 
