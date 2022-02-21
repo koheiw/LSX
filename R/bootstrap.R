@@ -15,24 +15,32 @@
 #' @export
 #' @importFrom quanteda check_integer
 bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
-                          by = 50L, n = 10L, size = 100L, replace = FALSE, ...) {
+                          by = 1, from = NULL, to = NULL,
+                          n = 10L, size = 100, replace = FALSE, ...) {
 
     what <- match.arg(what)
     if (what == "seeds") {
         param <- as.list(names(x$seeds_weight))
         beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
         colname <- names(x$seeds_weight)
-    } else if (what == "k") {
-        by <- check_integer(by, min = 1, max = x$k)
-        param <- as.list(seq(50, x$k, by = by))
-        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
-        colname <- as.character(seq(50, x$k, by = by))
     } else {
-        n <- check_integer(n, min = 1)
-        size <- check_integer(size, min = 50, max = x$k)
-        param <- replicate(n, sample(x$k, size = size, replace = replace), simplify = FALSE)
-        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
-        colname <- NULL
+        by <- check_integer(by, min = 1, max = x$k)
+        if (is.null(from))
+            from <- 100
+        if (is.null(to))
+            to <- x$k
+        k <- seq(from, to, by = by)
+        if (what == "k") {
+            param <- k
+            beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
+            colname <- as.character(k)
+        } else {
+            n <- check_integer(n, min = 1)
+            param <- replicate(n, sample(k, size = size, replace = replace), simplify = FALSE)
+            beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
+            param <- matrix(unlist(param), ncol = length(param))
+            colname <- NULL
+        }
     }
 
     term <- lapply(beta, function(y) names(head(sort(y, decreasing = TRUE), 100)))
@@ -41,7 +49,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
     beta <- matrix(unlist(beta), ncol = length(beta),
                    dimnames = list(names(beta[[1]]), colname))
     strength <- colMeans(abs(beta[names(x$seeds_weight),]))
-    result <- list("param" = matrix(unlist(param), ncol = length(param)),
+    result <- list("param" = param,
                    "beta" = beta,
                    "strength" = strength,
                    "term" = term)
