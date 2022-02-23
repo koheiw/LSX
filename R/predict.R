@@ -71,7 +71,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
         se <- ifelse(n > 1, unname(sqrt(var) / sqrt(n)), NA)
         if (rescaling)
             se <- se / attr(fit_scaled, "scaled:scale")
-        result$se_fit <- se
+        result$se.fit <- se
         result$n <- n
     }
     if (density)

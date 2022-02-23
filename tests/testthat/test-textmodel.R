@@ -99,9 +99,9 @@ test_that("predict.textmodel_lss is working", {
     pred2 <- predict(lss_test, se_fit = TRUE)
     expect_equal(length(pred2$fit), ndoc(dfmt_test))
     expect_identical(names(pred2$fit), docnames(dfmt_test))
-    expect_equal(length(pred2$se_fit), ndoc(dfmt_test))
+    expect_equal(length(pred2$se.fit), ndoc(dfmt_test))
     expect_equal(length(pred2$n), ndoc(dfmt_test))
-    expect_null(names(pred2$se_fit))
+    expect_null(names(pred2$se.fit))
     expect_null(names(pred2$n))
 
     pred3 <- predict(lss_test, density = TRUE)
@@ -159,11 +159,11 @@ test_that("calculation of fit and se_fit are correct", {
     dfmt_sub <- dfm_select(dfmt, names(beta))
     dfmt_prop <- dfm_weight(dfmt_sub, "prop")
 
-    expect_equal(pred$se_fit[1],
+    expect_equal(pred$se.fit[1],
                  unname(sqrt(sum(as.numeric(dfmt_prop[1,]) * (pred$fit[1] - beta) ^ 2)) / sqrt(rowSums(dfmt_sub)[1])))
-    expect_equal(pred$se_fit[2],
+    expect_equal(pred$se.fit[2],
                  unname(sqrt(sum(as.numeric(dfmt_prop[2,]) * (pred$fit[2] - beta) ^ 2)) / sqrt(rowSums(dfmt_sub)[2])))
-    expect_equal(pred$se_fit[3],
+    expect_equal(pred$se.fit[3],
                  unname(sqrt(sum(as.numeric(dfmt_prop[3,]) * (pred$fit[3] - beta) ^ 2)) / sqrt(rowSums(dfmt_sub)[3])))
 
     expect_equal(pred$n[1], 3)
@@ -247,19 +247,19 @@ test_that("predict.textmodel_lss computes scores correctly", {
     pred2 <- predict(lss_test, newdata = dfmt, se_fit = TRUE)
     expect_equal(is.na(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")]),
                  c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
-    expect_equal(is.na(pred2$se_fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
+    expect_equal(is.na(pred2$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
     expect_equal(pred2$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
 
     pred3 <- predict(lss_test, newdata = dfmt, se_fit = TRUE, min_n = 2)
     expect_equal(is.na(pred3$fit[c("1789-Washington", "1797-Adams", "1825-Adams")]),
                  c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
-    expect_equal(is.na(pred3$se_fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
+    expect_equal(is.na(pred3$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
     expect_equal(pred3$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
 
     load("../data/prediction_v0.99.RDA")
     expect_equal(pred, pred_v099, tolerance = 0.0001)
     expect_equal(pred2$fit, pred2_v099$fit, tolerance = 0.0001)
-    expect_equal(pred2$se_fit, pred2_v099$se.fit, tolerance = 0.0001)
+    expect_equal(pred2$se.fit, pred2_v099$se.fit, tolerance = 0.0001)
     expect_equal(pred2$n, pred2_v099$n)
 })
 
