@@ -15,7 +15,7 @@ test_that("as.textmodel_lss works with matrix", {
     # with terms
     lss1 <- as.textmodel_lss(mat_test, seed, term)
     expect_equal(names(lss1), names(LSX:::build_lss()))
-    expect_equal(dim(lss1$embedding), c(100, 7))
+    expect_identical(lss1$embedding, mat_test)
     expect_false(any(duplicated(names(coef(lss1)))))
     pred1 <- predict(lss1, dfmt_test)
     expect_equal(names(pred1), rownames(dfmt_test))
@@ -25,7 +25,7 @@ test_that("as.textmodel_lss works with matrix", {
     # without terms
     lss2 <- as.textmodel_lss(mat_test, seed)
     expect_equal(names(lss2), names(LSX:::build_lss()))
-    expect_equal(dim(lss2$embedding), dim(mat_test))
+    expect_identical(lss2$embedding, mat_test)
     expect_false(any(duplicated(names(coef(lss2)))))
     pred2 <- predict(lss2, dfmt_test)
     expect_equal(names(pred2), rownames(dfmt_test))
@@ -51,7 +51,7 @@ test_that("as.textmodel_lss works with matrix", {
     )
     expect_identical(coef(lss4),
                      coef(as.textmodel_lss(mat_test, seed, slice = 1:50)))
-    expect_equal(dim(lss4$embedding), c(50, 1000))
+    expect_identical(lss4$embedding, mat_test)
 })
 
 test_that("as.textmodel_lss errors with invalid columns", {
@@ -81,7 +81,7 @@ test_that("as.textmodel_lss works with textmodel_lss", {
     )
     expect_identical(coef(lss),
                      coef(as.textmodel_lss(lss_test, seed, slice = 1:10)))
-    expect_equal(dim(lss$embedding), c(10, 112))
+    expect_equal(lss$embedding, lss_test$embedding)
     expect_identical(lss_test$data, lss$data)
     expect_identical(lss_test$frequency, lss$frequency)
 
