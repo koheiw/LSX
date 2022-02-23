@@ -88,6 +88,10 @@ test_that("predict.textmodel_lss is working", {
                    "xxx argument is not used")
     expect_warning(predict(lss_test, se.fit = TRUE),
                    "'se.fit' is deprecated; use 'se_fit'")
+    expect_error(predict(lss_test, newdata = matrix(1:10)),
+                 "newdata must be a dfm")
+    expect_error(predict(lss_test_nd),
+                 "The model includes no data, use newdata to supply a dfm.")
 
     pred1 <- predict(lss_test)
     expect_equal(length(pred1), ndoc(dfmt_test))
@@ -113,7 +117,7 @@ test_that("predict.textmodel_lss is working", {
     expect_equal(as.numeric(scale(pred4)), unname(pred1))
 
     pred5 <- predict(lss_test, se_fit = TRUE, density = TRUE)
-    expect_equal(names(pred5), c("fit", "se_fit", "n", "density"))
+    expect_equal(names(pred5), c("fit", "se.fit", "n", "density"))
 
     pred6 <- predict(lss_test, rescaling = FALSE, min_n = 2)
     expect_true(all(is.na(pred4) == is.na(pred6)))
@@ -230,7 +234,7 @@ test_that("include_data is working", {
     dfmt <- dfm_group(dfm(toks_test))
     lss <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = TRUE, k = 10)
     lss_nd <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = FALSE, k = 10)
-    expect_error(predict(lss_nd), "LSS model includes no data")
+    expect_error(predict(lss_nd), "The model includes no data")
     expect_identical(predict(lss), predict(lss_nd, newdata = dfmt))
 })
 
@@ -299,7 +303,7 @@ test_that("text2vec works", {
     )
     expect_error(
         predict(lss),
-        "LSS model includes no data"
+        "The model includes no data"
     )
     expect_true(setequal(names(coef(lss)), colnames(fcmt)))
 })

@@ -39,7 +39,8 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
 
     if (is.null(newdata)) {
         if (is.null(object$data))
-            stop("LSS model includes no data, please supply a dfm using newdata.\n")
+            stop("The model includes no data, use newdata to supply a dfm.\n",
+                 call. = FALSE)
         data <- object$data
     } else {
         if (!is.dfm(newdata))
