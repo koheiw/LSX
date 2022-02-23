@@ -16,7 +16,7 @@
 #' @param cache if `TRUE`, save result of SVD for next execution with identical
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
-#' @param engine select the engine to factorize `x` to get word vectors. Choose
+#' @param engine select the engine to factorize `x` to generate word vectors. Choose
 #'   from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and
 #'   [rsparse::GloVe()].
 #' @param auto_weight automatically determine weights to approximate the
@@ -66,24 +66,31 @@
 #' seed <- as.seedwords(data_dictionary_sentiment)
 #'
 #' # SVD
-#' lss_svd <- textmodel_lss(dfmt, seed)
-#' summary(lss_svd)
+#' lss_svd <- textmodel_lss(dfmt, seed, include_data = TRUE)
+#' head(coef(lss_svd), 20)
+#' head(predict(lss_svd))
+#' head(predict(lss_svd, min_n = 10)) # more robust
+#'
+#' dfmt_grp <- dfm_group(dfmt) # group sentences
 #'
 #' # sentiment model on economy
 #' eco <- head(textstat_context(toks, 'econom*'), 500)
-#' svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
+#' lss_svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
+#' head(predict(lss_svd_eco, newdata = dfmt_grp))
 #'
 #' # sentiment model on politics
 #' pol <- head(textstat_context(toks, 'politi*'), 500)
-#' svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
+#' lss_svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
+#' head(predict(lss_svd_pol, newdata = dfmt_grp))
 #'
-#' # modify settings of existing model
-#' svd_pol2 <- as.textmodel_lss(svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
+#' # modify hyper-parameters of existing model
+#' lss_svd_pol2 <- as.textmodel_lss(lss_svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
+#' head(predict(lss_svd_pol2, newdata = dfmt_grp))
 #'
 #' # GloVe
-#' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / (1:5), tri = TRUE)
+#' fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / 1:5, tri = TRUE)
 #' lss_glov <- textmodel_lss(fcmt, seed)
-#' summary(lss_glov)
+#' head(predict(lss_glov, newdata = dfmt_grp))
 #' }
 #'
 #' @export
@@ -407,8 +414,7 @@ summary.textmodel_lss <- function(object, n = 30L, ...) {
 #' `coef()` extract model coefficients from a fitted `textmodel_lss`
 #' object.  `coefficients()` is an alias.
 #' @param object a fitted [textmodel_lss] object
-#' @param ... unused
-#' @keywords textmodel internal
+#' @param ... not used
 #' @export
 coef.textmodel_lss <- function(object, ...) {
     sort(object$beta, decreasing = TRUE)
@@ -439,74 +445,6 @@ weight_seeds <- function(seeds, type) {
               names(v) <- y
               return(v)
            }, seeds, seeds_fix, SIMPLIFY = FALSE)
-}
-
-#' Prediction method for textmodel_lss
-#'
-#' @method predict textmodel_lss
-#' @param object a fitted LSS textmodel
-#' @param newdata dfm on which prediction should be made
-#' @param se.fit if `TRUE`, it returns standard error of document scores.
-#' @param density if `TRUE`, returns frequency of model terms in documents.
-#'   Density distribution of model terms can be used to remove documents about
-#'   unrelated subjects.
-#' @param rescaling if `TRUE`, scores are normalized using `scale()`.
-#' @param ... not used
-#' @import methods
-#' @importFrom Matrix Matrix rowSums t
-#' @importFrom quanteda is.dfm dfm_select
-#' @export
-predict.textmodel_lss <- function(object, newdata = NULL, se.fit = FALSE,
-                                  density = FALSE, rescaling = TRUE, ...){
-
-    beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,
-                   dimnames = list(NULL, names(object$beta)))
-
-    if (is.null(newdata)) {
-        if (is.null(object$data))
-            stop("LSS model includes no data, please supply a dfm using newdata.\n")
-        data <- object$data
-    } else {
-        if (!is.dfm(newdata))
-            stop("newdata must be a dfm\n", call. = FALSE)
-        data <- newdata
-    }
-
-    if (density)
-        den <- unname(rowSums(dfm_select(data, object$terms)) / rowSums(data))
-
-    data <- dfm_match(data, colnames(beta))
-    n <- unname(rowSums(data))
-    # mean scores of documents excluding zeros
-    fit <- ifelse(n > 0, rowSums(data %*% t(beta)) / n, NA)
-    names(fit) <- rownames(data)
-
-    if (rescaling) {
-        fit_scaled <- scale(fit)
-        result <- list(fit = rowSums(fit_scaled))
-    } else {
-        result <- list(fit = fit)
-    }
-
-    if (se.fit) {
-        # sparse variance computation
-        weight <- t(t(data > 0) * colSums(beta))
-        var <- (rowSums(weight ^ 2 * data) / n) - (rowSums(weight * data) / n) ^ 2
-        var <- zapsmall(var)
-        se <- ifelse(n > 1, unname(sqrt(var) / sqrt(n)), NA)
-        if (rescaling)
-            se <- se / attr(fit_scaled, "scaled:scale")
-        result$se.fit <- se
-        result$n <- n
-    }
-    if (density)
-        result$density <- den
-
-    if (!se.fit && !density) {
-        return(result$fit)
-    } else {
-        return(result)
-    }
 }
 
 # automatically align polarity score with original weight

@@ -42,9 +42,11 @@ textplot_terms <- function(x, highlighted = NULL, max_words = 10000) {
 
 #' @method textplot_terms textmodel_lss
 #' @import ggplot2 ggrepel stringi
-#' @importFrom quanteda is.dictionary meta
+#' @importFrom quanteda is.dictionary meta check_integer
 #' @export
 textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 10000) {
+
+    max_words <- check_integer(max_words, min_len = 1, max_len = 1, min = 1)
 
     if (is.null(highlighted))
         highlighted <- character()
@@ -83,5 +85,64 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
            geom_text_repel(data = temp_black, aes(x = beta, y = frequency, label = word),
                            segment.size = 0.25, colour = "black") +
            geom_point(data = temp_black, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
+
+}
+
+#' \[experimental\] Plot clusters of word vectors
+#'
+#' Experimental function to find clusters of word vectors
+#' @param x a fitted `textmodel_lss`
+#' @param n the number of cluster
+#' @param method the method for hierarchical clustering
+#' @param scale change the scale of y-axis
+#' @export
+textplot_components <- function(x, n = 5, method = "ward.D2",
+                                scale = c("absolute", "relative")) {
+    UseMethod("textplot_components")
+}
+
+#' @method textplot_components textmodel_lss
+#' @import ggplot2
+#' @importFrom stats hclust cutree
+#' @importFrom quanteda check_integer
+#' @keywords internal
+#' @export
+textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
+                                              scale = c("absolute", "relative")) {
+
+
+    if (is.null(x$k))
+        stop("SVD must be used to generate word vectors", call. = FALSE)
+
+    n <- check_integer(n, min_len = 1, max_len = 1, min = 2, max = x$k)
+    scale <- match.arg(scale)
+
+    seed <- names(x$seeds_weighted)
+    emb <- x$embedding[,seed]
+    suppressWarnings({
+        sim <- proxyC::simil(Matrix(emb, sparse = TRUE))
+    })
+    dist <- as.dist(1 - abs(as.matrix(sim)))
+    hc <- hclust(dist, method)
+    b <- cutree(hc, k = n)
+
+    index <- group <- cum <-NULL
+    temp <- data.frame(index = seq_along(b), group = factor(b))
+
+    if (scale == "absolute") {
+        temp$cum <- ave(temp$group == temp$group, temp$group, FUN = cumsum)
+        limit <- x$k / n
+    } else {
+        temp$cum <- ave(temp$group == temp$group, temp$group,
+                        FUN = function(x) cumsum(x) / sum(x))
+        limit <- 1.0
+    }
+
+    ggplot(temp, aes(x = index, y = cum, col = group)) +
+        labs(x = "Rank", y = "Sum (cumulative)", col = "Cluster") +
+        theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+              axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+        ylim(0, limit) +
+        geom_step()
 
 }

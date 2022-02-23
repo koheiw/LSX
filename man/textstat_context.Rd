@@ -113,3 +113,4 @@ head(tstat_pol)
 \seealso{
 \code{\link[=tokens_select]{tokens_select()}} and \code{\link[=textstat_keyness]{textstat_keyness()}}
 }
+\keyword{internal}

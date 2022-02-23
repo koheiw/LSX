@@ -1,6 +1,7 @@
 #' Identify noisy documents in a corpus
 #' @param x character or [corpus] object whose texts will be diagnosed
 #' @param ... extra arguments passed to `tokens`
+#' @keywords internal
 #' @export
 #' @importFrom quanteda corpus tokens texts
 diagnosys <- function(x, ...) {
@@ -41,6 +42,7 @@ diagnosys.corpus <- function(x, ...) {
 #' Computes cohesion of components of latent semantic analysis
 #' @param x a fitted `textmodel_lss`
 #' @param bandwidth size of window for smoothing
+#' @keywords internal
 #' @export
 #' @importFrom Matrix rowMeans rowSums tcrossprod tril
 cohesion <- function(x, bandwidth = 10) {
@@ -58,27 +60,6 @@ cohesion <- function(x, bandwidth = 10) {
       result$k, result$raw, kernel = "normal",
       bandwidth = bandwidth)$y
     return(result)
-}
-
-#' \[experimental\] Find clusters of word vectors
-#'
-#' Experimental function to find clusters of word vectors
-#' @param x a fitted `textmodel_lss`
-#' @param n the number of cluster
-#' @param method the method for hierarchical clustering
-#' @export
-#' @keywords internal
-boundary <- function(x, n = 10, method = "ward.D2") { # change to textplot_components()?
-    if (!"textmodel_lss" %in% class(x))
-        stop("x must be a textmodel_lss object")
-    seed <- names(x$seeds_weighted)
-    emb <- x$embedding[,seed]
-    suppressWarnings({
-        sim <- proxyC::simil(Matrix(emb, sparse = TRUE))
-    })
-    dist <- as.dist(1 - abs(as.matrix(sim)))
-    hc <- hclust(dist, method)  # return this with a spacial class?
-    cutree(hc, k = n)
 }
 
 #' Convenient function to convert a list to seed words

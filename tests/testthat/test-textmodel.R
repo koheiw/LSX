@@ -84,6 +84,15 @@ test_that("summary.textmodel_lss is working", {
 
 test_that("predict.textmodel_lss is working", {
 
+    expect_warning(predict(lss_test, xxx = TRUE),
+                   "xxx argument is not used")
+    expect_warning(predict(lss_test, se.fit = TRUE),
+                   "'se.fit' is deprecated; use 'se_fit'")
+    expect_error(predict(lss_test, newdata = matrix(1:10)),
+                 "newdata must be a dfm")
+    expect_error(predict(lss_test_nd),
+                 "The model includes no data, use newdata to supply a dfm.")
+
     pred1 <- predict(lss_test)
     expect_equal(length(pred1), ndoc(dfmt_test))
     expect_identical(names(pred1), docnames(dfmt_test))
@@ -91,7 +100,7 @@ test_that("predict.textmodel_lss is working", {
     expect_equal(mean(pred1, na.rm = TRUE), 0)
     expect_equal(sd(pred1, na.rm = TRUE), 1)
 
-    pred2 <- predict(lss_test, se.fit = TRUE)
+    pred2 <- predict(lss_test, se_fit = TRUE)
     expect_equal(length(pred2$fit), ndoc(dfmt_test))
     expect_identical(names(pred2$fit), docnames(dfmt_test))
     expect_equal(length(pred2$se.fit), ndoc(dfmt_test))
@@ -107,8 +116,13 @@ test_that("predict.textmodel_lss is working", {
     expect_identical(names(pred4), docnames(toks_test))
     expect_equal(as.numeric(scale(pred4)), unname(pred1))
 
-    pred5 <- predict(lss_test, se.fit = TRUE, density = TRUE)
+    pred5 <- predict(lss_test, se_fit = TRUE, density = TRUE)
     expect_equal(names(pred5), c("fit", "se.fit", "n", "density"))
+
+    pred6 <- predict(lss_test, rescaling = FALSE, min_n = 2)
+    expect_true(all(is.na(pred4) == is.na(pred6)))
+    expect_true(all(abs(pred6[pred5$n == 1]) < abs(pred4[pred5$n == 1]), na.rm = TRUE))
+    expect_true(all(abs(pred6[pred5$n >= 2]) == abs(pred4[pred5$n >= 2]), na.rm = TRUE))
 
 })
 
@@ -134,12 +148,12 @@ test_that("data object is valid", {
     expect_equal(class(sum), c("summary.textmodel", "list"))
 })
 
-test_that("calculation of fit and se.fit are correct", {
+test_that("calculation of fit and se_fit are correct", {
 
     lss <- as.textmodel_lss(c("a" = 0.1, "b" = 0.1, "c" = 0.3))
     toks <- tokens(c("a a a", "a b", "a a b c c d e"))
     dfmt <- dfm(toks)
-    pred <- predict(lss, newdata = dfmt, se.fit = TRUE, rescaling = FALSE)
+    pred <- predict(lss, newdata = dfmt, se_fit = TRUE, rescaling = FALSE)
 
     expect_equal(pred$fit[1], c(text1 = 0.10))
     expect_equal(pred$fit[2], c(text2 = 0.10))
@@ -220,7 +234,7 @@ test_that("include_data is working", {
     dfmt <- dfm_group(dfm(toks_test))
     lss <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = TRUE, k = 10)
     lss_nd <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = FALSE, k = 10)
-    expect_error(predict(lss_nd), "LSS model includes no data")
+    expect_error(predict(lss_nd), "The model includes no data")
     expect_identical(predict(lss), predict(lss_nd, newdata = dfmt))
 })
 
@@ -234,11 +248,17 @@ test_that("predict.textmodel_lss computes scores correctly", {
     expect_equal(is.na(pred[c("1789-Washington", "1797-Adams", "1825-Adams")]),
                  c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
 
-    pred2 <- predict(lss_test, newdata = dfmt, se.fit = TRUE)
+    pred2 <- predict(lss_test, newdata = dfmt, se_fit = TRUE)
     expect_equal(is.na(pred2$fit[c("1789-Washington", "1797-Adams", "1825-Adams")]),
                  c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
     expect_equal(is.na(pred2$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
     expect_equal(pred2$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
+
+    pred3 <- predict(lss_test, newdata = dfmt, se_fit = TRUE, min_n = 2)
+    expect_equal(is.na(pred3$fit[c("1789-Washington", "1797-Adams", "1825-Adams")]),
+                 c("1789-Washington" = FALSE, "1797-Adams" = TRUE, "1825-Adams" = TRUE))
+    expect_equal(is.na(pred3$se.fit[c(1, 3, 10)]), c(FALSE, TRUE, TRUE))
+    expect_equal(pred3$n[c(1, 3, 10)] == 0, c(FALSE, TRUE, TRUE))
 
     load("../data/prediction_v0.99.RDA")
     expect_equal(pred, pred_v099, tolerance = 0.0001)
@@ -283,7 +303,7 @@ test_that("text2vec works", {
     )
     expect_error(
         predict(lss),
-        "LSS model includes no data"
+        "The model includes no data"
     )
     expect_true(setequal(names(coef(lss)), colnames(fcmt)))
 })
@@ -392,3 +412,12 @@ test_that("old argument still works", {
     expect_equal(lss_test$terms, lss_fcm$terms)
 })
 
+test_that("se_fit is working", {
+    beta <- c(a = 0.2, b = 0.1, z = 0)
+    lss <- as.textmodel_lss(beta)
+    dfmt1 <- dfm(tokens(c("a a a b b", "")))
+    dfmt2 <- dfm(tokens(c("a a a b b z z z z z", "")))
+    pred1 <- predict(lss, newdata = dfmt1, rescaling = FALSE, min_n = 10, se_fit = TRUE)
+    pred2 <- predict(lss, newdata = dfmt2, rescaling = FALSE, se_fit = TRUE)
+    expect_identical(pred1, pred2)
+})

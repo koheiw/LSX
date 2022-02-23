@@ -101,6 +101,7 @@ char_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
 }
 
 #' @rdname textstat_context
+#' @keywords internal
 #' @export
 char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                          case_insensitive = TRUE, window = 10, min_count = 10,

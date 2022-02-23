@@ -65,11 +65,3 @@ test_that("cohesion works", {
     expect_error(cohesion(list()), "x must be a textmodel_lss object")
 })
 
-test_that("boundary works", {
-    bou <- boundary(lss_test, n = 3)
-    expect_identical(length(bou), lss_test$k)
-    expect_true(all(bou %in% 1:3))
-    expect_error(boundary(list()), "x must be a textmodel_lss object")
-})
-
-

@@ -30,6 +30,29 @@ test_that("textplot_* works with Glove", {
     expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
+    expect_error(textplot_terms(lss, highlighted = dict, max_words = 100:200),
+                 "The length of max_words must be 1")
+})
+
+test_that("textplot_components() works", {
+
+    seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
+
+    dfmt <- dfm(test_toks)
+    lss_svd <- textmodel_lss(dfmt, seed, k = 10)
+    fcmt <- fcm(test_toks)
+    lss_glove <- textmodel_lss(fcmt, seed, w = 10)
+
+    gg1 <- textplot_components(lss_svd, n = 5)
+    expect_equal(length(levels(gg1$data$group)), 5)
+    gg2 <- textplot_components(lss_svd, n = 3)
+    expect_equal(length(levels(gg2$data$group)), 3)
+
+    expect_equal(class(textplot_components(lss_svd, 3)), c("gg", "ggplot"))
+    expect_equal(class(textplot_components(lss_svd, 3, scale = "relative")), c("gg", "ggplot"))
+    expect_error(textplot_components(lss_svd, n = c(5, 6)), "The length of n must be 1")
+    expect_error(textplot_components(lss_svd, n = 20), "The value of n must be between 2 and 10")
+    expect_error(textplot_components(lss_glove), "SVD must be used to generate word vectors")
 })
 
 test_that("textplot_* raise error when attributes are missing", {
