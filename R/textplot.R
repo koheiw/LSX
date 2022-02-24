@@ -95,6 +95,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
 #' @param n the number of cluster
 #' @param method the method for hierarchical clustering
 #' @param scale change the scale of y-axis
+#' @keywords internal
 #' @export
 textplot_components <- function(x, n = 5, method = "ward.D2",
                                 scale = c("absolute", "relative")) {
@@ -105,7 +106,6 @@ textplot_components <- function(x, n = 5, method = "ward.D2",
 #' @import ggplot2
 #' @importFrom stats hclust cutree
 #' @importFrom quanteda check_integer
-#' @keywords internal
 #' @export
 textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
                                               scale = c("absolute", "relative")) {

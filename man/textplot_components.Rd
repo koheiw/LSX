@@ -23,3 +23,4 @@ textplot_components(
 \description{
 Experimental function to find clusters of word vectors
 }
+\keyword{internal}
