@@ -1,5 +1,5 @@
 #' Plot similarity between seed words
-#' @param x fitted textmodel_lss object
+#' @param x fitted textmodel_lss object.
 #' @export
 textplot_simil <- function(x) {
     UseMethod("textplot_simil")
@@ -91,10 +91,10 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
 #' \[experimental\] Plot clusters of word vectors
 #'
 #' Experimental function to find clusters of word vectors
-#' @param x a fitted `textmodel_lss`
-#' @param n the number of cluster
-#' @param method the method for hierarchical clustering
-#' @param scale change the scale of y-axis
+#' @param x a fitted `textmodel_lss`.
+#' @param n the number of cluster.
+#' @param method the method for hierarchical clustering.
+#' @param scale change the scale of y-axis.
 #' @keywords internal
 #' @export
 textplot_components <- function(x, n = 5, method = "ward.D2",

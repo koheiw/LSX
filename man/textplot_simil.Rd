@@ -7,7 +7,7 @@
 textplot_simil(x)
 }
 \arguments{
-\item{x}{fitted textmodel_lss object}
+\item{x}{fitted textmodel_lss object.}
 }
 \description{
 Plot similarity between seed words

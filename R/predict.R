@@ -1,8 +1,8 @@
 #' Prediction method for textmodel_lss
 #'
 #' @method predict textmodel_lss
-#' @param object a fitted LSS textmodel
-#' @param newdata a dfm on which prediction should be made
+#' @param object a fitted LSS textmodel.
+#' @param newdata a dfm on which prediction should be made.
 #' @param se_fit if `TRUE`, returns standard error of document scores.
 #' @param density if `TRUE`, returns frequency of polarity words in documents.
 #' @param rescaling if `TRUE`, normalizes polarity scores using `scale()`.

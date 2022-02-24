@@ -12,13 +12,13 @@ textplot_components(
 )
 }
 \arguments{
-\item{x}{a fitted \code{textmodel_lss}}
+\item{x}{a fitted \code{textmodel_lss}.}
 
-\item{n}{the number of cluster}
+\item{n}{the number of cluster.}
 
-\item{method}{the method for hierarchical clustering}
+\item{method}{the method for hierarchical clustering.}
 
-\item{scale}{change the scale of y-axis}
+\item{scale}{change the scale of y-axis.}
 }
 \description{
 Experimental function to find clusters of word vectors

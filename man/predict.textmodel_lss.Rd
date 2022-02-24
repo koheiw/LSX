@@ -15,9 +15,9 @@
 )
 }
 \arguments{
-\item{object}{a fitted LSS textmodel}
+\item{object}{a fitted LSS textmodel.}
 
-\item{newdata}{a dfm on which prediction should be made}
+\item{newdata}{a dfm on which prediction should be made.}
 
 \item{se_fit}{if \code{TRUE}, returns standard error of document scores.}
 

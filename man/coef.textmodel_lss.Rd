@@ -10,9 +10,9 @@
 coefficients.textmodel_lss(object, ...)
 }
 \arguments{
-\item{object}{a fitted \link{textmodel_lss} object}
+\item{object}{a fitted \link{textmodel_lss} object.}
 
-\item{...}{not used}
+\item{...}{not used.}
 }
 \description{
 \code{coef()} extract model coefficients from a fitted \code{textmodel_lss}

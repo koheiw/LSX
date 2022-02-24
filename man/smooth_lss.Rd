@@ -16,17 +16,17 @@ smooth_lss(
 )
 }
 \arguments{
-\item{x}{a \code{data.frame} containing LSS scores and dates}
+\item{x}{a \code{data.frame} containing LSS scores and dates.}
 
-\item{lss_var}{the name of the column for LSS scores}
+\item{lss_var}{the name of the column for LSS scores.}
 
-\item{date_var}{the name of the columns for dates}
+\item{date_var}{the name of the columns for dates.}
 
 \item{span}{determines the level of smoothing.}
 
-\item{from}{start of the time period}
+\item{from}{start of the time period.}
 
-\item{to}{end of the time period}
+\item{to}{end of the time period.}
 
 \item{engine}{specifies the function to smooth LSS scores: \code{\link[=loess]{loess()}} or \code{\link[=locfit]{locfit()}}.
 The latter should be used when n > 10000.}

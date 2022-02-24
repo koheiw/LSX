@@ -1,6 +1,6 @@
 #' Identify noisy documents in a corpus
-#' @param x character or [corpus] object whose texts will be diagnosed
-#' @param ... extra arguments passed to `tokens`
+#' @param x character or [corpus] object whose texts will be diagnosed.
+#' @param ... extra arguments passed to `tokens`.
 #' @keywords internal
 #' @export
 #' @importFrom quanteda corpus tokens texts
@@ -63,10 +63,10 @@ cohesion <- function(x, bandwidth = 10) {
 }
 
 #' Convenient function to convert a list to seed words
-#' @param x a list of characters vectors or a [dictionary][quanteda::dictionary] object
-#' @param upper numeric index or key for seed words for higher scores
-#' @param lower numeric index or key for seed words for lower scores
-#' @param concatenator character to replace separators of multi-word seed words
+#' @param x a list of characters vectors or a [dictionary][quanteda::dictionary] object.
+#' @param upper numeric index or key for seed words for higher scores.
+#' @param lower numeric index or key for seed words for lower scores.
+#' @param concatenator character to replace separators of multi-word seed words.
 #' @export
 #' @return named numeric vector for seed words with polarity scores
 as.seedwords <- function(x, upper = 1, lower = 2, concatenator = "_") {
@@ -128,12 +128,12 @@ seedwords <- function(type) {
 
 #' Smooth predicted LSS scores by local polynomial regression
 #'
-#' @param x a `data.frame` containing LSS scores and dates
-#' @param lss_var the name of the column for LSS scores
-#' @param date_var the name of the columns for dates
+#' @param x a `data.frame` containing LSS scores and dates.
+#' @param lss_var the name of the column for LSS scores.
+#' @param date_var the name of the columns for dates.
 #' @param span determines the level of smoothing.
-#' @param from start of the time period
-#' @param to end of the time period
+#' @param from start of the time period.
+#' @param to end of the time period.
 #' @param engine specifies the function to smooth LSS scores: [loess()] or [locfit()].
 #' The latter should be used when n > 10000.
 #' @param ... extra arguments passed to [loess()] or [lp()]

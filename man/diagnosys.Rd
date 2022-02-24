@@ -7,9 +7,9 @@
 diagnosys(x, ...)
 }
 \arguments{
-\item{x}{character or \link{corpus} object whose texts will be diagnosed}
+\item{x}{character or \link{corpus} object whose texts will be diagnosed.}
 
-\item{...}{extra arguments passed to \code{tokens}}
+\item{...}{extra arguments passed to \code{tokens}.}
 }
 \description{
 Identify noisy documents in a corpus
