@@ -1,6 +1,6 @@
 Package: LSX
 Type: Package
-Title: Semisupervised Document Scaling by Word-embedding Models
+Title: Semisupervised Document Scaling by Word-Embedding Models
 Date: 2022-02-23
 Version: 1.1.0
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre", "cph"))
