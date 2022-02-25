@@ -115,9 +115,18 @@ in \code{seed_weighted} in the object.
 \examples{
 \donttest{
 library("quanteda")
-con <- url("https://bit.ly/2GZwLcN", "rb")
-corp <- readRDS(con)
-close(con)
+
+# download corpus
+tryCatch({
+   con <- url("https://bit.ly/2GZwLcN", "rb")
+   corp <- readRDS(con)
+   close(con)
+   },
+   error = function(e) e,
+   warning = function(w) w
+)
+
+if (exists("corp")) {
 toks <- corpus_reshape(corp, "sentences") \%>\%
         tokens(remove_punct = TRUE) \%>\%
         tokens_remove(stopwords("en")) \%>\%
@@ -150,10 +159,10 @@ lss_svd_pol2 <- as.textmodel_lss(lss_svd_pol, seed[c(1, 8)], terms = pol, slice 
 head(predict(lss_svd_pol2, newdata = dfmt_grp))
 
 # GloVe
-fcmt  <- fcm(toks, context = "window", count = "weighted", weights = 1 / 1:5, tri = TRUE)
+fcmt <- fcm(toks, context = "window", count = "weighted", weights = 1 / 1:5, tri = TRUE)
 lss_glov <- textmodel_lss(fcmt, seed)
 head(predict(lss_glov, newdata = dfmt_grp))
-}
+}}
 
 }
 \references{
