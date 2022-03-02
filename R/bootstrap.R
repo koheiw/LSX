@@ -25,7 +25,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
     } else {
         by <- check_integer(by, min = 1, max = x$k)
         if (is.null(from))
-            from <- 100
+            from <- 1
         if (is.null(to))
             to <- x$k
         k <- seq(from, to, by = by)
