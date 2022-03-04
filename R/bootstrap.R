@@ -66,29 +66,30 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 #' @param ... additional arguments to passed to `bootstrap_lss()` when `what = "slice"`.
 #' @keywords internal
 #' @export
-candidates <- function(x, rank = 100, min_freq = 0.9, max_freq = 1.0, ...) {
+candidates <- function(x, ...) {
 
-    cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted)))
-
-    q <- quantile(x$frequency, c(min_freq, max_freq))
-    l <- q[1] <= x$frequency & x$frequency <= q[2]
-    term <- names(x$frequency[l])
-
+    cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted))
     result <- list()
     for (seed in names(x$seeds_weighted)) {
         cat(sprintf("   %s ", seed))
-
-        bs_slice <- bootstrap_lss(as.textmodel_lss(x, seeds = seed, terms = term), what = "slice", ...)
-        temp <- data.frame(word = as.character(bs_slice$terms), rank = as.integer(row(bs_slice$terms)))
-        temp <- temp[!duplicated(temp$word),]
-        temp <- temp[order(temp$rank),]
-        cand <- head(temp$word, rank)
-
-        bs_seed <- bootstrap_lss(as.textmodel_lss(x, seeds = cand), what = "seeds")
-        cand <- names(sort(colMeans(abs(bs_seed$beta)), decreasing = TRUE))
-        cat(sprintf("~ %s...\n", paste(head(cand, 10), collapse = ", ")))
-        result[[seed]] <- cand
+        bs <- bootstrap_lss(as.textmodel_lss(x, seeds = seed), what = "slice", ...)
+        beta <- bs$beta
+        #if (mode == "mode") {
+            b <- beta[cbind(seq_len(nrow(beta)), max.col(beta))]
+            names(b) <- rownames(beta)
+            b <- sort(b, decreasing = TRUE)
+        #} else {
+        #    b <- sort(rowMeans(beta), decreasing = TRUE)
+        #}
+        f <- x$frequency[names(b)]
+        temp <- data.frame(candidate = names(b), cosine = b,
+                           frequency = 1 - (abs(f - f[1]) / max(f)))
+        temp$r <- temp$cosine * temp$frequency
+        temp <- temp[order(temp$r, decreasing = TRUE),]
+        rownames(temp) <- NULL
+        #print(head(temp, 20))
+        cat(sprintf("~ %s...\n", paste(head(temp$candidate, 10), collapse = ", ")))
+        result[[seed]] <- temp
     }
-    result <- as.data.frame(result, check.names = FALSE)
     return(result)
 }
