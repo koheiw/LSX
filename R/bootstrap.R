@@ -15,7 +15,7 @@
 #' @importFrom quanteda check_integer
 bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
                           by = 1, from = NULL, to = NULL,
-                          n = 10L, size = 100, ...) {
+                          n = 10, size = 0.2, ...) {
 
     what <- match.arg(what)
     if (what == "seeds") {
@@ -35,8 +35,9 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
             colname <- as.character(k)
         } else {
             n <- check_integer(n, min = 1)
-            size <- check_integer(size, min = 2, max = x$k)
-            param <- replicate(n, sample(k, size = size, replace = FALSE), simplify = FALSE)
+            size <- check_double(size, min = 0.05, max = 1)
+            slice <- sample(x$slice, size = length(x$slice) * size, replace = FALSE)
+            param <- replicate(n, slice, simplify = FALSE)
             beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
             param <- matrix(unlist(param), ncol = length(param))
             colname <- NULL
