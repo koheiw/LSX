@@ -68,7 +68,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
 #' @export
 candidates <- function(x, ...) {
 
-    cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted))
+    cat(sprintf("Searching words similar to %d seed words...\n", length(x$seeds_weighted)))
     result <- list()
     for (seed in names(x$seeds_weighted)) {
         cat(sprintf("   %s ", seed))
