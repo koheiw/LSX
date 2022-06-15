@@ -10,7 +10,7 @@ Version](https://www.r-pkg.org/badges/version/LSX)](https://CRAN.R-project.org/p
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/LSX?color=orange)](https://CRAN.R-project.org/package=LSX)
 [![R build
 status](https://github.com/koheiw/LSX/workflows/R-CMD-check/badge.svg)](https://github.com/koheiw/LSX/actions)
-[![codecov](https://codecov.io/gh/koheiw/LSX/branch/master/graph/badge.svg)](https://codecov.io/gh/koheiw/LSX)
+[![codecov](https://codecov.io/gh/koheiw/LSX/branch/master/graph/badge.svg)](https://app.codecov.io/gh/koheiw/LSX)
 <!-- badges: end -->
 
 **NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN
@@ -24,12 +24,18 @@ supervision, it estimates polarity of words in the corpus by latent
 semantic analysis and locates documents on a unidimensional scale
 (e.g. sentiment).
 
-Please read my paper for the algorithm and methodology:
+Please read the following papers for the algorithm and methodology, and
+its application to non-English texts (Japanese and Hebrew):
 
--   Watanabe, Kohei. 2020. “[Latent Semantic Scaling: A Semisupervised
+-   Watanabe, Kohei. 2020. [“Latent Semantic Scaling: A Semisupervised
     Text Analysis Technique for New Domains and
-    Languages](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976)”,
+    Languages”](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976),
     *Communication Methods and Measures*.
+-   Watanabe, Kohei, Segev, Elad, & Tago, Atsushi. (2022). [“Discursive
+    diversion: Manipulation of nuclear threats by the conservative
+    leaders in Japan and
+    Israel”](https://journals.sagepub.com/doi/metrics/10.1177/17480485221097967),
+    *International Communication Gazette*.
 
 ## How to install
 
@@ -77,7 +83,7 @@ lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment),
                      terms = eco, k = 300, cache = TRUE)
 ```
 
-    ## Reading cache file: lss_cache/svds_e5089465ba658d1a.RDS
+    ## Writing cache file: lss_cache/svds_568607abc404ca43.RDS
 
 ### Sentiment seed words
 
@@ -153,6 +159,13 @@ dfmt <- dfm_group(dfmt_sent)
 
 # predict sentiment scores
 pred <- as.data.frame(predict(lss, se.fit = TRUE, newdata = dfmt))
+```
+
+    ## Warning: 'se.fit' is deprecated; use 'se_fit'
+
+    ## Warning: se.fit argument is not used.
+
+``` r
 pred$date <- docvars(dfmt, "date")
 
 # smooth LSS scores
@@ -172,9 +185,13 @@ text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 
 ## Examples
 
-Please read the following papers for how to use LSS in social science
-research:
+There are studies conducted using LSS in various fields of social
+science:
 
+-   Rauh, Christian, 2022. [“Supranational emergency politics? What
+    executives’ public crisis communication may tell
+    us”](https://www.tandfonline.com/doi/full/10.1080/13501763.2021.1916058),
+    *Journal of European Public Policy*.
 -   Trubowitz, Peter and Watanabe, Kohei. 2021. [“The Geopolitical
     Threat Index: A Text-Based Computational Approach to Identifying
     Foreign
@@ -199,7 +216,7 @@ research:
     *European Journal Communication*.
 -   Watanabe, Kohei. 2017. [“The spread of the Kremlin’s narratives by a
     western news agency during the Ukraine
-    crisis”](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)",
+    crisis”](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)“,
     *Journal of International Communication*.
 -   Lankina, Tomila and Watanabe, Kohei. 2017. [“‘Russian Spring’ or
     ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving
