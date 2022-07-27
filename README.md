@@ -16,11 +16,11 @@ status](https://github.com/koheiw/LSX/workflows/R-CMD-check/badge.svg)](https://
 **NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN
 submission.
 
-In quantitative text analysis, the cost to train supervised machine
+In quantitative text analysis, the cost of training supervised machine
 learning models tend to be very high when the corpus is large. LSS is a
-semisupervised document scaling method that I developed to perform large
-scale analysis at low cost. Taking user-provided *seed words* as weak
-supervision, it estimates polarity of words in the corpus by latent
+semisupervised document scaling technique that I developed to perform
+large scale analysis at low cost. Taking user-provided *seed words* as
+weak supervision, it estimates polarity of words in the corpus by latent
 semantic analysis and locates documents on a unidimensional scale
 (e.g. sentiment).
 
@@ -34,7 +34,7 @@ its application to non-English texts (Japanese and Hebrew):
 -   Watanabe, Kohei, Segev, Elad, & Tago, Atsushi. (2022). [“Discursive
     diversion: Manipulation of nuclear threats by the conservative
     leaders in Japan and
-    Israel”](https://journals.sagepub.com/doi/metrics/10.1177/17480485221097967),
+    Israel”](https://journals.sagepub.com/doi/full/10.1177/17480485221097967),
     *International Communication Gazette*.
 
 ## How to install
@@ -70,14 +70,10 @@ toks_sent <- corp %>%
     tokens(remove_punct = TRUE) %>% 
     tokens_remove(stopwords("en"), padding = TRUE)
 dfmt_sent <- toks_sent %>% 
-    dfm(revemo_padding = TRUE) %>%
+    dfm(remove_padding = TRUE) %>%
     dfm_select("^\\p{L}+$", valuetype = "regex", min_nchar = 2) %>% 
     dfm_trim(min_termfreq = 5)
-```
 
-    ## Warning: revemo_padding argument is not used.
-
-``` r
 eco <- char_context(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
                      terms = eco, k = 300, cache = TRUE)
@@ -146,37 +142,29 @@ textplot_terms(lss,
 
 ## Result of analysis
 
-In the plots, circles indicate sentiment of individual news articles and
+In the plot, circles indicate sentiment of individual news articles and
 lines are their local average (solid line) with a confidence band
 (dotted lines). According to the plot, economic sentiment in the
-Guardian news stories became negative from February to April, but it
-become more positive in April. As the referendum approaches, the
-newspaper’s sentiment became less stable, although it became close to
-neutral (overall mean) on the day of voting (broken line).
+Guardian news articles became negative between March and May in 2016,
+but it become more positive in June.
 
 ``` r
 dfmt <- dfm_group(dfmt_sent)
 
+dat <- docvars(dfmt)
+
 # predict sentiment scores
-pred <- as.data.frame(predict(lss, se.fit = TRUE, newdata = dfmt))
-```
-
-    ## Warning: 'se.fit' is deprecated; use 'se_fit'
-
-    ## Warning: se.fit argument is not used.
-
-``` r
-pred$date <- docvars(dfmt, "date")
+dat$fit <- predict(lss, newdata = dfmt)
 
 # smooth LSS scores
-pred_sm <- smooth_lss(pred, from = as.Date("2016-01-01"), to = as.Date("2016-12-31"))
+dat_sm <- smooth_lss(dat, span = 0.2, from = as.Date("2016-01-01"), to = as.Date("2016-12-31"))
 
 # plot trend
-plot(pred$date, pred$fit, col = rgb(0, 0, 0, 0.05), pch = 16, ylim = c(-0.5, 0.5),
-     xlab = "Time", ylab = "Negative vs. positive", main = "Economic sentiment in the Guardian")
-lines(pred_sm$date, pred_sm$fit, type = "l")
-lines(pred_sm$date, pred_sm$fit + pred_sm$se.fit * 2, type = "l", lty = 3)
-lines(pred_sm$date, pred_sm$fit - pred_sm$se.fit * 2, type = "l", lty = 3)
+plot(dat$date, dat$fit, col = rgb(0, 0, 0, 0.05), pch = 16, ylim = c(-0.5, 0.5),
+     xlab = "Time", ylab = "Economic sentiment", main = "New coverage by the Guardian in 2016")
+lines(dat_sm$date, dat_sm$fit, type = "l")
+lines(dat_sm$date, dat_sm$fit + dat_sm$se.fit * 1.96, type = "l", lty = 3)
+lines(dat_sm$date, dat_sm$fit - dat_sm$se.fit * 1.96, type = "l", lty = 3)
 abline(h = 0, v = as.Date("2016-06-23"), lty = c(1, 2))
 text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 ```
