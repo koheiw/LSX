@@ -129,13 +129,14 @@ text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 
 ## Examples
 
-There are studies conducted using LSS in various fields of social science:
+LSS has been used for research in various fields of social science. For example:
 
+- Umansky, Natalia. 2022. ["Who gets a say in this? Speaking security on social media"](https://journals.sagepub.com/doi/10.1177/14614448221111009). *New Media & Society*.
 - Rauh, Christian, 2022. ["Supranational emergency politics? What executives’ public crisis communication may tell us"](https://www.tandfonline.com/doi/full/10.1080/13501763.2021.1916058), *Journal of European Public Policy*.
 - Trubowitz, Peter and Watanabe, Kohei. 2021. ["The Geopolitical Threat Index: A Text-Based Computational Approach to Identifying Foreign Threats"](https://academic.oup.com/isq/advance-article/doi/10.1093/isq/sqab029/6278490), *International Studies Quarterly*.
-- Vydra, Simon and Kantorowicz, Jaroslaw. ["Tracing Policy-relevant Information in Social Media: The Case of Twitter before and during the COVID-19 Crisis"](https://www.degruyter.com/document/doi/10.1515/spp-2020-0013/html). *Statistics, Politics and Policy*.
-- Kinoshita, Hiroko. 2020. ["A Quantitative Text Analysis Approach on LGBTQ Issues in Contemporary Indonesia"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241133). *Journal of Population and Social Studies*.
+- Vydra, Simon and Kantorowicz, Jaroslaw. 2020. ["Tracing Policy-relevant Information in Social Media: The Case of Twitter before and during the COVID-19 Crisis"](https://www.degruyter.com/document/doi/10.1515/spp-2020-0013/html). *Statistics, Politics and Policy*.
 - Yamao, Dai. 2020. ["Re-securitization as Evasion of Responsibility: A Quantitative Text Analysis of Refugee Crisis in Major Arabic Newspapers"](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130), *Journal of Population and Social Studies*.
 - Watanabe, Kohei. 2017. ["Measuring News Bias: Russia's Official News Agency ITAR-TASS’s Coverage of the Ukraine Crisis"](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full), *European Journal Communication*.
-- Watanabe, Kohei. 2017. ["The spread of the Kremlin's narratives by a western news agency during the Ukraine crisis"](http://www.tandfonline.com/eprint/h2IHsz2YKce6uJeeCmcd/full)", *Journal of International Communication*.
 - Lankina, Tomila and Watanabe, Kohei. 2017. ["'Russian Spring' or 'Spring Betrayal'? The Media as a Mirror of Putin’s Evolving Strategy in Ukraine"](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full), *Europe-Asia Studies*.
+
+Other studies are available on [Google Scholar](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=5312969973901591795).
