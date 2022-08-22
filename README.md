@@ -176,6 +176,10 @@ text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 LSS has been used for research in various fields of social science. For
 example:
 
+-   Brändle, Verena K., and Olga Eisele. 2022. [“A Thin Line:
+    Governmental Border Communication in Times of European
+    Crises”](https://onlinelibrary.wiley.com/doi/full/10.1111/jcms.13398)
+    *Journal of Common Market Studies*.
 -   Umansky, Natalia. 2022. [“Who gets a say in this? Speaking security
     on social
     media”](https://journals.sagepub.com/doi/10.1177/14614448221111009).
@@ -194,10 +198,6 @@ example:
     before and during the COVID-19
     Crisis”](https://www.degruyter.com/document/doi/10.1515/spp-2020-0013/html).
     *Statistics, Politics and Policy*.
--   Yamao, Dai. 2020. [“Re-securitization as Evasion of Responsibility:
-    A Quantitative Text Analysis of Refugee Crisis in Major Arabic
-    Newspapers”](https://so03.tci-thaijo.org/index.php/jpss/article/view/241130),
-    *Journal of Population and Social Studies*.
 -   Watanabe, Kohei. 2017. [“Measuring News Bias: Russia’s Official News
     Agency ITAR-TASS’s Coverage of the Ukraine
     Crisis”](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full),
