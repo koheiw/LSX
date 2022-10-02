@@ -64,11 +64,11 @@ considered as collocations.}
 \item{remove_pattern}{if \code{TRUE}, keywords do not contain target words.}
 
 \item{n}{integer vector specifying the number of elements to be concatenated
-in each ngram.  Each element of this vector will define a \eqn{n} in the
+in each n-gram.  Each element of this vector will define a \eqn{n} in the
 \eqn{n}-gram(s) that are produced.}
 
 \item{skip}{integer vector specifying the adjacency skip size for tokens
-forming the ngrams, default is 0 for only immediately neighbouring words.
+forming the n-grams, default is 0 for only immediately neighbouring words.
 For \code{skipgrams}, \code{skip} can be a vector of integers, as the
 "classic" approach to forming skip-grams is to set skip = \eqn{k} where
 \eqn{k} is the distance for which \eqn{k} or fewer skips are used to
