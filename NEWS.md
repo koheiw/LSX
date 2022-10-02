@@ -1,3 +1,7 @@
+# Changes in v1.1.2
+
+* Update examples to pass CRAN tests.
+
 # Changes in v1.1.1
 
 * Add `min_n` to `predict()` to make polarity scores of short documents more stable.
