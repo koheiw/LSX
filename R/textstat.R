@@ -20,7 +20,6 @@
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
-#' #' @examples
 #' \donttest{
 #' require(quanteda)
 #' con <- url("https://bit.ly/2GZwLcN", "rb")

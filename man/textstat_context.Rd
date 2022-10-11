@@ -84,7 +84,6 @@ Guthrie et al (2006).}
 Identify context words using user-provided patterns
 }
 \examples{
-#' @examples
 \donttest{
 require(quanteda)
 con <- url("https://bit.ly/2GZwLcN", "rb")
