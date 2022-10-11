@@ -99,7 +99,7 @@ char_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     return(result$feature)
 }
 
-#' @rdname textstat_context
+#' @noRd
 #' @keywords internal
 #' @export
 char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),

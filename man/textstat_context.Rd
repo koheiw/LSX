@@ -3,7 +3,6 @@
 \name{textstat_context}
 \alias{textstat_context}
 \alias{char_context}
-\alias{char_keyness}
 \title{Identify context words using user-provided patterns}
 \usage{
 textstat_context(
@@ -20,19 +19,6 @@ textstat_context(
 )
 
 char_context(
-  x,
-  pattern,
-  valuetype = c("glob", "regex", "fixed"),
-  case_insensitive = TRUE,
-  window = 10,
-  min_count = 10,
-  remove_pattern = TRUE,
-  p = 0.001,
-  n = 1,
-  skip = 0
-)
-
-char_keyness(
   x,
   pattern,
   valuetype = c("glob", "regex", "fixed"),
@@ -112,4 +98,3 @@ head(tstat_pol)
 \seealso{
 \code{\link[=tokens_select]{tokens_select()}} and \code{\link[=textstat_keyness]{textstat_keyness()}}
 }
-\keyword{internal}
