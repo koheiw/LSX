@@ -13,47 +13,50 @@
 #'   \item{terms}{the most polarized words (only the top 100).}
 #' @export
 #' @importFrom quanteda check_integer
-bootstrap_lss <- function(x, what = c("seeds", "k", "slice"),
-                          by = 1, from = NULL, to = NULL,
-                          n = 10, size = 0.2, ...) {
+bootstrap_lss <- function(x, what = c("seeds", "k", "slice"), n = 10,
+                          param = NULL, ...) {
 
     what <- match.arg(what)
     if (what == "seeds") {
-        param <- as.list(names(x$seeds_weight))
-        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
-        colname <- names(x$seeds_weight)
-    } else {
-        by <- check_integer(by, min = 1, max = x$k)
-        if (is.null(from))
-            from <- 1
-        if (is.null(to))
-            to <- x$k
-        k <- seq(from, to, by = by)
-        if (what == "k") {
-            param <- matrix(k, nrow = 1)
-            beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
-            colname <- as.character(k)
+        if (!is.null(param)) {
+            param <- as.list(param)
         } else {
             n <- check_integer(n, min = 1)
-            size <- check_double(size, min = 0.05, max = 1)
-            slice <- sample(x$slice, size = length(x$slice) * size, replace = FALSE)
-            param <- replicate(n, slice, simplify = FALSE)
-            beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
-            param <- matrix(unlist(param), ncol = length(param))
+            seed <- head(names(x$seeds_weighted), n)
+            param <- as.list(seed)
+        }
+        colname <- seed
+        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = y, ...)$beta)
+    } else {
+        if (what == "k") {
+            if (!is.null(param)) {
+                param <- check_integer(param, max_len = x$k, min = 1, max = x$k)
+            } else {
+                n <- check_integer(n, min = 1, max = x$k)
+                param <- seq(0, x$k, length.out = n + 1)[-1]
+            }
+            colname <- as.character(param)
+        } else {
+            if (!is.null(param)) {
+                if (!is.matrix(param))
+                    stop("param for slice must be a matrix")
+            } else {
+                n <- check_integer(n, min = 1, max = x$k)
+                param <- replicate(n, sample(x$slice, replace = TRUE), simplify = FALSE)
+            }
             colname <- NULL
         }
+        beta <- lapply(param, function(y) as.textmodel_lss(x, seeds = x$seeds, slice = y, ...)$beta)
     }
 
-    term <- lapply(beta, function(y) names(head(sort(y, decreasing = TRUE), 100)))
-    term <- matrix(unlist(term), ncol = length(term),
-                   dimnames = list(NULL, colname))
+    # term <- lapply(beta, function(y) names(head(sort(y, decreasing = TRUE), 100)))
+    # term <- matrix(unlist(term), ncol = length(term),
+    #                dimnames = list(NULL, colname))
     beta <- matrix(unlist(beta), ncol = length(beta),
                    dimnames = list(names(beta[[1]]), colname))
-    strength <- colMeans(abs(beta[names(x$seeds_weight),,drop = FALSE]))
+    #strength <- colMeans(abs(beta[names(x$seeds_weight),,drop = FALSE]))
     result <- list("param" = param,
-                   "beta" = beta,
-                   "terms" = term,
-                   "strength" = strength)
+                   "beta" = beta)
     names(result)[1] <- what
     return(result)
 }
