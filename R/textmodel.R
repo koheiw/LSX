@@ -53,15 +53,16 @@
 #' @examples
 #' \donttest{
 #' library("quanteda")
+#' library("LSX")
 #'
 #' # download corpus
-#' tryCatch({
+#' corp <- tryCatch({
 #'    con <- url("https://bit.ly/2GZwLcN", "rb")
-#'    corp <- readRDS(con)
-#'    close(con)
+#'    readRDS(con)
 #'    },
 #'    error = function(e) e,
-#'    warning = function(w) w
+#'    warning = function(w) w,
+#'    finally = close(con)
 #' )
 #'
 #' if (exists("corp")) {
@@ -75,19 +76,19 @@
 #' seed <- as.seedwords(data_dictionary_sentiment)
 #'
 #' # SVD
-#' lss_svd <- textmodel_lss(dfmt, seed, include_data = TRUE)
+#' lss_svd <- textmodel_lss(dfmt, seed)
 #' head(coef(lss_svd), 20)
 #' head(predict(lss_svd))
 #' head(predict(lss_svd, min_n = 10)) # more robust
 #'
 #' dfmt_grp <- dfm_group(dfmt) # group sentences
 #'
-#' # sentiment model on economy
+#' # sentiment on economy
 #' eco <- head(textstat_context(toks, 'econom*'), 500)
 #' lss_svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
 #' head(predict(lss_svd_eco, newdata = dfmt_grp))
 #'
-#' # sentiment model on politics
+#' # sentiment on politics
 #' pol <- head(textstat_context(toks, 'politi*'), 500)
 #' lss_svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
 #' head(predict(lss_svd_pol, newdata = dfmt_grp))
@@ -97,10 +98,10 @@
 #' head(predict(lss_svd_pol2, newdata = dfmt_grp))
 #'
 #' # GloVe
-#' fcmt <- fcm(toks, context = "window", count = "weighted", weights = 1 / 1:5, tri = TRUE)
+#' fcmt <- fcm(dfmt, tri = FALSE)
 #' lss_glov <- textmodel_lss(fcmt, seed)
 #' head(predict(lss_glov, newdata = dfmt_grp))
-#' }}
+#' }
 #'
 #' @export
 textmodel_lss <- function(x, ...) {

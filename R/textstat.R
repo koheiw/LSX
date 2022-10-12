@@ -20,7 +20,6 @@
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
 #' @examples
-#' #' @examples
 #' \donttest{
 #' require(quanteda)
 #' con <- url("https://bit.ly/2GZwLcN", "rb")
@@ -100,7 +99,7 @@ char_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
     return(result$feature)
 }
 
-#' @rdname textstat_context
+#' @noRd
 #' @keywords internal
 #' @export
 char_keyness <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),

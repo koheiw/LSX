@@ -3,7 +3,6 @@
 \name{textstat_context}
 \alias{textstat_context}
 \alias{char_context}
-\alias{char_keyness}
 \title{Identify context words using user-provided patterns}
 \usage{
 textstat_context(
@@ -20,19 +19,6 @@ textstat_context(
 )
 
 char_context(
-  x,
-  pattern,
-  valuetype = c("glob", "regex", "fixed"),
-  case_insensitive = TRUE,
-  window = 10,
-  min_count = 10,
-  remove_pattern = TRUE,
-  p = 0.001,
-  n = 1,
-  skip = 0
-)
-
-char_keyness(
   x,
   pattern,
   valuetype = c("glob", "regex", "fixed"),
@@ -64,11 +50,11 @@ considered as collocations.}
 \item{remove_pattern}{if \code{TRUE}, keywords do not contain target words.}
 
 \item{n}{integer vector specifying the number of elements to be concatenated
-in each ngram.  Each element of this vector will define a \eqn{n} in the
+in each n-gram.  Each element of this vector will define a \eqn{n} in the
 \eqn{n}-gram(s) that are produced.}
 
 \item{skip}{integer vector specifying the adjacency skip size for tokens
-forming the ngrams, default is 0 for only immediately neighbouring words.
+forming the n-grams, default is 0 for only immediately neighbouring words.
 For \code{skipgrams}, \code{skip} can be a vector of integers, as the
 "classic" approach to forming skip-grams is to set skip = \eqn{k} where
 \eqn{k} is the distance for which \eqn{k} or fewer skips are used to
@@ -84,7 +70,6 @@ Guthrie et al (2006).}
 Identify context words using user-provided patterns
 }
 \examples{
-#' @examples
 \donttest{
 require(quanteda)
 con <- url("https://bit.ly/2GZwLcN", "rb")
@@ -113,4 +98,3 @@ head(tstat_pol)
 \seealso{
 \code{\link[=tokens_select]{tokens_select()}} and \code{\link[=textstat_keyness]{textstat_keyness()}}
 }
-\keyword{internal}
