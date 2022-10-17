@@ -1,5 +1,7 @@
-#' A word embeddings-based semisupervised model for document scaling
+#' Fit Latent Semantic Scaling models
 #'
+#' Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
+#' for document scaling.
 #' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
 #' @param seeds a character vector or named numeric vector that contains seed
 #'   words. If seed words contain "*", they are interpreted as glob patterns.
@@ -63,7 +65,7 @@
 #'    error = function(e) e,
 #'    warning = function(w) w,
 #'    finally = close(con)
-#' )
+#' })
 #'
 #' if (exists("corp")) {
 #' toks <- corpus_reshape(corp, "sentences") %>%
