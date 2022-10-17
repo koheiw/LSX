@@ -1,4 +1,4 @@
-#' Fit Latent Semantic Scaling models
+#' Fit a Latent Semantic Scaling mode
 #'
 #' Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
 #' for document scaling.
@@ -65,9 +65,11 @@
 #'    error = function(e) e,
 #'    warning = function(w) w,
 #'    finally = close(con)
-#' })
+#' )
 #'
-#' if (exists("corp")) {
+#' if (!exists("corp"))
+#'    quit("no")
+#'
 #' toks <- corpus_reshape(corp, "sentences") %>%
 #'         tokens(remove_punct = TRUE) %>%
 #'         tokens_remove(stopwords("en")) %>%
@@ -80,8 +82,8 @@
 #' # SVD
 #' lss_svd <- textmodel_lss(dfmt, seed)
 #' head(coef(lss_svd), 20)
-#' head(predict(lss_svd))
-#' head(predict(lss_svd, min_n = 10)) # more robust
+#' head(predict(lss_svd, newdata = dfmt))
+#' head(predict(lss_svd, newdata = dfmt, min_n = 10)) # more robust
 #'
 #' dfmt_grp <- dfm_group(dfmt) # group sentences
 #'
