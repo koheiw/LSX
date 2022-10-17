@@ -176,6 +176,10 @@ text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 LSS has been used for research in various fields of social science. For
 example:
 
+-   Zollinger, Delia. 2022 [Cleavage Identities in Voters’ Own Words:
+    Harnessing Open-Ended Survey
+    Responses](https://onlinelibrary.wiley.com/doi/10.1111/ajps.12743),
+    *American Journal of Political Science*.
 -   Brändle, Verena K., and Olga Eisele. 2022. [“A Thin Line:
     Governmental Border Communication in Times of European
     Crises”](https://onlinelibrary.wiley.com/doi/full/10.1111/jcms.13398)
