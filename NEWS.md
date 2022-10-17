@@ -1,3 +1,8 @@
+# Changes in v1.1.3
+
+* Restore examples for `textmodel_lss()`.
+* Defunct `char_keyness()` that has been deprecated for long.
+
 # Changes in v1.1.2
 
 * Update examples to pass CRAN tests.
