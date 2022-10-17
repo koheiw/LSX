@@ -4,7 +4,7 @@
 \alias{textmodel_lss}
 \alias{textmodel_lss.dfm}
 \alias{textmodel_lss.fcm}
-\title{Fit a Latent Semantic Scaling mode}
+\title{Fit a Latent Semantic Scaling model}
 \usage{
 textmodel_lss(x, ...)
 

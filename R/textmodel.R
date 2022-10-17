@@ -1,4 +1,4 @@
-#' Fit a Latent Semantic Scaling mode
+#' Fit a Latent Semantic Scaling model
 #'
 #' Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
 #' for document scaling.
