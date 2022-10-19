@@ -4,7 +4,7 @@
 \alias{textmodel_lss}
 \alias{textmodel_lss.dfm}
 \alias{textmodel_lss.fcm}
-\title{A word embeddings-based semisupervised model for document scaling}
+\title{Fit a Latent Semantic Scaling mode}
 \usage{
 textmodel_lss(x, ...)
 
@@ -89,7 +89,8 @@ counts are ceiled to this threshold. It should be changed according to the
 size of the corpus. Used only when \code{x} is a \code{fcm}.}
 }
 \description{
-A word embeddings-based semisupervised model for document scaling
+Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
+for document scaling.
 }
 \details{
 Latent Semantic Scaling (LSS) is a semisupervised document scaling
@@ -111,6 +112,62 @@ seed words. If \code{auto_weight = TRUE}, the original scores are weighted
 automatically using \code{\link[stats:optim]{stats::optim()}} to minimize the squared difference
 between seed words' computed and original scores. Weighted scores are saved
 in \code{seed_weighted} in the object.
+}
+\examples{
+\donttest{
+library("quanteda")
+library("LSX")
+
+# download corpus
+corp <- tryCatch({
+   con <- url("https://bit.ly/2GZwLcN", "rb")
+   readRDS(con)
+   },
+   error = function(e) e,
+   warning = function(w) w,
+   finally = close(con)
+)
+
+if (!exists("corp"))
+   quit("no")
+
+toks <- corpus_reshape(corp, "sentences") \%>\%
+        tokens(remove_punct = TRUE) \%>\%
+        tokens_remove(stopwords("en")) \%>\%
+        tokens_select("^[\\\\p{L}]+$", valuetype = "regex", padding = TRUE)
+dfmt <- dfm(toks) \%>\%
+        dfm_trim(min_termfreq = 10)
+
+seed <- as.seedwords(data_dictionary_sentiment)
+
+# SVD
+lss_svd <- textmodel_lss(dfmt, seed)
+head(coef(lss_svd), 20)
+head(predict(lss_svd, newdata = dfmt))
+head(predict(lss_svd, newdata = dfmt, min_n = 10)) # more robust
+
+dfmt_grp <- dfm_group(dfmt) # group sentences
+
+# sentiment on economy
+eco <- head(textstat_context(toks, 'econom*'), 500)
+lss_svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
+head(predict(lss_svd_eco, newdata = dfmt_grp))
+
+# sentiment on politics
+pol <- head(textstat_context(toks, 'politi*'), 500)
+lss_svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
+head(predict(lss_svd_pol, newdata = dfmt_grp))
+
+# modify hyper-parameters of existing model
+lss_svd_pol2 <- as.textmodel_lss(lss_svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
+head(predict(lss_svd_pol2, newdata = dfmt_grp))
+
+# GloVe
+fcmt <- fcm(dfmt, tri = FALSE)
+lss_glov <- textmodel_lss(fcmt, seed)
+head(predict(lss_glov, newdata = dfmt_grp))
+}
+
 }
 \references{
 Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
