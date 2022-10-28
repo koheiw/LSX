@@ -96,6 +96,6 @@ as.textmodel_lss.textmodel_lss <- function(x, ...) {
         stop("x must be a valid textmodel_lss object")
     result <- as.textmodel_lss(x$embedding, ...)
     result$data <- x$data
-    result$frequency <- x$frequency
+    result$frequency <- x$frequency[names(result$beta)]
     return(result)
 }
