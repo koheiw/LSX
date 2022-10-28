@@ -149,6 +149,7 @@ test_that("terms is working", {
     # glob pattern
     lss1 <- as.textmodel_lss(lss, seed, terms = "poli*")
     expect_equal(sum(stringi::stri_startswith_fixed(names(lss1$beta), "poli")), 11)
+    expect_identical(names(lss1$beta), names(lss1$frequency))
 
     # numeric vector
     weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10
