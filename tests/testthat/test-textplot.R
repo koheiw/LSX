@@ -1,11 +1,12 @@
 
 require(quanteda)
 toks_test <- readRDS("../data/tokens_test.RDS")
-test_toks <- tokens_remove(toks_test, stopwords())
+toks_test <- tokens_remove(toks_test, stopwords())
+feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dict <- dictionary(list("keywords" = c("positive", "bad", "xxxx")))
 
 test_that("textplot_* works with SVD", {
-    dfmt <- dfm(test_toks)
+    dfmt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(dfmt, seed, k = 10)
     expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
@@ -16,10 +17,22 @@ test_that("textplot_* works with SVD", {
     expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
+
+    lss2 <- textmodel_lss(dfmt, seed, terms = feat_test, k = 10)
+    expect_equal(class(textplot_terms(lss2)), c("gg", "ggplot"))
+
+})
+
+test_that("textplot_* works even when frequency and beta do not match (#71)", {
+    dfmt <- dfm(toks_test)
+    seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
+    lss <- textmodel_lss(dfmt, seed, k = 10)
+    lss$frequency <- c(lss$frequency, "xxx" = 1, "yyy" = 1) # replicate #71
+    expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
 })
 
 test_that("textplot_* works with Glove", {
-    fcmt <- fcm(test_toks)
+    fcmt <- fcm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(fcmt, seed, w = 10)
     expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
@@ -32,15 +45,18 @@ test_that("textplot_* works with Glove", {
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
     expect_error(textplot_terms(lss, highlighted = dict, max_words = 100:200),
                  "The length of max_words must be 1")
+
+    lss2 <- textmodel_lss(fcmt, seed, terms = feat_test, w = 10)
+    expect_equal(class(textplot_terms(lss2)), c("gg", "ggplot"))
 })
 
 test_that("textplot_components() works", {
 
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
 
-    dfmt <- dfm(test_toks)
+    dfmt <- dfm(toks_test)
     lss_svd <- textmodel_lss(dfmt, seed, k = 10)
-    fcmt <- fcm(test_toks)
+    fcmt <- fcm(toks_test)
     lss_glove <- textmodel_lss(fcmt, seed, w = 10)
 
     gg1 <- textplot_components(lss_svd, n = 5)
@@ -56,7 +72,7 @@ test_that("textplot_components() works", {
 })
 
 test_that("textplot_* raise error when attributes are missing", {
-    dfmt <- dfm(test_toks)
+    dfmt <- dfm(toks_test)
     coef <- rnorm(100)
     names(coef) <- topfeatures(dfmt, 100)
     lss <- as.textmodel_lss(coef)
