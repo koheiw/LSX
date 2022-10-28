@@ -1,3 +1,7 @@
+# Changes in v1.1.4
+
+* Update `as.textmodel_lss()` to avoid errors in `textplot_terms()` when `terms` is used.
+
 # Changes in v1.1.3
 
 * Restore examples for `textmodel_lss()`.
