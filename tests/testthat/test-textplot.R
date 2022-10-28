@@ -23,6 +23,14 @@ test_that("textplot_* works with SVD", {
 
 })
 
+test_that("textplot_* works even when frequency and beta do not match (#71)", {
+    dfmt <- dfm(toks_test)
+    seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
+    lss <- textmodel_lss(dfmt, seed, k = 10)
+    lss$frequency <- c(lss$frequency, "xxx" = 1, "yyy" = 1) # replicate #71
+    expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
+})
+
 test_that("textplot_* works with Glove", {
     fcmt <- fcm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
