@@ -68,6 +68,9 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 1000
         case_insensitive = TRUE
     )
 
+    # fix for a bug before v1.1.4
+    x$frequency <- x$frequency[names(x$beta)]
+
     beta <- frequency <- word <- NULL
     temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),
                        stringsAsFactors = FALSE)
