@@ -86,6 +86,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     temp_hi <- temp[l,]
     temp_lo <- temp[!l,]
 
+    temp_lo <- head(temp_lo[sample(seq_len(nrow(temp_lo))),], max_words)
     ggplot(data = temp_lo, aes(x = beta, y = frequency, label = word)) +
            geom_text(colour = "grey70", alpha = 0.7) +
            labs(x = "Polarity", y = "Frequency (log)") +
@@ -96,7 +97,6 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
            geom_text_repel(data = temp_hi, aes(x = beta, y = frequency, label = word),
                            segment.size = 0.25, colour = "black") +
            geom_point(data = temp_hi, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
-
 }
 
 #' \[experimental\] Plot clusters of word vectors
