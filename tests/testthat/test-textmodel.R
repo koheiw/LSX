@@ -231,11 +231,20 @@ test_that("simil_method works", {
 
 
 test_that("include_data is working", {
-    dfmt <- dfm_group(dfm(toks_test))
-    lss <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = TRUE, k = 10)
-    lss_nd <- textmodel_lss(dfmt, seedwords("pos-neg"), include_data = FALSE, k = 10)
+    dfmt <- dfm(toks_test)
+    lss <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, include_data = TRUE)
+    lss_nd <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, include_data = FALSE)
     expect_error(predict(lss_nd), "The model includes no data")
     expect_identical(predict(lss), predict(lss_nd, newdata = dfmt))
+
+    lss_gd <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10,
+                            include_data = TRUE, group_data = TRUE)
+    expect_equal(names(predict(lss_gd)), docnames(dfm_group(dfmt)))
+    expect_warning(
+        textmodel_lss(dfmt, seedwords("pos-neg"), k = 10,
+                      include_data = FALSE, group_data = TRUE),
+        "group_data is ignored when include_data = FALSE"
+    )
 })
 
 test_that("predict.textmodel_lss computes scores correctly", {

@@ -118,9 +118,10 @@ textmodel_lss <- function(x, ...) {
 #' @param slice a number or indices of the components of word vectors used to
 #'   compute similarity; `slice < k` to further truncate word vectors; useful
 #'   for diagnosys and simulation.
-#' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
+#' @param include_data if `TRUE`, fitted model includes the dfm supplied as `x`.
+#' @param group_data if `TRUE`, apply `dfm_group(x)` before saving the dfm.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta check_integer
+#' @importFrom quanteda featnames meta check_integer dfm_group
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
@@ -129,6 +130,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               engine = c("RSpectra", "irlba", "rsvd"),
                               auto_weight = FALSE,
                               include_data = FALSE,
+                              group_data = FALSE,
                               verbose = FALSE, ...) {
 
     args <- list(terms = terms, seeds = seeds, ...)
@@ -181,8 +183,16 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         concatenator = meta(x, field = "concatenator", type = "object"),
         call = match.call()
     )
-    if (include_data)
-        result$data <- x
+    if (include_data) {
+        if (group_data) {
+            result$data <- dfm_group(x)
+        } else {
+            result$data <- x
+        }
+    } else {
+        if (group_data)
+            warning("group_data is ignored when include_data = FALSE", call. = FALSE)
+    }
     class(result) <- "textmodel_lss"
     return(result)
 }
