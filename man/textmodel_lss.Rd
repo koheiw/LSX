@@ -20,6 +20,7 @@ textmodel_lss(x, ...)
   engine = c("RSpectra", "irlba", "rsvd"),
   auto_weight = FALSE,
   include_data = FALSE,
+  group_data = FALSE,
   verbose = FALSE,
   ...
 )
@@ -78,7 +79,9 @@ from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irl
 \item{auto_weight}{automatically determine weights to approximate the
 polarity of terms to seed words. See details.}
 
-\item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as \code{x}.}
+\item{include_data}{if \code{TRUE}, fitted model includes the dfm supplied as \code{x}.}
+
+\item{group_data}{if \code{TRUE}, apply \code{dfm_group(x)} before saving the dfm.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 

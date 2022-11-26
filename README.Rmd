@@ -73,7 +73,8 @@ dfmt_sent <- toks_sent %>%
 
 eco <- char_context(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
-                     terms = eco, k = 300, cache = TRUE)
+                     terms = eco, k = 300, cache = TRUE, 
+                     include_data = TRUE, group_data = TRUE)
 ```
 
 ### Sentiment seed words
@@ -107,12 +108,10 @@ textplot_terms(lss,
 In the plot, circles indicate sentiment of individual news articles and lines are their local average (solid line) with a confidence band (dotted lines). According to the plot, economic sentiment in the Guardian news articles became negative between March and May in 2016, but it become more positive in June. 
 
 ```{r trend}
-dfmt <- dfm_group(dfmt_sent)
-
-dat <- docvars(dfmt)
+dat <- docvars(lss$data)
 
 # predict sentiment scores
-dat$fit <- predict(lss, newdata = dfmt)
+dat$fit <- predict(lss)
 
 # smooth LSS scores
 dat_sm <- smooth_lss(dat, span = 0.2, from = as.Date("2016-01-01"), to = as.Date("2016-12-31"))
