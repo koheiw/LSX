@@ -33,10 +33,14 @@ textplot_simil.textmodel_lss <- function(x) {
 #' Plot polarity scores of words
 #' @param x a fitted textmodel_lss object.
 #' @param highlighted [quanteda::pattern] to select words to highlight.
-#' @param max_words the maximum number of words to plot. Words are randomly sampled
-#'   to keep the number below the limit.
+#' @param max_highlighted the maximum number of words to highlight. When
+#'   `highlighted = NULL`, words are randomly selected proportionally to the
+#'   square of their polarity
+#' @param max_words the maximum number of words to plot. Words are randomly
+#'   sampled to keep the number below the limit.
 #' @export
-textplot_terms <- function(x, highlighted = NULL, max_words = 10000) {
+textplot_terms <- function(x, highlighted = NULL,
+                           max_highlighted = 50, max_words = 10000) {
     UseMethod("textplot_terms")
 }
 
@@ -44,51 +48,61 @@ textplot_terms <- function(x, highlighted = NULL, max_words = 10000) {
 #' @import ggplot2 ggrepel stringi
 #' @importFrom quanteda is.dictionary meta check_integer
 #' @export
-textplot_terms.textmodel_lss <- function(x, highlighted = NULL, max_words = 10000) {
+textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
+                                         max_highlighted = 50, max_words = 10000) {
 
-    max_words <- check_integer(max_words, min_len = 1, max_len = 1, min = 1)
+    max_words <- check_integer(max_words, min = 1)
+    max_highlighted <- check_integer(max_highlighted, min = 0)
 
-    if (is.null(highlighted))
-        highlighted <- character()
-    if (is.dictionary(highlighted)) {
-        separator <- meta(highlighted, field = "separator", type = "object")
-        valuetype <- meta(highlighted, field = "valuetype", type = "object")
-        concatenator <- x$concatenator
-        highlighted <- unlist(highlighted, use.names = FALSE)
-        if (!nzchar(separator) && !is.null(concatenator)) # for backward compatibility
-            highlighted <- stri_replace_all_fixed(highlighted, separator, concatenator)
-    } else {
-        highlighted <- unlist(highlighted, use.names = FALSE)
-        valuetype <- "glob"
-    }
-    words_hl <- quanteda::pattern2fixed(
-        highlighted,
-        types = names(x$beta),
-        valuetype = valuetype,
-        case_insensitive = TRUE
-    )
-
-    # fix for a bug before v1.1.4
-    x$frequency <- x$frequency[names(x$beta)]
-
+    x$frequency <- x$frequency[names(x$beta)] # fix for < v1.1.4
     beta <- frequency <- word <- NULL
-    temp <- data.frame(word = names(x$beta), beta = x$beta, frequency = log(x$frequency),
+    temp <- data.frame(word = names(x$beta), beta = x$beta,
+                       frequency = log(x$frequency),
                        stringsAsFactors = FALSE)
-    is_hl <- temp$word %in% unlist(words_hl, use.names = FALSE)
-    is_sm <- temp$word %in% sample(temp$word, min(length(temp$word), max_words))
-    temp_black <- subset(temp, is_hl)
-    temp_gray <- subset(temp, !is_hl & is_sm)
-    ggplot(data = temp_gray, aes(x = beta, y = frequency, label = word)) +
+
+    if (is.null(highlighted)) {
+        id <- seq_len(nrow(temp))
+    } else {
+        if (is.dictionary(highlighted)) {
+            separator <- meta(highlighted, field = "separator", type = "object")
+            valuetype <- meta(highlighted, field = "valuetype", type = "object")
+            concatenator <- x$concatenator
+            highlighted <- unlist(highlighted, use.names = FALSE)
+            if (!nzchar(separator) && !is.null(concatenator)) # for backward compatibility
+                highlighted <- stri_replace_all_fixed(highlighted, separator, concatenator)
+        } else {
+            highlighted <- unlist(highlighted, use.names = FALSE)
+            valuetype <- "glob"
+        }
+
+        id <- unlist(quanteda::pattern2id(
+            highlighted,
+            types = names(x$beta),
+            valuetype = valuetype,
+            case_insensitive = TRUE
+        ), use.names = FALSE)
+    }
+    i <- seq_len(nrow(temp))
+    p <- as.numeric(i %in% id) * temp$beta ^ 2
+    if (all(p == 0)) {
+        l <- rep(FALSE, length(i))
+    } else {
+        l <- i %in% sample(i, min(sum(p > 0), max_highlighted), prob = p)
+    }
+    temp_hi <- temp[l,]
+    temp_lo <- temp[!l,]
+
+    temp_lo <- head(temp_lo[sample(seq_len(nrow(temp_lo))),], max_words)
+    ggplot(data = temp_lo, aes(x = beta, y = frequency, label = word)) +
            geom_text(colour = "grey70", alpha = 0.7) +
            labs(x = "Polarity", y = "Frequency (log)") +
            theme_bw() +
            theme(panel.grid= element_blank(),
                  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-           geom_text_repel(data = temp_black, aes(x = beta, y = frequency, label = word),
+           geom_text_repel(data = temp_hi, aes(x = beta, y = frequency, label = word),
                            segment.size = 0.25, colour = "black") +
-           geom_point(data = temp_black, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
-
+           geom_point(data = temp_hi, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
 }
 
 #' \[experimental\] Plot clusters of word vectors

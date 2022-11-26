@@ -14,9 +14,16 @@ test_that("textplot_* works with SVD", {
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, max_words = 2)),
                  c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, max_highlighted = 10)),
+                 c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, max_highlighted = 0)),
+                 c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict)),
                  c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, highlighted = character())),
+                 c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, max_highlighted = 10)), c("gg", "ggplot"))
 
     lss2 <- textmodel_lss(dfmt, seed, terms = feat_test, k = 10)
     expect_equal(class(textplot_terms(lss2)), c("gg", "ggplot"))
