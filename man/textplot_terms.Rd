@@ -4,15 +4,19 @@
 \alias{textplot_terms}
 \title{Plot polarity scores of words}
 \usage{
-textplot_terms(x, highlighted = NULL, max_words = 10000)
+textplot_terms(x, highlighted = NULL, max_highlighted = 50, max_words = 10000)
 }
 \arguments{
 \item{x}{a fitted textmodel_lss object.}
 
 \item{highlighted}{\link[quanteda:pattern]{quanteda::pattern} to select words to highlight.}
 
-\item{max_words}{the maximum number of words to plot. Words are randomly sampled
-to keep the number below the limit.}
+\item{max_highlighted}{the maximum number of words to highlight. When
+\code{highlighted = NULL}, words are randomly selected proportionally to the
+square of their polarity}
+
+\item{max_words}{the maximum number of words to plot. Words are randomly
+sampled to keep the number below the limit.}
 }
 \description{
 Plot polarity scores of words

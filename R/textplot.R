@@ -33,8 +33,11 @@ textplot_simil.textmodel_lss <- function(x) {
 #' Plot polarity scores of words
 #' @param x a fitted textmodel_lss object.
 #' @param highlighted [quanteda::pattern] to select words to highlight.
-#' @param max_words the maximum number of words to plot. Words are randomly sampled
-#'   to keep the number below the limit.
+#' @param max_highlighted the maximum number of words to highlight. When
+#'   `highlighted = NULL`, words are randomly selected proportionally to the
+#'   square of their polarity
+#' @param max_words the maximum number of words to plot. Words are randomly
+#'   sampled to keep the number below the limit.
 #' @export
 textplot_terms <- function(x, highlighted = NULL,
                            max_highlighted = 50, max_words = 10000) {
@@ -59,7 +62,6 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
 
     if (is.null(highlighted)) {
         id <- seq_len(nrow(temp))
-        max_highlighted <- min(max_highlighted, ceiling(nrow(temp) * 0.1))
     } else {
         if (is.dictionary(highlighted)) {
             separator <- meta(highlighted, field = "separator", type = "object")
