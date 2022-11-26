@@ -48,7 +48,8 @@ textplot_terms <- function(x, highlighted = NULL,
 textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
                                          max_highlighted = 50, max_words = 10000) {
 
-    max_words <- check_integer(max_words, min_len = 1, max_len = 1, min = 1)
+    max_words <- check_integer(max_words, min = 1)
+    max_highlighted <- check_integer(max_highlighted, min = 0)
 
     x$frequency <- x$frequency[names(x$beta)] # fix for < v1.1.4
     beta <- frequency <- word <- NULL
@@ -58,7 +59,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
 
     if (is.null(highlighted)) {
         id <- seq_len(nrow(temp))
-        max_highlighted <- min(max_highlighted, floor(nrow(temp) * 0.1))
+        max_highlighted <- min(max_highlighted, ceiling(nrow(temp) * 0.1))
     } else {
         if (is.dictionary(highlighted)) {
             separator <- meta(highlighted, field = "separator", type = "object")
@@ -81,8 +82,11 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     }
     i <- seq_len(nrow(temp))
     p <- as.numeric(i %in% id) * temp$beta ^ 2
-    l <- i %in% sample(i, min(length(i), max_highlighted), prob = p)
-
+    if (all(p == 0)) {
+        l <- rep(FALSE, length(i))
+    } else {
+        l <- i %in% sample(i, min(sum(p > 0), max_highlighted), prob = p)
+    }
     temp_hi <- temp[l,]
     temp_lo <- temp[!l,]
 
