@@ -76,10 +76,11 @@ dfmt_sent <- toks_sent %>%
 
 eco <- char_context(toks_sent, "econom*", p = 0.05)
 lss <- textmodel_lss(dfmt_sent, as.seedwords(data_dictionary_sentiment), 
-                     terms = eco, k = 300, cache = TRUE)
+                     terms = eco, k = 300, cache = TRUE, 
+                     include_data = TRUE, group_data = TRUE)
 ```
 
-    ## Writing cache file: lss_cache/svds_568607abc404ca43.RDS
+    ## Writing cache file: lss_cache/svds_90634fb0d33af1ef.RDS
 
 ### Sentiment seed words
 
@@ -149,12 +150,10 @@ Guardian news articles became negative between March and May in 2016,
 but it become more positive in June.
 
 ``` r
-dfmt <- dfm_group(dfmt_sent)
-
-dat <- docvars(dfmt)
+dat <- docvars(lss$data)
 
 # predict sentiment scores
-dat$fit <- predict(lss, newdata = dfmt)
+dat$fit <- predict(lss)
 
 # smooth LSS scores
 dat_sm <- smooth_lss(dat, span = 0.2, from = as.Date("2016-01-01"), to = as.Date("2016-12-31"))
@@ -176,6 +175,10 @@ text(as.Date("2016-06-23"), 0.4, "Brexit referendum")
 LSS has been used for research in various fields of social science. For
 example:
 
+-   Nakamura, Kentaro. 2022 [Balancing Opportunities and Incentives: How
+    Rising China’s Mediated Public Diplomacy Changes Under
+    Crisis](https://ijoc.org/index.php/ijoc/article/view/18676/3968),
+    *International Journal of Communication*.
 -   Zollinger, Delia. 2022 [Cleavage Identities in Voters’ Own Words:
     Harnessing Open-Ended Survey
     Responses](https://onlinelibrary.wiley.com/doi/10.1111/ajps.12743),
@@ -206,11 +209,6 @@ example:
     Agency ITAR-TASS’s Coverage of the Ukraine
     Crisis”](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full),
     *European Journal Communication*.
--   Lankina, Tomila and Watanabe, Kohei. 2017. [“‘Russian Spring’ or
-    ‘Spring Betrayal’? The Media as a Mirror of Putin’s Evolving
-    Strategy in
-    Ukraine”](http://www.tandfonline.com/eprint/tWik7KDfsZv8C2KeNkI5/full),
-    *Europe-Asia Studies*.
 
 Other studies are available on [Google
 Scholar](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=5312969973901591795).
