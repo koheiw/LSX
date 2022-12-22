@@ -10,6 +10,7 @@
   se_fit = FALSE,
   density = FALSE,
   rescaling = TRUE,
+  devide = NULL,
   min_n = 0L,
   ...
 )
@@ -25,6 +26,9 @@
 
 \item{rescaling}{if \code{TRUE}, normalizes polarity scores using \code{scale()}.}
 
+\item{devide}{if specified, polarity scores of words are dichotomized by the
+percentile value.}
+
 \item{min_n}{set the minimum number of polarity words in documents.}
 
 \item{...}{not used}
@@ -37,11 +41,12 @@ Polarity scores of documents are the means of polarity scores of
 words weighted by their frequency. When \code{se_fit = TRUE}, this function
 returns the weighted means, their standard errors, and the number of
 polarity words in the documents. When \code{rescaling = TRUE}, it converts the
-raw polarity scores to z sores for easier interpretation.
+raw polarity scores to z sores for easier interpretation. When \code{rescaling = FALSE} and \code{devide} is used, polarity scores of documents are bounded by
+[-0.5, 0.5].
 
 Documents tend to receive extreme polarity scores when they have only few
-polarity word. This is problematic when LSS is applied to short documents
-(e.g. social media posts) or individual sentences, but we can alleviate
+polarity words. This is problematic when LSS is applied to short documents
+(e.g. social media posts) or individual sentences, but users can alleviate
 this problem by adding zero polarity words to short documents using
 \code{min_n}. This setting does not affect empty documents.
 }

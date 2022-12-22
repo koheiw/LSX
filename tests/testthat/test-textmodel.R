@@ -124,6 +124,14 @@ test_that("predict.textmodel_lss is working", {
     expect_true(all(abs(pred6[pred5$n == 1]) < abs(pred4[pred5$n == 1]), na.rm = TRUE))
     expect_true(all(abs(pred6[pred5$n >= 2]) == abs(pred4[pred5$n >= 2]), na.rm = TRUE))
 
+    expect_error(
+        predict(lss_test, rescaling = FALSE, min_n = -1),
+        "The value of min_n must be between 0 and Inf"
+    )
+    expect_error(
+        predict(lss_test, rescaling = FALSE, min_n = c(0, 1)),
+        "The length of min_n must be 1"
+    )
 })
 
 test_that("density is correct", {
@@ -429,4 +437,32 @@ test_that("se_fit is working", {
     pred1 <- predict(lss, newdata = dfmt1, rescaling = FALSE, min_n = 10, se_fit = TRUE)
     pred2 <- predict(lss, newdata = dfmt2, rescaling = FALSE, se_fit = TRUE)
     expect_identical(pred1, pred2)
+})
+
+test_that("devide is working", {
+
+    p1 <- predict(lss_test, devide = 0.5, rescaling = TRUE)
+    expect_true(min(p1, na.rm = TRUE) < -1)
+    expect_true(max(p1, na.rm = TRUE) > 1)
+
+    p2 <- predict(lss_test, devide = 0.5, rescaling = FALSE)
+    expect_true(min(p2, na.rm = TRUE) >= -0.5)
+    expect_true(max(p2, na.rm = TRUE) <= 0.5)
+
+    p3 <- predict(lss_test, devide = 0.5, rescaling = FALSE, min_n = 10)
+    expect_true(min(p3, na.rm = TRUE) >= -0.5)
+    expect_true(max(p3, na.rm = TRUE) <= 0.5)
+
+    p4 <- predict(lss_test, devide = 0.90, rescaling = FALSE, min_n = 10)
+    expect_true(min(p4, na.rm = TRUE) >= -0.5)
+    expect_true(max(p4, na.rm = TRUE) <= 0.5)
+
+    expect_error(
+        predict(lss_test, devide = 1.5),
+        "The value of devide must be between 0 and 1"
+    )
+    expect_error(
+        predict(lss_test, devide = c(0.1, 0.5)),
+        "The length of devide must be 1"
+    )
 })
