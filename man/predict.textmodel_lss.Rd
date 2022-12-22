@@ -9,8 +9,8 @@
   newdata = NULL,
   se_fit = FALSE,
   density = FALSE,
-  rescaling = TRUE,
-  devide = NULL,
+  rescale = TRUE,
+  divide = NULL,
   min_n = 0L,
   ...
 )
@@ -24,9 +24,9 @@
 
 \item{density}{if \code{TRUE}, returns frequency of polarity words in documents.}
 
-\item{rescaling}{if \code{TRUE}, normalizes polarity scores using \code{scale()}.}
+\item{rescale}{if \code{TRUE}, normalizes polarity scores using \code{scale()}.}
 
-\item{devide}{if specified, polarity scores of words are dichotomized by the
+\item{divide}{if specified, polarity scores of words are dichotomized by the
 percentile value.}
 
 \item{min_n}{set the minimum number of polarity words in documents.}
@@ -40,8 +40,8 @@ Prediction method for textmodel_lss
 Polarity scores of documents are the means of polarity scores of
 words weighted by their frequency. When \code{se_fit = TRUE}, this function
 returns the weighted means, their standard errors, and the number of
-polarity words in the documents. When \code{rescaling = TRUE}, it converts the
-raw polarity scores to z sores for easier interpretation. When \code{rescaling = FALSE} and \code{devide} is used, polarity scores of documents are bounded by
+polarity words in the documents. When \code{rescale = TRUE}, it converts the
+raw polarity scores to z sores for easier interpretation. When \code{rescale = FALSE} and \code{divide} is used, polarity scores of documents are bounded by
 [-0.5, 0.5].
 
 Documents tend to receive extreme polarity scores when they have only few

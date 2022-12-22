@@ -439,31 +439,31 @@ test_that("se_fit is working", {
     expect_identical(pred1, pred2)
 })
 
-test_that("devide is working", {
+test_that("divide is working", {
 
-    p1 <- predict(lss_test, devide = 0.5, rescale = TRUE)
+    p1 <- predict(lss_test, divide = 0.5, rescale = TRUE)
     expect_true(min(p1, na.rm = TRUE) < -1)
     expect_true(max(p1, na.rm = TRUE) > 1)
 
-    p2 <- predict(lss_test, devide = 0.5, rescale = FALSE)
+    p2 <- predict(lss_test, divide = 0.5, rescale = FALSE)
     expect_true(min(p2, na.rm = TRUE) >= -0.5)
     expect_true(max(p2, na.rm = TRUE) <= 0.5)
 
-    p3 <- predict(lss_test, devide = 0.5, rescale = FALSE, min_n = 10)
+    p3 <- predict(lss_test, divide = 0.5, rescale = FALSE, min_n = 10)
     expect_true(min(p3, na.rm = TRUE) >= -0.5)
     expect_true(max(p3, na.rm = TRUE) <= 0.5)
 
-    p4 <- predict(lss_test, devide = 0.90, rescale = FALSE, min_n = 10)
+    p4 <- predict(lss_test, divide = 0.90, rescale = FALSE, min_n = 10)
     expect_true(min(p4, na.rm = TRUE) >= -0.5)
     expect_true(max(p4, na.rm = TRUE) <= 0.5)
 
     expect_error(
-        predict(lss_test, devide = 1.5),
-        "The value of devide must be between 0 and 1"
+        predict(lss_test, divide = 1.5),
+        "The value of divide must be between 0 and 1"
     )
     expect_error(
-        predict(lss_test, devide = c(0.1, 0.5)),
-        "The length of devide must be 1"
+        predict(lss_test, divide = c(0.1, 0.5)),
+        "The length of divide must be 1"
     )
 })
 

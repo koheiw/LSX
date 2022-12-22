@@ -5,7 +5,7 @@
 #' @param newdata a dfm on which prediction should be made.
 #' @param se_fit if `TRUE`, returns standard error of document scores.
 #' @param density if `TRUE`, returns frequency of polarity words in documents.
-#' @param devide if specified, polarity scores of words are dichotomized by the
+#' @param divide if specified, polarity scores of words are dichotomized by the
 #'   percentile value.
 #' @param rescale if `TRUE`, normalizes polarity scores using `scale()`.
 #' @param min_n set the minimum number of polarity words in documents.
@@ -15,7 +15,7 @@
 #'   returns the weighted means, their standard errors, and the number of
 #'   polarity words in the documents. When `rescale = TRUE`, it converts the
 #'   raw polarity scores to z sores for easier interpretation. When `rescale =
-#'   FALSE` and `devide` is used, polarity scores of documents are bounded by
+#'   FALSE` and `divide` is used, polarity scores of documents are bounded by
 #'   \[-0.5, 0.5\].
 #'
 #'   Documents tend to receive extreme polarity scores when they have only few
@@ -29,7 +29,7 @@
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
                                   density = FALSE, rescale = TRUE,
-                                  devide = NULL, min_n = 0L, ...){
+                                  divide = NULL, min_n = 0L, ...){
 
 
     (function(se.fit, recaling, ...){ unused_dots(...)}) # trap deprecated args
@@ -44,9 +44,9 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
     }
     min_n <- check_integer(min_n, min = 0)
 
-    if (!is.null(devide)) {
-        devide <- check_double(devide, min = 0, max = 1)
-        object$beta <- structure((object$beta > quantile(object$beta, devide)) - 0.5,
+    if (!is.null(divide)) {
+        divide <- check_double(divide, min = 0, max = 1)
+        object$beta <- structure((object$beta > quantile(object$beta, divide)) - 0.5,
                                  names = names(object$beta))
     }
 
