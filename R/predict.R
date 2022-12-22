@@ -32,7 +32,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
                                   divide = NULL, min_n = 0L, ...){
 
 
-    (function(se.fit, recaling, ...){ unused_dots(...)}) # trap deprecated args
+    (function(se.fit, recaling, ...) unused_dots(...))(...) # trap deprecated args
     args <- list(...)
     if ("se.fit" %in% names(args)) {
         .Deprecated(msg = "'se.fit' is deprecated; use 'se_fit'\n")
