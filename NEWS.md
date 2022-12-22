@@ -1,3 +1,7 @@
+# Changes
+
+* Add `devide` to `predict()` to produce bounded polarity scores of documents.
+
 # Changes in v1.2.0
 
 * Add `group_data` to `textmodel_lss()` to simplify the workflow.
