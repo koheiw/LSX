@@ -1,6 +1,7 @@
 # Changes
 
 * Add `devide` to `predict()` to produce bounded polarity scores of documents.
+* Rename "rescaling" to "rescale" for simplicity and consistency.
 
 # Changes in v1.2.0
 

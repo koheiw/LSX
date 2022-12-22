@@ -7,14 +7,14 @@
 #' @param density if `TRUE`, returns frequency of polarity words in documents.
 #' @param devide if specified, polarity scores of words are dichotomized by the
 #'   percentile value.
-#' @param rescaling if `TRUE`, normalizes polarity scores using `scale()`.
+#' @param rescale if `TRUE`, normalizes polarity scores using `scale()`.
 #' @param min_n set the minimum number of polarity words in documents.
 #' @param ... not used
 #' @details Polarity scores of documents are the means of polarity scores of
 #'   words weighted by their frequency. When `se_fit = TRUE`, this function
 #'   returns the weighted means, their standard errors, and the number of
-#'   polarity words in the documents. When `rescaling = TRUE`, it converts the
-#'   raw polarity scores to z sores for easier interpretation. When `rescaling =
+#'   polarity words in the documents. When `rescale = TRUE`, it converts the
+#'   raw polarity scores to z sores for easier interpretation. When `rescale =
 #'   FALSE` and `devide` is used, polarity scores of documents are bounded by
 #'   \[-0.5, 0.5\].
 #'
@@ -28,14 +28,19 @@
 #' @importFrom quanteda is.dfm dfm_select check_integer check_double
 #' @export
 predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
-                                  density = FALSE, rescaling = TRUE,
+                                  density = FALSE, rescale = TRUE,
                                   devide = NULL, min_n = 0L, ...){
 
 
+    (function(se.fit, recaling, ...){ unused_dots(...)}) # trap deprecated args
     args <- list(...)
     if ("se.fit" %in% names(args)) {
         .Deprecated(msg = "'se.fit' is deprecated; use 'se_fit'\n")
         se_fit <- args$se.fit
+    }
+    if ("rescaling" %in% names(args)) {
+        .Deprecated(msg = "'rescaling' is deprecated; use 'rescale'\n")
+        rescale <- args$rescaling
     }
     min_n <- check_integer(min_n, min = 0)
 
@@ -45,7 +50,6 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
                                  names = names(object$beta))
     }
 
-    unused_dots(...)
     beta <- Matrix(object$beta, nrow = 1, sparse = TRUE,
                    dimnames = list(NULL, names(object$beta)))
 
@@ -69,7 +73,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
     fit <- ifelse(len == 0, NA, rowSums(data %*% t(beta)) / n)
     names(fit) <- rownames(data)
 
-    if (rescaling) {
+    if (rescale) {
         fit_scaled <- scale(fit)
         result <- list(fit = rowSums(fit_scaled))
     } else {
@@ -82,7 +86,7 @@ predict.textmodel_lss <- function(object, newdata = NULL, se_fit = FALSE,
         var <- (rowSums(weight ^ 2 * data) / n) - (rowSums(weight * data) / n) ^ 2
         var <- zapsmall(var)
         se <- ifelse(n > 1, unname(sqrt(var) / sqrt(n)), NA)
-        if (rescaling)
+        if (rescale)
             se <- se / attr(fit_scaled, "scaled:scale")
         result$se.fit <- se
         result$n <- n
