@@ -2,6 +2,7 @@
 
 * Add `cut` to `predict()` to produce bounded polarity scores of documents.
 * Rename "rescaling" to "rescale" for simplicity and consistency.
+* Improve random sampling of words to highlight in `textplot_terms()` to avoid congestion.
 
 # Changes in v1.2.0
 

@@ -12,8 +12,8 @@ textplot_terms(x, highlighted = NULL, max_highlighted = 50, max_words = 10000)
 \item{highlighted}{\link[quanteda:pattern]{quanteda::pattern} to select words to highlight.}
 
 \item{max_highlighted}{the maximum number of words to highlight. When
-\code{highlighted = NULL}, words are randomly selected proportionally to the
-square of their polarity}
+\code{highlighted = NULL}, words to highlight are randomly selected proportionally
+to \code{polarity ^ 2 * log(frequency)}.}
 
 \item{max_words}{the maximum number of words to plot. Words are randomly
 sampled to keep the number below the limit.}
