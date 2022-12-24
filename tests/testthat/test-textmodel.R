@@ -439,31 +439,46 @@ test_that("se_fit is working", {
     expect_identical(pred1, pred2)
 })
 
-test_that("divide is working", {
+test_that("cut is working", {
 
-    p1 <- predict(lss_test, divide = 0.5, rescale = TRUE)
+    p0 <- predict(lss_test, rescale = TRUE, min_n = 10)
+    p1 <- predict(lss_test, cut = 0.5, rescale = TRUE)
     expect_true(min(p1, na.rm = TRUE) < -1)
     expect_true(max(p1, na.rm = TRUE) > 1)
+    expect_equal(cor(p0, p1, use = "pair"), 0.59, tolerance = 0.01)
 
-    p2 <- predict(lss_test, divide = 0.5, rescale = FALSE)
+    p2 <- predict(lss_test, cut = 0.5, rescale = FALSE)
     expect_true(min(p2, na.rm = TRUE) >= -0.5)
     expect_true(max(p2, na.rm = TRUE) <= 0.5)
+    expect_equal(cor(p0, p2, use = "pair"), 0.59, tolerance = 0.01)
 
-    p3 <- predict(lss_test, divide = 0.5, rescale = FALSE, min_n = 10)
+    p3 <- predict(lss_test, cut = 0.5, rescale = FALSE, min_n = 10)
     expect_true(min(p3, na.rm = TRUE) >= -0.5)
     expect_true(max(p3, na.rm = TRUE) <= 0.5)
+    expect_equal(cor(p0, p3, use = "pair"), 0.73, tolerance = 0.01)
 
-    p4 <- predict(lss_test, divide = 0.90, rescale = FALSE, min_n = 10)
+    p4 <- predict(lss_test, cut = 0.75, rescale = FALSE, min_n = 10)
     expect_true(min(p4, na.rm = TRUE) >= -0.5)
     expect_true(max(p4, na.rm = TRUE) <= 0.5)
+    expect_equal(cor(p0, p4, use = "pair"), 0.33, tolerance = 0.01)
 
+    p5 <- predict(lss_test, cut = c(0.25, 0.75), rescale = FALSE, min_n = 10)
+    expect_true(min(p5, na.rm = TRUE) >= -0.5)
+    expect_true(max(p5, na.rm = TRUE) <= 0.5)
+    expect_equal(cor(p0, p5, use = "pair"), 0.77, tolerance = 0.01)
+
+    predict()
     expect_error(
-        predict(lss_test, divide = 1.5),
-        "The value of divide must be between 0 and 1"
+        predict(lss_test, cut = 1.5),
+        "The value of cut must be between 0 and 1"
     )
     expect_error(
-        predict(lss_test, divide = c(0.1, 0.5)),
-        "The length of divide must be 1"
+        predict(lss_test, cut = -0.1),
+        "The value of cut must be between 0 and 1"
+    )
+    expect_error(
+        predict(lss_test, cut = c(0.1, 0.5, 0.9)),
+        "The length of cut must be between 1 and 2"
     )
 })
 
