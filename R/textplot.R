@@ -34,8 +34,8 @@ textplot_simil.textmodel_lss <- function(x) {
 #' @param x a fitted textmodel_lss object.
 #' @param highlighted [quanteda::pattern] to select words to highlight.
 #' @param max_highlighted the maximum number of words to highlight. When
-#'   `highlighted = NULL`, words are randomly selected proportionally to the
-#'   square of their polarity
+#'   `highlighted = NULL`, words to highlight are randomly selected proportionally
+#'    to `polarity ^ 2 * log(frequency)`.
 #' @param max_words the maximum number of words to plot. Words are randomly
 #'   sampled to keep the number below the limit.
 #' @export
@@ -83,7 +83,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
         ), use.names = FALSE)
     }
     i <- seq_len(nrow(temp))
-    p <- as.numeric(i %in% id) * temp$beta ^ 2
+    p <- as.numeric(i %in% id) * temp$beta ^ 2 * temp$frequency
     if (all(p == 0)) {
         l <- rep(FALSE, length(i))
     } else {

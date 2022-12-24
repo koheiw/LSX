@@ -1,3 +1,7 @@
+# Changes
+
+* Improve random sampling of words to highlight in `textplot_terms()` to avoid congestion.
+
 # Changes in v1.2.0
 
 * Add `group_data` to `textmodel_lss()` to simplify the workflow.
