@@ -470,7 +470,6 @@ test_that("cut is working", {
     p6 <- predict(lss_test, cut = c(0.75, 0.25), rescale = FALSE, min_n = 10)
     expect_identical(p5, p6)
 
-    predict()
     expect_error(
         predict(lss_test, cut = 1.5),
         "The value of cut must be between 0 and 1"
