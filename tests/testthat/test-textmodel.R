@@ -467,6 +467,9 @@ test_that("cut is working", {
     expect_true(max(p5, na.rm = TRUE) <= 0.5)
     expect_equal(cor(p0, p5, use = "pair"), 0.77, tolerance = 0.01)
 
+    p6 <- predict(lss_test, cut = c(0.75, 0.25), rescale = FALSE, min_n = 10)
+    expect_identical(p5, p6)
+
     predict()
     expect_error(
         predict(lss_test, cut = 1.5),
