@@ -448,23 +448,23 @@ test_that("cut is working", {
     expect_equal(cor(p0, p1, use = "pair"), 0.59, tolerance = 0.01)
 
     p2 <- predict(lss_test, cut = 0.5, rescale = FALSE)
-    expect_true(min(p2, na.rm = TRUE) >= -0.5)
-    expect_true(max(p2, na.rm = TRUE) <= 0.5)
+    expect_true(min(p2, na.rm = TRUE) >= -1)
+    expect_true(max(p2, na.rm = TRUE) <= 1)
     expect_equal(cor(p0, p2, use = "pair"), 0.59, tolerance = 0.01)
 
     p3 <- predict(lss_test, cut = 0.5, rescale = FALSE, min_n = 10)
-    expect_true(min(p3, na.rm = TRUE) >= -0.5)
-    expect_true(max(p3, na.rm = TRUE) <= 0.5)
+    expect_true(min(p3, na.rm = TRUE) >= -1)
+    expect_true(max(p3, na.rm = TRUE) <= 1)
     expect_equal(cor(p0, p3, use = "pair"), 0.73, tolerance = 0.01)
 
     p4 <- predict(lss_test, cut = 0.75, rescale = FALSE, min_n = 10)
-    expect_true(min(p4, na.rm = TRUE) >= -0.5)
-    expect_true(max(p4, na.rm = TRUE) <= 0.5)
+    expect_true(min(p4, na.rm = TRUE) >= -1)
+    expect_true(max(p4, na.rm = TRUE) <= 1)
     expect_equal(cor(p0, p4, use = "pair"), 0.33, tolerance = 0.01)
 
     p5 <- predict(lss_test, cut = c(0.25, 0.75), rescale = FALSE, min_n = 10)
-    expect_true(min(p5, na.rm = TRUE) >= -0.5)
-    expect_true(max(p5, na.rm = TRUE) <= 0.5)
+    expect_true(min(p5, na.rm = TRUE) >= -1)
+    expect_true(max(p5, na.rm = TRUE) <= 1)
     expect_equal(cor(p0, p5, use = "pair"), 0.77, tolerance = 0.01)
 
     p6 <- predict(lss_test, cut = c(0.75, 0.25), rescale = FALSE, min_n = 10)

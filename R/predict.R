@@ -17,7 +17,7 @@
 #'   polarity words in the documents. When `rescale = TRUE`, it converts the raw
 #'   polarity scores to z sores for easier interpretation. When `rescale =
 #'   FALSE` and `cut` is used, polarity scores of documents are bounded by
-#'   \[-0.5, 0.5\].
+#'   \[-1.0, 1.0\].
 #'
 #'   Documents tend to receive extreme polarity scores when they have only few
 #'   polarity words. This is problematic when LSS is applied to short documents
