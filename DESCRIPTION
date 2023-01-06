@@ -29,7 +29,10 @@ Imports:
     reshape2,
     locfit
 Suggests:
+    knitr,
+    rmarkdown,
     testthat
 RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/koheiw/LSX/issues
+VignetteBuilder: knitr

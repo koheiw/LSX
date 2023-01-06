@@ -1,0 +1,108 @@
+---
+title: "Introduction to LSS"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{basic}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", 
+                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 690)
+```
+
+
+```{r setup}
+library(LSX)
+library(quanteda)
+library(ggplot2)
+```
+
+[download](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1).
+
+```{r}
+if (!file.exists("data_corpus_sputnik2022.rds")) {
+    download.file("https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1",
+                  "data_corpus_sputnik2022.rds")
+}
+```
+
+```{r}
+corp <- readRDS("data_corpus_sputnik2022.rds") |>
+    corpus_reshape()
+toks <- tokens(corp, remove_punct = TRUE, remove_symbols = TRUE, 
+               remove_numbers = TRUE, remove_url = TRUE)
+dfmt <- dfm(toks) |> 
+    dfm_remove(stopwords("en"))
+```
+
+## Basic usage
+
+```{r message=FALSE}
+seed <- as.seedwords(data_dictionary_sentiment)
+lss <- textmodel_lss(dfmt, seeds = seed, cache = TRUE, include_data = TRUE, group_data = TRUE)
+```
+
+```{r warning=FALSE}
+textplot_terms(lss)
+```
+
+```{r}
+dat <- docvars(lss$data)
+dat$lss <- predict(lss)
+print(nrow(dat))
+```
+
+```{r}
+smo <- smooth_lss(dat, lss_var = "lss", date_var = "date")
+```
+
+```{r}
+ggplot(smo, aes(x = date, y = fit)) + 
+    geom_line() +
+    geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96), alpha = 0.1) +
+    geom_vline(xintercept = as.Date("2022-02-24"), linetype = "dotted") +
+    labs(title = "General sentiment in Sputnik", x = "Date", y = "Sentiment")
+```
+
+## Advanced usage
+
+```{r}
+dict <- dictionary(file = "dictionary.yml")
+print(dict$seedwords)
+```
+
+
+```{r message=FALSE}
+seed2 <- as.seedwords(dict$seedwords)
+term <- char_context(toks, pattern = "nato", p = 0.01)
+lss2 <- textmodel_lss(dfmt, seeds = seed2, terms = term, cache = TRUE, 
+                          include_data = TRUE, group_data = FALSE)
+```
+
+```{r warning=FALSE}
+textplot_terms(lss2)
+```
+
+```{r}
+dat2 <- docvars(lss2$data)
+dat2$lss <- predict(lss2, min_n = 10)
+print(nrow(dat2))
+```
+
+```{r}
+smo2 <- smooth_lss(dat2, lss_var = "lss", date_var = "date", engine = "locfit")
+```
+
+On May 16, the Swedish Government decided that Sweden will apply for NATO membership. Finland also did the day after.
+
+```{r}
+ggplot(smo2, aes(x = date, y = fit)) + 
+    geom_line() +
+    geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96), alpha = 0.1) +
+    geom_vline(xintercept = as.Date("2022-05-16"), linetype = "dotted") +
+    labs(title = "Hostility of NATO", x = "Date", y = "Hostility")
+```
+
+

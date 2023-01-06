@@ -1,0 +1,99 @@
+---
+title: "Applied usage of LSS"
+subtitle: "Analyze Russian state media's sentiment on egnergy in the US and Europe"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{basic}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", 
+                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 690)
+```
+
+
+```{r setup}
+library(LSX)
+library(quanteda)
+library(ggplot2)
+```
+
+[download](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1).
+
+```{r}
+if (!file.exists("data_corpus_sputnik2022.rds")) {
+    download.file("https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1",
+                  "data_corpus_sputnik2022.rds")
+}
+```
+
+```{r}
+corp <- readRDS("data_corpus_sputnik2022.rds") |>
+    corpus_reshape()
+toks <- tokens(corp, remove_punct = TRUE, remove_symbols = TRUE, 
+               remove_numbers = TRUE, remove_url = TRUE)
+dfmt <- dfm(toks) |> 
+    dfm_remove(stopwords("en"))
+```
+
+```{r}
+dict <- dictionary(file = "dictionary.yml")
+print(dict$keywords)
+```
+
+```{r}
+dfmt_dict <- dfm(tokens_lookup(toks, dict$keywords[c("us", "uk", "eu")]))
+```
+
+
+```{r}
+seed <- as.seedwords(data_dictionary_sentiment)
+cont <- char_context(toks, pattern = dict$keywords["energy"], p = 0.01)
+lss <- textmodel_lss(dfmt, seeds = seed, term = cont, cache = TRUE, include_data = TRUE, group_data = TRUE)
+```
+
+```{r}
+textplot_terms(lss)
+```
+
+```{r}
+dat <- cbind(docvars(lss$data), as.matrix(dfm_group(dfmt_dict) > 0))
+dat$lss <- predict(lss)
+print(nrow(dat))
+```
+
+```{r}
+smo_us <- smooth_lss(subset(dat, us), lss_var = "lss", date_var = "date")
+smo_us$country <- "us"
+#smo_uk <- smooth_lss(subset(dat, uk), lss_var = "lss", date_var = "date")
+#smo_uk$country <- "uk"
+smo_eu <- smooth_lss(subset(dat, eu), lss_var = "lss", date_var = "date")
+smo_eu$country <- "eu"
+smo <- rbind(smo_us, smo_eu)
+```
+
+31 August, Nordstream 1 went into maintenance, but never restarted.
+
+26 July 2022, EU Energy Ministers agreement on the Regulation on coordinated demand reduction measures for gas
+
+https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/european-green-deal/eu-action-address-energy-crisis_en
+
+```{r}
+ggplot(smo, aes(x = date, y = fit, color = country)) + 
+    geom_line() +
+    geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96, fill = country), 
+                alpha = 0.1, colour = NA) +
+    geom_vline(xintercept = as.Date("2022-06-26"), linetype = "dotted") +
+    labs(title = "Sentiment on egergy (gas and oil)", x = "Date", y = "Sentiment", 
+         fill = "Country", color = "Country")
+```
+```{r}
+#dat$war <- dat$date >= as.Date("2022-02-24")
+dat_war <- subset(dat, date >= as.Date("2022-02-24"))
+dat_war$reduction <- dat_war$date >= as.Date("2022-06-26")
+reg <- lm(lss ~ us + eu + reduction + us * reduction + eu * reduction, dat_war)
+summary(reg)
+```
+
