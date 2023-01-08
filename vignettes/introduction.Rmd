@@ -3,7 +3,7 @@ title: "Introduction to LSS"
 subtile: "Basic and advanced usage of the LSX package"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{basic}
+  %\VignetteIndexEntry{Introduction to LSS}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -3,7 +3,7 @@ title: "Application of LSS in research"
 subtitle: "Compare Russian state media's coverage of egnergy issues in the US and the EU"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{basic}
+  %\VignetteIndexEntry{Application of LSS in research}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
