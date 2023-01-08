@@ -23,7 +23,7 @@ library(ggplot2)
 
 ### Preperation
 
-We use the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](library/LSX/doc/introduction.html), so too the preparation.
+We analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](library/LSX/doc/introduction.html), so too the pre-processing.
 
 ```{r include=FALSE}
 if (!file.exists("data_corpus_sputnik2022.rds")) {
@@ -41,7 +41,7 @@ dfmt <- dfm(toks) |>
     dfm_remove(stopwords("en"))
 ```
 
-You need to a [dictionary](https://github.com/koheiw/LSX/blob/master/vignettes/) of keywords used in the analysis.
+We use a [dictionary](https://github.com/koheiw/LSX/blob/master/vignettes/) of keywords in the analysis.
 
 ```{r}
 dict <- dictionary(file = "dictionary.yml")
@@ -51,7 +51,7 @@ print(dict$keywords)
 
 ### Estimate the polarity of documents
 
-We can measure the sentiment about energy by collecting words that occur frequently around keywords such as "oil", "gas", "energy" and passing them to `terms`. 
+We can measure the sentiment about energy issues by collecting words that occur frequently around keywords such as "oil", "gas", "energy" and passing them to `terms`. 
 
 ```{r message=FALSE}
 seed <- as.seedwords(data_dictionary_sentiment)
@@ -110,7 +110,7 @@ ggplot(smo, aes(x = date, y = fit, color = country)) +
                 alpha = 0.1, colour = NA) +
     geom_vline(xintercept = as.Date("2022-06-26"), linetype = "dotted") +
     scale_x_date(date_breaks = "months", date_labels = "%b") +
-    labs(title = "Sentiment on egergy (gas and oil)", x = "Date", y = "Sentiment", 
+    labs(title = "Sentiment on egergy", x = "Date", y = "Sentiment", 
          fill = "Country", color = "Country")
 ```
 
@@ -133,5 +133,5 @@ summary(reg)
 
 ### Conclusions
 
-Above analysis shows that the Sputnik covered the energy issue in the US more positively while in the EU more negatively after the proposition. Our finding is preliminary, but one possible interpretation is that the Russian government attempted to create divisions between the US and European countries by emphasizing the different impact of the Ukraine war and sanctions against Russia on people's lives.
+Above analysis shows that the Sputnik covered the energy issue in the US more positively while in the EU more negatively after the proposition. Our findings are preliminary, but we can give them a tentative interpretation: the Russian government attempted to create divisions between the US and European countries by emphasizing the different impact of the Ukraine war and sanctions against Russia on people's lives.
 
