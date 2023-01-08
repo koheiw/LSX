@@ -28,7 +28,7 @@ We use the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_s
 ```{r include=FALSE}
 if (!file.exists("data_corpus_sputnik2022.rds")) {
     download.file("https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1",
-                  "data_corpus_sputnik2022.rds")
+                  "data_corpus_sputnik2022.rds", mode = "wb")
 }
 ```
 
