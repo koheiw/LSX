@@ -74,7 +74,7 @@ dat$lss <- predict(lss)
 print(nrow(dat))
 ```
 
-### Detect mentions of country/region 
+### Detect the mentions of country/region 
 
 We can detect mentions of countries using the dictionary. If you want to classify text by country more accurately, you can use the [newsmap package](https://cran.r-project.org/web/packages/newsmap/index.html).
 
