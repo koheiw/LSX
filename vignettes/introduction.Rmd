@@ -1,5 +1,6 @@
 ---
 title: "Introduction to LSS"
+subtile: "Basic and advanced usage of the LSX package"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{basic}
@@ -12,6 +13,11 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
                       fig.width = 8, fig.height = 4, dpi = 150, out.width = 690)
 ```
 
+This vignette aims to introduce you to the basic and advanced usage of the LSX package to perform [Latent Semantic Scaling](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976). LSS is an efficient algorithm to locate texts on a user-defined continuous scale.
+
+The dataset used in this vignette is a collection of articles published by Russia's state media, Sputnik. From its website, all the English-language articles that contain "ukraine" have been downloaded at the end of 2022 and compiled as a corpus 8,063 documents. The website is known as one of the main outlets of [disinformation](https://www.kcl.ac.uk/policy-institute/research-analysis/weaponising-news) by the Russian government.
+
+## Preperation
 
 ```{r setup}
 library(LSX)
@@ -19,14 +25,14 @@ library(quanteda)
 library(ggplot2)
 ```
 
-[download](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1).
-
-```{r}
+```{r include=FALSE}
 if (!file.exists("data_corpus_sputnik2022.rds")) {
     download.file("https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1",
                   "data_corpus_sputnik2022.rds")
 }
 ```
+
+You can [download](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) the corpus of Sputnik articles about Ukraine You must segment documents into sentences using `corpus_reshape()` to perform LSS. Otherwise, you can follow the standard procedure such as removing punctuation marks and grammatical words ("stop words") in pre-processing.
 
 ```{r}
 corp <- readRDS("data_corpus_sputnik2022.rds") |>
@@ -37,22 +43,49 @@ dfmt <- dfm(toks) |>
     dfm_remove(stopwords("en"))
 ```
 
-## Basic usage
+## Basic usage: generic sentiment
+
+The basic usage of LSS is computing sentiment of documents. You can easily estimate the sentiment of all the articles in the corpus by running a few functions in the LSX package.
+
+### Estimate the polarity of words
+
+`data_dictionary_sentiment` is the built-in dictionary of sentiment seed words. `as.seedwords()` converts the dictionary object to a named numeric vector, in which numbers indicate words' polarity (positive or negative).
+
+Taking only the DFM and the seed words as inputs, `textmodel_lss()` computes the polarity scores of all the words in the corpus. When both `include_data` and `group_data` are `TRUE`, resulting LSS objects contain a DFM with sentences grouped into original documents (they are `FALSE` by default). 
+
+Users are always encourage to the caching function to speed up the execution of the function from the second time. If `cache = TRUE`, the result of singular value decomposition (SVD) is saved to the working directory. 
+
 
 ```{r message=FALSE}
 seed <- as.seedwords(data_dictionary_sentiment)
+print(seed)
 lss <- textmodel_lss(dfmt, seeds = seed, cache = TRUE, include_data = TRUE, group_data = TRUE)
 ```
 
+You can visualize the polarity of words using `textplot_terms()`. When `highlighted = NULL`, it randomly samples 50 words and highlights them.
+
 ```{r warning=FALSE}
-textplot_terms(lss)
+textplot_terms(lss, highlighted = NULL)
 ```
+
+You can also manually specify which words (even emoji) to highlight.
+
+```{r warning=FALSE}
+emoji <- featnames(dfm_select(dfmt, "^\\p{Emoji_Presentation}+$", valuetype = "regex"))
+textplot_terms(lss, highlighted = c(emoji, names(seed)))
+```
+
+### Estimate the polarity of documents
+
+Yon can compute the polarity scores of documents using `predict()`. The best workflow is copying document variables from the DFM in the LSS object and add the computed scores as a new variable to them. 
 
 ```{r}
 dat <- docvars(lss$data)
 dat$lss <- predict(lss)
 print(nrow(dat))
 ```
+
+To visualize the polarity of documents, you need to smooth their scores using `smooth_lss()`. The plot shows that the sentiment of the articles about Ukraine fell in March put rose in April. Zero on the Y-axis is the overall mean of the score; the dotted vertical line indicate the beginning of the war.
 
 ```{r}
 smo <- smooth_lss(dat, lss_var = "lss", date_var = "date")
@@ -63,46 +96,60 @@ ggplot(smo, aes(x = date, y = fit)) +
     geom_line() +
     geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96), alpha = 0.1) +
     geom_vline(xintercept = as.Date("2022-02-24"), linetype = "dotted") +
-    labs(title = "General sentiment in Sputnik", x = "Date", y = "Sentiment")
+    scale_x_date(date_breaks = "months", date_labels = "%b") +
+    labs(title = "Sentiment about Ukraine", x = "Date", y = "Sentiment")
 ```
 
-## Advanced usage
+## Advanced usage: NATO's hostility
+
+LSS allows you can target more specific concepts in documents using if it is trained with custom seed words. Adopting a seed words from [an earlier study on geo-political threat](https://academic.oup.com/isq/article/65/3/852/6278490), you can estimate the NATO's hostility expressed in the Sputnik articles. You can  [download](https://github.com/koheiw/LSX/blob/master/vignettes/) the dictionary from the Github.
 
 ```{r}
 dict <- dictionary(file = "dictionary.yml")
 print(dict$seedwords)
 ```
 
+### Estimate the polarity of words
+
+To target NATO's hostility, you can use `char_context()` to collect words that occur around "nato" in the documents. If the context words are passed to `textmodel_lss()` through `terms`, it compute s only for them. `group_data` is set to `FALSE` to analyze individual sentences.
 
 ```{r message=FALSE}
 seed2 <- as.seedwords(dict$seedwords)
 term <- char_context(toks, pattern = "nato", p = 0.01)
 lss2 <- textmodel_lss(dfmt, seeds = seed2, terms = term, cache = TRUE, 
-                          include_data = TRUE, group_data = FALSE)
+                      include_data = TRUE, group_data = FALSE)
 ```
+
+Since the LSS model is specifically about NATO, words in the plot are fewer than the generic sentiment. 
 
 ```{r warning=FALSE}
 textplot_terms(lss2)
 ```
 
+### Predict the polarity of documents
+
+You can compute the polarity scores of documents using `predict()` with `min_n = 10` to avoid very short sentences to receive extremely large negative or positive scores (i.e. outliers). 10 is roughly the first quantile of their lengths.
+
 ```{r}
 dat2 <- docvars(lss2$data)
+quantile(ntoken(lss2$data))
 dat2$lss <- predict(lss2, min_n = 10)
 print(nrow(dat2))
 ```
+
+You can use `smooth_lss()` to visualize the scores, but `engine` should be "[locfit](https://cran.r-project.org/web/packages/locfit/index.html)" when the data frame has scores for more than more than 10 thousands documents.
 
 ```{r}
 smo2 <- smooth_lss(dat2, lss_var = "lss", date_var = "date", engine = "locfit")
 ```
 
-On May 16, the Swedish Government decided that Sweden will apply for NATO membership. Finland also did the day after.
+The plot clearly shows that the NATO's hostility expressed in the Sputnik articles surged in response to  Sweden's and Finland's decision to join alliance on May 16 and 17, respectively.
 
 ```{r}
 ggplot(smo2, aes(x = date, y = fit)) + 
     geom_line() +
     geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96), alpha = 0.1) +
     geom_vline(xintercept = as.Date("2022-05-16"), linetype = "dotted") +
-    labs(title = "Hostility of NATO", x = "Date", y = "Hostility")
+    scale_x_date(date_breaks = "months", date_labels = "%b") +
+    labs(title = "NATO's hostility", x = "Date", y = "Hostility")
 ```
-
-
