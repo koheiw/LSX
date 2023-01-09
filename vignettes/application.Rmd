@@ -1,6 +1,6 @@
 ---
 title: "Application of LSS in research"
-subtitle: "Compare Russian state media's coverage of egnergy issues in the US and the EU"
+subtitle: "Comparative analysis of Russian state media's coverage of egnergy issues in the US and the EU"
 author: "Kohei Watanabe"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -116,7 +116,7 @@ ggplot(smo, aes(x = date, y = fit, color = country)) +
          fill = "Country", color = "Country")
 ```
 
-To test if the changes after the proposition is statistically significant, we create a dummy variable for the period after the proposition, `after`, and perform regression analysis with its interaction with the country/region dummies. This is akin to [the difference-in-differences design](https://en.wikipedia.org/wiki/Difference_in_differences) commonly used in econometrics.
+To test if the changes after the proposition is statistically significant, we create a dummy variable for the period after the proposition, `after`, and perform regression analysis with its interaction with the country/region dummies. This is akin to [the difference-in-differences design](https://en.wikipedia.org/wiki/Difference_in_differences) that I often adopt in analysis of news (Watanabe 2017; Watanabe et al. 2022).
 
 ```{r}
 dat_war <- subset(dat, date >= as.Date("2022-02-24"))
@@ -137,3 +137,7 @@ summary(reg)
 
 Above analysis shows that the Sputnik covered the energy issue in the US more positively while in the EU more negatively after the proposition. Our findings are preliminary, but we can give them a tentative interpretation: the Russian government attempted to create divisions between the US and European countries by emphasizing the different impact of the Ukraine war and sanctions against Russia on people's lives.
 
+### References
+
+- Watanabe, K. (2017). Measuring news bias: Russia’s official news agency ITAR-TASS’ coverage of the Ukraine crisis. *European Journal of Communication*. https://doi.org/10.1177/0267323117695735.
+- Watanabe, K., Segev, E., & Tago, A. (2022). Discursive diversion: Manipulation of nuclear threats by the conservative leaders in Japan and Israel, *International Communication Gazette*. https://doi.org/10.1177/17480485221097967.
