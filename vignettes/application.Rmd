@@ -1,6 +1,8 @@
 ---
 title: "Application of LSS in research"
 subtitle: "Compare Russian state media's coverage of egnergy issues in the US and the EU"
+author: "Kohei Watanabe"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Application of LSS in research}

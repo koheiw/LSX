@@ -1,6 +1,8 @@
 ---
 title: "Introduction to LSS"
 subtile: "Basic and advanced usage of the LSX package"
+author: "Kohei Watanabe"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to LSS}
