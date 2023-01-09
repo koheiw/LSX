@@ -111,7 +111,7 @@ print(dict$seedwords)
 
 ### Estimate the polarity of words
 
-To target NATO's hostility, you can use `char_context()` to collect words that occur around "nato" in the documents. If the context words are passed to `textmodel_lss()` through `terms`, it compute s only for them. `group_data` is set to `FALSE` to analyze individual sentences.
+To target NATO's hostility, you can use `char_context()` to collect words that occur around "nato" in the documents. If the context words are passed to `textmodel_lss()` through `terms`, it computes polarity scores only for them. `group_data` is set to `FALSE` to analyze each sentence.
 
 ```{r message=FALSE}
 seed2 <- as.seedwords(dict$seedwords)

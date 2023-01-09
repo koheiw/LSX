@@ -83,7 +83,7 @@ dfmt_dict <- dfm(tokens_lookup(toks, dict$keywords[c("us", "eu")]))
 print(head(dfmt_dict))
 ```
 
-We can create dummy variables for mentions of country/region by `dfm_group(dfmt_dict) > 0`. We need to group documents because the unit of analysis is article as `textmodel_lss(group_data = TRUE)` above.
+We can create dummy variables for mentions of country/region by `dfm_group(dfmt_dict) > 0`. We need to group documents because the unit of analysis is an article as `textmodel_lss(group_data = TRUE)` above.
 
 ```{r}
 mat <- as.matrix(dfm_group(dfmt_dict) > 0)
