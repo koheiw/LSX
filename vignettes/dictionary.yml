@@ -1,0 +1,9 @@
+seedwords:
+    hostile: ["adversary", "adversaries", "enemy", "enemies", "foe", "foes", "hostile"]
+    friendly: ["aid", "aids", "friends", "friend", "ally", "allies", "peaceful"]
+
+keywords:
+    us: ["United States", "US", "America*", "Washington"]
+    uk: ["United Kingdom", "UK", "British", "London"]
+    eu: ["European Union", "EU", "European*", "Brussels"]
+    energy: ["gas", "oil", "engery"]
