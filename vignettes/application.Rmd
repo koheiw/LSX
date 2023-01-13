@@ -43,15 +43,14 @@ dfmt <- dfm(toks) |>
     dfm_remove(stopwords("en"))
 ```
 
-We use a [dictionary](https://github.com/koheiw/LSX/blob/master/vignettes/) of keywords in the analysis.
+We use a [dictionary](https://github.com/koheiw/LSX/blob/master/vignettes/) of keywords in this example.
 
 ```{r}
 dict <- dictionary(file = "dictionary.yml")
 print(dict$keywords)
 ```
 
-
-### Estimate the polarity of documents
+### Estimate the polarity of words
 
 We can measure the sentiment about energy issues by collecting words that occur frequently around keywords such as "oil", "gas", "energy" and passing them to `terms`. 
 
@@ -66,7 +65,7 @@ lss <- textmodel_lss(dfmt, seeds = seed, terms = term, cache = TRUE,
 textplot_terms(lss)
 ```
 
-### Estimate the polarity of documents
+### Predict the polarity of documents
 
 We combine the document variables with the dummy variables in a new a data frame.
 
@@ -78,14 +77,14 @@ print(nrow(dat))
 
 ### Detect the mentions of country/region 
 
-We can detect mentions of countries using the dictionary. If you want to classify text by country more accurately, you can use the [newsmap package](https://cran.r-project.org/web/packages/newsmap/index.html).
+We can detect mentions of countries using the dictionary. If you want to classify texts by country more accurately, you can use the [newsmap package](https://cran.r-project.org/web/packages/newsmap/index.html).
 
 ```{r}
 dfmt_dict <- dfm(tokens_lookup(toks, dict$keywords[c("us", "eu")]))
 print(head(dfmt_dict))
 ```
 
-We can create dummy variables for mentions of country/region by `dfm_group(dfmt_dict) > 0`. We need to group documents because the unit of analysis is an article as `textmodel_lss(group_data = TRUE)` above.
+We can create dummy variables for mentions of country/region by `dfm_group(dfmt_dict) > 0`. We need to group documents because the unit of analysis is the articles in this example. See `textmodel_lss(group_data = TRUE)` above.
 
 ```{r}
 mat <- as.matrix(dfm_group(dfmt_dict) > 0)
@@ -95,7 +94,7 @@ dat <- cbind(dat, mat)
 
 ### Results
 
-We must smooth the polarity scores of documents separately for the country/region. We can see that difference between the US and EU has expanded soon after the proposition of the European Gas Demand Reduction Plan.
+We must smooth the polarity scores of documents separately for the country/region uisng `smooth_lss()`. We can see that difference between the US and EU has expanded soon after the proposition of the European Gas Demand Reduction Plan.
 
 ```{r}
 smo_us <- smooth_lss(subset(dat, us), lss_var = "lss", date_var = "date")
@@ -116,7 +115,7 @@ ggplot(smo, aes(x = date, y = fit, color = country)) +
          fill = "Country", color = "Country")
 ```
 
-To test if the changes after the proposition is statistically significant, we create a dummy variable for the period after the proposition, `after`, and perform regression analysis with its interaction with the country/region dummies. This is akin to [the difference-in-differences design](https://en.wikipedia.org/wiki/Difference_in_differences) that I often adopt in analysis of news (Watanabe 2017; Watanabe et al. 2022).
+To test if the changes after the proposition is statistically significant, we create a dummy variable `after` for the period after the proposition and perform regression analysis with its interactions with the country/region dummies. This is akin to [the difference-in-differences design](https://en.wikipedia.org/wiki/Difference_in_differences) that I often employ in analysis of news (Watanabe 2017; Watanabe et al. 2022).
 
 ```{r}
 dat_war <- subset(dat, date >= as.Date("2022-02-24"))
@@ -124,18 +123,18 @@ dat_war$after <- dat_war$date >= as.Date("2022-06-20")
 summary(dat_war[c("lss", "us", "eu", "after")])
 ```
 
-`dat_war` contains only scores since the beginning the war, so the `intercept` is the average sentiment of articles without mentions of the US or the EU before the proposition; `usTRUE` and `euTRUE` are the average sentiment for the articles with mentions of the US and the EU, respectively.
+`dat_war` contains only scores since the beginning the war, so the `intercept` is the average sentiment of the articles without mentions of the US or the EU before the proposition; `usTRUE` and `euTRUE` are the average sentiment for the articles with mentions of the US and the EU in the period, respectively.
 
-The coefficient of `afterTRUE` indicates that the overall sentiment became more negative after the proposition (*β* = -0.11; *p* < 0.01). The insignificant coefficient of `euTRUE:afterTRUE` shows that the sentiment for the EU also fell, but the large positive coefficient of `usTRUE:afterTRUE` suggests that the sentiment for the US rose (*β* = 0.22; *p* < 0.001) and became more positive than before.
+The coefficient of `afterTRUE` indicates that the overall sentiment became more negative after the proposition (*β* = -0.11; *p* < 0.01). The insignificant coefficient of `euTRUE:afterTRUE` shows that the sentiment for the EU also fell, but the large positive coefficient of `usTRUE:afterTRUE` suggests that the sentiment for the US rose (*β* = 0.22; *p* < 0.001) and became more positive than before the proposition.
 
 ```{r}
-reg <- lm(lss ~ us + eu + after + eu + after + us * after + eu * after, dat_war)
+reg <- lm(lss ~ us + eu + after + us * after + eu * after, dat_war)
 summary(reg) 
 ```
 
 ### Conclusions
 
-Above analysis shows that the Sputnik covered the energy issue in the US more positively while in the EU more negatively after the proposition. Our findings are preliminary, but we can give them a tentative interpretation: the Russian government attempted to create divisions between the US and European countries by emphasizing the different impact of the Ukraine war and sanctions against Russia on people's lives.
+Above analysis shows that the Sputnik covered the energy issue in the US more positively while in the EU more negatively after the proposition the European Gas Demand Reduction Plan. Our findings are preliminary, but we can give them a tentative interpretation: the Russian government attempted to create divisions between the US and the EU by emphasizing the different impact of the Ukraine war and the sanctions against Russia on American and European lives.
 
 ### References
 
