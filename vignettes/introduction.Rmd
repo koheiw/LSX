@@ -104,7 +104,7 @@ ggplot(smo, aes(x = date, y = fit)) +
 
 ## Advanced usage: NATO's hostility
 
-LSS allows you can target more specific concepts in documents if it is trained with custom seed words. Adopting seed words from my earlier study on geo-political threat (Trubowitz & Watanabe,2021), you can estimate the NATO's hostility expressed in the Sputnik articles. You can  [download](https://github.com/koheiw/LSX/blob/master/vignettes/) the dictionary from the Github.
+LSS allows you can target more specific concepts in documents if it is trained with custom seed words. Adopting seed words from my earlier study on geo-political threat (Trubowitz & Watanabe, 2021), you can estimate the NATO's hostility expressed in the Sputnik articles. You can [download](https://github.com/koheiw/LSX/blob/master/vignettes/) the dictionary from the Github.
 
 ```{r}
 dict <- dictionary(file = "dictionary.yml")
