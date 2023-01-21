@@ -43,7 +43,7 @@ dfmt <- dfm(toks) |>
     dfm_remove(stopwords("en"))
 ```
 
-We will use a [dictionary](https://github.com/koheiw/LSX/blob/master/vignettes/) of keywords in this example. 
+We will use a [dictionary](https://github.com/koheiw/LSX/tree/master/vignettes) of keywords in this example. 
 
 ```{r}
 dict <- dictionary(file = "dictionary.yml")
@@ -77,7 +77,7 @@ print(nrow(dat))
 
 ### Detect the mentions of country/region 
 
-We can detect the mentions of countries using the dictionary. If you want to classify texts by country more accurately, you should use the [newsmap package](https://cran.r-project.org/web/packages/newsmap/index.html).
+We can detect the mentions of countries using the dictionary. If you want to classify texts by country more accurately, you should use the [newsmap package](https://cran.r-project.org/package=newsmap).
 
 ```{r}
 dfmt_dict <- dfm(tokens_lookup(toks, dict$country[c("us", "eu")]))

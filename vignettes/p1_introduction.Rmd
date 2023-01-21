@@ -109,7 +109,7 @@ ggplot(smo, aes(x = date, y = fit)) +
 
 ## Example 2: NATO's hostility
 
-You can measure more specific concepts if you train LSS with custom seed words. Adopting seed words from my earlier study on geopolitical threat (Trubowitz & Watanabe,2021), we estimate the NATO's hostility expressed in the Sputnik articles. You can [download](https://github.com/koheiw/LSX/blob/master/vignettes/) the dictionary file from the Github repository.
+You can measure more specific concepts if you train LSS with custom seed words. Adopting seed words from my earlier study on geopolitical threat (Trubowitz & Watanabe,2021), we estimate the NATO's hostility expressed in the Sputnik articles. You can [download](https://github.com/koheiw/LSX/tree/master/vignettes) the dictionary file from the Github repository.
 
 ```{r}
 dict <- dictionary(file = "dictionary.yml")
@@ -145,7 +145,7 @@ dat2$lss <- predict(lss2, min_n = 10)
 print(nrow(dat2))
 ```
 
-You can use `smooth_lss()` to visualize the scores, but `engine` should be "[locfit](https://cran.r-project.org/web/packages/locfit/index.html)" when the data frame has more than 10 thousands scores.
+You can use `smooth_lss()` to visualize the scores, but `engine` should be "[locfit](https://cran.r-project.org/package=locfit)" when the data frame has more than 10 thousands scores.
 
 ```{r}
 smo2 <- smooth_lss(dat2, lss_var = "lss", date_var = "date", engine = "locfit")
