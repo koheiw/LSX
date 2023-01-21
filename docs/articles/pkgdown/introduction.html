@@ -73,8 +73,8 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Introduction to LSX</h1>
-            <h3 data-toc-skip class="subtitle">Basics about Latent
-Semantic Scaling</h3>
+            <h3 data-toc-skip class="subtitle">The package to perform
+Latent Semantic Scaling</h3>
             
       
       <small class="dont-index">Source: <a href="https://github.com/koheiw/LSX/blob/HEAD/vignettes/pkgdown/introduction.Rmd" class="external-link"><code>vignettes/pkgdown/introduction.Rmd</code></a></small>
@@ -173,13 +173,13 @@ cache files if they are taking too much space in the storage.</p>
 randomly samples 50 words and highlights them.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/textplot_terms.html">textplot_terms</a></span><span class="op">(</span><span class="va">lss</span>, highlighted <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-5-1.png" width="760"></p>
+<p><img src="introduction_files/figure-html/plot-sentiment-term-1.png" width="760"></p>
 <p>You can also manually specify which words (or emoji) to highlight.
 You can pass glob patterns to <code>highlighted</code> if you want.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">emoji</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://quanteda.io/reference/featnames.html" class="external-link">featnames</a></span><span class="op">(</span><span class="fu"><a href="https://quanteda.io/reference/dfm_select.html" class="external-link">dfm_select</a></span><span class="op">(</span><span class="va">dfmt</span>, <span class="st">"^\\p{Emoji_Presentation}+$"</span>, valuetype <span class="op">=</span> <span class="st">"regex"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/textplot_terms.html">textplot_terms</a></span><span class="op">(</span><span class="va">lss</span>, highlighted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">emoji</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-6-1.png" width="760"></p>
+<p><img src="introduction_files/figure-html/plot-sentimnet-emoji-1.png" width="760"></p>
 </div>
 <div class="section level3">
 <h3 id="predict-the-polarity-of-documents">Predict the polarity of documents<a class="anchor" aria-label="anchor" href="#predict-the-polarity-of-documents"></a>
@@ -208,7 +208,7 @@ war.</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2022-02-24"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_date.html" class="external-link">scale_x_date</a></span><span class="op">(</span>date_breaks <span class="op">=</span> <span class="st">"months"</span>, date_labels <span class="op">=</span> <span class="st">"%b"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Sentiment about Ukraine"</span>, x <span class="op">=</span> <span class="st">"Date"</span>, y <span class="op">=</span> <span class="st">"Sentiment"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-9-1.png" width="760"></p>
+<p><img src="introduction_files/figure-html/plot-sentiment-trend-1.png" width="760"></p>
 </div>
 </div>
 <div class="section level2">
@@ -249,7 +249,7 @@ polarity words).</p>
 the plot are fewer than the first example.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/textplot_terms.html">textplot_terms</a></span><span class="op">(</span><span class="va">lss2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-12-1.png" width="760"></p>
+<p><img src="introduction_files/figure-html/plot-hostility-term-1.png" width="760"></p>
 </div>
 <div class="section level3">
 <h3 id="predict-the-polarity-of-documents-1">Predict the polarity of documents<a class="anchor" aria-label="anchor" href="#predict-the-polarity-of-documents-1"></a>
@@ -286,7 +286,7 @@ to join the alliance on May 16 and 17, respectively.</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2022-05-16"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_date.html" class="external-link">scale_x_date</a></span><span class="op">(</span>date_breaks <span class="op">=</span> <span class="st">"months"</span>, date_labels <span class="op">=</span> <span class="st">"%b"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"NATO's hostility"</span>, x <span class="op">=</span> <span class="st">"Date"</span>, y <span class="op">=</span> <span class="st">"Hostility"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-15-1.png" width="760"></p>
+<p><img src="introduction_files/figure-html/plot-hostility-trend-1.png" width="760"></p>
 </div>
 <div class="section level3">
 <h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

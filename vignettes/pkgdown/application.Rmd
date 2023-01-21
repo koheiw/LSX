@@ -57,7 +57,7 @@ lss <- textmodel_lss(dfmt, seeds = seed, terms = term, cache = TRUE,
                      include_data = TRUE, group_data = TRUE)
 ```
 
-```{r warning=FALSE}
+```{r plot-term, warning=FALSE}
 textplot_terms(lss)
 ```
 
@@ -100,7 +100,7 @@ smo_eu$country <- "eu"
 smo <- rbind(smo_us, smo_eu)
 ```
 
-```{r}
+```{r plot-trend}
 ggplot(smo, aes(x = date, y = fit, color = country)) + 
     geom_line() +
     geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96, fill = country), 

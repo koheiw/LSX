@@ -1,6 +1,6 @@
 ---
 title: "Introduction to LSX"
-subtitle: "Basics about Latent Semantic Scaling"
+subtitle: "The package to perform Latent Semantic Scaling"
 output: 
   html_document:
     toc: true
@@ -67,13 +67,13 @@ lss <- textmodel_lss(dfmt, seeds = seed, k = 300, cache = TRUE,
 
 You can visualize the polarity of words using `textplot_terms()`. When `highlighted = NULL`, it randomly samples 50 words and highlights them.
 
-```{r warning=FALSE}
+```{r plot-sentiment-term, warning=FALSE}
 textplot_terms(lss, highlighted = NULL)
 ```
 
 You can also manually specify which words (or emoji) to highlight. You can pass glob patterns to `highlighted` if you want.
 
-```{r warning=FALSE}
+```{r plot-sentimnet-emoji, warning=FALSE}
 emoji <- featnames(dfm_select(dfmt, "^\\p{Emoji_Presentation}+$", valuetype = "regex"))
 textplot_terms(lss, highlighted = c(emoji, names(seed)))
 ```
@@ -94,7 +94,7 @@ To visualize the polarity of documents, you need to smooth their scores using `s
 smo <- smooth_lss(dat, lss_var = "lss", date_var = "date")
 ```
 
-```{r}
+```{r plot-sentiment-trend}
 ggplot(smo, aes(x = date, y = fit)) + 
     geom_line() +
     geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96), alpha = 0.1) +
@@ -126,7 +126,7 @@ lss2 <- textmodel_lss(dfmt, seeds = seed2, terms = term, cache = TRUE,
 
 Since we have selected NATO-related terms for the LSS model, words in the plot are fewer than the first example. 
 
-```{r warning=FALSE}
+```{r plot-hostility-term, warning=FALSE}
 textplot_terms(lss2)
 ```
 
@@ -149,7 +149,7 @@ smo2 <- smooth_lss(dat2, lss_var = "lss", date_var = "date", engine = "locfit")
 
 The plot clearly shows that the NATO's hostility expressed in the Sputnik articles surged in response to Sweden's and Finland's decisions to join the alliance on May 16 and 17, respectively.
 
-```{r}
+```{r, plot-hostility-trend}
 ggplot(smo2, aes(x = date, y = fit)) + 
     geom_line() +
     geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96), alpha = 0.1) +
