@@ -15,7 +15,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
                       fig.width = 8, fig.height = 4, dpi = 150, out.width = 690)
 ```
 
-In this example, we analyze how much the proposition of [the European Gas Demand Reduction Plan](https://ec.europa.eu/commission/presscorner/detail/en/ip_22_4608) on 20 July affected Sputnik's coverage of energy issues in the United States and the European Union.
+In this example, we will analyze how much the proposition of [the European Gas Demand Reduction Plan](https://ec.europa.eu/commission/presscorner/detail/en/ip_22_4608) on 20 July affected Sputnik's coverage of energy issues in the United States and the European Union.
 
 ```{r setup}
 library(LSX)
@@ -25,7 +25,7 @@ library(ggplot2)
 
 ### Preperation
 
-We analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](introduction.html), so too the pre-processing.
+We will analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](introduction.html), so too the pre-processing.
 
 ```{r include=FALSE}
 if (!file.exists("data_corpus_sputnik2022.rds")) {
@@ -43,7 +43,7 @@ dfmt <- dfm(toks) |>
     dfm_remove(stopwords("en"))
 ```
 
-We use a [dictionary](https://github.com/koheiw/LSX/blob/master/vignettes/) of keywords in this example. 
+We will use a [dictionary](https://github.com/koheiw/LSX/blob/master/vignettes/) of keywords in this example. 
 
 ```{r}
 dict <- dictionary(file = "dictionary.yml")
@@ -52,7 +52,7 @@ print(dict[c("country", "energy")])
 
 ### Estimate the polarity of words
 
-To measure the sentiment specifically about energy issues, we collect words that occur frequently around keywords such as "oil", "gas", "energy" and passing them to `terms`. 
+To measure the sentiment specifically about energy issues, we collect words that occur frequently around keywords such as "oil", "gas", "energy" and passing them to `terms`. These keywords are called target words.
 
 ```{r message=FALSE}
 seed <- as.seedwords(data_dictionary_sentiment)
@@ -67,7 +67,7 @@ textplot_terms(lss)
 
 ### Predict the polarity of documents
 
-We extract the document variables from the DFM in the LSS model and save the predicted polarity scores as a new variable.
+We can extract the document variables from the DFM in the LSS model and save the predicted polarity scores as a new variable.
 
 ```{r}
 dat <- docvars(lss$data)
@@ -77,14 +77,14 @@ print(nrow(dat))
 
 ### Detect the mentions of country/region 
 
-We can detect the mentions of countries using the dictionary. If you want to classify texts by country more accurately, you can use the [newsmap package](https://cran.r-project.org/web/packages/newsmap/index.html).
+We can detect the mentions of countries using the dictionary. If you want to classify texts by country more accurately, you should use the [newsmap package](https://cran.r-project.org/web/packages/newsmap/index.html).
 
 ```{r}
 dfmt_dict <- dfm(tokens_lookup(toks, dict$country[c("us", "eu")]))
 print(head(dfmt_dict))
 ```
 
-We can create dummy variables for mentions of country/region by `dfm_group(dfmt_dict) > 0`. We need to group documents because the unit of analysis is the articles in this example. Remember `textmodel_lss(group_data = TRUE)` above.
+We can create dummy variables for mentions of country/region by `dfm_group(dfmt_dict) > 0`. We must group documents because the unit of analysis is the articles in this example (recall `textmodel_lss(group_data = TRUE)` above).
 
 ```{r}
 mat <- as.matrix(dfm_group(dfmt_dict) > 0)
@@ -94,7 +94,7 @@ dat <- cbind(dat, mat)
 
 ### Results
 
-We must smooth the polarity scores of documents separately for the country/region using `smooth_lss()`. We can see that the difference between the US and EU has expanded soon after the proposition of the European Gas Demand Reduction Plan.
+We must smooth the polarity scores of documents separately for the country/region using `smooth_lss()`. After smoothing, we can see that the difference between the US and EU has expanded soon after the proposition of the European Gas Demand Reduction Plan.
 
 ```{r}
 smo_us <- smooth_lss(subset(dat, us), lss_var = "lss", date_var = "date")
@@ -115,7 +115,7 @@ ggplot(smo, aes(x = date, y = fit, color = country)) +
          fill = "Country", color = "Country")
 ```
 
-To test if the changes after the proposition is statistically significant, we create a dummy variable `after` for the period after the proposition and perform regression analysis with its interactions with the country/region dummies. This is akin to [the difference-in-differences design](https://en.wikipedia.org/wiki/Difference_in_differences) that I often employ in analysis of news (Watanabe 2017; Watanabe et al. 2022).
+To test if the changes after the proposition is statistically significant, we should create a dummy variable `after` for the period after the proposition and perform regression analysis with its interactions with the country/region dummies. This is akin to [the difference-in-differences design](https://en.wikipedia.org/wiki/Difference_in_differences) that I often employ in analysis of news (Watanabe 2017; Watanabe et al. 2022).
 
 ```{r}
 dat_war <- subset(dat, date >= as.Date("2022-02-24"))
@@ -134,7 +134,7 @@ summary(reg)
 
 ### Conclusions
 
-Our analysis shows that the Sputnik covered the energy issues in the US more positively while in the EU more negatively after the proposition the European Gas Demand Reduction Plan. Our findings are preliminary, but we can give them a tentative interpretation: the Russian government attempted to create divisions between the US and the EU by emphasizing the different impact of the Ukraine war and the sanctions against Russia on American and European lives.
+Our analysis shows that the Sputnik covered the energy issues in the US more positively while those in the EU more negatively after the proposition the European Gas Demand Reduction Plan. Our findings are preliminary, but we can give them a tentative interpretation: the Russian government attempted to create divisions between the US and the EU by emphasizing the different impact of the Ukraine war and the sanctions against Russia on American and European lives.
 
 ### References
 

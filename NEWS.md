@@ -1,5 +1,6 @@
-# Changes
+# Changes in v1.3.0
 
+* Add vignettes on how to use the package for LSS.
 * Add `cut` to `predict()` to produce bounded polarity scores of documents.
 * Rename "rescaling" to "rescale" for simplicity and consistency.
 * Improve random sampling of words to highlight in `textplot_terms()` to avoid congestion.
