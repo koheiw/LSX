@@ -115,6 +115,8 @@ seed words. If \code{auto_weight = TRUE}, the original scores are weighted
 automatically using \code{\link[stats:optim]{stats::optim()}} to minimize the squared difference
 between seed words' computed and original scores. Weighted scores are saved
 in \code{seed_weighted} in the object.
+
+Please visit the \href{https://koheiw.github.io/LSX/}{package website} for examples.
 }
 \references{
 Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised

@@ -45,6 +45,8 @@
 #'   automatically using [stats::optim()] to minimize the squared difference
 #'   between seed words' computed and original scores. Weighted scores are saved
 #'   in `seed_weighted` in the object.
+#'
+#'   Please visit the [package website](https://koheiw.github.io/LSX/) for examples.
 #' @references Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 #'   Text Analysis Technique for New Domains and Languages", Communication
 #'   Methods and Measures. \doi{10.1080/19312458.2020.1832976}.
