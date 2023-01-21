@@ -9,3 +9,6 @@
 ^cran-comments.md$
 ^lss_cache
 ^vignettes/.*\.rds$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
