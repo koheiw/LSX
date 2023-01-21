@@ -69,32 +69,6 @@ Guthrie et al (2006).}
 \description{
 Identify context words using user-provided patterns
 }
-\examples{
-\donttest{
-require(quanteda)
-con <- url("https://bit.ly/2GZwLcN", "rb")
-corp <- readRDS(con)
-close(con)
-corp <- corpus_reshape(corp, 'sentences')
-toks <- tokens(corp, remove_punct = TRUE)
-toks <- tokens_remove(toks, stopwords("en"))
-
-# economy keywords
-eco <- char_context(toks, 'econom*')
-head(eco, 20)
-
-tstat_eco <- textstat_context(toks, 'econom*')
-head(tstat_eco)
-
-# politics keywords
-pol <- char_context(toks, 'politi*')
-head(pol, 20)
-
-# politics keywords
-tstat_pol <- textstat_context(toks, 'politi*')
-head(tstat_pol)
-}
-}
 \seealso{
 \code{\link[=tokens_select]{tokens_select()}} and \code{\link[=textstat_keyness]{textstat_keyness()}}
 }
