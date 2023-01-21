@@ -1,6 +1,6 @@
 ---
 title: "Application in research"
-subtitle: "Comparative analysis of Russian state media's coverage of egnergy issues in the US and the EU"
+subtitle: "Russian state media's coverage of egnergy issues in the US and the EU"
 output: rmarkdown::html_vignette
 ---
 
