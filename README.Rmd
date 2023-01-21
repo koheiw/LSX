@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# LSX: Latent Semantic Scaling
+# LSX: Semi-supervised algorithm for document scaling
 
 <!-- badges: start -->
 [![CRAN
