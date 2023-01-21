@@ -37,18 +37,23 @@ its application to non-English texts (Japanese and Hebrew):
   Israel”](https://journals.sagepub.com/doi/full/10.1177/17480485221097967),
   *International Communication Gazette*.
 
-## How to install
+## Install
+
+From CRAN:
+
+``` r
+install.packages("LSX")
+```
+
+From Github:
 
 ``` r
 devtools::install_github("koheiw/LSX")
 ```
 
-## How to use
+## Publication
 
-## Examples
-
-LSS has been used for research in various fields of social science. For
-example:
+LSS has been used for research in various fields of social science.
 
 - Nakamura, Kentaro. 2022 [Balancing Opportunities and Incentives: How
   Rising China’s Mediated Public Diplomacy Changes Under
