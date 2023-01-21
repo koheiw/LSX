@@ -1,5 +1,5 @@
 
-# Latent Semantic Scaling
+# LSX: Latent Semantic Scaling
 
 <!-- badges: start -->
 

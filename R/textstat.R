@@ -19,31 +19,6 @@
 #'   dfm_trim dfm_match featnames as.dfm dfm_remove
 #' @export
 #' @seealso [tokens_select()] and [textstat_keyness()]
-#' @examples
-#' \donttest{
-#' require(quanteda)
-#' con <- url("https://bit.ly/2GZwLcN", "rb")
-#' corp <- readRDS(con)
-#' close(con)
-#' corp <- corpus_reshape(corp, 'sentences')
-#' toks <- tokens(corp, remove_punct = TRUE)
-#' toks <- tokens_remove(toks, stopwords("en"))
-#'
-#' # economy keywords
-#' eco <- char_context(toks, 'econom*')
-#' head(eco, 20)
-#'
-#' tstat_eco <- textstat_context(toks, 'econom*')
-#' head(tstat_eco)
-#'
-#' # politics keywords
-#' pol <- char_context(toks, 'politi*')
-#' head(pol, 20)
-#'
-#' # politics keywords
-#' tstat_pol <- textstat_context(toks, 'politi*')
-#' head(tstat_pol)
-#' }
 textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                              case_insensitive = TRUE, window = 10, min_count = 10,
                              remove_pattern = TRUE, n = 1, skip = 0, ...) {

@@ -25,7 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/pkgdown/application.html">Application in research</a>
-    <a class="dropdown-item" href="../articles/pkgdown/introduction.html">Introduction</a>
+    <a class="dropdown-item" href="../articles/pkgdown/introduction.html">Introduction to LSX</a>
   </div>
 </li>
 <li class="nav-item">
@@ -145,60 +145,9 @@ Guthrie et al (2006).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://quanteda.io/reference/tokens_select.html" class="external-link">tokens_select()</a></code> and <code>textstat_keyness()</code></p></div>
+    <div class="dont-index"><p><code>tokens_select()</code> and <code>textstat_keyness()</code></p></div>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://quanteda.io" class="external-link">quanteda</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">url</a></span><span class="op">(</span><span class="st">"https://bit.ly/2GZwLcN"</span>, <span class="st">"rb"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://quanteda.io/reference/corpus_reshape.html" class="external-link">corpus_reshape</a></span><span class="op">(</span><span class="va">corp</span>, <span class="st">'sentences'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">toks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://quanteda.io/reference/tokens.html" class="external-link">tokens</a></span><span class="op">(</span><span class="va">corp</span>, remove_punct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">toks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://quanteda.io/reference/tokens_select.html" class="external-link">tokens_remove</a></span><span class="op">(</span><span class="va">toks</span>, <span class="fu"><a href="https://rdrr.io/pkg/stopwords/man/stopwords.html" class="external-link">stopwords</a></span><span class="op">(</span><span class="st">"en"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># economy keywords</span></span></span>
-<span class="r-in"><span><span class="va">eco</span> <span class="op">&lt;-</span> <span class="fu">char_context</span><span class="op">(</span><span class="va">toks</span>, <span class="st">'econom*'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">eco</span>, <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "growth"      "global"      "outlook"     "eurozone"    "slowdown"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "slowing"     "uncertainty" "recession"   "uk"          "financial"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "markets"     "zew"         "gdp"         "markit"      "prospects"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "world"       "rolling"     "forecasts"   "brexit"      "china"      </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">tstat_eco</span> <span class="op">&lt;-</span> <span class="fu">textstat_context</span><span class="op">(</span><span class="va">toks</span>, <span class="st">'econom*'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tstat_eco</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    feature     chi2 p n_inside n_outside</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   growth 8760.140 0      801      2311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   global 5205.868 0      657      2682</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  outlook 3687.189 0      175       205</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 eurozone 2683.908 0      190       401</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 slowdown 2655.536 0      139       191</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  slowing 2077.393 0       89        85</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># politics keywords</span></span></span>
-<span class="r-in"><span><span class="va">pol</span> <span class="op">&lt;-</span> <span class="fu">char_context</span><span class="op">(</span><span class="va">toks</span>, <span class="st">'politi*'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pol</span>, <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "parties"       "correctness"   "@abcpolitics"  "discourse"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "donations"     "establishment" "spectrum"      "covering"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "editor"        "party"         "pienaar's"     "@ap_politics" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "motivated"     "career"        "revolution"    "leaders"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "influence"     "economic"      "views"         "live"         </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># politics keywords</span></span></span>
-<span class="r-in"><span><span class="va">tstat_pol</span> <span class="op">&lt;-</span> <span class="fu">textstat_context</span><span class="op">(</span><span class="va">toks</span>, <span class="st">'politi*'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tstat_pol</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         feature      chi2 p n_inside n_outside</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       parties 1831.7974 0      268      1086</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   correctness 1740.7572 0       46         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  @abcpolitics 1351.0037 0       33         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     discourse 1034.6142 0       49        43</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     donations 1025.3626 0      118       373</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 establishment  956.2375 0      143       592</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

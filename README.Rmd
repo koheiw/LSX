@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Latent Semantic Scaling
+# LSX: Latent Semantic Scaling
 
 <!-- badges: start -->
 [![CRAN
