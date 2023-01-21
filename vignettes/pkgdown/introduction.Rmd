@@ -1,7 +1,9 @@
 ---
-title: "Introduction"
-subtitle: "Basic usage of the LSX package"
-output: rmarkdown::html_vignette
+title: "Introduction to the package"
+subtitle: "Basics about Latent Semantic Scaling"
+output: 
+  html_document:
+    toc: true
 ---
 
 ```{r, include = FALSE}
