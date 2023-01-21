@@ -239,6 +239,9 @@ test_that("simil_method works", {
 
 
 test_that("include_data is working", {
+
+    skip_on_cran() # takes to much time
+
     dfmt <- dfm(toks_test)
     lss <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, include_data = TRUE)
     lss_nd <- textmodel_lss(dfmt, seedwords("pos-neg"), k = 10, include_data = FALSE)
@@ -312,6 +315,9 @@ test_that("RSpectra and irlba work", {
 })
 
 test_that("text2vec works", {
+
+    skip_on_cran() # takes to much time
+
     fcmt <- fcm(toks_test)
     lss <- textmodel_lss(fcmt, seedwords("pos-neg"), engine = "rsparse")
     expect_equal(
@@ -350,6 +356,8 @@ test_that("slice argument is working", {
 })
 
 test_that("test smooth_lss", {
+
+    skip_on_cran() # takes to much time
 
     set.seed(1234)
     dfmt <- dfm_sample(dfmt_test, size = 1000)
@@ -417,7 +425,9 @@ test_that("weight_seeds() works", {
 })
 
 test_that("old argument still works", {
-    skip_on_cran()
+
+    skip_on_cran() # takes to much time
+
     suppressWarnings({
         lss <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300)
     })
@@ -440,6 +450,8 @@ test_that("se_fit is working", {
 })
 
 test_that("cut is working", {
+
+    skip_on_cran() # takes to much time
 
     p0 <- predict(lss_test, rescale = TRUE, min_n = 10)
     p1 <- predict(lss_test, cut = 0.5, rescale = TRUE)
