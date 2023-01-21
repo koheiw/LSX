@@ -1,9 +1,9 @@
 Package: LSX
 Type: Package
-Title: Semisupervised Document Scaling with Word-Embedding Models
+Title: Semi-supervised Document Scaling with Word-Embedding Models
 Version: 1.3.0
 Authors@R: person("Kohei", "Watanabe", email = "watanabe.kohei@gmail.com", role = c("aut", "cre", "cph"))
-Description: A word embeddings-based semisupervised model for document scaling Watanabe (2020) <doi:10.1080/19312458.2020.1832976>.
+Description: A word embeddings-based semi-supervised model for document scaling Watanabe (2020) <doi:10.1080/19312458.2020.1832976>.
     LSS allows users to analyze large and complex corpora on arbitrary dimensions with seed words exploiting efficiency of word embeddings (SVD, Glove).
     It can generate word vectors on a users-provided corpus or incorporate a pre-trained word vectors.
 License: GPL-3
@@ -32,7 +32,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/koheiw/LSX/issues
 VignetteBuilder: knitr
