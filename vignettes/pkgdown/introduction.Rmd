@@ -1,18 +1,12 @@
 ---
-title: "Introduction to LSS"
-subtile: "Basic and advanced usage of the LSX package"
-author: "Kohei Watanabe"
-date: "`r Sys.Date()`"
+title: "Introduction"
+subtitle: "Basic usage of the LSX package"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Introduction to LSS}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", 
-                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 690)
+                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 760)
 ```
 
 This vignette aims to introduce you to basic and advanced usage of the LSX package to perform Latent Semantic Scaling (Watanabe, 2021). It is an semisupervised algorithm to estimate polarity of documents on a user-defined scale (e.g. sentiment or hostility) without manually labeled training set.

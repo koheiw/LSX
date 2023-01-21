@@ -1,18 +1,12 @@
 ---
-title: "Application of LSS in research"
+title: "Application in research"
 subtitle: "Comparative analysis of Russian state media's coverage of egnergy issues in the US and the EU"
-author: "Kohei Watanabe"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Application of LSS in research}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", 
-                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 690)
+                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 760)
 ```
 
 In this example, we will analyze how much the proposition of [the European Gas Demand Reduction Plan](https://ec.europa.eu/commission/presscorner/detail/en/ip_22_4608) on 20 July affected Sputnik's coverage of energy issues in the United States and the European Union.
@@ -25,7 +19,7 @@ library(ggplot2)
 
 ### Preperation
 
-We will analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](./p1_introduction.html), so too the pre-processing.
+We will analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](./introduction.html), so too the pre-processing.
 
 ```{r include=FALSE}
 if (!file.exists("data_corpus_sputnik2022.rds")) {
