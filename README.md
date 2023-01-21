@@ -1,5 +1,5 @@
 
-# LSX: Latent Semantic Scaling
+# LSX: Semi-supervised algorithm for document scaling
 
 <!-- badges: start -->
 
@@ -13,9 +13,6 @@ status](https://github.com/koheiw/LSX/workflows/R-CMD-check/badge.svg)](https://
 [![codecov](https://codecov.io/gh/koheiw/LSX/branch/master/graph/badge.svg)](https://app.codecov.io/gh/koheiw/LSX)
 <!-- badges: end -->
 
-**NOTICE:** This R package is renamed from **LSS** to **LSX** for CRAN
-submission.
-
 In quantitative text analysis, the cost of training supervised machine
 learning models tend to be very high when the corpus is large. LSS is a
 semisupervised document scaling technique that I developed to perform
@@ -23,19 +20,6 @@ large scale analysis at low cost. Taking user-provided *seed words* as
 weak supervision, it estimates polarity of words in the corpus by latent
 semantic analysis and locates documents on a unidimensional scale
 (e.g. sentiment).
-
-Please read the following papers for the algorithm and methodology, and
-its application to non-English texts (Japanese and Hebrew):
-
-- Watanabe, Kohei. 2020. [“Latent Semantic Scaling: A Semisupervised
-  Text Analysis Technique for New Domains and
-  Languages”](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976),
-  *Communication Methods and Measures*.
-- Watanabe, Kohei, Segev, Elad, & Tago, Atsushi. (2022). [“Discursive
-  diversion: Manipulation of nuclear threats by the conservative leaders
-  in Japan and
-  Israel”](https://journals.sagepub.com/doi/full/10.1177/17480485221097967),
-  *International Communication Gazette*.
 
 ## Install
 
@@ -51,7 +35,29 @@ From Github:
 devtools::install_github("koheiw/LSX")
 ```
 
-## Publication
+## Examples
+
+Please visit the package website for examples:
+
+- [Introduction to
+  LSX](http://koheiw.github.io/LSX/articles/pkgdown/introduction.html)
+- [Application in
+  research](http://koheiw.github.io/LSX/articles/pkgdown/application.html)
+
+Please read the following papers for the algorithm and methodology, and
+its application to non-English texts (Japanese and Hebrew):
+
+- Watanabe, Kohei. 2020. [“Latent Semantic Scaling: A Semisupervised
+  Text Analysis Technique for New Domains and
+  Languages”](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976),
+  *Communication Methods and Measures*.
+- Watanabe, Kohei, Segev, Elad, & Tago, Atsushi. (2022). [“Discursive
+  diversion: Manipulation of nuclear threats by the conservative leaders
+  in Japan and
+  Israel”](https://journals.sagepub.com/doi/full/10.1177/17480485221097967),
+  *International Communication Gazette*.
+
+## Other publication
 
 LSS has been used for research in various fields of social science.
 
@@ -89,5 +95,5 @@ LSS has been used for research in various fields of social science.
   Crisis”](http://journals.sagepub.com/eprint/TBc9miIc89njZvY3gyAt/full),
   *European Journal Communication*.
 
-Other studies are available on [Google
+More publications are available on [Google
 Scholar](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=5312969973901591795).
