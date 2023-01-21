@@ -25,7 +25,7 @@ library(ggplot2)
 
 ### Preperation
 
-We will analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](introduction.html), so too the pre-processing.
+We will analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](./p1_introduction.html), so too the pre-processing.
 
 ```{r include=FALSE}
 if (!file.exists("data_corpus_sputnik2022.rds")) {
