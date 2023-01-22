@@ -1,7 +1,6 @@
 # Changes in v1.3.0
 
-* Add vignettes on how to use the package for LSS.
-* Add `cut` to `predict()` to produce bounded polarity scores of documents.
+* Move examples to the new package website: http://koheiw.github.io/LSX
 * Rename "rescaling" to "rescale" for simplicity and consistency.
 * Improve random sampling of words to highlight in `textplot_terms()` to avoid congestion.
 
