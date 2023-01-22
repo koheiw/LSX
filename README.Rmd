@@ -55,7 +55,7 @@ Please read the following papers for the algorithm and methodology, and its appl
 - Watanabe, Kohei. 2020. ["Latent Semantic Scaling: A Semisupervised Text Analysis Technique for New Domains and Languages"](https://www.tandfonline.com/doi/full/10.1080/19312458.2020.1832976), *Communication Methods and Measures*.
 - Watanabe, Kohei, Segev, Elad, & Tago, Atsushi. (2022). ["Discursive diversion: Manipulation of nuclear threats by the conservative leaders in Japan and Israel"](https://journals.sagepub.com/doi/full/10.1177/17480485221097967), *International Communication Gazette*. 
 
-## Other publication
+## Other publications
 
 LSS has been used for research in various fields of social science.
 
