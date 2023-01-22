@@ -21,7 +21,7 @@ user-provided *seed words* as weak supervision, it estimates polarity of
 words in the corpus by latent semantic analysis and locates documents on
 a unidimensional scale (e.g. sentiment).
 
-## Install
+## Installation
 
 From CRAN:
 
@@ -40,9 +40,9 @@ devtools::install_github("koheiw/LSX")
 Please visit the package website for examples:
 
 - [Introduction to
-  LSX](http://koheiw.github.io/LSX/articles/pkgdown/introduction.html)
+  LSX](https://koheiw.github.io/LSX/articles/pkgdown/introduction.html)
 - [Application in
-  research](http://koheiw.github.io/LSX/articles/pkgdown/application.html)
+  research](https://koheiw.github.io/LSX/articles/pkgdown/application.html)
 
 Please read the following papers for the algorithm and methodology, and
 its application to non-English texts (Japanese and Hebrew):

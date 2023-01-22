@@ -29,7 +29,7 @@ status](https://github.com/koheiw/LSX/workflows/R-CMD-check/badge.svg)](https://
 
 In quantitative text analysis, the cost of training supervised machine learning models tend to be very high when the corpus is large. Latent Semantic Scaling (LSS) is a semi-supervised document scaling technique that I developed to perform large scale analysis at low cost. Taking user-provided *seed words* as weak supervision, it estimates polarity of words in the corpus by latent semantic analysis and locates documents on a unidimensional scale (e.g. sentiment). 
 
-## Install
+## Installation
 
 From CRAN:
 
@@ -47,8 +47,8 @@ devtools::install_github("koheiw/LSX")
 
 Please visit the package website for examples:
 
-- [Introduction to LSX](http://koheiw.github.io/LSX/articles/pkgdown/introduction.html)
-- [Application in research](http://koheiw.github.io/LSX/articles/pkgdown/application.html)
+- [Introduction to LSX](https://koheiw.github.io/LSX/articles/pkgdown/introduction.html)
+- [Application in research](https://koheiw.github.io/LSX/articles/pkgdown/application.html)
 
 Please read the following papers for the algorithm and methodology, and its application to non-English texts (Japanese and Hebrew): 
 
