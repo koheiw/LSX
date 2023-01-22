@@ -11,4 +11,4 @@
 ^vignettes/.*\.rds$
 ^_pkgdown\.yml$
 ^docs$
-^pkgdown$
+^vignettes/pkgdown$
