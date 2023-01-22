@@ -1,6 +1,6 @@
 ---
 title: "Introduction to LSX"
-subtitle: "The package to perform Latent Semantic Scaling"
+subtitle: "The package for Latent Semantic Scaling"
 output: 
   html_document:
     toc: true
