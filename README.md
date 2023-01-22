@@ -1,5 +1,5 @@
 
-# LSX: Semi-supervised algorithm for document scaling
+# LSS: Semi-supervised algorithm for document scaling
 
 <!-- badges: start -->
 
@@ -14,12 +14,12 @@ status](https://github.com/koheiw/LSX/workflows/R-CMD-check/badge.svg)](https://
 <!-- badges: end -->
 
 In quantitative text analysis, the cost of training supervised machine
-learning models tend to be very high when the corpus is large. LSS is a
-semi-supervised document scaling technique that I developed to perform
-large scale analysis at low cost. Taking user-provided *seed words* as
-weak supervision, it estimates polarity of words in the corpus by latent
-semantic analysis and locates documents on a unidimensional scale
-(e.g. sentiment).
+learning models tend to be very high when the corpus is large. Latent
+Semantic Scaling (LSS) is a semi-supervised document scaling technique
+that I developed to perform large scale analysis at low cost. Taking
+user-provided *seed words* as weak supervision, it estimates polarity of
+words in the corpus by latent semantic analysis and locates documents on
+a unidimensional scale (e.g. sentiment).
 
 ## Install
 
