@@ -453,14 +453,6 @@ test_that("cut is working", {
 
     skip_on_cran() # takes to much time
 
-    expect_equal(
-        LSX:::cut_beta(c(1.1, -1.2, 0.5, 0.3, -0.2, -0.5)),
-        c(1, -1, 1, 1, -1, -1)
-    )
-    expect_equal(
-        LSX:::cut_beta(c(1.1, -1.2, 0.5, 0.3, -0.2, -0.5), c(0.2, 0.8)),
-        c(1, -1, 0, 0, 0, -1)
-    )
     p0 <- predict(lss_test, rescale = TRUE, min_n = 10)
     p1 <- predict(lss_test, cut = 0.5, rescale = TRUE)
     expect_true(min(p1, na.rm = TRUE) < -1)
@@ -502,6 +494,31 @@ test_that("cut is working", {
         predict(lss_test, cut = c(0.1, 0.5, 0.9)),
         "The length of cut must be between 1 and 2"
     )
+
+    expect_equal(
+        LSX:::cut_beta(c(1.1, -1.2, 0.5, 0.3, -0.2, -0.5)),
+        c(1, -1, 1, 1, -1, -1)
+    )
+    expect_equal(
+        LSX:::cut_beta(c(1.1, -1.2, 0.5, 0.3, -0.2, -0.5), c(0.2, 0.8)),
+        c(1, -1, 0, 0, 0, -1)
+    )
+
+    beta <- rnorm(nfeat(dfmt_test), sd = 0.1)
+    names(beta) <- featnames(dfmt_test)
+    beta2 <- LSX:::cut_beta(beta, c(0.2, 0.8))
+
+    lss1 <- as.textmodel_lss(beta)
+    lss2 <- as.textmodel_lss(beta2)
+    expect_equal(names(lss1$beta), names(lss2$beta))
+
+    pred0 <- predict(lss1, dfmt_test, se_fit = TRUE)
+    pred1 <- predict(lss1, dfmt_test, cut = c(0.2, 0.8), se_fit = TRUE)
+    pred2 <- predict(lss2, dfmt_test, se_fit = TRUE)
+
+    expect_equal(pred0$n, pred1$n)
+    expect_equal(pred0$n, pred2$n)
+    expect_equal(pred1$fit, pred2$fit)
 })
 
 test_that("rescaling still works", {
