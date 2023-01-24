@@ -453,6 +453,14 @@ test_that("cut is working", {
 
     skip_on_cran() # takes to much time
 
+    expect_equal(
+        LSX:::cut_beta(c(1.1, -1.2, 0.5, 0.3, -0.2, -0.5)),
+        c(1, -1, 1, 1, -1, -1)
+    )
+    expect_equal(
+        LSX:::cut_beta(c(1.1, -1.2, 0.5, 0.3, -0.2, -0.5), c(0.2, 0.8)),
+        c(1, -1, 0, 0, 0, -1)
+    )
     p0 <- predict(lss_test, rescale = TRUE, min_n = 10)
     p1 <- predict(lss_test, cut = 0.5, rescale = TRUE)
     expect_true(min(p1, na.rm = TRUE) < -1)
