@@ -1,6 +1,11 @@
+# Changes in v1.3.1
+
+* Fix the range of scores when `cut` is used.
+
 # Changes in v1.3.0
 
-* Move examples to the new package website: http://koheiw.github.io/LSX
+* Add `cut` to `predict`.
+* Move examples to the new package website: http://koheiw.github.io/LSX.
 * Rename "rescaling" to "rescale" for simplicity and consistency.
 * Improve random sampling of words to highlight in `textplot_terms()` to avoid congestion.
 
