@@ -3,16 +3,15 @@
 \name{bootstrap_lss}
 \alias{bootstrap_lss}
 \title{[experimental] Compute polarity scores of words with different
-hyper-parameters}
+hyper-parameters
+A function to compute polarity scores of words by resampling
+hyper-parameters from a fitted LSS model.}
 \usage{
 bootstrap_lss(
   x,
-  what = c("seeds", "k", "slice"),
-  by = 1,
-  from = NULL,
-  to = NULL,
-  n = 10L,
-  size = 100,
+  what = c("seeds", "k"),
+  output = c("terms", "coef"),
+  by = 50,
   ...
 )
 }
@@ -21,21 +20,17 @@ bootstrap_lss(
 
 \item{what}{choose the parameter to resample in bootstrapping.}
 
-\item{by, from, to}{passed to \code{seq()} to generate values for \code{k}; only used for
-when \code{what = "k"}.}
+\item{output}{choose the types of the output object. If \code{terms}, words are
+sorted in descending order.}
 
-\item{n}{the number of resampling; only used for when \code{what = "slice"}.}
-
-\item{size}{the number of word vectors to be resampled; only used  when \code{what = "slice"}.}
+\item{by}{passed to \code{seq()} to generate values for \code{k}; only used for when
+\code{what = "k"}.}
 
 \item{...}{additional arguments passed to \code{as.textmodel_lss()}.}
-}
-\value{
-\item{seeds/k/slice}{sampled hyper-parameters.} \item{beta}{the
-polarity scores of words computed with the hyper-parameters.}
-\item{terms}{the most polarized words (only the top 100).}
 }
 \description{
 [experimental] Compute polarity scores of words with different
 hyper-parameters
+A function to compute polarity scores of words by resampling
+hyper-parameters from a fitted LSS model.
 }
