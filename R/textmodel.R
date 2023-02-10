@@ -1,5 +1,7 @@
-#' A word embeddings-based semisupervised model for document scaling
+#' Fit a Latent Semantic Scaling model
 #'
+#' Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
+#' for document scaling.
 #' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
 #' @param seeds a character vector or named numeric vector that contains seed
 #'   words. If seed words contain "*", they are interpreted as glob patterns.
@@ -43,6 +45,8 @@
 #'   automatically using [stats::optim()] to minimize the squared difference
 #'   between seed words' computed and original scores. Weighted scores are saved
 #'   in `seed_weighted` in the object.
+#'
+#'   Please visit the [package website](https://koheiw.github.io/LSX/) for examples.
 #' @references Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 #'   Text Analysis Technique for New Domains and Languages", Communication
 #'   Methods and Measures. \doi{10.1080/19312458.2020.1832976}.
@@ -50,59 +54,6 @@
 #'   Watanabe, Kohei. 2017. "Measuring News Bias: Russia's Official News Agency
 #'   ITAR-TASS' Coverage of the Ukraine Crisis" European Journal of
 #'   Communication. \doi{10.1177/0267323117695735}.
-#' @examples
-#' \donttest{
-#' library("quanteda")
-#' library("LSX")
-#'
-#' # download corpus
-#' corp <- tryCatch({
-#'    con <- url("https://bit.ly/2GZwLcN", "rb")
-#'    readRDS(con)
-#'    },
-#'    error = function(e) e,
-#'    warning = function(w) w,
-#'    finally = close(con)
-#' )
-#'
-#' if (exists("corp")) {
-#' toks <- corpus_reshape(corp, "sentences") %>%
-#'         tokens(remove_punct = TRUE) %>%
-#'         tokens_remove(stopwords("en")) %>%
-#'         tokens_select("^[\\p{L}]+$", valuetype = "regex", padding = TRUE)
-#' dfmt <- dfm(toks) %>%
-#'         dfm_trim(min_termfreq = 10)
-#'
-#' seed <- as.seedwords(data_dictionary_sentiment)
-#'
-#' # SVD
-#' lss_svd <- textmodel_lss(dfmt, seed)
-#' head(coef(lss_svd), 20)
-#' head(predict(lss_svd))
-#' head(predict(lss_svd, min_n = 10)) # more robust
-#'
-#' dfmt_grp <- dfm_group(dfmt) # group sentences
-#'
-#' # sentiment on economy
-#' eco <- head(textstat_context(toks, 'econom*'), 500)
-#' lss_svd_eco <- textmodel_lss(dfmt, seed, terms = eco)
-#' head(predict(lss_svd_eco, newdata = dfmt_grp))
-#'
-#' # sentiment on politics
-#' pol <- head(textstat_context(toks, 'politi*'), 500)
-#' lss_svd_pol <- textmodel_lss(dfmt, seed, terms = pol)
-#' head(predict(lss_svd_pol, newdata = dfmt_grp))
-#'
-#' # modify hyper-parameters of existing model
-#' lss_svd_pol2 <- as.textmodel_lss(lss_svd_pol, seed[c(1, 8)], terms = pol, slice = 200)
-#' head(predict(lss_svd_pol2, newdata = dfmt_grp))
-#'
-#' # GloVe
-#' fcmt <- fcm(dfmt, tri = FALSE)
-#' lss_glov <- textmodel_lss(fcmt, seed)
-#' head(predict(lss_glov, newdata = dfmt_grp))
-#' }
-#'
 #' @export
 textmodel_lss <- function(x, ...) {
     UseMethod("textmodel_lss")
@@ -114,9 +65,10 @@ textmodel_lss <- function(x, ...) {
 #' @param slice a number or indices of the components of word vectors used to
 #'   compute similarity; `slice < k` to further truncate word vectors; useful
 #'   for diagnosys and simulation.
-#' @param include_data if `TRUE`, fitted model include the dfm supplied as `x`.
+#' @param include_data if `TRUE`, fitted model includes the dfm supplied as `x`.
+#' @param group_data if `TRUE`, apply `dfm_group(x)` before saving the dfm.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta check_integer
+#' @importFrom quanteda featnames meta check_integer dfm_group
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
@@ -125,6 +77,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               engine = c("RSpectra", "irlba", "rsvd"),
                               auto_weight = FALSE,
                               include_data = FALSE,
+                              group_data = FALSE,
                               verbose = FALSE, ...) {
 
     args <- list(terms = terms, seeds = seeds, ...)
@@ -177,8 +130,16 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         concatenator = meta(x, field = "concatenator", type = "object"),
         call = match.call()
     )
-    if (include_data)
-        result$data <- x
+    if (include_data) {
+        if (group_data) {
+            result$data <- dfm_group(x)
+        } else {
+            result$data <- x
+        }
+    } else {
+        if (group_data)
+            warning("group_data is ignored when include_data = FALSE", call. = FALSE)
+    }
     class(result) <- "textmodel_lss"
     return(result)
 }

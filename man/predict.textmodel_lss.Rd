@@ -9,7 +9,8 @@
   newdata = NULL,
   se_fit = FALSE,
   density = FALSE,
-  rescaling = TRUE,
+  rescale = TRUE,
+  cut = NULL,
   min_n = 0L,
   ...
 )
@@ -23,7 +24,11 @@
 
 \item{density}{if \code{TRUE}, returns frequency of polarity words in documents.}
 
-\item{rescaling}{if \code{TRUE}, normalizes polarity scores using \code{scale()}.}
+\item{rescale}{if \code{TRUE}, normalizes polarity scores using \code{scale()}.}
+
+\item{cut}{a vector of one or two percentile values to dichotomized polarty
+scores of words. When two values are given, words between them receive zero
+polarity.}
 
 \item{min_n}{set the minimum number of polarity words in documents.}
 
@@ -36,12 +41,13 @@ Prediction method for textmodel_lss
 Polarity scores of documents are the means of polarity scores of
 words weighted by their frequency. When \code{se_fit = TRUE}, this function
 returns the weighted means, their standard errors, and the number of
-polarity words in the documents. When \code{rescaling = TRUE}, it converts the
-raw polarity scores to z sores for easier interpretation.
+polarity words in the documents. When \code{rescale = TRUE}, it converts the raw
+polarity scores to z sores for easier interpretation. When \code{rescale = FALSE} and \code{cut} is used, polarity scores of documents are bounded by
+[-1.0, 1.0].
 
 Documents tend to receive extreme polarity scores when they have only few
-polarity word. This is problematic when LSS is applied to short documents
-(e.g. social media posts) or individual sentences, but we can alleviate
+polarity words. This is problematic when LSS is applied to short documents
+(e.g. social media posts) or individual sentences, but users can alleviate
 this problem by adding zero polarity words to short documents using
 \code{min_n}. This setting does not affect empty documents.
 }

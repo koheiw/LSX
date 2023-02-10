@@ -62,7 +62,7 @@ cohesion <- function(x, bandwidth = 10) {
     return(result)
 }
 
-#' Convenient function to convert a list to seed words
+#' Convert a list or a dictionary to seed words
 #' @param x a list of characters vectors or a [dictionary][quanteda::dictionary] object.
 #' @param upper numeric index or key for seed words for higher scores.
 #' @param lower numeric index or key for seed words for lower scores.

@@ -1,3 +1,23 @@
+# Changes in v1.3.0
+
+* Move examples to the new package website: http://koheiw.github.io/LSX
+* Rename "rescaling" to "rescale" for simplicity and consistency.
+* Improve random sampling of words to highlight in `textplot_terms()` to avoid congestion.
+
+# Changes in v1.2.0
+
+* Add `group_data` to `textmodel_lss()` to simplify the workflow.
+* Add `max_highlighted` to `textplot_terms()` to automatically highlight polarity words.
+
+# Changes in v1.1.4
+
+* Update `as.textmodel_lss()` to avoid errors in `textplot_terms()` when `terms` is used.
+
+# Changes in v1.1.3
+
+* Restore examples for `textmodel_lss()`.
+* Defunct `char_keyness()` that has been deprecated for long.
+
 # Changes in v1.1.2
 
 * Update examples to pass CRAN tests.

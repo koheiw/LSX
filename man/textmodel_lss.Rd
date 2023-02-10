@@ -4,7 +4,7 @@
 \alias{textmodel_lss}
 \alias{textmodel_lss.dfm}
 \alias{textmodel_lss.fcm}
-\title{A word embeddings-based semisupervised model for document scaling}
+\title{Fit a Latent Semantic Scaling model}
 \usage{
 textmodel_lss(x, ...)
 
@@ -20,6 +20,7 @@ textmodel_lss(x, ...)
   engine = c("RSpectra", "irlba", "rsvd"),
   auto_weight = FALSE,
   include_data = FALSE,
+  group_data = FALSE,
   verbose = FALSE,
   ...
 )
@@ -78,7 +79,9 @@ from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irl
 \item{auto_weight}{automatically determine weights to approximate the
 polarity of terms to seed words. See details.}
 
-\item{include_data}{if \code{TRUE}, fitted model include the dfm supplied as \code{x}.}
+\item{include_data}{if \code{TRUE}, fitted model includes the dfm supplied as \code{x}.}
+
+\item{group_data}{if \code{TRUE}, apply \code{dfm_group(x)} before saving the dfm.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
@@ -89,7 +92,8 @@ counts are ceiled to this threshold. It should be changed according to the
 size of the corpus. Used only when \code{x} is a \code{fcm}.}
 }
 \description{
-A word embeddings-based semisupervised model for document scaling
+Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
+for document scaling.
 }
 \details{
 Latent Semantic Scaling (LSS) is a semisupervised document scaling
@@ -111,6 +115,8 @@ seed words. If \code{auto_weight = TRUE}, the original scores are weighted
 automatically using \code{\link[stats:optim]{stats::optim()}} to minimize the squared difference
 between seed words' computed and original scores. Weighted scores are saved
 in \code{seed_weighted} in the object.
+
+Please visit the \href{https://koheiw.github.io/LSX/}{package website} for examples.
 }
 \references{
 Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised

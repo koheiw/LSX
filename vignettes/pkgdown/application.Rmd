@@ -1,0 +1,138 @@
+---
+title: "Application in research"
+subtitle: "Russian state media's coverage of egnergy issues in the US and the EU"
+output: 
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", 
+                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 760)
+```
+
+In this example, we will analyze how much the proposition of [the European Gas Demand Reduction Plan](https://ec.europa.eu/commission/presscorner/detail/en/ip_22_4608) on 20 July affected Sputnik's coverage of energy issues in the United States and the European Union.
+
+```{r setup}
+library(LSX)
+library(quanteda)
+library(ggplot2)
+```
+
+### Preperation
+
+We will analyze the same [corpus](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) as the [introduction](./introduction.html), so too the pre-processing.
+
+```{r include=FALSE}
+if (!file.exists("data_corpus_sputnik2022.rds")) {
+    download.file("https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1",
+                  "data_corpus_sputnik2022.rds", mode = "wb")
+}
+```
+
+```{r}
+corp <- readRDS("data_corpus_sputnik2022.rds") |>
+    corpus_reshape()
+toks <- tokens(corp, remove_punct = TRUE, remove_symbols = TRUE, 
+               remove_numbers = TRUE, remove_url = TRUE)
+dfmt <- dfm(toks) |> 
+    dfm_remove(stopwords("en"))
+```
+
+We will use a [dictionary](https://github.com/koheiw/LSX/tree/master/vignettes) of keywords in this example. 
+
+```{r}
+dict <- dictionary(file = "dictionary.yml")
+print(dict[c("country", "energy")])
+```
+
+### Estimate the polarity of words
+
+To measure the sentiment specifically about energy issues, we collect words that occur frequently around keywords such as "oil", "gas", "energy" and passing them to `terms`. These keywords are called target words.
+
+```{r message=FALSE}
+seed <- as.seedwords(data_dictionary_sentiment)
+term <- char_context(toks, pattern = dict$energy, p = 0.01)
+lss <- textmodel_lss(dfmt, seeds = seed, terms = term, cache = TRUE, 
+                     include_data = TRUE, group_data = TRUE)
+```
+
+```{r plot-term, warning=FALSE}
+textplot_terms(lss)
+```
+
+### Predict the polarity of documents
+
+We can extract the document variables from the DFM in the LSS model and save the predicted polarity scores as a new variable.
+
+```{r}
+dat <- docvars(lss$data)
+dat$lss <- predict(lss)
+print(nrow(dat))
+```
+
+### Detect the mentions of country/region 
+
+We can detect the mentions of countries using the dictionary. If you want to classify texts by country more accurately, you should use the [newsmap package](https://cran.r-project.org/package=newsmap).
+
+```{r}
+dfmt_dict <- dfm(tokens_lookup(toks, dict$country[c("us", "eu")]))
+print(head(dfmt_dict))
+```
+
+We can create dummy variables for mentions of country/region by `dfm_group(dfmt_dict) > 0`. We must group documents because the unit of analysis is the articles in this example (recall `textmodel_lss(group_data = TRUE)` above).
+
+```{r}
+mat <- as.matrix(dfm_group(dfmt_dict) > 0)
+print(head(mat))
+dat <- cbind(dat, mat)
+```
+
+### Results
+
+We must smooth the polarity scores of documents separately for the country/region using `smooth_lss()`. After smoothing, we can see that the difference between the US and EU has expanded soon after the proposition of the European Gas Demand Reduction Plan.
+
+```{r}
+smo_us <- smooth_lss(subset(dat, us), lss_var = "lss", date_var = "date")
+smo_us$country <- "us"
+smo_eu <- smooth_lss(subset(dat, eu), lss_var = "lss", date_var = "date")
+smo_eu$country <- "eu"
+smo <- rbind(smo_us, smo_eu)
+```
+
+```{r plot-trend}
+ggplot(smo, aes(x = date, y = fit, color = country)) + 
+    geom_line() +
+    geom_ribbon(aes(ymin = fit - se.fit * 1.96, ymax = fit + se.fit * 1.96, fill = country), 
+                alpha = 0.1, colour = NA) +
+    geom_vline(xintercept = as.Date("2022-06-26"), linetype = "dotted") +
+    scale_x_date(date_breaks = "months", date_labels = "%b") +
+    labs(title = "Sentiment on energy", x = "Date", y = "Sentiment", 
+         fill = "Country", color = "Country")
+```
+
+To test if the changes after the proposition is statistically significant, we should create a dummy variable `after` for the period after the proposition and perform regression analysis with its interactions with the country/region dummies. This is akin to [the difference-in-differences design](https://en.wikipedia.org/wiki/Difference_in_differences) that I often employ in analysis of news (Watanabe 2017; Watanabe et al. 2022).
+
+```{r}
+dat_war <- subset(dat, date >= as.Date("2022-02-24"))
+dat_war$after <- dat_war$date >= as.Date("2022-06-20")
+summary(dat_war[c("lss", "us", "eu", "after")])
+```
+
+`dat_war` contains only the scores since the beginning of the war, so the `intercept` is the average sentiment of the articles without the mentions of the US or the EU before the proposition during the war; `usTRUE` and `euTRUE` are the average sentiment for the articles with the mentions of the US and the EU in the period, respectively.
+
+The coefficient of `afterTRUE` indicates that the overall sentiment became more negative after the proposition (*β* = -0.11; *p* < 0.01). The insignificant coefficient of `euTRUE:afterTRUE` shows that the sentiment for the EU also decreased, but the large positive coefficient of `usTRUE:afterTRUE` suggests that the sentiment for the US increased (*β* = 0.22; *p* < 0.001) and became more positive than before the proposition.
+
+```{r}
+reg <- lm(lss ~ us + eu + after + us * after + eu * after, dat_war)
+summary(reg) 
+```
+
+### Conclusions
+
+Our analysis shows that the Sputnik covered the energy issues in the US more positively while those in the EU more negatively after the proposition the European Gas Demand Reduction Plan. Our findings are preliminary, but we can give them a tentative interpretation: the Russian government attempted to create divisions between the US and the EU by emphasizing the different impact of the Ukraine war and the sanctions against Russia on American and European lives.
+
+### References
+
+- Watanabe, K. (2017). Measuring news bias: Russia’s official news agency ITAR-TASS’ coverage of the Ukraine crisis. *European Journal of Communication*. https://doi.org/10.1177/0267323117695735.
+- Watanabe, K., Segev, E., & Tago, A. (2022). Discursive diversion: Manipulation of nuclear threats by the conservative leaders in Japan and Israel, *International Communication Gazette*. https://doi.org/10.1177/17480485221097967.

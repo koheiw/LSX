@@ -70,7 +70,13 @@ test_that("as.textmodel_lss errors with invalid columns", {
 
 test_that("as.textmodel_lss works with textmodel_lss", {
 
-    lss <- as.textmodel_lss(lss_test, seed, slice = 10)
+    # with fitted model
+    lss <- as.textmodel_lss(lss_test, seed, terms = feat_test, slice = 10)
+    expect_equal(lss$embedding, lss_test$embedding)
+    expect_identical(lss$data, lss_test$data)
+    expect_identical(lss$frequency, lss_test$frequency)
+    expect_identical(names(lss$frequency), names(lss$frequency))
+
     expect_error(
         as.textmodel_lss(lss_test, seed, slice = 100),
         "The value of slice must be between 1 and 50"
@@ -79,11 +85,6 @@ test_that("as.textmodel_lss works with textmodel_lss", {
         as.textmodel_lss(lss_test, seed, slice = 1:100),
         "The length of slice must be between 1 and 50"
     )
-    expect_identical(coef(lss),
-                     coef(as.textmodel_lss(lss_test, seed, slice = 1:10)))
-    expect_equal(lss$embedding, lss_test$embedding)
-    expect_identical(lss_test$data, lss$data)
-    expect_identical(lss_test$frequency, lss$frequency)
 
     # with dummy LSS
     weight <- c("decision" = 0.1, "instance" = -0.1,
@@ -149,6 +150,7 @@ test_that("terms is working", {
     # glob pattern
     lss1 <- as.textmodel_lss(lss, seed, terms = "poli*")
     expect_equal(sum(stringi::stri_startswith_fixed(names(lss1$beta), "poli")), 11)
+    expect_identical(names(lss1$beta), names(lss1$frequency))
 
     # numeric vector
     weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10

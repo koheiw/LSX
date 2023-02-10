@@ -1,0 +1,14 @@
+hostility:
+    hostile: ["adversary", "adversaries", "enemy", "enemies", "foe", "foes", "hostile"]
+    friendly: ["aid", "aids", "friends", "friend", "ally", "allies", "peaceful"]
+
+country:
+    us: ["United States", "US", "American*", "Washington"]
+    uk: ["United Kingdom", "UK", "British", "London"]
+    eu: ["European Union", "EU", "European*", "Brussels"]
+    se: ["Sweden", "Swedish", "Stockholm"]
+    fi: ["Finland", "Finnish", "Helsinki"]
+    ua: ["Ukraine", "Ukrainian*", "Kiev", "Kyiv"]
+    ru: ["Russia", "Russian*", "Moscow"]
+
+energy: ["gas", "oil", "engery"]
