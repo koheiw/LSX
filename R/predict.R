@@ -105,8 +105,8 @@ cut_beta <- function(x, p = 0.5) {
     q <- c(-Inf, quantile(x, p, na.rm = TRUE), Inf)
     v <- as.integer(cut(x, q))
     beta <- double(length(x))
-    beta[v == min(v)] <- -0.5
-    beta[v == max(v)] <- 0.5
+    beta[v == min(v)] <- -1.0
+    beta[v == max(v)] <- 1.0
     names(beta) <- names(x)
     return(beta)
 }
