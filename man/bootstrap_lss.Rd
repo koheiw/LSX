@@ -2,16 +2,16 @@
 % Please edit documentation in R/bootstrap.R
 \name{bootstrap_lss}
 \alias{bootstrap_lss}
-\title{[experimental] Compute polarity scores of words with different
-hyper-parameters
-A function to compute polarity scores of words by resampling
-hyper-parameters from a fitted LSS model.}
+\title{[experimental] Compute polarity scores different hyper-parameters}
 \usage{
 bootstrap_lss(
   x,
   what = c("seeds", "k"),
-  output = c("terms", "coef"),
+  mode = c("terms", "coef"),
+  from = 50,
+  to = NULL,
   by = 50,
+  verbose = FALSE,
   ...
 )
 }
@@ -20,17 +20,18 @@ bootstrap_lss(
 
 \item{what}{choose the parameter to resample in bootstrapping.}
 
-\item{output}{choose the types of the output object. If \code{terms}, words are
-sorted in descending order.}
+\item{mode}{choose the types of the output object. If \code{coef}, returns the
+polarity scores of words; if \code{terms}, returns words sorted by the polarity
+scores in descending order.}
 
-\item{by}{passed to \code{seq()} to generate values for \code{k}; only used for when
+\item{from, to, by}{passed to \code{seq()} to generate values for \code{k}; only used for when
 \code{what = "k"}.}
+
+\item{verbose}{show messages if \code{TRUE}.}
 
 \item{...}{additional arguments passed to \code{as.textmodel_lss()}.}
 }
 \description{
-[experimental] Compute polarity scores of words with different
-hyper-parameters
-A function to compute polarity scores of words by resampling
-hyper-parameters from a fitted LSS model.
+A function to compute polarity scores of words by resampling hyper-parameters
+from a fitted LSS model.
 }
