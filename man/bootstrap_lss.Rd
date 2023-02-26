@@ -18,7 +18,7 @@ bootstrap_lss(
 \arguments{
 \item{x}{a fitted textmodel_lss object.}
 
-\item{what}{choose the parameter to resample in bootstrapping.}
+\item{what}{choose the hyper-parameter to resample in bootstrapping.}
 
 \item{mode}{choose the type of the result of bootstrapping. If \code{coef},
 returns polarity scores; if \code{terms}, returns words sorted by

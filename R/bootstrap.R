@@ -3,7 +3,7 @@
 #' A function to compute polarity scores of words by resampling hyper-parameters
 #' from a fitted LSS model.
 #' @param x a fitted textmodel_lss object.
-#' @param what choose the parameter to resample in bootstrapping.
+#' @param what choose the hyper-parameter to resample in bootstrapping.
 #' @param mode choose the type of the result of bootstrapping. If `coef`,
 #'   returns polarity scores; if `terms`, returns words sorted by
 #'   the polarity scores in descending order.
