@@ -26,6 +26,10 @@ test_that("bootstrap_lss works", {
     expect_equal(ncol(bs4), 26)
     expect_equal(attr(bs4, "values"), seq(50, 300, 10))
 
+    bs5 <- bootstrap_lss(lss_test, what = "k", from = 100, to = 200, by = 10)
+    expect_equal(ncol(bs5), 11)
+    expect_equal(attr(bs5, "values"), seq(100, 200, 10))
+
     expect_error(bootstrap_lss(lss_test, what = "k", from = 0),
                  "The value of from must be between 1 and 300")
     expect_error(bootstrap_lss(lss_test, what = "k", to = 0),
