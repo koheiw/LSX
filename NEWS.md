@@ -1,6 +1,7 @@
 # Changes in v1.3.1
 
 * Fix the range of scores when `cut` is used.
+* Add `bootstrap_lss()` as an experimental function.
 
 # Changes in v1.3.0
 
