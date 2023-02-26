@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{bootstrap_lss}
 \alias{bootstrap_lss}
-\title{[experimental] Compute polarity scores different hyper-parameters}
+\title{[experimental] Compute polarity scores with different hyper-parameters}
 \usage{
 bootstrap_lss(
   x,
@@ -20,12 +20,12 @@ bootstrap_lss(
 
 \item{what}{choose the parameter to resample in bootstrapping.}
 
-\item{mode}{choose the types of the output object. If \code{coef}, returns the
-polarity scores of words; if \code{terms}, returns words sorted by the polarity
-scores in descending order.}
+\item{mode}{choose the type of the result of bootstrapping. If \code{coef},
+returns polarity scores; if \code{terms}, returns words sorted by
+the polarity scores in descending order.}
 
-\item{from, to, by}{passed to \code{seq()} to generate values for \code{k}; only used for when
-\code{what = "k"}.}
+\item{from, to, by}{passed to \code{seq()} to generate values for \code{k}; only used
+when \code{what = "k"}.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
