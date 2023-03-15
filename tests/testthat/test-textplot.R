@@ -86,3 +86,15 @@ test_that("textplot_* raise error when attributes are missing", {
     expect_error(textplot_simil(lss),
                  "textplot_simil() does not work with dummy models", fixed = TRUE)
 })
+
+test_that("textplot_terms works even when frequency has zeros (#85)", {
+    dfmt <- dfm(toks_test) %>%
+        dfm_subset(Year > 2000)
+    seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
+    suppressWarnings(
+        lss <- textmodel_lss(dfmt, seed, k = 10)
+    )
+    expect_true(any(lss$frequency == 0))
+    expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
+})
+

@@ -55,10 +55,12 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     max_highlighted <- check_integer(max_highlighted, min = 0)
 
     x$frequency <- x$frequency[names(x$beta)] # fix for < v1.1.4
-    beta <- frequency <- word <- NULL
+    beta <- freq <- word <- NULL
     temp <- data.frame(word = names(x$beta), beta = x$beta,
-                       frequency = log(x$frequency),
+                       freq = x$frequency,
                        stringsAsFactors = FALSE)
+    temp <- subset(temp, freq > 0)
+    temp$freq <- log(temp$freq)
 
     if (is.null(highlighted)) {
         id <- seq_len(nrow(temp))
@@ -83,7 +85,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
         ), use.names = FALSE)
     }
     i <- seq_len(nrow(temp))
-    p <- as.numeric(i %in% id) * temp$beta ^ 2 * temp$frequency
+    p <- as.numeric(i %in% id) * temp$beta ^ 2 * temp$freq
     if (all(p == 0)) {
         l <- rep(FALSE, length(i))
     } else {
@@ -93,16 +95,16 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     temp_lo <- temp[!l,]
 
     temp_lo <- head(temp_lo[sample(seq_len(nrow(temp_lo))),], max_words)
-    ggplot(data = temp_lo, aes(x = beta, y = frequency, label = word)) +
+    ggplot(data = temp_lo, aes(x = beta, y = freq, label = word)) +
            geom_text(colour = "grey70", alpha = 0.7) +
            labs(x = "Polarity", y = "Frequency (log)") +
            theme_bw() +
            theme(panel.grid= element_blank(),
                  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-           geom_text_repel(data = temp_hi, aes(x = beta, y = frequency, label = word),
+           geom_text_repel(data = temp_hi, aes(x = beta, y = freq, label = word),
                            segment.size = 0.25, colour = "black") +
-           geom_point(data = temp_hi, aes(x = beta, y = frequency), cex = 0.7, colour = "black")
+           geom_point(data = temp_hi, aes(x = beta, y = freq), cex = 0.7, colour = "black")
 }
 
 #' \[experimental\] Plot clusters of word vectors
