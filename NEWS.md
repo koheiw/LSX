@@ -1,3 +1,7 @@
+# Changes in v1.3.2
+
+* Fix the error in `textplot_terms()` when the frequency of terms are zero (#85).
+
 # Changes in v1.3.1
 
 * Fix the range of scores when `cut` is used.
