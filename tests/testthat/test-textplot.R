@@ -36,6 +36,7 @@ test_that("textplot_* works even when frequency and beta do not match (#71)", {
     lss <- textmodel_lss(dfmt, seed, k = 10)
     lss$frequency <- c(lss$frequency, "xxx" = 1, "yyy" = 1) # replicate #71
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
+    expect_silent(print(textplot_terms(lss)))
 })
 
 test_that("textplot_* works with Glove", {
@@ -96,6 +97,6 @@ test_that("textplot_terms works even when frequency has zeros (#85)", {
     )
     expect_true(any(lss$frequency == 0))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
-    expect_silent(suppressWarnings(print(textplot_terms(lss))))
+    expect_silent(print(textplot_terms(lss, max_highlighted = 10)))
 })
 
