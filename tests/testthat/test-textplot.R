@@ -96,5 +96,6 @@ test_that("textplot_terms works even when frequency has zeros (#85)", {
     )
     expect_true(any(lss$frequency == 0))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
+    expect_silent(suppressWarnings(print(textplot_terms(lss))))
 })
 
