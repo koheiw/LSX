@@ -27,12 +27,12 @@ library(ggplot2)
 
 ```{r include=FALSE}
 if (!file.exists("data_corpus_sputnik2022.rds")) {
-    download.file("https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1",
+    download.file("https://www.dropbox.com/s/abme18nlrwxgmz8/data_corpus_sputnik2022.rds?dl=1",
                   "data_corpus_sputnik2022.rds", mode = "wb")
 }
 ```
 
-You can [download](https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1) the corpus of Sputnik articles about Ukraine. You must segment the documents into sentences using `corpus_reshape()` to perform LSS. This reshaping of the corpus allows LSS to accurately estimate semantic similarity between words. Otherwise, you can follow the standard procedure in pre-processing such as removing punctuation marks and grammatical words ("stop words").
+You can [download](https://www.dropbox.com/s/abme18nlrwxgmz8/data_corpus_sputnik2022.rds?dl=1) the corpus of Sputnik articles about Ukraine. You must segment the documents into sentences using `corpus_reshape()` to perform LSS. This reshaping of the corpus allows LSS to accurately estimate semantic similarity between words. Otherwise, you can follow the standard procedure in pre-processing such as removing punctuation marks and grammatical words ("stop words").
 
 ```{r}
 corp <- readRDS("data_corpus_sputnik2022.rds") |>

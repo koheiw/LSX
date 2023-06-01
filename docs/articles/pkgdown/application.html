@@ -22,11 +22,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
     
     <a class="navbar-brand me-2" href="../../index.html">LSX</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,16 +90,16 @@ Union.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">LSX</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://quanteda.io" class="external-link">quanteda</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Package version: 3.2.5</span></span>
-<span><span class="co">#&gt; Unicode version: 14.0</span></span>
-<span><span class="co">#&gt; ICU version: 70.1</span></span>
-<span><span class="co">#&gt; Parallel computing: 4 of 4 threads used.</span></span>
+<span><span class="co">#&gt; Package version: 4.0.0</span></span>
+<span><span class="co">#&gt; Unicode version: 13.0</span></span>
+<span><span class="co">#&gt; ICU version: 69.1</span></span>
+<span><span class="co">#&gt; Parallel computing: 16 of 16 threads used.</span></span>
 <span><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="preperation">Preperation<a class="anchor" aria-label="anchor" href="#preperation"></a>
 </h3>
-<p>We will analyze the same <a href="https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1" class="external-link">corpus</a>
+<p>We will analyze the same <a href="https://www.dropbox.com/s/abme18nlrwxgmz8/data_corpus_sputnik2022.rds?dl=1" class="external-link">corpus</a>
 as the <a href="./introduction.html">introduction</a>, so too the
 pre-processing.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -228,13 +228,13 @@ news (Watanabe 2017; Watanabe et al. 2022).</p>
 <span><span class="va">dat_war</span><span class="op">$</span><span class="va">after</span> <span class="op">&lt;-</span> <span class="va">dat_war</span><span class="op">$</span><span class="va">date</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2022-06-20"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dat_war</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lss"</span>, <span class="st">"us"</span>, <span class="st">"eu"</span>, <span class="st">"after"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       lss               us              eu            after        </span></span>
-<span><span class="co">#&gt;  Min.   :-5.76915   Mode :logical   Mode :logical   Mode :logical  </span></span>
-<span><span class="co">#&gt;  1st Qu.:-0.67069   FALSE:2448      FALSE:4544      FALSE:3394     </span></span>
-<span><span class="co">#&gt;  Median :-0.02243   TRUE :4698      TRUE :2602      TRUE :3752     </span></span>
-<span><span class="co">#&gt;  Mean   :-0.03344                                                  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 0.56654                                                  </span></span>
-<span><span class="co">#&gt;  Max.   : 7.39866                                                  </span></span>
-<span><span class="co">#&gt;  NA's   :3</span></span></code></pre></div>
+<span><span class="co">#&gt;  Min.   :-9.67278   Mode :logical   Mode :logical   Mode :logical  </span></span>
+<span><span class="co">#&gt;  1st Qu.:-0.64796   FALSE:2451      FALSE:4547      FALSE:3394     </span></span>
+<span><span class="co">#&gt;  Median :-0.03382   TRUE :4695      TRUE :2599      TRUE :3752     </span></span>
+<span><span class="co">#&gt;  Mean   :-0.03512                                                  </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 0.54054                                                  </span></span>
+<span><span class="co">#&gt;  Max.   : 7.54702                                                  </span></span>
+<span><span class="co">#&gt;  NA's   :4</span></span></code></pre></div>
 <p><code>dat_war</code> contains only the scores since the beginning of
 the war, so the <code>intercept</code> is the average sentiment of the
 articles without the mentions of the US or the EU before the proposition
@@ -259,23 +259,23 @@ positive than before the proposition.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
 <span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">#&gt; -5.8331 -0.6280  0.0082  0.5974  7.3347 </span></span>
+<span><span class="co">#&gt; -9.6327 -0.6074  0.0026  0.5800  7.5016 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;                  Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)       0.06392    0.03234   1.976  0.04816 *  </span></span>
-<span><span class="co">#&gt; usTRUE           -0.11098    0.03740  -2.968  0.00301 ** </span></span>
-<span><span class="co">#&gt; euTRUE           -0.09021    0.03659  -2.465  0.01371 *  </span></span>
-<span><span class="co">#&gt; afterTRUE        -0.11935    0.04385  -2.722  0.00651 ** </span></span>
-<span><span class="co">#&gt; usTRUE:afterTRUE  0.22883    0.05062   4.521 6.27e-06 ***</span></span>
-<span><span class="co">#&gt; euTRUE:afterTRUE -0.02401    0.04983  -0.482  0.62991    </span></span>
+<span><span class="co">#&gt; (Intercept)       0.03187    0.03224   0.989  0.32287    </span></span>
+<span><span class="co">#&gt; usTRUE           -0.07198    0.03729  -1.930  0.05360 .  </span></span>
+<span><span class="co">#&gt; euTRUE           -0.04903    0.03653  -1.342  0.17953    </span></span>
+<span><span class="co">#&gt; afterTRUE        -0.13554    0.04373  -3.100  0.00195 ** </span></span>
+<span><span class="co">#&gt; usTRUE:afterTRUE  0.22106    0.05049   4.378 1.21e-05 ***</span></span>
+<span><span class="co">#&gt; euTRUE:afterTRUE -0.02012    0.04974  -0.404  0.68590    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Residual standard error: 1.006 on 7137 degrees of freedom</span></span>
-<span><span class="co">#&gt;   (3 observations deleted due to missingness)</span></span>
-<span><span class="co">#&gt; Multiple R-squared:  0.005494,   Adjusted R-squared:  0.004797 </span></span>
-<span><span class="co">#&gt; F-statistic: 7.885 on 5 and 7137 DF,  p-value: 2.043e-07</span></span></code></pre></div>
+<span><span class="co">#&gt; Residual standard error: 1.004 on 7136 degrees of freedom</span></span>
+<span><span class="co">#&gt;   (4 observations deleted due to missingness)</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.004005,   Adjusted R-squared:  0.003307 </span></span>
+<span><span class="co">#&gt; F-statistic: 5.739 on 5 and 7136 DF,  p-value: 2.725e-05</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="conclusions">Conclusions<a class="anchor" aria-label="anchor" href="#conclusions"></a>
