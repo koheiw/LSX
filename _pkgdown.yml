@@ -2,5 +2,14 @@ url: ~
 template:
   bootstrap: 5
   bootswatch: litera
-  ganalytics: G-1XCC75Y7Z3
+  includes:
+    in_header: |
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-1FY97WQT4K"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
+        gtag('config', 'G-1FY97WQT4K');
+      </script>
