@@ -16,17 +16,23 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-TEHFMPSR39"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TEHFMPSR39');
+</script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
     
     <a class="navbar-brand me-2" href="../../index.html">LSX</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,13 +113,13 @@ by the Russian government.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">LSX</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://quanteda.io" class="external-link">quanteda</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Package version: 3.2.5</span></span>
-<span><span class="co">#&gt; Unicode version: 14.0</span></span>
-<span><span class="co">#&gt; ICU version: 70.1</span></span>
-<span><span class="co">#&gt; Parallel computing: 4 of 4 threads used.</span></span>
+<span><span class="co">#&gt; Package version: 4.0.0</span></span>
+<span><span class="co">#&gt; Unicode version: 13.0</span></span>
+<span><span class="co">#&gt; ICU version: 69.1</span></span>
+<span><span class="co">#&gt; Parallel computing: 16 of 16 threads used.</span></span>
 <span><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<p>You can <a href="https://www.dropbox.com/s/5tlux53aukf3uqs/data_corpus_sputnik2022.rds?dl=1" class="external-link">download</a>
+<p>You can <a href="https://www.dropbox.com/s/abme18nlrwxgmz8/data_corpus_sputnik2022.rds?dl=1" class="external-link">download</a>
 the corpus of Sputnik articles about Ukraine. You must segment the
 documents into sentences using <code><a href="https://quanteda.io/reference/corpus_reshape.html" class="external-link">corpus_reshape()</a></code> to perform
 LSS. This reshaping of the corpus allows LSS to accurately estimate
@@ -267,10 +273,10 @@ sentence lengths.</p>
 <code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://quanteda.io/reference/docvars.html" class="external-link">docvars</a></span><span class="op">(</span><span class="va">lss2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu"><a href="https://quanteda.io/reference/ntoken.html" class="external-link">ntoken</a></span><span class="op">(</span><span class="va">lss2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   0%  25%  50%  75% 100% </span></span>
-<span><span class="co">#&gt;    0    9   14   20  261</span></span>
+<span><span class="co">#&gt;    0    9   14   19  175</span></span>
 <span><span class="va">dat2</span><span class="op">$</span><span class="va">lss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lss2</span>, min_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 150459</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 150925</span></span></code></pre></div>
 <p>You can use <code><a href="../../reference/smooth_lss.html">smooth_lss()</a></code> to visualize the scores, but
 <code>engine</code> should be “<a href="https://cran.r-project.org/package=locfit" class="external-link">locfit</a>” when the
 data frame has more than 10 thousands scores.</p>
