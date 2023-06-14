@@ -45,10 +45,11 @@ devtools::install_github("koheiw/LSX")
 
 ## Examples
 
-Please visit the package website for examples:
+Please visit the package website to understand the usage of the functions:
 
-- [Introduction to LSX](https://koheiw.github.io/LSX/articles/pkgdown/introduction.html)
-- [Application in research](https://koheiw.github.io/LSX/articles/pkgdown/application.html)
+- [Introduction to LSX](https://koheiw.github.io/LSX/articles/pkgdown/basic.html)
+- [Application in research](https://koheiw.github.io/LSX/articles/pkgdown/research.html)
+- [Selection of seed words](https://koheiw.github.io/LSX/articles/pkgdown/seedwords.html)
 
 Please read the following papers for the algorithm and methodology, and its application to non-English texts (Japanese and Hebrew): 
 

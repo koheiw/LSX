@@ -65,6 +65,10 @@ lss <- textmodel_lss(dfmt, seeds = seed, k = 300, cache = TRUE,
                      include_data = TRUE, group_data = TRUE)
 ```
 
+```{r, include=FALSE}
+saveRDS(lss, "lss.rds")
+```
+
 You can visualize the polarity of words using `textplot_terms()`. When `highlighted = NULL`, it randomly samples 50 words and highlights them.
 
 ```{r plot-sentiment-term, warning=FALSE}

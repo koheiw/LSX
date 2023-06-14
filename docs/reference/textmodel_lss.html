@@ -32,8 +32,9 @@ for document scaling."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/pkgdown/application.html">Application in research</a>
-    <a class="dropdown-item" href="../articles/pkgdown/introduction.html">Introduction to LSX</a>
+    <a class="dropdown-item" href="../articles/pkgdown/basic.html">Introduction to LSX</a>
+    <a class="dropdown-item" href="../articles/pkgdown/research.html">Application in research</a>
+    <a class="dropdown-item" href="../articles/pkgdown/seedwords.html">Selection of seed words</a>
   </div>
 </li>
 <li class="nav-item">
@@ -107,7 +108,7 @@ for document scaling.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>a dfm or fcm created by <code><a href="https://quanteda.io/reference/dfm.html" class="external-link">quanteda::dfm()</a></code> or <code><a href="https://quanteda.io/reference/fcm.html" class="external-link">quanteda::fcm()</a></code></p></dd>
+<dd><p>a dfm or fcm created by <code><a href="https://rdrr.io/pkg/quanteda/man/dfm.html" class="external-link">quanteda::dfm()</a></code> or <code><a href="https://rdrr.io/pkg/quanteda/man/fcm.html" class="external-link">quanteda::fcm()</a></code></p></dd>
 
 
 <dt>...</dt>
@@ -117,14 +118,14 @@ for document scaling.</p>
 <dt>seeds</dt>
 <dd><p>a character vector or named numeric vector that contains seed
 words. If seed words contain "*", they are interpreted as glob patterns.
-See <a href="https://quanteda.io/reference/valuetype.html" class="external-link">quanteda::valuetype</a>.</p></dd>
+See <a href="https://rdrr.io/pkg/quanteda/man/valuetype.html" class="external-link">quanteda::valuetype</a>.</p></dd>
 
 
 <dt>terms</dt>
 <dd><p>a character vector or named numeric vector that specify words
 for which polarity scores will be computed; if a numeric vector, words' polarity
 scores will be weighted accordingly; if <code>NULL</code>, all the features of
-<code><a href="https://quanteda.io/reference/dfm.html" class="external-link">quanteda::dfm()</a></code> or <code><a href="https://quanteda.io/reference/fcm.html" class="external-link">quanteda::fcm()</a></code> will be used.</p></dd>
+<code><a href="https://rdrr.io/pkg/quanteda/man/dfm.html" class="external-link">quanteda::dfm()</a></code> or <code><a href="https://rdrr.io/pkg/quanteda/man/fcm.html" class="external-link">quanteda::fcm()</a></code> will be used.</p></dd>
 
 
 <dt>k</dt>
@@ -139,7 +140,7 @@ for diagnosys and simulation.</p></dd>
 
 
 <dt>weight</dt>
-<dd><p>weighting scheme passed to <code><a href="https://quanteda.io/reference/dfm_weight.html" class="external-link">quanteda::dfm_weight()</a></code>. Ignored
+<dd><p>weighting scheme passed to <code><a href="https://rdrr.io/pkg/quanteda/man/dfm_weight.html" class="external-link">quanteda::dfm_weight()</a></code>. Ignored
 when <code>engine</code> is "rsparse".</p></dd>
 
 
@@ -213,11 +214,11 @@ in <code>seed_weighted</code> in the object.</p>
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
 Text Analysis Technique for New Domains and Languages", Communication
-Methods and Measures. <a href="https://doi.org/10.1080/19312458.2020.1832976" class="external-link">doi:10.1080/19312458.2020.1832976</a>
+Methods and Measures. doi: <a href="https://doi.org/10.1080/19312458.2020.1832976" class="external-link">10.1080/19312458.2020.1832976</a>
 .</p>
 <p>Watanabe, Kohei. 2017. "Measuring News Bias: Russia's Official News Agency
 ITAR-TASS' Coverage of the Ukraine Crisis" European Journal of
-Communication. <a href="https://doi.org/10.1177/0267323117695735" class="external-link">doi:10.1177/0267323117695735</a>
+Communication. doi: <a href="https://doi.org/10.1177/0267323117695735" class="external-link">10.1177/0267323117695735</a>
 .</p>
     </div>
 
