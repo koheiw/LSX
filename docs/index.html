@@ -30,7 +30,7 @@
     
     <a class="navbar-brand me-2" href="index.html">LSX</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,8 +45,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/pkgdown/application.html">Application in research</a>
-    <a class="dropdown-item" href="articles/pkgdown/introduction.html">Introduction to LSX</a>
+    <a class="dropdown-item" href="articles/pkgdown/basic.html">Introduction to LSX</a>
+    <a class="dropdown-item" href="articles/pkgdown/research.html">Application in research</a>
+    <a class="dropdown-item" href="articles/pkgdown/seedwords.html">Selection of seed words</a>
   </div>
 </li>
 <li class="nav-item">
@@ -78,22 +79,23 @@
 
 <p>In quantitative text analysis, the cost of training supervised machine learning models tend to be very high when the corpus is large. Latent Semantic Scaling (LSS) is a semi-supervised document scaling technique that I developed to perform large scale analysis at low cost. Taking user-provided <em>seed words</em> as weak supervision, it estimates polarity of words in the corpus by latent semantic analysis and locates documents on a unidimensional scale (e.g. sentiment).</p>
 <div class="section level2">
-<h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>From CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"LSX"</span><span class="op">)</span></span></code></pre></div>
 <p>From Github:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"koheiw/LSX"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"koheiw/LSX"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
-<p>Please visit the package website for examples:</p>
+<p>Please visit the package website to understand the usage of the functions:</p>
 <ul>
-<li><a href="http://koheiw.github.io/LSX/articles/pkgdown/introduction.html" class="external-link">Introduction to LSX</a></li>
-<li><a href="http://koheiw.github.io/LSX/articles/pkgdown/application.html" class="external-link">Application in research</a></li>
+<li><a href="https://koheiw.github.io/LSX/articles/pkgdown/basic.html" class="external-link">Introduction to LSX</a></li>
+<li><a href="https://koheiw.github.io/LSX/articles/pkgdown/research.html" class="external-link">Application in research</a></li>
+<li><a href="https://koheiw.github.io/LSX/articles/pkgdown/seedwords.html" class="external-link">Selection of seed words</a></li>
 </ul>
 <p>Please read the following papers for the algorithm and methodology, and its application to non-English texts (Japanese and Hebrew):</p>
 <ul>

@@ -13,24 +13,24 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
 
 We must define the measurement with seed words to apply LSS. If seed words are not available, we must create a list of seed words using thesaurus and glossaries, but some of the words might be used in many different contexts, making them unsuitable as seed words. Good seed words are words that appear only in the contexts of the target concepts.
 
-We can evaluate the suitability of seed words by checking their synonyms identified in the corpus: fitting a LSS model with one seed word at a time and checking words with highest polarity scores. This repetitive process can be automated using `bootstrap_lss()`. This function extracts seed words from a fitted LSS model, fits a LSS model with each seed words internally and returns their synonyms or similarity scores. We use the LSS model fitted in [Introduction](basic.html) in the examples.
+We can evaluate the suitability of seed words by checking their synonyms identified in the corpus: fitting a LSS model with one seed word at a time and checking words with highest polarity scores. This repetitive process can be automated using `bootstrap_lss()`. This function extracts seed words from a fitted LSS model, fits a LSS model with each seed words internally and returns their synonyms or similarity scores. We use the LSS model fitted in the [introduction](basic.html) in this example.
 
 ```{r setup}
 library(LSX)
-```
-
-The model is fitted with the generic sentiment seed words. Their original polarity scores are weighted by the inverse of the number (1/7) to allow imbalanced seed words (i.e. different number of seed words for opposing polarities).
-
-```{r message=FALSE}
 lss <- readRDS("lss.rds")
 print(lss)
+```
+
+The model is fitted with the generic sentiment seed words. Their original polarity scores are weighted by the inverse of the number of seed words (`1/7 = 0.142`) to allow unequal numbers for opposing ends.
+
+```{r message=FALSE}
 print(lss$seeds)
 print(lss$seeds_weighted)
 ```
 
 ## Evaluation with synomums
 
-By default, `bootstrap_lss()` returns a sorted list of synonyms for each seed word. In each list, there is the seed word at the top followed by their synonyms identified in the corpus. Although there are many proper names in the example, we can find that many words are positive for positive seed words and negative for negative seed words. If a list is a mixture of positive and negative words, the seed word is probably too ambiguous.
+By default, `bootstrap_lss()` returns a sorted list of synonyms for each seed word. In each list, there is a seed word at the top followed by their synonyms identified in the corpus. Although there are many proper names in the example, we can find that many words are positive for positive seed words and negative for negative seed words. If a list is a mixture of positive and negative words, the seed word is probably too ambiguous.
 
 ```{r}
 bs_term <- bootstrap_lss(lss)
@@ -38,14 +38,14 @@ knitr::kable(head(bs_term, 10))
 ```
 ## Evaluation with similarity scores
 
-If `mode = "coef"`, the function returns the similarity scores of words for each seed word. We can use the matrix to evaluate the see words more systematically if the list of synonyms is not useful or sufficient.
+If `mode = "coef"`, the function returns the similarity scores of words for each seed word. We can use the matrix to evaluate the seed words more systematically if lists of synonyms are not useful or sufficient.
 
 ```{r}
 bs_coef <- bootstrap_lss(lss, mode = "coef")
 knitr::kable(head(bs_coef, 10), digits = 3)
 ```
 
-If we have words with known polarity such as "russia" and "ukriane", we can use them as anchor words in evaluating seed words. We know that "russia" is more positive than "ukraine" because the corpus is a collection of articles published by the Russian state media.
+We can use words with known polarity such as "russia" and "ukriane" as anchor words in evaluating seed words. We know that "russia" is more positive than "ukraine" because the corpus is a collection of articles published by the Russian state media.
 
 We can confirm that the difference in similarity scores between the anchor words and the polarity scores of the seed words largely agree. However, "fortunate" and "negative" disagree with the expected differences, suggesting that they are more ambiguous than other seed words. 
 
@@ -56,7 +56,7 @@ print(dat_seed)
 
 ## Conclusions
 
-We should make a list of seed words and evaluate them one by one using `bootstrap_lss()` to create accurate measurement. However, seed words become much less ambiguous when they are used as a set, so we should not be too nervous about the results. In text analysis, seed word selection should be motivated by the theoretical constructs.
+We should make a list of seed words and evaluate them one by one using `bootstrap_lss()` to create accurate measurement. However, seed words become much less ambiguous when they are used as a set, so we should not be too nervous about its  results. Seed word selection should be motivated primarily by the theoretical framework
 
 ### References
 
