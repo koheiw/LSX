@@ -30,12 +30,13 @@ print(lss$seeds_weighted)
 
 ## Evaluation with synomums
 
-By default, `bootstrap_lss()` returns a sorted list of synonyms for each seed word. In each list, there is a seed word at the top followed by their synonyms identified in the corpus. Although there are many proper names in the example, we can find that many words are positive for positive seed words and negative for negative seed words. If a list is a mixture of positive and negative words, the seed word is probably too ambiguous.
+By default, `bootstrap_lss()` returns a sorted list of synonyms for each seed word. In each list, there is a seed word at the top followed by its synonyms identified in the corpus. Although there are many proper names in the example, we can find many words are positive for positive seed words and negative for negative seed words. If a list is a mixture of positive and negative words, the seed word is probably too ambiguous.
 
 ```{r}
-bs_term <- bootstrap_lss(lss)
+bs_term <- bootstrap_lss(lss, mode = "terms")
 knitr::kable(head(bs_term, 10))
 ```
+
 ## Evaluation with similarity scores
 
 If `mode = "coef"`, the function returns the similarity scores of words for each seed word. We can use the matrix to evaluate the seed words more systematically if lists of synonyms are not useful or sufficient.
