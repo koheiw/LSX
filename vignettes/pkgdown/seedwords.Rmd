@@ -39,7 +39,7 @@ knitr::kable(head(bs_term, 10))
 
 ## Evaluation with similarity scores
 
-If `mode = "coef"`, the function returns the similarity scores of words for each seed word (words were sorted by these scores in the list above). We can use the matrix to evaluate the seed words more systematically if lists of synonyms are not useful or sufficient.
+If `mode = "coef"`, the function returns the similarity scores of words for each seed word (words were sorted by these scores in the lists above). We can use the matrix to evaluate the seed words more systematically if lists of synonyms are not useful or sufficient.
 
 ```{r}
 bs_coef <- bootstrap_lss(lss, mode = "coef")
