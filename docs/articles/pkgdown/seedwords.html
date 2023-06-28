@@ -133,32 +133,32 @@ opposing ends.</p>
 <div class="section level2">
 <h2 id="evaluation-with-synomums">Evaluation with synomums<a class="anchor" aria-label="anchor" href="#evaluation-with-synomums"></a>
 </h2>
-<p>By default, <code><a href="../../reference/bootstrap_lss.html">bootstrap_lss()</a></code> returns a sorted list of
-synonyms for each seed word. In each list, there is a seed word at the
-top followed by their synonyms identified in the corpus. Although there
-are many proper names in the example, we can find that many words are
-positive for positive seed words and negative for negative seed words.
-If a list is a mixture of positive and negative words, the seed word is
-probably too ambiguous.</p>
+<p>By default, <code><a href="../../reference/bootstrap_lss.html">bootstrap_lss()</a></code> returns lists of synonyms
+for seed words. Each column is a list of words sorted by their
+similarity to the seed word shown at the top. There are many proper
+names in the example, but we can find many words are positive for
+positive seed words and negative for negative seed words. If a list is a
+mixture of positive and negative words, the seed word is probably too
+ambiguous.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bs_term</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/bootstrap_lss.html">bootstrap_lss</a></span><span class="op">(</span><span class="va">lss</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">bs_term</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/bootstrap_lss.html">bootstrap_lss</a></span><span class="op">(</span><span class="va">lss</span>, mode <span class="op">=</span> <span class="st">"terms"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bs_term</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="7%">
-<col width="7%">
+<col width="6%">
 <col width="10%">
 <col width="6%">
-<col width="8%">
+<col width="7%">
 <col width="6%">
 <col width="6%">
 <col width="5%">
 <col width="7%">
 <col width="7%">
 <col width="6%">
-<col width="6%">
+<col width="7%">
 <col width="5%">
-<col width="6%">
+<col width="7%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">good</th>
@@ -202,25 +202,25 @@ probably too ambiguous.</p>
 <td align="left">bicocca</td>
 <td align="left">2s19</td>
 <td align="left">good</td>
-<td align="left">pokes</td>
+<td align="left">salaried</td>
 <td align="left">oppressed</td>
 <td align="left">impact</td>
-<td align="left">lapdogs</td>
+<td align="left">garnett’s</td>
 <td align="left">they’re</td>
 <td align="left">harjit</td>
 </tr>
 <tr class="odd">
 <td align="left">fingalise</td>
 <td align="left">approachable</td>
-<td align="left">staffer’s</td>
+<td align="left">brennan’s</td>
 <td align="left">bilateral</td>
-<td align="left">respectfully</td>
+<td align="left">accomplishment</td>
 <td align="left">seldom</td>
 <td align="left">msta-s</td>
 <td align="left">really</td>
-<td align="left">salaried</td>
+<td align="left">pokes</td>
 <td align="left">working</td>
-<td align="left">economy</td>
+<td align="left">credit-based</td>
 <td align="left">squabbled</td>
 <td align="left">optimists</td>
 <td align="left">sajjan</td>
@@ -228,114 +228,114 @@ probably too ambiguous.</p>
 <tr class="even">
 <td align="left">toast</td>
 <td align="left">romani</td>
-<td align="left">brennan’s</td>
-<td align="left">moscow-kiev</td>
-<td align="left">schultze</td>
-<td align="left">dostoyevsky</td>
+<td align="left">staffer’s</td>
+<td align="left">us-russia</td>
+<td align="left">respectfully</td>
+<td align="left">i’ve</td>
 <td align="left">lisitsyn</td>
-<td align="left">they’re</td>
-<td align="left">sofa</td>
+<td align="left">goodness</td>
+<td align="left">life-changing</td>
 <td align="left">class</td>
-<td align="left">credit-based</td>
+<td align="left">likens</td>
 <td align="left">rostik</td>
 <td align="left">think</td>
 <td align="left">viterra</td>
 </tr>
 <tr class="odd">
 <td align="left">brennan’s</td>
-<td align="left">smelly</td>
-<td align="left">soured</td>
-<td align="left">us-russia</td>
-<td align="left">brooking</td>
+<td align="left">sportsman</td>
+<td align="left">fidgety</td>
+<td align="left">moscow-kiev</td>
+<td align="left">schultze</td>
 <td align="left">uh</td>
-<td align="left">msta’s</td>
+<td align="left">tagil</td>
 <td align="left">fingalise</td>
-<td align="left">life-changing</td>
-<td align="left">movement</td>
+<td align="left">sofa</td>
+<td align="left">nino</td>
 <td align="left">evaporate</td>
-<td align="left">polarise</td>
-<td align="left">hile</td>
-<td align="left">biletsky’s</td>
+<td align="left">pergamon</td>
+<td align="left">arranges</td>
+<td align="left">batons</td>
 </tr>
 <tr class="even">
 <td align="left">fidgety</td>
-<td align="left">india-russian</td>
-<td align="left">fidgety</td>
-<td align="left">sides</td>
-<td align="left">formalistic</td>
-<td align="left">i’ve</td>
-<td align="left">tagil</td>
-<td align="left">goodness</td>
-<td align="left">phosgene</td>
-<td align="left">nino</td>
-<td align="left">likens</td>
-<td align="left">untrained</td>
-<td align="left">arranges</td>
-<td align="left">glorifed</td>
+<td align="left">glenmede</td>
+<td align="left">soured</td>
+<td align="left">hope</td>
+<td align="left">vienna-hosted</td>
+<td align="left">really</td>
+<td align="left">msta’s</td>
+<td align="left">gander</td>
+<td align="left">clogged</td>
+<td align="left">mine-defusing</td>
+<td align="left">economy</td>
+<td align="left">lapdogs</td>
+<td align="left">napolitano</td>
+<td align="left">subhuman</td>
 </tr>
 <tr class="odd">
-<td align="left">nexus</td>
-<td align="left">sportsman</td>
+<td align="left">overdependent</td>
+<td align="left">smelly</td>
 <td align="left">inter-parliamntary</td>
-<td align="left">mutual</td>
-<td align="left">magnuson</td>
-<td align="left">really</td>
-<td align="left">hierarchical</td>
-<td align="left">gander</td>
+<td align="left">sides</td>
+<td align="left">rama</td>
+<td align="left">dostoyevsky</td>
+<td align="left">tse</td>
+<td align="left">lot</td>
 <td align="left">chloroform</td>
-<td align="left">mine-defusing</td>
+<td align="left">movement</td>
 <td align="left">adverse</td>
-<td align="left">garnett’s</td>
-<td align="left">napolitano</td>
-<td align="left">jew-killers</td>
+<td align="left">untrained</td>
+<td align="left">stink</td>
+<td align="left">pop-culturally</td>
 </tr>
 <tr class="even">
-<td align="left">overdependent</td>
-<td align="left">hard-headed</td>
+<td align="left">nexus</td>
+<td align="left">attract</td>
 <td align="left">relations</td>
 <td align="left">impasse</td>
-<td align="left">aca</td>
-<td align="left">marble</td>
-<td align="left">tse</td>
-<td align="left">it’s</td>
-<td align="left">clogged</td>
-<td align="left">piecemeal</td>
-<td align="left">dhaka’s</td>
-<td align="left">meanings</td>
-<td align="left">stink</td>
-<td align="left">cocoa</td>
-</tr>
-<tr class="odd">
-<td align="left">duda’s</td>
-<td align="left">glenmede</td>
-<td align="left">nexus</td>
-<td align="left">hope</td>
-<td align="left">institutionalize</td>
-<td align="left">grading</td>
-<td align="left">cradling</td>
-<td align="left">i’m</td>
-<td align="left">nit</td>
+<td align="left">skopje</td>
+<td align="left">self-regard</td>
+<td align="left">hierarchical</td>
+<td align="left">there’s</td>
+<td align="left">phosgene</td>
 <td align="left">racist</td>
-<td align="left">greases</td>
-<td align="left">uninterested</td>
+<td align="left">dhaka’s</td>
+<td align="left">asian-african</td>
 <td align="left">serezha</td>
 <td align="left">prettied</td>
 </tr>
+<tr class="odd">
+<td align="left">duda’s</td>
+<td align="left">io-30</td>
+<td align="left">overdependent</td>
+<td align="left">mutual</td>
+<td align="left">kovacevski</td>
+<td align="left">grading</td>
+<td align="left">cradling</td>
+<td align="left">they’re</td>
+<td align="left">nit</td>
+<td align="left">piecemeal</td>
+<td align="left">alaskans</td>
+<td align="left">minders</td>
+<td align="left">ex-spook</td>
+<td align="left">cocoa</td>
+</tr>
 <tr class="even">
 <td align="left">relations</td>
-<td align="left">attract</td>
-<td align="left">overdependent</td>
-<td align="left">always</td>
-<td align="left">ingler</td>
-<td align="left">distinguish</td>
-<td align="left">habitation</td>
-<td align="left">lot</td>
-<td align="left">long-haulers</td>
-<td align="left">organizing</td>
+<td align="left">they’ve</td>
+<td align="left">nexus</td>
+<td align="left">abramovich’s</td>
+<td align="left">cop13</td>
+<td align="left">marble</td>
+<td align="left">nizhny</td>
+<td align="left">i’m</td>
+<td align="left">unzips</td>
+<td align="left">capitalism</td>
 <td align="left">psychotic</td>
-<td align="left">compressed</td>
-<td align="left">ex-spook</td>
-<td align="left">subhuman</td>
+<td align="left">polarise</td>
+<td align="left">motorsport</td>
+<td align="left">cottonseed</td>
 </tr>
 </tbody>
 </table>
@@ -344,9 +344,9 @@ probably too ambiguous.</p>
 <h2 id="evaluation-with-similarity-scores">Evaluation with similarity scores<a class="anchor" aria-label="anchor" href="#evaluation-with-similarity-scores"></a>
 </h2>
 <p>If <code>mode = "coef"</code>, the function returns the similarity
-scores of words for each seed word. We can use the matrix to evaluate
-the seed words more systematically if lists of synonyms are not useful
-or sufficient.</p>
+scores of words for each seed word (words were sorted by these scores in
+the list above). We can use the matrix to evaluate the seed words more
+systematically if lists of synonyms are not useful or sufficient.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bs_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/bootstrap_lss.html">bootstrap_lss</a></span><span class="op">(</span><span class="va">lss</span>, mode <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bs_coef</span>, <span class="fl">10</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -388,173 +388,173 @@ or sufficient.</p>
 <tbody>
 <tr class="odd">
 <td align="left">monday</td>
-<td align="right">-0.038</td>
-<td align="right">-0.009</td>
-<td align="right">-0.024</td>
-<td align="right">0.022</td>
+<td align="right">-0.037</td>
+<td align="right">-0.006</td>
+<td align="right">-0.029</td>
+<td align="right">0.021</td>
 <td align="right">-0.020</td>
-<td align="right">0.007</td>
-<td align="right">0.122</td>
-<td align="right">0.018</td>
-<td align="right">0.002</td>
-<td align="right">0.014</td>
+<td align="right">0.004</td>
+<td align="right">0.125</td>
+<td align="right">0.017</td>
+<td align="right">0.003</td>
+<td align="right">0.013</td>
 <td align="right">-0.061</td>
-<td align="right">-0.036</td>
-<td align="right">-0.021</td>
-<td align="right">-0.026</td>
+<td align="right">-0.032</td>
+<td align="right">-0.017</td>
+<td align="right">-0.016</td>
 </tr>
 <tr class="even">
 <td align="left">us</td>
-<td align="right">-0.001</td>
-<td align="right">-0.009</td>
-<td align="right">-0.009</td>
+<td align="right">-0.002</td>
+<td align="right">-0.019</td>
+<td align="right">-0.010</td>
 <td align="right">0.005</td>
-<td align="right">0.026</td>
+<td align="right">0.030</td>
 <td align="right">0.006</td>
-<td align="right">-0.023</td>
+<td align="right">-0.024</td>
 <td align="right">0.015</td>
 <td align="right">-0.020</td>
-<td align="right">-0.003</td>
-<td align="right">0.011</td>
-<td align="right">0.021</td>
 <td align="right">-0.004</td>
-<td align="right">0.013</td>
+<td align="right">0.009</td>
+<td align="right">0.022</td>
+<td align="right">-0.003</td>
+<td align="right">-0.006</td>
 </tr>
 <tr class="odd">
 <td align="left">president</td>
-<td align="right">-0.014</td>
-<td align="right">-0.033</td>
-<td align="right">-0.004</td>
-<td align="right">-0.009</td>
-<td align="right">-0.025</td>
-<td align="right">0.022</td>
-<td align="right">0.004</td>
-<td align="right">-0.011</td>
-<td align="right">-0.001</td>
-<td align="right">-0.020</td>
-<td align="right">0.008</td>
 <td align="right">-0.015</td>
+<td align="right">-0.032</td>
+<td align="right">-0.005</td>
+<td align="right">-0.009</td>
 <td align="right">0.016</td>
-<td align="right">-0.011</td>
+<td align="right">0.023</td>
+<td align="right">0.005</td>
+<td align="right">-0.007</td>
+<td align="right">-0.003</td>
+<td align="right">-0.020</td>
+<td align="right">0.004</td>
+<td align="right">-0.016</td>
+<td align="right">0.014</td>
+<td align="right">-0.005</td>
 </tr>
 <tr class="even">
 <td align="left">joe</td>
-<td align="right">0.012</td>
-<td align="right">0.147</td>
-<td align="right">-0.023</td>
-<td align="right">-0.082</td>
-<td align="right">-0.055</td>
-<td align="right">-0.034</td>
-<td align="right">-0.028</td>
-<td align="right">0.031</td>
-<td align="right">-0.038</td>
-<td align="right">0.062</td>
-<td align="right">-0.049</td>
-<td align="right">-0.053</td>
+<td align="right">0.019</td>
+<td align="right">0.157</td>
 <td align="right">-0.021</td>
-<td align="right">0.011</td>
+<td align="right">-0.083</td>
+<td align="right">-0.060</td>
+<td align="right">-0.035</td>
+<td align="right">-0.022</td>
+<td align="right">0.023</td>
+<td align="right">-0.037</td>
+<td align="right">0.062</td>
+<td align="right">-0.041</td>
+<td align="right">-0.055</td>
+<td align="right">-0.021</td>
+<td align="right">-0.002</td>
 </tr>
 <tr class="odd">
 <td align="left">biden</td>
 <td align="right">0.017</td>
-<td align="right">-0.005</td>
-<td align="right">-0.029</td>
-<td align="right">0.067</td>
-<td align="right">0.077</td>
-<td align="right">-0.052</td>
-<td align="right">0.004</td>
+<td align="right">-0.007</td>
+<td align="right">-0.027</td>
+<td align="right">0.068</td>
+<td align="right">0.048</td>
+<td align="right">-0.051</td>
+<td align="right">0.003</td>
 <td align="right">-0.056</td>
-<td align="right">-0.017</td>
+<td align="right">-0.023</td>
+<td align="right">0.026</td>
 <td align="right">0.024</td>
-<td align="right">0.023</td>
-<td align="right">0.012</td>
-<td align="right">0.023</td>
-<td align="right">-0.019</td>
+<td align="right">0.013</td>
+<td align="right">0.022</td>
+<td align="right">-0.004</td>
 </tr>
 <tr class="even">
 <td align="left">reiterated</td>
-<td align="right">0.020</td>
-<td align="right">0.073</td>
-<td align="right">0.103</td>
-<td align="right">0.217</td>
-<td align="right">-0.111</td>
-<td align="right">0.152</td>
-<td align="right">-0.004</td>
-<td align="right">-0.024</td>
+<td align="right">0.015</td>
+<td align="right">0.064</td>
+<td align="right">0.098</td>
+<td align="right">0.216</td>
+<td align="right">-0.033</td>
+<td align="right">0.149</td>
+<td align="right">0.001</td>
+<td align="right">-0.026</td>
 <td align="right">-0.023</td>
-<td align="right">-0.111</td>
-<td align="right">0.018</td>
-<td align="right">-0.105</td>
-<td align="right">-0.015</td>
-<td align="right">-0.030</td>
+<td align="right">-0.118</td>
+<td align="right">0.014</td>
+<td align="right">-0.104</td>
+<td align="right">-0.020</td>
+<td align="right">-0.039</td>
 </tr>
 <tr class="odd">
 <td align="left">united</td>
-<td align="right">-0.005</td>
-<td align="right">0.016</td>
-<td align="right">-0.095</td>
-<td align="right">0.033</td>
-<td align="right">0.098</td>
-<td align="right">-0.009</td>
-<td align="right">-0.013</td>
-<td align="right">-0.020</td>
-<td align="right">0.015</td>
+<td align="right">-0.002</td>
+<td align="right">0.018</td>
+<td align="right">-0.100</td>
+<td align="right">0.038</td>
+<td align="right">0.092</td>
+<td align="right">-0.010</td>
+<td align="right">-0.015</td>
+<td align="right">-0.023</td>
+<td align="right">0.019</td>
 <td align="right">-0.027</td>
-<td align="right">0.001</td>
-<td align="right">0.041</td>
-<td align="right">0.017</td>
-<td align="right">-0.037</td>
+<td align="right">0.002</td>
+<td align="right">0.043</td>
+<td align="right">0.019</td>
+<td align="right">-0.036</td>
 </tr>
 <tr class="even">
 <td align="left">states</td>
-<td align="right">-0.014</td>
-<td align="right">-0.006</td>
-<td align="right">0.088</td>
-<td align="right">-0.066</td>
-<td align="right">0.064</td>
+<td align="right">-0.010</td>
+<td align="right">-0.009</td>
+<td align="right">0.094</td>
+<td align="right">-0.068</td>
+<td align="right">0.049</td>
 <td align="right">-0.028</td>
-<td align="right">-0.026</td>
-<td align="right">0.002</td>
-<td align="right">-0.029</td>
+<td align="right">-0.023</td>
+<td align="right">0.005</td>
+<td align="right">-0.034</td>
 <td align="right">0.032</td>
 <td align="right">0.025</td>
-<td align="right">-0.054</td>
-<td align="right">-0.024</td>
-<td align="right">0.019</td>
+<td align="right">-0.055</td>
+<td align="right">-0.026</td>
+<td align="right">0.021</td>
 </tr>
 <tr class="odd">
 <td align="left">commitment</td>
-<td align="right">0.036</td>
-<td align="right">0.053</td>
-<td align="right">0.109</td>
-<td align="right">0.075</td>
-<td align="right">-0.013</td>
-<td align="right">0.024</td>
-<td align="right">0.012</td>
-<td align="right">-0.063</td>
-<td align="right">-0.011</td>
-<td align="right">0.044</td>
-<td align="right">-0.028</td>
-<td align="right">-0.064</td>
-<td align="right">-0.009</td>
 <td align="right">0.018</td>
+<td align="right">0.063</td>
+<td align="right">0.096</td>
+<td align="right">0.076</td>
+<td align="right">0.056</td>
+<td align="right">0.025</td>
+<td align="right">0.010</td>
+<td align="right">-0.063</td>
+<td align="right">0.002</td>
+<td align="right">0.035</td>
+<td align="right">-0.030</td>
+<td align="right">-0.064</td>
+<td align="right">-0.012</td>
+<td align="right">0.001</td>
 </tr>
 <tr class="even">
 <td align="left">diplomacy</td>
+<td align="right">0.183</td>
+<td align="right">0.133</td>
+<td align="right">0.090</td>
+<td align="right">0.202</td>
+<td align="right">0.046</td>
+<td align="right">0.101</td>
+<td align="right">0.088</td>
+<td align="right">0.078</td>
+<td align="right">0.043</td>
+<td align="right">0.039</td>
+<td align="right">-0.033</td>
+<td align="right">0.016</td>
 <td align="right">0.185</td>
-<td align="right">0.151</td>
-<td align="right">0.098</td>
-<td align="right">0.207</td>
-<td align="right">0.068</td>
-<td align="right">0.104</td>
-<td align="right">0.095</td>
-<td align="right">0.081</td>
-<td align="right">0.058</td>
-<td align="right">0.038</td>
-<td align="right">-0.029</td>
-<td align="right">0.023</td>
-<td align="right">0.198</td>
-<td align="right">-0.028</td>
+<td align="right">-0.056</td>
 </tr>
 </tbody>
 </table>
@@ -570,21 +570,21 @@ words.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat_seed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="va">lss</span><span class="op">$</span><span class="va">seeds</span>, diff <span class="op">=</span> <span class="va">bs_coef</span><span class="op">[</span><span class="st">"russia"</span>,<span class="op">]</span> <span class="op">-</span> <span class="va">bs_coef</span><span class="op">[</span><span class="st">"ukraine"</span>,<span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dat_seed</span><span class="op">)</span></span>
-<span><span class="co">#&gt;             seed          diff</span></span>
-<span><span class="co">#&gt; good           1  0.0016414492</span></span>
-<span><span class="co">#&gt; nice           1  0.0143590065</span></span>
-<span><span class="co">#&gt; excellent      1  0.0341153941</span></span>
-<span><span class="co">#&gt; positive       1  0.0176553443</span></span>
-<span><span class="co">#&gt; fortunate      1 -0.0002908896</span></span>
-<span><span class="co">#&gt; correct        1  0.0174774666</span></span>
-<span><span class="co">#&gt; superior       1  0.0027753376</span></span>
-<span><span class="co">#&gt; bad           -1 -0.0051983184</span></span>
-<span><span class="co">#&gt; nasty         -1 -0.0040783363</span></span>
-<span><span class="co">#&gt; poor          -1 -0.0080180948</span></span>
-<span><span class="co">#&gt; negative      -1  0.0050572178</span></span>
-<span><span class="co">#&gt; unfortunate   -1 -0.0917487434</span></span>
-<span><span class="co">#&gt; wrong         -1 -0.0072376201</span></span>
-<span><span class="co">#&gt; inferior      -1 -0.0691934283</span></span></code></pre></div>
+<span><span class="co">#&gt;             seed         diff</span></span>
+<span><span class="co">#&gt; good           1  0.001332789</span></span>
+<span><span class="co">#&gt; nice           1  0.014461127</span></span>
+<span><span class="co">#&gt; excellent      1  0.034208697</span></span>
+<span><span class="co">#&gt; positive       1  0.017571266</span></span>
+<span><span class="co">#&gt; fortunate      1 -0.003632530</span></span>
+<span><span class="co">#&gt; correct        1  0.017608754</span></span>
+<span><span class="co">#&gt; superior       1  0.003934236</span></span>
+<span><span class="co">#&gt; bad           -1 -0.007724949</span></span>
+<span><span class="co">#&gt; nasty         -1 -0.003432713</span></span>
+<span><span class="co">#&gt; poor          -1 -0.008047205</span></span>
+<span><span class="co">#&gt; negative      -1  0.005540324</span></span>
+<span><span class="co">#&gt; unfortunate   -1 -0.091302423</span></span>
+<span><span class="co">#&gt; wrong         -1 -0.008261888</span></span>
+<span><span class="co">#&gt; inferior      -1 -0.044426507</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="conclusions">Conclusions<a class="anchor" aria-label="anchor" href="#conclusions"></a>
