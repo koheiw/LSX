@@ -34,7 +34,7 @@ diagnosys.corpus <- function(x, ...) {
     )
     result$n_sent <- n_sent
     result$n_token <- n_token
-    result$dupli <- duplicated(texts(x))
+    result$dupli <- duplicated(as.character(x))
     result$noise <- result$any / result$n_token
     return(result)
 }
