@@ -55,10 +55,13 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     max_highlighted <- check_integer(max_highlighted, min = 0)
 
     x$frequency <- x$frequency[names(x$beta)] # fix for < v1.1.4
+    x$frequency[is.na(x$frequency)] <- 0
+
     beta <- freq <- word <- NULL
     temp <- data.frame(word = names(x$beta), beta = x$beta,
                        freq = x$frequency,
                        stringsAsFactors = FALSE)
+
     temp <- subset(temp, freq > 0)
     temp$freq <- log(temp$freq)
 
