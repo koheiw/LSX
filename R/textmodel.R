@@ -338,7 +338,8 @@ cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
         result <- readRDS(file_cache)
     } else {
         glove <- rsparse::GloVe$new(rank = w, x_max = x_max, ...)
-        temp <- glove$fit_transform(Matrix::drop0(x), n_iter = n_iter)
+        temp <- glove$fit_transform(Matrix::drop0(x), n_iter = n_iter,
+                                    n_threads = getOption("quanteda_threads", 1L))
         result <- t(temp)
         result <- result + glove$components
         if (cache) {
