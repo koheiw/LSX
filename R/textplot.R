@@ -34,13 +34,15 @@ textplot_simil.textmodel_lss <- function(x) {
 #' @param x a fitted textmodel_lss object.
 #' @param highlighted [quanteda::pattern] to select words to highlight.
 #' @param max_highlighted the maximum number of words to highlight. When
-#'   `highlighted = NULL`, words to highlight are randomly selected proportionally
-#'    to `polarity ^ 2 * log(frequency)`.
+#'   `highlighted = NULL`, words to highlight are randomly selected
+#'   proportionally to `polarity ^ 2 * log(frequency)`.
 #' @param max_words the maximum number of words to plot. Words are randomly
 #'   sampled to keep the number below the limit.
+#' @param ... passed to [ggplot2::geom_text()] and
+#'   [ggrepel::geom_text_repel()] to customize text labels.
 #' @export
 textplot_terms <- function(x, highlighted = NULL,
-                           max_highlighted = 50, max_words = 10000) {
+                           max_highlighted = 50, max_words = 1000, ...) {
     UseMethod("textplot_terms")
 }
 
@@ -49,7 +51,7 @@ textplot_terms <- function(x, highlighted = NULL,
 #' @importFrom quanteda is.dictionary meta check_integer
 #' @export
 textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
-                                         max_highlighted = 50, max_words = 10000) {
+                                         max_highlighted = 50, max_words = 1000, ...) {
 
     max_words <- check_integer(max_words, min = 1)
     max_highlighted <- check_integer(max_highlighted, min = 0)
@@ -99,14 +101,14 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
 
     temp_lo <- head(temp_lo[sample(seq_len(nrow(temp_lo))),], max_words)
     ggplot(data = temp_lo, aes(x = beta, y = freq, label = word)) +
-           geom_text(colour = "grey70", alpha = 0.7) +
+           geom_text(colour = "grey70", alpha = 0.7, ...) +
            labs(x = "Polarity", y = "Frequency (log)") +
            theme_bw() +
            theme(panel.grid= element_blank(),
                  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
            geom_text_repel(data = temp_hi, aes(x = beta, y = freq, label = word),
-                           segment.size = 0.25, colour = "black") +
+                           segment.size = 0.25, colour = "black", ...) +
            geom_point(data = temp_hi, aes(x = beta, y = freq), cex = 0.7, colour = "black")
 }
 

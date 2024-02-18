@@ -4,7 +4,13 @@
 \alias{textplot_terms}
 \title{Plot polarity scores of words}
 \usage{
-textplot_terms(x, highlighted = NULL, max_highlighted = 50, max_words = 10000)
+textplot_terms(
+  x,
+  highlighted = NULL,
+  max_highlighted = 50,
+  max_words = 1000,
+  ...
+)
 }
 \arguments{
 \item{x}{a fitted textmodel_lss object.}
@@ -12,11 +18,14 @@ textplot_terms(x, highlighted = NULL, max_highlighted = 50, max_words = 10000)
 \item{highlighted}{\link[quanteda:pattern]{quanteda::pattern} to select words to highlight.}
 
 \item{max_highlighted}{the maximum number of words to highlight. When
-\code{highlighted = NULL}, words to highlight are randomly selected proportionally
-to \code{polarity ^ 2 * log(frequency)}.}
+\code{highlighted = NULL}, words to highlight are randomly selected
+proportionally to \code{polarity ^ 2 * log(frequency)}.}
 
 \item{max_words}{the maximum number of words to plot. Words are randomly
 sampled to keep the number below the limit.}
+
+\item{...}{passed to \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}} and
+\code{\link[ggrepel:geom_text_repel]{ggrepel::geom_text_repel()}} to customize text labels.}
 }
 \description{
 Plot polarity scores of words
