@@ -1,2 +1,5 @@
 require(testthat)
+require(quanteda)
+quanteda_options(threads = 2)
 test_check("LSX")
+quanteda_options(reset = TRUE)
