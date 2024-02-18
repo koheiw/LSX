@@ -35,3 +35,4 @@ Suggests:
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/koheiw/LSX/issues
+URL: https://koheiw.github.io/LSX/
