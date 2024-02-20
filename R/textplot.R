@@ -60,7 +60,8 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     x$frequency[is.na(x$frequency)] <- 0
 
     beta <- freq <- word <- NULL
-    temp <- data.frame(word = names(x$beta), beta = x$beta,
+    temp <- data.frame(id = seq_along(x$beta),
+                       word = names(x$beta), beta = x$beta,
                        freq = x$frequency,
                        stringsAsFactors = FALSE)
 
@@ -68,33 +69,40 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     temp$freq <- log(temp$freq)
 
     if (is.null(highlighted)) {
-        id <- seq_len(nrow(temp))
+        temp$class <- factor(rep("highlight", nrow(temp)))
     } else {
         if (is.dictionary(highlighted)) {
             separator <- meta(highlighted, field = "separator", type = "object")
             valuetype <- meta(highlighted, field = "valuetype", type = "object")
             concatenator <- x$concatenator
-            highlighted <- unlist(highlighted, use.names = FALSE)
-            if (!nzchar(separator) && !is.null(concatenator)) # for backward compatibility
-                highlighted <- stri_replace_all_fixed(highlighted, separator, concatenator)
+            #highlighted <- unlist(highlighted, use.names = FALSE)
+            #if (!nzchar(separator) && !is.null(concatenator)) # for backward compatibility
+            #    highlighted <- stri_replace_all_fixed(highlighted, separator, concatenator)
         } else {
             highlighted <- unlist(highlighted, use.names = FALSE)
             valuetype <- "glob"
         }
-
-        id <- unlist(quanteda::pattern2id(
+        ids <- quanteda::object2id(
             highlighted,
             types = temp$word,
             valuetype = valuetype,
-            case_insensitive = TRUE
-        ), use.names = FALSE)
+            case_insensitive = TRUE,
+            concatenator = x$concatenator
+        )
+        key <- attr(ids, "key")
+        id <- unlist(ids)
+        if (!is.null(key)) {
+            temp$class <- factor(names(id[match(temp$id, id)]), levels = key)
+        } else {
+            temp$class <- factor(ifelse(temp$id %in% id, "highlight", NA))
+        }
     }
-    i <- seq_len(nrow(temp))
-    p <- as.numeric(i %in% id) * temp$beta ^ 2 * temp$freq
-    if (all(p == 0)) {
-        l <- rep(FALSE, length(i))
+    temp$p <- as.numeric(!is.na(temp$class)) * temp$beta ^ 2 * temp$freq
+    if (all(temp$p == 0)) {
+        l <- rep(FALSE, length(temp$id))
     } else {
-        l <- i %in% sample(i, min(sum(p > 0), max_highlighted), prob = p)
+        l <- temp$id %in% sample(temp$id, min(sum(temp$p > 0), max_highlighted),
+                                 prob = temp$p)
     }
     temp_hi <- temp[l,]
     temp_lo <- temp[!l,]
@@ -107,9 +115,10 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
            theme(panel.grid= element_blank(),
                  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-           geom_text_repel(data = temp_hi, aes(x = beta, y = freq, label = word),
-                           segment.size = 0.25, colour = "black", ...) +
-           geom_point(data = temp_hi, aes(x = beta, y = freq), cex = 0.7, colour = "black")
+           geom_text_repel(data = temp_hi, aes(x = beta, y = freq, label = word, colour = class),
+                           segment.size = 0.25, ...) +
+           geom_point(data = temp_hi, aes(x = beta, y = freq, colour = class), cex = 0.7) +
+           scale_colour_brewer(palette = "Set1")
 }
 
 #' \[experimental\] Plot clusters of word vectors
