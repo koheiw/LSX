@@ -32,9 +32,9 @@ sampled to keep the number below the limit.}
 Plot polarity scores of words
 }
 \details{
-Users can change the size of texts texts through \code{...}, which is
+Users can customize the plots through \code{...}, which is
 passed to \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}} and \code{\link[ggrepel:geom_text_repel]{ggrepel::geom_text_repel()}}. The
-colors are specified internally but users can override the settings by using
+colors are specified internally but users can override the settings by appending
 \code{\link[ggplot2:scale_manual]{ggplot2::scale_colour_manual()}} or \code{\link[ggplot2:scale_brewer]{ggplot2::scale_colour_brewer()}}. The
-legend title can be customized using \code{\link[ggplot2:labs]{ggplot2::labs()}}.
+legend title can also be modified using \code{\link[ggplot2:labs]{ggplot2::labs()}}.
 }

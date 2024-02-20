@@ -41,11 +41,11 @@ textplot_simil.textmodel_lss <- function(x) {
 #' @param max_words the maximum number of words to plot. Words are randomly
 #'   sampled to keep the number below the limit.
 #' @param ... passed to underlying functions. See the Details.
-#' @details Users can change the size of texts texts through `...`, which is
+#' @details Users can customize the plots through `...`, which is
 #'   passed to [ggplot2::geom_text()] and [ggrepel::geom_text_repel()]. The
-#'   colors are specified internally but users can override the settings by using
+#'   colors are specified internally but users can override the settings by appending
 #'   [ggplot2::scale_colour_manual()] or [ggplot2::scale_colour_brewer()]. The
-#'   legend title can be customized using [ggplot2::labs()].
+#'   legend title can also be modified using [ggplot2::labs()].
 #' @importFrom ggrepel geom_text_repel
 #' @export
 textplot_terms <- function(x, highlighted = NULL,
