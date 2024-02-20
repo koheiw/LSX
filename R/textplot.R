@@ -32,14 +32,21 @@ textplot_simil.textmodel_lss <- function(x) {
 
 #' Plot polarity scores of words
 #' @param x a fitted textmodel_lss object.
-#' @param highlighted [quanteda::pattern] to select words to highlight.
+#' @param highlighted [quanteda::pattern] to select words to highlight. If a
+#'   [quanteda::dictionary] is passed, words in the top-level categories are
+#'   highlighted in different colors.
 #' @param max_highlighted the maximum number of words to highlight. When
 #'   `highlighted = NULL`, words to highlight are randomly selected
 #'   proportionally to `polarity ^ 2 * log(frequency)`.
 #' @param max_words the maximum number of words to plot. Words are randomly
 #'   sampled to keep the number below the limit.
-#' @param ... passed to [ggplot2::geom_text()] and
-#'   [ggrepel::geom_text_repel()] to customize text labels.
+#' @param ... passed to underlying functions. See the Details.
+#' @details Users can change the size of texts texts through `...`, which is
+#'   passed to [ggplot2::geom_text()] and [ggrepel::geom_text_repel()]. The
+#'   colors are specified internally but users can override the settings by using
+#'   [ggplot2::scale_colour_manual()] or [ggplot2::scale_colour_brewer()]. The
+#'   legend title can be customized using [ggplot2::labs()].
+#' @importFrom ggrepel geom_text_repel
 #' @export
 textplot_terms <- function(x, highlighted = NULL,
                            max_highlighted = 50, max_words = 1000, ...) {
@@ -67,18 +74,14 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     temp <- subset(temp, freq > 0)
     temp$freq <- log(temp$freq)
     temp$id <- seq_len(nrow(temp))
+    temp$group <- factor(rep("highlighted", nrow(temp)))
 
     if (is.null(highlighted)) {
-        temp$group <- factor(rep("highlight", nrow(temp)))
         key <- NULL
     } else {
         if (is.dictionary(highlighted)) {
             separator <- meta(highlighted, field = "separator", type = "object")
             valuetype <- meta(highlighted, field = "valuetype", type = "object")
-            concatenator <- x$concatenator
-            #highlighted <- unlist(highlighted, use.names = FALSE)
-            #if (!nzchar(separator) && !is.null(concatenator)) # for backward compatibility
-            #    highlighted <- stri_replace_all_fixed(highlighted, separator, concatenator)
         } else {
             highlighted <- unlist(highlighted, use.names = FALSE)
             valuetype <- "glob"
@@ -92,10 +95,11 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
         )
         key <- attr(ids, "key")
         id <- unlist(ids)
-        if (!is.null(key)) {
+        if (!is.null(key) && !is.null(id)) {
             temp$group <- factor(names(id[match(temp$id, id)]), levels = key)
         } else {
-            temp$group <- factor(ifelse(temp$id %in% id, "highlight", NA))
+            temp$group <- factor(ifelse(temp$id %in% id, "highlighted", NA),
+                                 levels = "highlighted")
         }
     }
     temp$p <- as.numeric(!is.na(temp$group)) * temp$beta ^ 2 * temp$freq
@@ -118,14 +122,16 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
            geom_text_repel(data = temp_hi, aes(x = beta, y = freq, label = word, colour = group),
                            segment.size = 0.25, show.legend = FALSE, ...) +
-           geom_point(data = temp_hi, aes(x = beta, y = freq, colour = group), cex = 0.7)
+           geom_point(data = temp_hi, aes(x = beta, y = freq, shape = group, colour = group),
+                      cex = 1)
 
-    if (!is.null(key)) {
-        gg <- gg + scale_colour_brewer(palette = "Set1") +
-                   labs(colour = "Group")
+    if (!is.null(key) && length(key) > 1) {
+        gg <- gg + scale_colour_brewer(palette = "Set1", drop = FALSE) +
+                   scale_shape_discrete(drop = FALSE) +
+                   labs(colour = "Group", shape = "Group")
     } else {
         gg <- gg + scale_colour_manual(values = "black") +
-                   guides(colour = "none")
+                   guides(colour = "none", shape = "none")
     }
     return(gg)
 }
