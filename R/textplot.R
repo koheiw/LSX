@@ -84,7 +84,7 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
 
         id <- unlist(quanteda::pattern2id(
             highlighted,
-            types = names(x$beta),
+            types = temp$word,
             valuetype = valuetype,
             case_insensitive = TRUE
         ), use.names = FALSE)
