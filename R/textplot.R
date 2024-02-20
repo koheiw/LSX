@@ -69,7 +69,8 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     temp$freq <- log(temp$freq)
 
     if (is.null(highlighted)) {
-        temp$class <- factor(rep("highlight", nrow(temp)))
+        temp$group <- factor(rep("highlight", nrow(temp)))
+        key <- NULL
     } else {
         if (is.dictionary(highlighted)) {
             separator <- meta(highlighted, field = "separator", type = "object")
@@ -92,12 +93,12 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
         key <- attr(ids, "key")
         id <- unlist(ids)
         if (!is.null(key)) {
-            temp$class <- factor(names(id[match(temp$id, id)]), levels = key)
+            temp$group <- factor(names(id[match(temp$id, id)]), levels = key)
         } else {
-            temp$class <- factor(ifelse(temp$id %in% id, "highlight", NA))
+            temp$group <- factor(ifelse(temp$id %in% id, "highlight", NA))
         }
     }
-    temp$p <- as.numeric(!is.na(temp$class)) * temp$beta ^ 2 * temp$freq
+    temp$p <- as.numeric(!is.na(temp$group)) * temp$beta ^ 2 * temp$freq
     if (all(temp$p == 0)) {
         l <- rep(FALSE, length(temp$id))
     } else {
@@ -108,17 +109,25 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     temp_lo <- temp[!l,]
 
     temp_lo <- head(temp_lo[sample(seq_len(nrow(temp_lo))),], max_words)
-    ggplot(data = temp_lo, aes(x = beta, y = freq, label = word)) +
+    gg <- ggplot(data = temp_lo, aes(x = beta, y = freq, label = word)) +
            geom_text(colour = "grey70", alpha = 0.7, ...) +
            labs(x = "Polarity", y = "Frequency (log)") +
            theme_bw() +
            theme(panel.grid= element_blank(),
                  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-           geom_text_repel(data = temp_hi, aes(x = beta, y = freq, label = word, colour = class),
-                           segment.size = 0.25, ...) +
-           geom_point(data = temp_hi, aes(x = beta, y = freq, colour = class), cex = 0.7) +
-           scale_colour_brewer(palette = "Set1")
+           geom_text_repel(data = temp_hi, aes(x = beta, y = freq, label = word, colour = group),
+                           segment.size = 0.25, show.legend = FALSE, ...) +
+           geom_point(data = temp_hi, aes(x = beta, y = freq, colour = group), cex = 0.7)
+
+    if (!is.null(key)) {
+        gg <- gg + scale_colour_brewer(palette = "Set1") +
+                   labs(colour = "Group")
+    } else {
+        gg <- gg + scale_colour_manual(values = "black") +
+                   guides(colour = "none")
+    }
+    return(gg)
 }
 
 #' \[experimental\] Plot clusters of word vectors
