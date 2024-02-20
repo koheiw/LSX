@@ -25,6 +25,7 @@ Imports:
     proxyC,
     stats,
     ggplot2,
+    ggrepel,
     reshape2,
     locfit
 Suggests:
