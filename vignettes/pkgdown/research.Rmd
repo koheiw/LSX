@@ -58,7 +58,7 @@ lss <- textmodel_lss(dfmt, seeds = seed, terms = term, cache = TRUE,
 ```
 
 ```{r plot-term, warning=FALSE}
-textplot_terms(lss)
+textplot_terms(lss, highlighted = data_dictionary_LSD2015[1:2])
 ```
 
 ### Predict the polarity of documents
