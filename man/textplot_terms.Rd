@@ -15,7 +15,9 @@ textplot_terms(
 \arguments{
 \item{x}{a fitted textmodel_lss object.}
 
-\item{highlighted}{\link[quanteda:pattern]{quanteda::pattern} to select words to highlight.}
+\item{highlighted}{\link[quanteda:pattern]{quanteda::pattern} to select words to highlight. If a
+\link[quanteda:dictionary]{quanteda::dictionary} is passed, words in the top-level categories are
+highlighted in different colors.}
 
 \item{max_highlighted}{the maximum number of words to highlight. When
 \code{highlighted = NULL}, words to highlight are randomly selected
@@ -24,9 +26,15 @@ proportionally to \code{polarity ^ 2 * log(frequency)}.}
 \item{max_words}{the maximum number of words to plot. Words are randomly
 sampled to keep the number below the limit.}
 
-\item{...}{passed to \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}} and
-\code{\link[ggrepel:geom_text_repel]{ggrepel::geom_text_repel()}} to customize text labels.}
+\item{...}{passed to underlying functions. See the Details.}
 }
 \description{
 Plot polarity scores of words
+}
+\details{
+Users can customize the plots through \code{...}, which is
+passed to \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}} and \code{\link[ggrepel:geom_text_repel]{ggrepel::geom_text_repel()}}. The
+colors are specified internally but users can override the settings by appending
+\code{\link[ggplot2:scale_manual]{ggplot2::scale_colour_manual()}} or \code{\link[ggplot2:scale_brewer]{ggplot2::scale_colour_brewer()}}. The
+legend title can also be modified using \code{\link[ggplot2:labs]{ggplot2::labs()}}.
 }
