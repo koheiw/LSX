@@ -100,7 +100,6 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         embed <- t(svd$v)
         colnames(embed) <- featnames(x)
         embed <- embed[,feat, drop = FALSE]
-        import <- svd$d
     }
 
     if (is.null(slice)) {
@@ -126,9 +125,9 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         seeds_weighted = seed,
         embedding = embed,
         similarity = simil$seed,
-        importance = import,
         concatenator = meta(x, field = "concatenator", type = "object"),
-        call = match.call()
+        call = match.call(sys.function(-1), call = sys.call(-1)),
+        version = utils::packageVersion("LSX")
     )
     if (include_data) {
         if (group_data) {
@@ -198,7 +197,9 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         seeds_weighted = seed,
         embedding = embed,
         similarity = simil$seed,
-        call = match.call()
+        concatenator = meta(x, field = "concatenator", type = "object"),
+        call = match.call(sys.function(-1), call = sys.call(-1)),
+        version = utils::packageVersion("LSX")
     )
     class(result) <- "textmodel_lss"
     return(result)
@@ -218,10 +219,9 @@ build_lss <- function(...) {
         seeds_weighted = NULL,
         embedding = NULL,
         similarity = NULL,
-        importance = NULL,
         concatenator = "_",
-        dummy = FALSE,
-        call = NULL
+        call = NULL,
+        version = utils::packageVersion("LSX")
     )
     for (m in intersect(names(result), names(args))) {
         result[m] <- args[m]
