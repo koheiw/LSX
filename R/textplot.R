@@ -86,12 +86,17 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
             highlighted <- unlist(highlighted, use.names = FALSE)
             valuetype <- "glob"
         }
+        if (is.null(x$concatenator)) {
+            concatenator <- "_" # for old object
+        } else {
+            concatenator <- x$concatenator
+        }
         ids <- quanteda::object2id(
             highlighted,
             types = temp$word,
             valuetype = valuetype,
             case_insensitive = TRUE,
-            concatenator = x$concatenator
+            concatenator = concatenator
         )
         key <- attr(ids, "key")
         id <- unlist(ids)
