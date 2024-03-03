@@ -7,18 +7,21 @@
 #' @param mode choose the type of the result of bootstrapping. If `coef`,
 #'   returns polarity scores; if `terms`, returns words sorted by
 #'   the polarity scores in descending order.
+#' @param remove if `TRUE`, remove each seed word when `what = "seeds"`.
 #' @param from,to,by passed to `seq()` to generate values for `k`; only used
 #'   when `what = "k"`.
 #' @param ... additional arguments passed to `as.textmodel_lss()`.
 #' @param verbose show messages if `TRUE`.
 #' @export
-#' @importFrom quanteda check_integer
+#' @importFrom quanteda check_integer check_logical
 bootstrap_lss <- function(x, what = c("seeds", "k"), mode = c("terms", "coef"),
+                          remove = FALSE,
                           from = 50, to = NULL, by = 50, verbose = FALSE, ...) {
 
     what <- match.arg(what)
     mode <- match.arg(mode)
     from <- check_integer(from, min = 1, max = x$k)
+    remove <- check_logical(remove)
     if (!is.null(to)) {
         to <- check_integer(to, min = 1, max = x$k)
     } else {
@@ -30,8 +33,15 @@ bootstrap_lss <- function(x, what = c("seeds", "k"), mode = c("terms", "coef"),
     if (what == "seeds") {
         param <- names(x$seeds_weighted)
         beta <- lapply(param, function(y) {
-            if (verbose) cat(sprintf('  seeds = "%s"\n', y))
-            as.textmodel_lss(x, seeds = y, terms = x$terms, ...)$beta
+            if (remove) {
+                seed <- setdiff(param, y)
+                if (verbose) cat(sprintf('  seeds != "%s"\n', y))
+            } else {
+                seed <- y
+                if (verbose) cat(sprintf('  seeds = "%s"\n', y))
+            }
+
+            as.textmodel_lss(x, seeds = seed, terms = x$terms, ...)$beta
         })
         names(beta) <- param
     } else {

@@ -8,6 +8,7 @@ bootstrap_lss(
   x,
   what = c("seeds", "k"),
   mode = c("terms", "coef"),
+  remove = FALSE,
   from = 50,
   to = NULL,
   by = 50,
@@ -23,6 +24,8 @@ bootstrap_lss(
 \item{mode}{choose the type of the result of bootstrapping. If \code{coef},
 returns polarity scores; if \code{terms}, returns words sorted by
 the polarity scores in descending order.}
+
+\item{remove}{if \code{TRUE}, remove each seed word when \code{what = "seeds"}.}
 
 \item{from, to, by}{passed to \code{seq()} to generate values for \code{k}; only used
 when \code{what = "k"}.}
