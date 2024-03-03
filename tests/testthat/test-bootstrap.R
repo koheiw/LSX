@@ -26,6 +26,20 @@ test_that("bootstrap_lss works with what = seeds", {
 
 })
 
+test_that("bootstrap_lss works with verbose = TRUE", {
+
+    expect_output(
+        bootstrap_lss(lss_test, "seeds", verbose = TRUE),
+        'seeds = "good"'
+    )
+
+    expect_output(
+        bootstrap_lss(lss_test, "seeds", remove = TRUE, verbose = TRUE),
+        'seeds != "good"'
+    )
+
+})
+
 test_that("bootstrap_lss works with remove = TRUE", {
     lss_test$terms <- NULL
 
