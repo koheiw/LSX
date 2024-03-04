@@ -28,7 +28,6 @@ as.textmodel_lss.matrix <- function(x, seeds,
                                     auto_weight = FALSE,
                                     verbose = FALSE, ...) {
 
-    unused_dots(...)
     args <- list(terms = terms, seeds = seeds)
     if (is.null(colnames(x)))
         stop("x must have column names for features")
@@ -73,7 +72,6 @@ as.textmodel_lss.matrix <- function(x, seeds,
 #' @method as.textmodel_lss numeric
 as.textmodel_lss.numeric <- function(x, ...) {
 
-    unused_dots(...)
     if (is.null(names(x)))
         stop("x must have names for features")
     if (any(is.na(names(x))))

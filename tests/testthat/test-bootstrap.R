@@ -1,5 +1,8 @@
 require(quanteda)
 
+toks_test <- readRDS("../data/tokens_test.RDS")
+dfmt_test <- dfm(toks_test) %>%
+    dfm_group()
 lss_test <- readRDS("../data/lss_test.RDS")
 
 test_that("bootstrap_lss works with what = seeds", {
@@ -24,6 +27,15 @@ test_that("bootstrap_lss works with what = seeds", {
     expect_equal(nrow(bs3), length(lss_test$beta))
     expect_equal(attr(bs3, "values"), names(lss_test$seeds_weighted))
 
+    bs4 <- bootstrap_lss(lss_test, mode = "predidct", newdata = dfmt_test)
+    expect_equal(class(as.vector(bs4)), "numeric")
+    expect_equal(ncol(bs4), 12)
+    expect_equal(attr(bs4, "values"), names(lss_test$seeds_weighted))
+    expect_equal(rownames(bs4), docnames(dfmt_test))
+    expect_error(
+        bootstrap_lss(lss_test, mode = "predict", newdata = dfmt_test, se_fit = TRUE),
+        'formal argument "se_fit" matched by multiple actual arguments'
+    )
 })
 
 test_that("bootstrap_lss works with verbose = TRUE", {
