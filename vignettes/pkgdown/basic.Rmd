@@ -69,17 +69,14 @@ lss <- textmodel_lss(dfmt, seeds = seed, k = 300, cache = TRUE,
 saveRDS(lss, "lss.rds")
 ```
 
-You can visualize the polarity of words using `textplot_terms()`. If you pass a dictionary to `highlighted`, words are plotted in different colors. `data_dictionary_LSD2015` is a widely-used sentiment dictionary.
+You can visualize the polarity of words using `textplot_terms()`. If you pass a dictionary to `highlighted`, words are plotted in different colors. `data_dictionary_LSD2015` is a widely-used sentiment dictionary. If `highlighted = NULL`, words are selected randomly to highlight.
 
-```{r plot-sentiment-term, warning=FALSE}
+```{r plot-sentiment-dict, warning=FALSE}
 textplot_terms(lss, highlighted = data_dictionary_LSD2015[1:2])
 ```
 
-You can also manually specify which words (or emoji) to highlight. You can pass glob patterns to `highlighted` if you want.
-
-```{r plot-sentimnet-emoji, warning=FALSE}
-emoji <- featnames(dfm_select(dfmt, "^\\p{Emoji_Presentation}+$", valuetype = "regex"))
-textplot_terms(lss, highlighted = c(emoji, names(seed)))
+```{r plot-sentimnet-random, warning=FALSE}
+textplot_terms(lss, highlighted = NULL)
 ```
 
 ### Predict the polarity of documents

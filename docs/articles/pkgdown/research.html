@@ -8,8 +8,8 @@
 <meta name="description" content="LSX">
 <title>Application in research • LSX</title>
 <script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Application in research">
 <meta property="og:description" content="LSX">
@@ -95,11 +95,13 @@ European Gas Demand Reduction Plan</a> on 20 July affected Sputnik’s
 coverage of energy issues in the United States and the European
 Union.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">LSX</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://koheiw.github.io/LSX/" class="external-link">LSX</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in .recacheSubclasses(def@className, def, env): undefined subclass</span></span>
+<span><span class="co">#&gt; "ndiMatrix" of class "replValueSp"; definition not updated</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://quanteda.io" class="external-link">quanteda</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Package version: 4.0.0</span></span>
-<span><span class="co">#&gt; Unicode version: 13.0</span></span>
-<span><span class="co">#&gt; ICU version: 69.1</span></span>
+<span><span class="co">#&gt; Unicode version: 15.1</span></span>
+<span><span class="co">#&gt; ICU version: 74.1</span></span>
 <span><span class="co">#&gt; Parallel computing: 16 of 16 threads used.</span></span>
 <span><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
@@ -152,7 +154,7 @@ called target words.</p>
 <span><span class="va">lss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/textmodel_lss.html">textmodel_lss</a></span><span class="op">(</span><span class="va">dfmt</span>, seeds <span class="op">=</span> <span class="va">seed</span>, terms <span class="op">=</span> <span class="va">term</span>, cache <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                     include_data <span class="op">=</span> <span class="cn">TRUE</span>, group_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/textplot_terms.html">textplot_terms</a></span><span class="op">(</span><span class="va">lss</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/textplot_terms.html">textplot_terms</a></span><span class="op">(</span><span class="va">lss</span>, highlighted <span class="op">=</span> <span class="va">data_dictionary_LSD2015</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="research_files/figure-html/plot-term-1.png" width="760"></p>
 </div>
 <div class="section level3">
@@ -235,12 +237,12 @@ news (Watanabe 2017; Watanabe et al. 2022).</p>
 <span><span class="va">dat_war</span><span class="op">$</span><span class="va">after</span> <span class="op">&lt;-</span> <span class="va">dat_war</span><span class="op">$</span><span class="va">date</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2022-06-20"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dat_war</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lss"</span>, <span class="st">"us"</span>, <span class="st">"eu"</span>, <span class="st">"after"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       lss               us              eu            after        </span></span>
-<span><span class="co">#&gt;  Min.   :-9.67278   Mode :logical   Mode :logical   Mode :logical  </span></span>
-<span><span class="co">#&gt;  1st Qu.:-0.64796   FALSE:2451      FALSE:4547      FALSE:3394     </span></span>
-<span><span class="co">#&gt;  Median :-0.03382   TRUE :4695      TRUE :2599      TRUE :3752     </span></span>
-<span><span class="co">#&gt;  Mean   :-0.03512                                                  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 0.54054                                                  </span></span>
-<span><span class="co">#&gt;  Max.   : 7.54702                                                  </span></span>
+<span><span class="co">#&gt;  Min.   :-9.65775   Mode :logical   Mode :logical   Mode :logical  </span></span>
+<span><span class="co">#&gt;  1st Qu.:-0.64778   FALSE:2450      FALSE:4547      FALSE:3394     </span></span>
+<span><span class="co">#&gt;  Median :-0.03249   TRUE :4696      TRUE :2599      TRUE :3752     </span></span>
+<span><span class="co">#&gt;  Mean   :-0.03571                                                  </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 0.53997                                                  </span></span>
+<span><span class="co">#&gt;  Max.   : 7.59192                                                  </span></span>
 <span><span class="co">#&gt;  NA's   :4</span></span></code></pre></div>
 <p><code>dat_war</code> contains only the scores since the beginning of
 the war, so the <code>intercept</code> is the average sentiment of the
@@ -266,23 +268,23 @@ positive than before the proposition.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
 <span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">#&gt; -9.6327 -0.6074  0.0026  0.5800  7.5016 </span></span>
+<span><span class="co">#&gt; -9.6176 -0.6074  0.0021  0.5784  7.5495 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;                  Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)       0.03187    0.03224   0.989  0.32287    </span></span>
-<span><span class="co">#&gt; usTRUE           -0.07198    0.03729  -1.930  0.05360 .  </span></span>
-<span><span class="co">#&gt; euTRUE           -0.04903    0.03653  -1.342  0.17953    </span></span>
-<span><span class="co">#&gt; afterTRUE        -0.13554    0.04373  -3.100  0.00195 ** </span></span>
-<span><span class="co">#&gt; usTRUE:afterTRUE  0.22106    0.05049   4.378 1.21e-05 ***</span></span>
-<span><span class="co">#&gt; euTRUE:afterTRUE -0.02012    0.04974  -0.404  0.68590    </span></span>
+<span><span class="co">#&gt; (Intercept)       0.03147    0.03223   0.977  0.32880    </span></span>
+<span><span class="co">#&gt; usTRUE           -0.07167    0.03728  -1.923  0.05457 .  </span></span>
+<span><span class="co">#&gt; euTRUE           -0.04580    0.03652  -1.254  0.20979    </span></span>
+<span><span class="co">#&gt; afterTRUE        -0.13860    0.04372  -3.170  0.00153 ** </span></span>
+<span><span class="co">#&gt; usTRUE:afterTRUE  0.22118    0.05048   4.382 1.19e-05 ***</span></span>
+<span><span class="co">#&gt; euTRUE:afterTRUE -0.02027    0.04972  -0.408  0.68346    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residual standard error: 1.004 on 7136 degrees of freedom</span></span>
 <span><span class="co">#&gt;   (4 observations deleted due to missingness)</span></span>
-<span><span class="co">#&gt; Multiple R-squared:  0.004005,   Adjusted R-squared:  0.003307 </span></span>
-<span><span class="co">#&gt; F-statistic: 5.739 on 5 and 7136 DF,  p-value: 2.725e-05</span></span></code></pre></div>
+<span><span class="co">#&gt; Multiple R-squared:  0.00394,    Adjusted R-squared:  0.003242 </span></span>
+<span><span class="co">#&gt; F-statistic: 5.645 on 5 and 7136 DF,  p-value: 3.362e-05</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="conclusions">Conclusions<a class="anchor" aria-label="anchor" href="#conclusions"></a>

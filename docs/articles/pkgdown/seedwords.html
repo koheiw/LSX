@@ -8,8 +8,8 @@
 <meta name="description" content="LSX">
 <title>Selection of seed words • LSX</title>
 <script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Selection of seed words">
 <meta property="og:description" content="LSX">
@@ -104,12 +104,14 @@ This function extracts seed words from a fitted LSS model, fits a LSS
 model with each seed words internally and returns their synonyms or
 similarity scores. We use the LSS model fitted in the <a href="basic.html">introduction</a> in this example.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">LSX</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://koheiw.github.io/LSX/" class="external-link">LSX</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in .recacheSubclasses(def@className, def, env): undefined subclass</span></span>
+<span><span class="co">#&gt; "ndiMatrix" of class "replValueSp"; definition not updated</span></span>
 <span><span class="va">lss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"lss.rds"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lss</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; textmodel_lss.dfm(x = dfmt, seeds = seed, k = 300, cache = TRUE, </span></span>
+<span><span class="co">#&gt; textmodel_lss(x = dfmt, seeds = seed, k = 300, cache = TRUE, </span></span>
 <span><span class="co">#&gt;     include_data = TRUE, group_data = TRUE)</span></span></code></pre></div>
 <p>The model is fitted with the generic sentiment seed words. Their
 original polarity scores are weighted by the inverse of the number of
@@ -147,9 +149,9 @@ ambiguous.</p>
 <colgroup>
 <col width="7%">
 <col width="6%">
-<col width="10%">
+<col width="9%">
 <col width="6%">
-<col width="7%">
+<col width="9%">
 <col width="6%">
 <col width="6%">
 <col width="5%">
@@ -202,7 +204,7 @@ ambiguous.</p>
 <td align="left">bicocca</td>
 <td align="left">2s19</td>
 <td align="left">good</td>
-<td align="left">salaried</td>
+<td align="left">t.v</td>
 <td align="left">oppressed</td>
 <td align="left">impact</td>
 <td align="left">garnett’s</td>
@@ -218,9 +220,9 @@ ambiguous.</p>
 <td align="left">seldom</td>
 <td align="left">msta-s</td>
 <td align="left">really</td>
-<td align="left">pokes</td>
+<td align="left">salaried</td>
 <td align="left">working</td>
-<td align="left">credit-based</td>
+<td align="left">likens</td>
 <td align="left">squabbled</td>
 <td align="left">optimists</td>
 <td align="left">sajjan</td>
@@ -233,10 +235,10 @@ ambiguous.</p>
 <td align="left">respectfully</td>
 <td align="left">i’ve</td>
 <td align="left">lisitsyn</td>
-<td align="left">goodness</td>
-<td align="left">life-changing</td>
+<td align="left">fingalise</td>
+<td align="left">pokes</td>
 <td align="left">class</td>
-<td align="left">likens</td>
+<td align="left">credit-based</td>
 <td align="left">rostik</td>
 <td align="left">think</td>
 <td align="left">viterra</td>
@@ -244,13 +246,13 @@ ambiguous.</p>
 <tr class="odd">
 <td align="left">brennan’s</td>
 <td align="left">sportsman</td>
-<td align="left">fidgety</td>
+<td align="left">china-u.s</td>
 <td align="left">moscow-kiev</td>
 <td align="left">schultze</td>
 <td align="left">uh</td>
 <td align="left">tagil</td>
-<td align="left">fingalise</td>
-<td align="left">sofa</td>
+<td align="left">goodness</td>
+<td align="left">life-changing</td>
 <td align="left">nino</td>
 <td align="left">evaporate</td>
 <td align="left">pergamon</td>
@@ -260,61 +262,61 @@ ambiguous.</p>
 <tr class="even">
 <td align="left">fidgety</td>
 <td align="left">glenmede</td>
-<td align="left">soured</td>
+<td align="left">fidgety</td>
 <td align="left">hope</td>
 <td align="left">vienna-hosted</td>
 <td align="left">really</td>
 <td align="left">msta’s</td>
 <td align="left">gander</td>
-<td align="left">clogged</td>
+<td align="left">sofa</td>
 <td align="left">mine-defusing</td>
 <td align="left">economy</td>
 <td align="left">lapdogs</td>
-<td align="left">napolitano</td>
-<td align="left">subhuman</td>
-</tr>
-<tr class="odd">
-<td align="left">overdependent</td>
-<td align="left">smelly</td>
-<td align="left">inter-parliamntary</td>
-<td align="left">sides</td>
-<td align="left">rama</td>
-<td align="left">dostoyevsky</td>
-<td align="left">tse</td>
-<td align="left">lot</td>
-<td align="left">chloroform</td>
-<td align="left">movement</td>
-<td align="left">adverse</td>
-<td align="left">untrained</td>
-<td align="left">stink</td>
-<td align="left">pop-culturally</td>
-</tr>
-<tr class="even">
-<td align="left">nexus</td>
-<td align="left">attract</td>
-<td align="left">relations</td>
-<td align="left">impasse</td>
-<td align="left">skopje</td>
-<td align="left">self-regard</td>
-<td align="left">hierarchical</td>
-<td align="left">there’s</td>
-<td align="left">phosgene</td>
-<td align="left">racist</td>
-<td align="left">dhaka’s</td>
-<td align="left">asian-african</td>
 <td align="left">serezha</td>
 <td align="left">prettied</td>
 </tr>
 <tr class="odd">
+<td align="left">nexus</td>
+<td align="left">smelly</td>
+<td align="left">soured</td>
+<td align="left">sides</td>
+<td align="left">rama</td>
+<td align="left">dostoyevsky</td>
+<td align="left">hierarchical</td>
+<td align="left">lot</td>
+<td align="left">phosgene</td>
+<td align="left">movement</td>
+<td align="left">adverse</td>
+<td align="left">untrained</td>
+<td align="left">napolitano</td>
+<td align="left">pop-culturally</td>
+</tr>
+<tr class="even">
+<td align="left">overdependent</td>
+<td align="left">attract</td>
+<td align="left">inter-parliamntary</td>
+<td align="left">impasse</td>
+<td align="left">cop13</td>
+<td align="left">self-regard</td>
+<td align="left">tse</td>
+<td align="left">there’s</td>
+<td align="left">chloroform</td>
+<td align="left">racist</td>
+<td align="left">dhaka’s</td>
+<td align="left">asian-african</td>
+<td align="left">stink</td>
+<td align="left">subhuman</td>
+</tr>
+<tr class="odd">
 <td align="left">duda’s</td>
 <td align="left">io-30</td>
-<td align="left">overdependent</td>
+<td align="left">relations</td>
 <td align="left">mutual</td>
-<td align="left">kovacevski</td>
+<td align="left">washington-tehran</td>
 <td align="left">grading</td>
 <td align="left">cradling</td>
 <td align="left">they’re</td>
-<td align="left">nit</td>
+<td align="left">clogged</td>
 <td align="left">piecemeal</td>
 <td align="left">alaskans</td>
 <td align="left">minders</td>
@@ -323,14 +325,14 @@ ambiguous.</p>
 </tr>
 <tr class="even">
 <td align="left">relations</td>
-<td align="left">they’ve</td>
+<td align="left">swirled</td>
 <td align="left">nexus</td>
 <td align="left">abramovich’s</td>
-<td align="left">cop13</td>
+<td align="left">kovacevski</td>
 <td align="left">marble</td>
 <td align="left">nizhny</td>
 <td align="left">i’m</td>
-<td align="left">unzips</td>
+<td align="left">nit</td>
 <td align="left">capitalism</td>
 <td align="left">psychotic</td>
 <td align="left">polarise</td>
@@ -345,7 +347,7 @@ ambiguous.</p>
 </h2>
 <p>If <code>mode = "coef"</code>, the function returns the similarity
 scores of words for each seed word (words were sorted by these scores in
-the list above). We can use the matrix to evaluate the seed words more
+the lists above). We can use the matrix to evaluate the seed words more
 systematically if lists of synonyms are not useful or sufficient.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bs_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/bootstrap_lss.html">bootstrap_lss</a></span><span class="op">(</span><span class="va">lss</span>, mode <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
@@ -391,7 +393,7 @@ systematically if lists of synonyms are not useful or sufficient.</p>
 <td align="right">-0.037</td>
 <td align="right">-0.006</td>
 <td align="right">-0.029</td>
-<td align="right">0.021</td>
+<td align="right">0.020</td>
 <td align="right">-0.020</td>
 <td align="right">0.004</td>
 <td align="right">0.125</td>
@@ -401,7 +403,7 @@ systematically if lists of synonyms are not useful or sufficient.</p>
 <td align="right">-0.061</td>
 <td align="right">-0.032</td>
 <td align="right">-0.017</td>
-<td align="right">-0.016</td>
+<td align="right">-0.019</td>
 </tr>
 <tr class="even">
 <td align="left">us</td>
@@ -416,9 +418,9 @@ systematically if lists of synonyms are not useful or sufficient.</p>
 <td align="right">-0.020</td>
 <td align="right">-0.004</td>
 <td align="right">0.009</td>
-<td align="right">0.022</td>
+<td align="right">0.021</td>
 <td align="right">-0.003</td>
-<td align="right">-0.006</td>
+<td align="right">-0.007</td>
 </tr>
 <tr class="odd">
 <td align="left">president</td>
@@ -434,29 +436,29 @@ systematically if lists of synonyms are not useful or sufficient.</p>
 <td align="right">-0.020</td>
 <td align="right">0.004</td>
 <td align="right">-0.016</td>
-<td align="right">0.014</td>
+<td align="right">0.015</td>
 <td align="right">-0.005</td>
 </tr>
 <tr class="even">
 <td align="left">joe</td>
-<td align="right">0.019</td>
-<td align="right">0.157</td>
+<td align="right">0.018</td>
+<td align="right">0.158</td>
 <td align="right">-0.021</td>
 <td align="right">-0.083</td>
 <td align="right">-0.060</td>
-<td align="right">-0.035</td>
+<td align="right">-0.036</td>
 <td align="right">-0.022</td>
-<td align="right">0.023</td>
-<td align="right">-0.037</td>
+<td align="right">0.024</td>
+<td align="right">-0.036</td>
 <td align="right">0.062</td>
 <td align="right">-0.041</td>
-<td align="right">-0.055</td>
-<td align="right">-0.021</td>
-<td align="right">-0.002</td>
+<td align="right">-0.054</td>
+<td align="right">-0.023</td>
+<td align="right">-0.001</td>
 </tr>
 <tr class="odd">
 <td align="left">biden</td>
-<td align="right">0.017</td>
+<td align="right">0.018</td>
 <td align="right">-0.007</td>
 <td align="right">-0.027</td>
 <td align="right">0.068</td>
@@ -467,39 +469,39 @@ systematically if lists of synonyms are not useful or sufficient.</p>
 <td align="right">-0.023</td>
 <td align="right">0.026</td>
 <td align="right">0.024</td>
-<td align="right">0.013</td>
-<td align="right">0.022</td>
+<td align="right">0.012</td>
+<td align="right">0.023</td>
 <td align="right">-0.004</td>
 </tr>
 <tr class="even">
 <td align="left">reiterated</td>
 <td align="right">0.015</td>
-<td align="right">0.064</td>
+<td align="right">0.062</td>
 <td align="right">0.098</td>
 <td align="right">0.216</td>
-<td align="right">-0.033</td>
-<td align="right">0.149</td>
-<td align="right">0.001</td>
-<td align="right">-0.026</td>
-<td align="right">-0.023</td>
-<td align="right">-0.118</td>
-<td align="right">0.014</td>
+<td align="right">-0.034</td>
+<td align="right">0.148</td>
+<td align="right">0.000</td>
+<td align="right">-0.024</td>
+<td align="right">-0.021</td>
+<td align="right">-0.119</td>
+<td align="right">0.013</td>
 <td align="right">-0.104</td>
 <td align="right">-0.020</td>
-<td align="right">-0.039</td>
+<td align="right">-0.041</td>
 </tr>
 <tr class="odd">
 <td align="left">united</td>
 <td align="right">-0.002</td>
 <td align="right">0.018</td>
 <td align="right">-0.100</td>
-<td align="right">0.038</td>
+<td align="right">0.037</td>
 <td align="right">0.092</td>
-<td align="right">-0.010</td>
+<td align="right">-0.009</td>
 <td align="right">-0.015</td>
 <td align="right">-0.023</td>
-<td align="right">0.019</td>
-<td align="right">-0.027</td>
+<td align="right">0.018</td>
+<td align="right">-0.028</td>
 <td align="right">0.002</td>
 <td align="right">0.043</td>
 <td align="right">0.019</td>
@@ -508,53 +510,53 @@ systematically if lists of synonyms are not useful or sufficient.</p>
 <tr class="even">
 <td align="left">states</td>
 <td align="right">-0.010</td>
-<td align="right">-0.009</td>
-<td align="right">0.094</td>
+<td align="right">-0.008</td>
+<td align="right">0.093</td>
 <td align="right">-0.068</td>
 <td align="right">0.049</td>
 <td align="right">-0.028</td>
 <td align="right">-0.023</td>
 <td align="right">0.005</td>
-<td align="right">-0.034</td>
+<td align="right">-0.033</td>
 <td align="right">0.032</td>
 <td align="right">0.025</td>
-<td align="right">-0.055</td>
+<td align="right">-0.056</td>
 <td align="right">-0.026</td>
-<td align="right">0.021</td>
+<td align="right">0.020</td>
 </tr>
 <tr class="odd">
 <td align="left">commitment</td>
-<td align="right">0.018</td>
-<td align="right">0.063</td>
+<td align="right">0.019</td>
+<td align="right">0.064</td>
 <td align="right">0.096</td>
 <td align="right">0.076</td>
 <td align="right">0.056</td>
 <td align="right">0.025</td>
-<td align="right">0.010</td>
-<td align="right">-0.063</td>
+<td align="right">0.011</td>
+<td align="right">-0.062</td>
 <td align="right">0.002</td>
 <td align="right">0.035</td>
 <td align="right">-0.030</td>
 <td align="right">-0.064</td>
 <td align="right">-0.012</td>
-<td align="right">0.001</td>
+<td align="right">0.002</td>
 </tr>
 <tr class="even">
 <td align="left">diplomacy</td>
 <td align="right">0.183</td>
 <td align="right">0.133</td>
 <td align="right">0.090</td>
-<td align="right">0.202</td>
-<td align="right">0.046</td>
+<td align="right">0.201</td>
+<td align="right">0.045</td>
 <td align="right">0.101</td>
-<td align="right">0.088</td>
-<td align="right">0.078</td>
-<td align="right">0.043</td>
+<td align="right">0.086</td>
+<td align="right">0.079</td>
+<td align="right">0.045</td>
 <td align="right">0.039</td>
 <td align="right">-0.033</td>
-<td align="right">0.016</td>
-<td align="right">0.185</td>
-<td align="right">-0.056</td>
+<td align="right">0.019</td>
+<td align="right">0.186</td>
+<td align="right">-0.057</td>
 </tr>
 </tbody>
 </table>
@@ -571,20 +573,20 @@ words.</p>
 <code class="sourceCode R"><span><span class="va">dat_seed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="va">lss</span><span class="op">$</span><span class="va">seeds</span>, diff <span class="op">=</span> <span class="va">bs_coef</span><span class="op">[</span><span class="st">"russia"</span>,<span class="op">]</span> <span class="op">-</span> <span class="va">bs_coef</span><span class="op">[</span><span class="st">"ukraine"</span>,<span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dat_seed</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             seed         diff</span></span>
-<span><span class="co">#&gt; good           1  0.001332789</span></span>
-<span><span class="co">#&gt; nice           1  0.014461127</span></span>
-<span><span class="co">#&gt; excellent      1  0.034208697</span></span>
-<span><span class="co">#&gt; positive       1  0.017571266</span></span>
-<span><span class="co">#&gt; fortunate      1 -0.003632530</span></span>
-<span><span class="co">#&gt; correct        1  0.017608754</span></span>
-<span><span class="co">#&gt; superior       1  0.003934236</span></span>
-<span><span class="co">#&gt; bad           -1 -0.007724949</span></span>
-<span><span class="co">#&gt; nasty         -1 -0.003432713</span></span>
-<span><span class="co">#&gt; poor          -1 -0.008047205</span></span>
-<span><span class="co">#&gt; negative      -1  0.005540324</span></span>
-<span><span class="co">#&gt; unfortunate   -1 -0.091302423</span></span>
-<span><span class="co">#&gt; wrong         -1 -0.008261888</span></span>
-<span><span class="co">#&gt; inferior      -1 -0.044426507</span></span></code></pre></div>
+<span><span class="co">#&gt; good           1  0.001436750</span></span>
+<span><span class="co">#&gt; nice           1  0.014494254</span></span>
+<span><span class="co">#&gt; excellent      1  0.034122232</span></span>
+<span><span class="co">#&gt; positive       1  0.017660484</span></span>
+<span><span class="co">#&gt; fortunate      1 -0.003603953</span></span>
+<span><span class="co">#&gt; correct        1  0.017574761</span></span>
+<span><span class="co">#&gt; superior       1  0.003759512</span></span>
+<span><span class="co">#&gt; bad           -1 -0.007722325</span></span>
+<span><span class="co">#&gt; nasty         -1 -0.003313554</span></span>
+<span><span class="co">#&gt; poor          -1 -0.008085451</span></span>
+<span><span class="co">#&gt; negative      -1  0.005467496</span></span>
+<span><span class="co">#&gt; unfortunate   -1 -0.090945891</span></span>
+<span><span class="co">#&gt; wrong         -1 -0.008309969</span></span>
+<span><span class="co">#&gt; inferior      -1 -0.043939811</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="conclusions">Conclusions<a class="anchor" aria-label="anchor" href="#conclusions"></a>
