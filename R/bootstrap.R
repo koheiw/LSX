@@ -1,20 +1,30 @@
 #' \[experimental\] Compute polarity scores with different hyper-parameters
 #'
-#' A function to compute polarity scores of words by resampling hyper-parameters
-#' from a fitted LSS model.
+#' A function to compute polarity scores of words and documents by resampling
+#' hyper-parameters from a fitted LSS model.
 #' @param x a fitted textmodel_lss object.
 #' @param what choose the hyper-parameter to resample in bootstrapping.
 #' @param mode choose the type of the result of bootstrapping. If `coef`,
-#'   returns polarity scores; if `terms`, returns words sorted by
-#'   the polarity scores in descending order.
+#'   returns the polarity scores of words; if `terms`, returns words sorted by
+#'   the polarity scores in descending order; if `predict`, returns the polarity
+#'   scores of documents.
 #' @param remove if `TRUE`, remove each seed word when `what = "seeds"`.
 #' @param from,to,by passed to `seq()` to generate values for `k`; only used
 #'   when `what = "k"`.
-#' @param ... additional arguments passed to `as.textmodel_lss()`.
+#' @param ... additional arguments passed to [as.textmodel_lss()] and
+#'   [predict()].
 #' @param verbose show messages if `TRUE`.
+#' @details This function internally creates LSS fitted textmodel_lss objects by
+#'   resampling hyper-parameters and computes polarity of words or documents.
+#'   The resulting matrix can be used to asses the validity and the reliability
+#'   of seeds or k.
+#'
+#'   Note that the objects created by [as.textmodel_lss()] does not contain data, users
+#'   must pass `newdata` via `...` when `mode = "predict"`.
 #' @export
 #' @importFrom quanteda check_integer check_logical
-bootstrap_lss <- function(x, what = c("seeds", "k"), mode = c("terms", "coef"),
+bootstrap_lss <- function(x, what = c("seeds", "k"),
+                          mode = c("terms", "coef", "predict"),
                           remove = FALSE,
                           from = 50, to = NULL, by = 50, verbose = FALSE, ...) {
 
@@ -55,9 +65,14 @@ bootstrap_lss <- function(x, what = c("seeds", "k"), mode = c("terms", "coef"),
     }
     if (mode == "terms") {
         result <- sapply(beta, function(y) names(sort(y, decreasing = TRUE)))
+    } else if (mode == "predict") {
+        result <- sapply(beta, function(x) {
+            predict(as.textmodel_lss(x), se_fit = FALSE, ...)
+        })
     } else {
         result <- do.call(cbind, beta)
     }
+
     attr(result, "what") <- what
     attr(result, "values") <- param
     return(result)

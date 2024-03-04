@@ -7,7 +7,7 @@
 bootstrap_lss(
   x,
   what = c("seeds", "k"),
-  mode = c("terms", "coef"),
+  mode = c("terms", "coef", "predict"),
   remove = FALSE,
   from = 50,
   to = NULL,
@@ -22,8 +22,9 @@ bootstrap_lss(
 \item{what}{choose the hyper-parameter to resample in bootstrapping.}
 
 \item{mode}{choose the type of the result of bootstrapping. If \code{coef},
-returns polarity scores; if \code{terms}, returns words sorted by
-the polarity scores in descending order.}
+returns the polarity scores of words; if \code{terms}, returns words sorted by
+the polarity scores in descending order; if \code{predict}, returns the polarity
+scores of documents.}
 
 \item{remove}{if \code{TRUE}, remove each seed word when \code{what = "seeds"}.}
 
@@ -32,9 +33,19 @@ when \code{what = "k"}.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
-\item{...}{additional arguments passed to \code{as.textmodel_lss()}.}
+\item{...}{additional arguments passed to \code{\link[=as.textmodel_lss]{as.textmodel_lss()}} and
+\code{\link[=predict]{predict()}}.}
 }
 \description{
-A function to compute polarity scores of words by resampling hyper-parameters
-from a fitted LSS model.
+A function to compute polarity scores of words and documents by resampling
+hyper-parameters from a fitted LSS model.
+}
+\details{
+This function internally creates LSS fitted textmodel_lss objects by
+resampling hyper-parameters and computes polarity of words or documents.
+The resulting matrix can be used to asses the validity and the reliability
+of seeds or k.
+
+Note that the objects created by \code{\link[=as.textmodel_lss]{as.textmodel_lss()}} does not contain data, users
+must pass \code{newdata} via \code{...} when \code{mode = "predict"}.
 }
