@@ -27,7 +27,7 @@ test_that("bootstrap_lss works with what = seeds", {
     expect_equal(nrow(bs3), length(lss_test$beta))
     expect_equal(attr(bs3, "values"), names(lss_test$seeds_weighted))
 
-    bs4 <- bootstrap_lss(lss_test, mode = "predidct", newdata = dfmt_test)
+    bs4 <- bootstrap_lss(lss_test, mode = "predict", newdata = dfmt_test)
     expect_equal(class(as.vector(bs4)), "numeric")
     expect_equal(ncol(bs4), 12)
     expect_equal(attr(bs4, "values"), names(lss_test$seeds_weighted))
