@@ -37,7 +37,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k"),
     } else {
         to <- x$k
     }
-    by <- check_integer(by, min = 1)
+    by <- check_integer(by, min = 1, max = x$k)
     if (verbose)
         cat(sprintf("Call %s(x) with different hyper-parameters...\n", mode))
     if (what == "seeds") {
@@ -86,7 +86,6 @@ bootstrap_lss <- function(x, what = c("seeds", "k"),
 optimize_lss <- function(x, ...) {
     beta <- bootstrap_lss(x, mode = "coef", ...)
     pred <- bootstrap_lss(x, mode = "pred", ..., rescale = FALSE)
-    # variance ratio
     disc <- apply(pred, 2, var, na.rm = TRUE) / apply(beta, 2, var, na.rm = TRUE)
     return(disc)
 }
