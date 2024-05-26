@@ -9,7 +9,7 @@ bootstrap_lss(
   what = c("seeds", "k"),
   mode = c("terms", "coef", "predict"),
   remove = FALSE,
-  from = 50,
+  from = 100,
   to = NULL,
   by = 50,
   verbose = FALSE,
