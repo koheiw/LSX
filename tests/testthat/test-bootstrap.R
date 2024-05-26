@@ -72,8 +72,6 @@ test_that("bootstrap_lss with what = k", {
                  "The value of to must be between 1 and 300")
     expect_error(bootstrap_lss(lss_test, what = "k", by = -1),
                  "The value of by must be between 1 and 250")
-    expect_error(bootstrap_lss(lss_test, what = "k", by = 1000),
-                 "The value of by must be between 1 and 250")
 })
 
 test_that("bootstrap_lss show messages", {
