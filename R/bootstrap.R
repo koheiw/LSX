@@ -26,7 +26,7 @@
 bootstrap_lss <- function(x, what = c("seeds", "k"),
                           mode = c("terms", "coef", "predict"),
                           remove = FALSE,
-                          from = 50, to = NULL, by = 50, verbose = FALSE, ...) {
+                          from = 100, to = NULL, by = 50, verbose = FALSE, ...) {
 
     what <- match.arg(what)
     mode <- match.arg(mode)
@@ -37,7 +37,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k"),
     } else {
         to <- x$k
     }
-    by <- check_integer(by, min = 1, max = x$k - 50)
+    by <- check_integer(by, min = 1)
     if (verbose)
         cat(sprintf("Call %s(x) with different hyper-parameters...\n", mode))
     if (what == "seeds") {
