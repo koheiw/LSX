@@ -83,7 +83,7 @@ bootstrap_lss <- function(x, what = c("seeds", "k"),
 #' @inheritParams bootstrap_lss
 #' @keywords internal
 #' @export
-optimize <- function(x, ...) {
+optimize_lss <- function(x, ...) {
     beta <- bootstrap_lss(x, mode = "coef", ...)
     pred <- bootstrap_lss(x, mode = "pred", ..., rescale = FALSE)
     # variance ratio
