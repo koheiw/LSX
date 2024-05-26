@@ -1,3 +1,7 @@
+## Changes in v1.4.1
+
+* Add `optimize_lss()` as an experimental function.
+
 ## Changes in v1.4.0
 
 * Change the default value to `max_highlighted = 1000` in `textplot_terms()`.
