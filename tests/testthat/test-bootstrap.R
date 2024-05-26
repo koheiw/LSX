@@ -83,11 +83,11 @@ test_that("bootstrap_lss show messages", {
     )
     expect_output(
         bootstrap_lss(lss_test, "seeds", verbose = TRUE),
-        "Fitting textmodel_lss with a different hyper-parameter.*"
+        "Call terms\\(x\\) with different hyper-parameters.*"
     )
     expect_output(
         bootstrap_lss(lss_test, "k", verbose = TRUE),
-        "Fitting textmodel_lss with a different hyper-parameter.*"
+        "Call terms\\(x\\) with different hyper-parameters.*"
     )
     expect_output(
         bootstrap_lss(lss_test, "seeds", verbose = TRUE),
@@ -99,3 +99,12 @@ test_that("bootstrap_lss show messages", {
     )
 })
 
+test_that("optimize works", {
+
+    r1 <- optimize(lss_test, newdata = dfmt_test, what = "k")
+    expect_identical(names(r1), c("50", "100", "150", "200", "250", "300"))
+
+    r2 <- optimize(lss_test, newdata = dfmt_test, what = "seed", remove = TRUE)
+    expect_identical(names(r2), names(lss_test$seeds_weighted))
+
+})
