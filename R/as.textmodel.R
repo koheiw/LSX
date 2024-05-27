@@ -63,7 +63,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
         seeds_weighted = seed,
         embedding = x,
         similarity = simil$seed,
-        call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),
+        call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
     )
     return(result)
 }
