@@ -63,7 +63,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
         seeds_weighted = seed,
         embedding = x,
         similarity = simil$seed,
-        call = match.call()
+        call = try(match.call(sys.function(-2), call = sys.call(-2)), silent = TRUE),
     )
     return(result)
 }
@@ -82,7 +82,7 @@ as.textmodel_lss.numeric <- function(x, ...) {
     result <- build_lss(
         beta = x,
         terms = names(x),
-        call = match.call()
+        call = try(match.call(sys.function(-2), call = sys.call(-2)), silent = TRUE)
     )
     return(result)
 }
