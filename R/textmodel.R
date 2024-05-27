@@ -126,7 +126,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         embedding = embed,
         similarity = simil$seed,
         concatenator = meta(x, field = "concatenator", type = "object"),
-        call = try(match.call(sys.function(-2), call = sys.call(-2)), silent = TRUE),
+        call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),
         version = utils::packageVersion("LSX")
     )
     if (include_data) {
@@ -198,7 +198,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         embedding = embed,
         similarity = simil$seed,
         concatenator = meta(x, field = "concatenator", type = "object"),
-        call = try(match.call(sys.function(-2), call = sys.call(-2)), silent = TRUE),
+        call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),
         version = utils::packageVersion("LSX")
     )
     class(result) <- "textmodel_lss"
