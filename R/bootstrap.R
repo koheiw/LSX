@@ -14,7 +14,7 @@
 #' @param ... additional arguments passed to [as.textmodel_lss()] and
 #'   [predict()].
 #' @param verbose show messages if `TRUE`.
-#' @details This function internally creates LSS fitted textmodel_lss objects by
+#' @details `bootstrap_lss()` creates LSS fitted textmodel_lss objects internally by
 #'   resampling hyper-parameters and computes polarity of words or documents.
 #'   The resulting matrix can be used to asses the validity and the reliability
 #'   of seeds or k.
@@ -79,10 +79,30 @@ bootstrap_lss <- function(x, what = c("seeds", "k"),
 }
 
 
-#' \[experimental\] Compute variance ratio with different hyper-parameters
-#' @inheritParams bootstrap_lss
-#' @keywords internal
+#' \[experimental\] Compute variance ratios with different hyper-parameters
+#' @param x a fitted textmodel_lss object.
+#' @param ... additional arguments passed to [bootstrap_lss].
 #' @export
+#' @details `optimize_lss()` computes variance ratios with different values of
+#'   hyper-parameters using [bootstrap_lss]. The variance ration \eqn{v} is defined
+#'   as \deqn{v = \sigma^2_{documents} / \sigma^2_{words}.} It maximizes
+#'   when the model best distinguishes between the documents on the latent scale.
+#' @examples
+#' \dontrun{
+#' # the unit of analysis is not sentences
+#' dfmt_grp <- dfm_group(dfmt)
+#'
+#' # choose best k
+#' v1 <- optimize_lss(lss, what = "k", from = 50,
+#'                    newdata = dfmt_grp, verbose = TRUE)
+#' plot(names(v1), v1)
+#'
+#' # find bad seed words
+#' v2 <- optimize_lss(lss, what = "seeds", remove = TRUE,
+#'                    newdata = dfmt_grp, verbose = TRUE)
+#' barplot(v2, las = 2)
+#' }
+#'
 optimize_lss <- function(x, ...) {
     beta <- bootstrap_lss(x, mode = "coef", ...)
     pred <- bootstrap_lss(x, mode = "pred", ..., rescale = FALSE)

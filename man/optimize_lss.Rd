@@ -2,17 +2,38 @@
 % Please edit documentation in R/bootstrap.R
 \name{optimize_lss}
 \alias{optimize_lss}
-\title{[experimental] Compute variance ratio with different hyper-parameters}
+\title{[experimental] Compute variance ratios with different hyper-parameters}
 \usage{
 optimize_lss(x, ...)
 }
 \arguments{
 \item{x}{a fitted textmodel_lss object.}
 
-\item{...}{additional arguments passed to \code{\link[=as.textmodel_lss]{as.textmodel_lss()}} and
-\code{\link[=predict]{predict()}}.}
+\item{...}{additional arguments passed to \link{bootstrap_lss}.}
 }
 \description{
-[experimental] Compute variance ratio with different hyper-parameters
+[experimental] Compute variance ratios with different hyper-parameters
 }
-\keyword{internal}
+\details{
+\code{optimize_lss()} computes variance ratios with different values of
+hyper-parameters using \link{bootstrap_lss}. The variance ration \eqn{v} is defined
+as \deqn{v = \sigma^2_{documents} / \sigma^2_{words}.} It maximizes
+when the model best distinguishes between the documents on the latent scale.
+}
+\examples{
+\dontrun{
+# the unit of analysis is not sentences
+dfmt_grp <- dfm_group(dfmt)
+
+# choose best k
+v1 <- optimize_lss(lss, what = "k", from = 50,
+                   newdata = dfmt_grp, verbose = TRUE)
+plot(names(v1), v1)
+
+# find bad seed words
+v2 <- optimize_lss(lss, what = "seeds", remove = TRUE,
+                   newdata = dfmt_grp, verbose = TRUE)
+barplot(v2, las = 2)
+}
+
+}

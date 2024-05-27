@@ -41,7 +41,7 @@ A function to compute polarity scores of words and documents by resampling
 hyper-parameters from a fitted LSS model.
 }
 \details{
-This function internally creates LSS fitted textmodel_lss objects by
+\code{bootstrap_lss()} creates LSS fitted textmodel_lss objects internally by
 resampling hyper-parameters and computes polarity of words or documents.
 The resulting matrix can be used to asses the validity and the reliability
 of seeds or k.
