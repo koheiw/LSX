@@ -51,7 +51,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
 
     simil <- get_simil(x, names(seed), names(theta), slice, simil_method)
     if (auto_weight)
-        seed <- optimize_weight(seed, simil, verbose, ...)
+        seed <- optimize_weight(seed, simil, verbose)
     beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(

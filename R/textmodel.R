@@ -112,7 +112,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     simil <- get_simil(embed, names(seed), names(theta), slice, simil_method)
     if (auto_weight)
-        seed <- optimize_weight(seed, simil, verbose, ...)
+        seed <- optimize_weight(seed, simil, verbose)
     beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
@@ -185,7 +185,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
 
     simil <- get_simil(embed, names(seed), term, seq_len(w), simil_method)
     if (auto_weight)
-        seed <- optimize_weight(seed, simil, verbose, ...)
+        seed <- optimize_weight(seed, simil, verbose)
     beta <- get_beta(simil, seed)
 
     result <- build_lss(
@@ -420,12 +420,12 @@ weight_seeds <- function(seeds, type) {
 }
 
 # automatically align polarity score with original weight
-optimize_weight <- function(seed, simil, verbose, ...) {
+optimize_weight <- function(seed, simil, verbose) {
     if (verbose)
         cat("Optimizing seed weights...\n")
     result <- optim(seed, function(x) {
         sum((rowSums(simil$seeds %*% x) - seed) ^ 2)
-    }, ...)
+    })
     return(result$par)
 }
 

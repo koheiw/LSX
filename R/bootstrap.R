@@ -67,7 +67,9 @@ bootstrap_lss <- function(x, what = c("seeds", "k"),
         result <- sapply(beta, function(y) names(sort(y, decreasing = TRUE)))
     } else if (mode == "predict") {
         result <- sapply(beta, function(x) {
-            predict(as.textmodel_lss(x), se_fit = FALSE, ...)
+            suppressWarnings({
+                predict(as.textmodel_lss(x), ..., se_fit = FALSE, density = FALSE)
+            })
         })
     } else {
         result <- do.call(cbind, beta)
