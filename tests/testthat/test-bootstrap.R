@@ -36,6 +36,16 @@ test_that("bootstrap_lss works with what = seeds", {
         bootstrap_lss(lss_test, mode = "predict", newdata = dfmt_test, se_fit = TRUE),
         'formal argument "se_fit" matched by multiple actual arguments'
     )
+
+    expect_silent({
+        bs5 <- bootstrap_lss(lss_test, mode = "predict", what = "k", newdata = dfmt_test,
+                             auto_weight = TRUE)
+    })
+    expect_silent({
+        bs6 <- bootstrap_lss(lss_test, mode = "predict", what = "k", newdata = dfmt_test,
+                             auto_weight = FALSE)
+    })
+    expect_false(identical(bs5, bs6))
 })
 
 test_that("bootstrap_lss works with remove = TRUE", {
