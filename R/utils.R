@@ -129,18 +129,20 @@ seedwords <- function(type) {
 #' Smooth predicted LSS scores by local polynomial regression
 #'
 #' @param x a `data.frame` containing LSS scores and dates.
-#' @param lss_var the name of the column for LSS scores.
-#' @param date_var the name of the columns for dates.
+#' @param lss_var the name of the column in `x` for LSS scores.
+#' @param date_var the name of the columns in `x` for dates.
 #' @param span determines the level of smoothing.
-#' @param from start of the time period.
-#' @param to end of the time period.
-#' @param engine specifies the function to smooth LSS scores: [loess()] or [locfit()].
+#' @param from,to the first or the last day of the period to be smoothed.
+#' @param by interval of the smoothed scores.
+#' @param group the name of the column in `x` to split the data by group.
+#' @param engine specifies the function for smoothing: [loess()] or [locfit()].
 #' The latter should be used when n > 10000.
 #' @param ... extra arguments passed to [loess()] or [lp()]
 #' @export
 #' @import stats locfit
 smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
-                       from = NULL, to = NULL, engine = c("loess", "locfit"), ...) {
+                       from = NULL, to = NULL, by = 'day', group = NULL,
+                       engine = c("loess", "locfit"), ...) {
 
   engine <- match.arg(engine)
 
@@ -165,19 +167,26 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
   if (is.null(to))
     to <- max(x$date)
   x$time <- as.numeric(difftime(x$date, from, units = "days"))
-  dummy <- data.frame(date = seq(from, to, '1 day'))
+  dummy <- data.frame(date = seq(from, to, by))
   dummy$time <- as.numeric(difftime(dummy$date, from, units = "days"))
   dummy$fit <- NA
 
-  by <- "Party"
-  x[[by]] <- factor(x[[by]])
-  lis <- split(x, x[[by]])
-  do.call(rbind, lapply(seq_along(lis), function(i) {
-    temp <- smooth_data(lis[[i]], dummy, span, engine, ...)
-    temp[[by]] <- factor(rep(names(lis[i]), nrow(temp)),
-                         levels = levels(x[[by]]))
-    return(temp)
-  }))
+  if (!is.null(group)) {
+    if (!group %in% names(x))
+      stop(group, " does not exist in x")
+
+    x$group <- factor(x[[group]])
+    lis <- split(x, x$group)
+    result <- do.call(rbind, lapply(seq_along(lis), function(i) {
+      temp <- smooth_data(lis[[i]], dummy, span, engine, ...)
+      temp[[group]] <- factor(rep(names(lis[i]), nrow(temp)),
+                           levels = levels(x$group))
+      return(temp)
+    }))
+  } else {
+    result <- smooth_data(x, dummy, span, engine, ...)
+  }
+  return(result)
 }
 
 smooth_data <- function(x, dummy, span, engine, ...) {
