@@ -168,19 +168,31 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
   dummy <- data.frame(date = seq(from, to, '1 day'))
   dummy$time <- as.numeric(difftime(dummy$date, from, units = "days"))
   dummy$fit <- NA
+
+  by <- "Party"
+  x[[by]] <- factor(x[[by]])
+  lis <- split(x, x[[by]])
+  do.call(rbind, lapply(seq_along(lis), function(i) {
+    temp <- smooth_data(lis[[i]], dummy, span, engine, ...)
+    temp[[by]] <- factor(rep(names(lis[i]), nrow(temp)),
+                         levels = levels(x[[by]]))
+    return(temp)
+  }))
+}
+
+smooth_data <- function(x, dummy, span, engine, ...) {
   if (engine == "loess") {
     suppressWarnings(
-      temp <- predict(loess(lss ~ time, data = x, span = span, ...),
-                      newdata = dummy, se = TRUE)
+        temp <- predict(loess(lss ~ time, data = x, span = span, ...),
+                        newdata = dummy, se = TRUE)
     )
   } else {
     suppressWarnings(
-      temp <- predict(locfit(lss ~ lp(time, nn = span, ...), data = x),
-                      newdata = dummy, se = TRUE)
+        temp <- predict(locfit(lss ~ lp(time, nn = span, ...), data = x),
+                        newdata = dummy, se = TRUE)
     )
   }
-  result <- cbind(dummy[c("date", "time")], temp[c("fit", "se.fit")])
-  return(result)
+  cbind(dummy[c("date", "time")], temp[c("fit", "se.fit")])
 }
 
 #' @export
