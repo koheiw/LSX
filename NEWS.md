@@ -1,5 +1,6 @@
 ## Changes in v1.4.1
 
+* Add `group` to `smooth_lss()` to smooth scores by group.
 * Add `optimize_lss()` as an experimental function.
 
 ## Changes in v1.4.0
