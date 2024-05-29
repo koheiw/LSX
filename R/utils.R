@@ -126,61 +126,69 @@ seedwords <- function(type) {
 }
 
 
-#' Smooth predicted LSS scores by local polynomial regression
+#' Smooth predicted polarity scores by local polynomial regression
 #'
-#' @param x a `data.frame` containing LSS scores and dates.
-#' @param lss_var the name of the column in `x` for LSS scores.
-#' @param date_var the name of the columns in `x` for dates.
-#' @param span determines the level of smoothing.
-#' @param from,to the first or the last day of the period to be smoothed.
-#' @param by interval of the smoothed scores.
-#' @param group the name of the column in `x` to split the data by group.
-#' @param engine specifies the function for smoothing: [loess()] or [locfit()].
-#' The latter should be used when n > 10000.
-#' @param ... extra arguments passed to [loess()] or [lp()]
+#' @param x a [data.frame] containing polarity scores and dates.
+#' @param lss_var the name of the column in `x` for polarity scores.
+#' @param date_var the name of the column in `x` for dates.
+#' @param span the level of smoothing.
+#' @param group the name of the column in `x` to smooth the data by group.
+#' @param from,to,by the the range and the internal of the smoothed scores;
+#'   passed to [seq.Date].
+#' @param engine specifies the function to be used for smoothing.
+#' @param ... additional arguments passed to the smoothing function.
+#' @details Smoothing is performed using [stats::loess()] or [locfit::locfit()].
+#'   When the `x` has more than 10000 rows, it is usually better to choose
+#'   the latter by setting `engine = "locfit"`. In this case, `span` is passed to
+#'   `locfit::lp(nn = span)`.
+#'
 #' @export
 #' @import stats locfit
-smooth_lss <- function(x, lss_var = "fit", date_var = "date", span = 0.1,
-                       from = NULL, to = NULL, by = 'day', group = NULL,
+smooth_lss <- function(x, lss_var = "fit", date_var = "date",
+                       span = 0.1, group = NULL,
+                       from = NULL, to = NULL, by = 'day',
                        engine = c("loess", "locfit"), ...) {
 
+  lss_var <- check_character(lss_var)
+  date_var <- check_character(date_var)
+  group <- check_character(group, allow_null = TRUE)
   engine <- match.arg(engine)
 
-  if (lss_var %in% names(x)) {
-    if (!identical(class(x[[lss_var]]), "numeric"))
-      stop("lss_var must be a numeric column")
-  } else {
+  if (!lss_var %in% names(x)) {
     stop(lss_var, " does not exist in x")
-  }
-
-  if (date_var %in% names(x)) {
-    if (!identical(class(x[[date_var]]), "Date"))
-      stop("date_var must be a date column")
   } else {
-    stop(date_var, " does not exist in x")
+    x$lss <- x[[lss_var]]
+    if (!identical(class(x$lss), "numeric"))
+      stop("lss_var must be a numeric column")
   }
 
-  x$lss <- x[[lss_var]]
-  x$date <- x[[date_var]]
-  if (is.null(from))
-    from <- min(x$date)
-  if (is.null(to))
-    to <- max(x$date)
+  if (!date_var %in% names(x)) {
+    stop(date_var, " does not exist in x")
+  } else {
+    x$date <- x[[date_var]]
+    if (!identical(class(x$date), "Date"))
+      stop("date_var must be a date column")
+  }
+
+  if (is.null(from)) from <- min(x$date)
+  if (is.null(to)) to <- max(x$date)
   x$time <- as.numeric(difftime(x$date, from, units = "days"))
   dummy <- data.frame(date = seq(from, to, by))
   dummy$time <- as.numeric(difftime(dummy$date, from, units = "days"))
-  dummy$fit <- NA
+  dummy$fit <- rep(NA_real_, nrow(dummy))
 
   if (!is.null(group)) {
-    if (!group %in% names(x))
+    if (!group %in% names(x)) {
       stop(group, " does not exist in x")
+    } else {
+      x$group <- factor(x[[group]])
+    }
 
-    x$group <- factor(x[[group]])
     lis <- split(x, x$group)
     result <- do.call(rbind, lapply(seq_along(lis), function(i) {
       temp <- smooth_data(lis[[i]], dummy, span, engine, ...)
-      temp[[group]] <- factor(rep(names(lis[i]), nrow(temp)),
-                           levels = levels(x$group))
+      temp[[group]] <- factor(rep(i, nrow(temp)), levels = seq_along(lis),
+                              labels = levels(x$group))
       return(temp)
     }))
   } else {
