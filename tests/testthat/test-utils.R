@@ -1,4 +1,5 @@
 require(quanteda)
+require(ggplot2)
 
 # toks_test <- readRDS("../data/tokens_test.RDS")
 # feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
@@ -61,10 +62,95 @@ test_that("as.seedwords works", {
 
 })
 
-test_that("cohesion works", {
-    coh <- cohesion(lss_test)
-    expect_identical(names(coh), c("k", "raw", "smoothed"))
-    expect_identical(nrow(coh), lss_test$k)
-    expect_error(cohesion(list()), "x must be a textmodel_lss object")
+
+
+test_that("test smooth_lss", {
+
+  skip_on_cran() # takes to much time
+
+  corp <- corpus_reshape(data_corpus_inaugural)
+  toks <- tokens(corp)
+  dfmt <- dfm(toks, remove_padding = TRUE) %>%
+    dfm_subset(Party %in% c("Democratic", "Republican")) %>%
+    dfm_trim()
+  seed <- as.seedwords(data_dictionary_ideology)
+  lss <- textmodel_lss(dfmt, seed, k = 150, include_data = TRUE,
+                       group_data = TRUE)
+
+  dat <- docvars(lss$data)
+  dat$lss <- predict(lss)
+  dat$date <- as.Date(paste0(dat$Year, "-01-20"))
+
+  smo_le <- smooth_lss(dat, lss_var = "lss", by = "year",
+                          span = 0.1, engine = "loess")
+  expect_equal(colnames(smo_le),
+               c("date", "time", "fit", "se.fit"))
+
+  smo_lf <- smooth_lss(dat, lss_var = "lss", by = "year",
+                       span = 0.1, engine = "locfit")
+  expect_equal(colnames(smo_lf),
+               c("date", "time", "fit", "se.fit"))
+
+  expect_true(cor(smo_le$fit, smo_lf$fit, use = "pair") > 0.90)
+
+  # group by variable
+  smo_gr_le <- smooth_lss(dat, lss_var = "lss", by = "year",
+                       span = 0.1, group = "Party", engine = "loess")
+  expect_equal(colnames(smo_gr_le),
+               c("date", "time", "fit", "se.fit", "Party"))
+  expect_equal(levels(smo_gr_le$Party),
+               c("Democratic", "Republican"))
+
+  smo_gr_lf <- smooth_lss(dat, lss_var = "lss", by = "year",
+                    span = 0.1, group = "Party", engine = "locfit")
+  expect_equal(colnames(smo_gr_lf),
+               c("date", "time", "fit", "se.fit", "Party"))
+  expect_equal(levels(smo_gr_lf$Party),
+               c("Democratic", "Republican"))
+
+  expect_true(cor(smo_gr_le$fit, smo_gr_lf$fit, use = "pair") > 0.90)
+
+  # check input values
+  expect_error(
+    smooth_lss(dat),
+    "fit does not exist in x"
+  )
+  expect_error(
+    smooth_lss(smooth_lss(dat, lss_var = "President")),
+    "lss_var must be a numeric column"
+  )
+  expect_error(
+    smooth_lss(dat, lss_var = "lss", date_var = "xxx"),
+    "xxx does not exist in x"
+  )
+  expect_error(
+    smooth_lss(dat, lss_var = "lss", date_var = "Year"),
+    "date_var must be a date column"
+  )
+  expect_error(
+    smooth_lss(dat, lss_var = "lss", group = "xxx"),
+    "xxx does not exist in x"
+  )
 })
+
+
+corp <- corpus_reshape(data_corpus_inaugural)
+toks <- tokens(corp)
+dfmt <- dfm(toks, remove_padding = TRUE) %>%
+  dfm_subset(Party %in% c("Democratic", "Republican")) %>%
+  dfm_trim()
+seed <- as.seedwords(data_dictionary_ideology)
+lss <- textmodel_lss(dfmt, seed, k = 300, include_data = TRUE, group_data = TRUE,
+                     cache = TRUE)
+
+dat <- docvars(lss$data)
+dat$lss <- predict(lss)
+dat$time <- as.Date(paste0(dat$Year, "-01-01"))
+smo <- smooth_lss(dat, lss_var = "lss", date_var = "time", by = "year",
+                  span = 0.1,
+                  group = "Party", engine = "locfit")
+
+smo <- smooth_lss(dat, lss_var = "lss", date_var = "time", by = "year",
+                  span = 0.1,
+                  group = "Party")
 

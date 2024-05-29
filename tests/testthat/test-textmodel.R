@@ -352,38 +352,11 @@ test_that("slice argument is working", {
     )
 })
 
-test_that("test smooth_lss", {
-
-    skip_on_cran() # takes to much time
-
-    set.seed(1234)
-    dfmt <- dfm_sample(dfmt_test, size = 1000)
-    dat <- docvars(dfmt)
-    dat$lss <- predict(lss_test, newdata = dfmt)
-    dat$time <- as.Date(paste0(dat$Year, "-01-01"))
-    expect_silent(smooth_lss(dat, lss_var = "lss", date_var = "time"))
-    expect_error(
-        smooth_lss(dat),
-        "fit does not exist in x"
-    )
-    expect_error(
-        smooth_lss(smooth_lss(dat, lss_var = "President")),
-        "lss_var must be a numeric column"
-    )
-    expect_error(
-        smooth_lss(dat, lss_var = "lss"),
-        "date does not exist in x"
-    )
-    expect_error(
-        smooth_lss(dat, lss_var = "lss", date_var = "Year"),
-        "date_var must be a date column"
-    )
-
-    dat_loess <- smooth_lss(dat, lss_var = "lss", date_var = "time",
-                            engine = "loess")
-    dat_locfit <- smooth_lss(dat, lss_var = "lss", date_var = "time",
-                             engine = "locfit")
-    expect_true(cor(dat_loess$fit, dat_locfit$fit) > 0.90)
+test_that("cohesion works", {
+    coh <- cohesion(lss_test)
+    expect_identical(names(coh), c("k", "raw", "smoothed"))
+    expect_identical(nrow(coh), lss_test$k)
+    expect_error(cohesion(list()), "x must be a textmodel_lss object")
 })
 
 test_that("weight_seeds() works", {
