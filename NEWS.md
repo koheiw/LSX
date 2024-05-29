@@ -7,7 +7,7 @@
 
 * Change the default value to `max_highlighted = 1000` in `textplot_terms()`.
 * Add `...` to customize text labels to `textplot_terms()`.
-* Highlight words in different colors when a dicitonary is passed to `highlighted`.
+* Highlight words in different colors when a dictionary is passed to `highlighted`.
 * Add `mode = "predict"` and `remove = FALSE` to `bootstrap_lss()`.
 
 ## Changes in v1.3.2
