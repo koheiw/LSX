@@ -2,37 +2,45 @@
 % Please edit documentation in R/utils.R
 \name{smooth_lss}
 \alias{smooth_lss}
-\title{Smooth predicted LSS scores by local polynomial regression}
+\title{Smooth predicted polarity scores by local polynomial regression}
 \usage{
 smooth_lss(
   x,
   lss_var = "fit",
   date_var = "date",
   span = 0.1,
+  group = NULL,
   from = NULL,
   to = NULL,
+  by = "day",
   engine = c("loess", "locfit"),
   ...
 )
 }
 \arguments{
-\item{x}{a \code{data.frame} containing LSS scores and dates.}
+\item{x}{a \link{data.frame} containing polarity scores and dates.}
 
-\item{lss_var}{the name of the column for LSS scores.}
+\item{lss_var}{the name of the column in \code{x} for polarity scores.}
 
-\item{date_var}{the name of the columns for dates.}
+\item{date_var}{the name of the column in \code{x} for dates.}
 
-\item{span}{determines the level of smoothing.}
+\item{span}{the level of smoothing.}
 
-\item{from}{start of the time period.}
+\item{group}{the name of the column in \code{x} to smooth the data by group.}
 
-\item{to}{end of the time period.}
+\item{from, to, by}{the the range and the internal of the smoothed scores;
+passed to \link{seq.Date}.}
 
-\item{engine}{specifies the function to smooth LSS scores: \code{\link[=loess]{loess()}} or \code{\link[=locfit]{locfit()}}.
-The latter should be used when n > 10000.}
+\item{engine}{specifies the function to be used for smoothing.}
 
-\item{...}{extra arguments passed to \code{\link[=loess]{loess()}} or \code{\link[=lp]{lp()}}}
+\item{...}{additional arguments passed to the smoothing function.}
 }
 \description{
-Smooth predicted LSS scores by local polynomial regression
+Smooth predicted polarity scores by local polynomial regression
+}
+\details{
+Smoothing is performed using \code{\link[stats:loess]{stats::loess()}} or \code{\link[locfit:locfit]{locfit::locfit()}}.
+When the \code{x} has more than 10000 rows, it is usually better to choose
+the latter by setting \code{engine = "locfit"}. In this case, \code{span} is passed to
+\code{locfit::lp(nn = span)}.
 }

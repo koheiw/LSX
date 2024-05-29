@@ -1,12 +1,13 @@
 ## Changes in v1.4.1
 
+* Add `group` to `smooth_lss()` to smooth scores by group.
 * Add `optimize_lss()` as an experimental function.
 
 ## Changes in v1.4.0
 
 * Change the default value to `max_highlighted = 1000` in `textplot_terms()`.
 * Add `...` to customize text labels to `textplot_terms()`.
-* Highlight words in different colors when a dicitonary is passed to `highlighted`.
+* Highlight words in different colors when a dictionary is passed to `highlighted`.
 * Add `mode = "predict"` and `remove = FALSE` to `bootstrap_lss()`.
 
 ## Changes in v1.3.2
