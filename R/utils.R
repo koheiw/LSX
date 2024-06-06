@@ -144,6 +144,7 @@ seedwords <- function(type) {
 #'
 #' @export
 #' @import stats locfit
+#' @importFrom quanteda check_character
 smooth_lss <- function(x, lss_var = "fit", date_var = "date",
                        span = 0.1, group = NULL,
                        from = NULL, to = NULL, by = 'day',
