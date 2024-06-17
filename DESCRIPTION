@@ -29,6 +29,7 @@ Imports:
     reshape2,
     locfit
 Suggests:
+    spelling,
     knitr,
     rmarkdown,
     testthat
@@ -36,3 +37,4 @@ RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/koheiw/LSX/issues
 URL: https://koheiw.github.io/LSX/
+Language: en-US
