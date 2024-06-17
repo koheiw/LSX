@@ -46,7 +46,7 @@ bs_coef <- bootstrap_lss(lss, mode = "coef")
 knitr::kable(head(bs_coef, 10), digits = 3)
 ```
 
-We can use words with known polarity such as "russia" and "ukriane" as anchor words in evaluating seed words. We know that "russia" is more positive than "ukraine" because the corpus is a collection of articles published by the Russian state media.
+We can use words with known polarity such as "russia" and "ukraine" as anchor words in evaluating seed words. We know that "russia" is more positive than "ukraine" because the corpus is a collection of articles published by the Russian state media.
 
 We can confirm that the difference in similarity scores between the anchor words and the polarity scores of the seed words largely agree. However, "fortunate" and "negative" disagree with the expected differences, suggesting that they are more ambiguous than other seed words. 
 
