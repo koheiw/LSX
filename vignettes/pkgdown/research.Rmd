@@ -1,6 +1,6 @@
 ---
 title: "Application in research"
-subtitle: "Russian state media's coverage of egnergy issues in the US and the EU"
+subtitle: "Russian state media's coverage of energy issues in the US and the EU"
 output: 
   html_document:
     toc: true

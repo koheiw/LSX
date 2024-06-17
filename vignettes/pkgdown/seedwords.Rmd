@@ -28,7 +28,7 @@ print(lss$seeds)
 print(lss$seeds_weighted)
 ```
 
-## Evaluation with synomums
+## Evaluation with synonyms
 
 By default, `bootstrap_lss()` returns lists of synonyms for seed words. Each column is a list of words sorted by their similarity to the seed word shown at the top. There are many proper names in the example, but we can find many words are positive for positive seed words and negative for negative seed words. If a list is a mixture of positive and negative words, the seed word is probably too ambiguous.
 
