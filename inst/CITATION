@@ -1,0 +1,11 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Latent Semantic Scaling: A Semisupervised Text Analysis Technique for New Domains and Languages",
+  author   = person("Kohei", "Watanabe"),
+  journal  = "Communication Methods and Measures",
+  year     = "2020",
+  volume   = "15",
+  number   = "2",
+  pages    = "81-102",
+  doi      = "10.1080/19312458.2020.1832976"
+)
