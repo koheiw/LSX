@@ -1,3 +1,7 @@
+## Changes in v1.4.2
+
+* Fix handling of phrasal patterns in `textplot_terms()`.
+
 ## Changes in v1.4.1
 
 * Add `group` to `smooth_lss()` to smooth LSS scores by group.
