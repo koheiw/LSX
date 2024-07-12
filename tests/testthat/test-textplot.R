@@ -100,18 +100,18 @@ test_that("textplot_terms works even when frequency has zeros (#85)", {
 })
 
 test_that("textplot_terms works with dictionary", {
-    toks <- tokens_compound(toks_test, data_dictionary_LSD2015)
-    dfmt <- dfm(toks) %>%
-        dfm_subset(Year > 2000)
+
+    dict <- dictionary(list("american" = c("american *"),
+                            "president" = c("president *")))
+    toks <- tokens_subset(toks_test, Year > 2000) %>%
+      tokens_compound(dict)
+    dfmt <- dfm(toks)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     suppressWarnings(
         lss <- textmodel_lss(dfmt, seed, k = 10)
     )
     expect_silent(print(
-        textplot_terms(lss, data_dictionary_LSD2015, max_highlighted = 10)
-    ))
-    expect_silent(print(
-        textplot_terms(lss, dictionary(list(phrase = "hard work")))
+        textplot_terms(lss, dict, max_highlighted = 10)
     ))
     expect_silent(print(
         textplot_terms(lss, dictionary(list(none = "xxxxx")))
