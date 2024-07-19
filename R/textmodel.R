@@ -67,14 +67,17 @@ textmodel_lss <- function(x, ...) {
 #'   for diagnosys and simulation.
 #' @param include_data if `TRUE`, fitted model includes the dfm supplied as `x`.
 #' @param group_data if `TRUE`, apply `dfm_group(x)` before saving the dfm.
+#' @param auto_slice [experimental] specify the threshold for automatically
+#'   determine the value of `slice`.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta check_integer dfm_group
+#' @importFrom quanteda featnames metea check_integer dfm_group
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("RSpectra", "irlba", "rsvd"),
+                              auto_slice = NULL,
                               auto_weight = FALSE,
                               include_data = FALSE,
                               group_data = FALSE,
@@ -87,11 +90,15 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     }
 
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
+    slice <- check_integer(slice, min_len = 1, max_len = k, min = 1, max = k,
+                           allow_null = TRUE)
+    auto_slice <- check_double(auto_slice, min = 0, max = 1, allow_null = TRUE)
     engine <- match.arg(engine)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
     theta <- get_theta(terms, featnames(x))
     feat <- union(names(theta), names(seed))
+
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
         if (verbose)
@@ -101,18 +108,22 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         colnames(embed) <- featnames(x)
         embed <- embed[,feat, drop = FALSE]
     }
-
+    if (!is.null(auto_slice)) {
+        e <- rowSums(abs(embed[,names(seed)]))
+        slice <- which(e > quantile(e, auto_slice))
+    }
     if (is.null(slice)) {
         slice <- k
-    } else {
-        slice <- check_integer(slice, min_len = 1, max_len = k, min = 1, max = k)
     }
-    if (length(slice) == 1)
+    if (length(slice) == 1) {
         slice <- seq_len(slice)
+    }
 
     simil <- get_simil(embed, names(seed), names(theta), slice, simil_method)
-    if (auto_weight)
+    if (auto_weight) {
+        .Deprecated(old = "auto_weight")
         seed <- optimize_weight(seed, simil, verbose)
+    }
     beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
