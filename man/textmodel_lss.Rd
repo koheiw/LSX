@@ -18,7 +18,7 @@ textmodel_lss(x, ...)
   cache = FALSE,
   simil_method = "cosine",
   engine = c("RSpectra", "irlba", "rsvd"),
-  auto_slice = NULL,
+  prop_slice = NULL,
   auto_weight = FALSE,
   include_data = FALSE,
   group_data = FALSE,
@@ -77,8 +77,8 @@ used otherwise.}
 from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}}, \code{\link[rsvd:rsvd]{rsvd::rsvd()}}, and
 \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
 
-\item{auto_slice}{\link{experimental} specify the threshold for automatically
-determine the value of \code{slice}.}
+\item{prop_slice}{[experimental] specify the number of compontes to use by
+proportion.}
 
 \item{auto_weight}{automatically determine weights to approximate the
 polarity of terms to seed words. See details.}

@@ -67,8 +67,8 @@ textmodel_lss <- function(x, ...) {
 #'   for diagnosys and simulation.
 #' @param include_data if `TRUE`, fitted model includes the dfm supplied as `x`.
 #' @param group_data if `TRUE`, apply `dfm_group(x)` before saving the dfm.
-#' @param auto_slice [experimental] specify the threshold for automatically
-#'   determine the value of `slice`.
+#' @param prop_slice \[experimental\] specify the number of compontes to use by
+#'   proportion.
 #' @method textmodel_lss dfm
 #' @importFrom quanteda featnames metea check_integer dfm_group
 #' @importFrom Matrix colSums
@@ -77,7 +77,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("RSpectra", "irlba", "rsvd"),
-                              auto_slice = NULL,
+                              prop_slice = NULL,
                               auto_weight = FALSE,
                               include_data = FALSE,
                               group_data = FALSE,
@@ -92,7 +92,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
     slice <- check_integer(slice, min_len = 1, max_len = k, min = 1, max = k,
                            allow_null = TRUE)
-    auto_slice <- check_double(auto_slice, min = 0, max = 1, allow_null = TRUE)
+    prop_slice <- check_double(prop_slice, min = 0, max = 1, allow_null = TRUE)
     engine <- match.arg(engine)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
@@ -108,9 +108,9 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         colnames(embed) <- featnames(x)
         embed <- embed[,feat, drop = FALSE]
     }
-    if (!is.null(auto_slice)) {
+    if (!is.null(prop_slice)) {
         e <- rowSums(abs(embed[,names(seed)]))
-        slice <- which(e > quantile(e, auto_slice))
+        slice <- which(e > quantile(e, 1 - prop_slice))
     }
     if (is.null(slice)) {
         slice <- k

@@ -338,33 +338,29 @@ test_that("weight is working", {
     )
 })
 
-test_that("slice and auto_slice arguments are working", {
+test_that("slice and prop_slice arguments are working", {
     expect_identical(
-        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, slice = 10)$embedding),
-        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, slice = 1:10)$embedding)
+        dim(textmodel_lss(dfmt_test, seed, k = 100, slice = 10)$embedding),
+        dim(textmodel_lss(dfmt_test, seed, k = 100, slice = 1:10)$embedding)
     )
-    expect_identical(
-      length(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, auto_slice = 0.5)$slice),
-      50
+    expect_equal(
+        length(textmodel_lss(dfmt_test, seed, k = 100, prop_slice = 0.5)$slice),
+        50
     )
-    expect_identical(
-      length(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, auto_slice = 0.2)$slice),
-      20
+    expect_equal(
+        length(textmodel_lss(dfmt_test, seed, k = 100, prop_slice = 0.2)$slice),
+        20
     )
     expect_silent(
-        textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, slice = 1:10)
+        textmodel_lss(dfmt_test, seed, k = 100, slice = 1:10)
     )
     expect_error(
-      textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, auto_slice = 2.0),
-      "The value of auto_slice must be between 0 and 1.0"
+        textmodel_lss(dfmt_test, seed, k = 100, prop_slice = c(0.1, 0.2)),
+        "The length of prop_slice must be 1"
     )
     expect_error(
-      textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, auto_slice = 1:10),
-      "The length of auto_slice must be between 1"
-    )
-    expect_error(
-      textmodel_lss(dfmt_test, seed, terms = feat_test, k = 100, auto_slice = 2.0),
-      "The value of auto_slice must be between 0 and 1"
+        textmodel_lss(dfmt_test, seed, k = 100, prop_slice = 2.0),
+        "The value of prop_slice must be between 0 and 1"
     )
 })
 
