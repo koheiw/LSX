@@ -18,6 +18,7 @@ textmodel_lss(x, ...)
   cache = FALSE,
   simil_method = "cosine",
   engine = c("RSpectra", "irlba", "rsvd"),
+  prop_slice = NULL,
   auto_weight = FALSE,
   include_data = FALSE,
   group_data = FALSE,
@@ -75,6 +76,9 @@ used otherwise.}
 \item{engine}{select the engine to factorize \code{x} to generate word vectors. Choose
 from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irlba::irlba()}}, \code{\link[rsvd:rsvd]{rsvd::rsvd()}}, and
 \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
+
+\item{prop_slice}{[experimental] specify the number of compontes to use by
+proportion.}
 
 \item{auto_weight}{automatically determine weights to approximate the
 polarity of terms to seed words. See details.}

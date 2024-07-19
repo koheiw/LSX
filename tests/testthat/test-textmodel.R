@@ -338,17 +338,29 @@ test_that("weight is working", {
     )
 })
 
-test_that("slice argument is working", {
+test_that("slice and prop_slice arguments are working", {
     expect_identical(
-        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 100)$embedding),
-        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:100)$embedding)
+        dim(textmodel_lss(dfmt_test, seed, k = 100, slice = 10)$embedding),
+        dim(textmodel_lss(dfmt_test, seed, k = 100, slice = 1:10)$embedding)
+    )
+    expect_equal(
+        length(textmodel_lss(dfmt_test, seed, k = 100, prop_slice = 0.5)$slice),
+        50
+    )
+    expect_equal(
+        length(textmodel_lss(dfmt_test, seed, k = 100, prop_slice = 0.2)$slice),
+        20
     )
     expect_silent(
-        textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:100)
+        textmodel_lss(dfmt_test, seed, k = 100, slice = 1:10)
     )
     expect_error(
-        textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:400),
-        "The length of slice must be between 1 and 300"
+        textmodel_lss(dfmt_test, seed, k = 100, prop_slice = c(0.1, 0.2)),
+        "The length of prop_slice must be 1"
+    )
+    expect_error(
+        textmodel_lss(dfmt_test, seed, k = 100, prop_slice = 2.0),
+        "The value of prop_slice must be between 0 and 1"
     )
 })
 
@@ -501,3 +513,21 @@ test_that("rescaling still works", {
     })
     expect_identical(p1, p2)
 })
+
+test_that("textmodel_lss print messages", {
+
+  expect_output(
+    textmodel_lss(dfmt_test, seed, k = 100, verbose = TRUE),
+    "Performing SVD by RSpectra", fixed = TRUE
+  )
+  expect_warning(
+    textmodel_lss(dfmt_test, seed, features = feat_test, k = 100),
+    "'features' is deprecated; use 'terms'", fixed = TRUE
+  )
+  expect_warning(
+    textmodel_lss(dfmt_test, seed, k = 100, auto_weight = TRUE),
+    "'auto_weight' is deprecated", fixed = TRUE
+  )
+
+})
+
