@@ -70,7 +70,7 @@ textmodel_lss <- function(x, ...) {
 #' @param prop_slice \[experimental\] specify the number of compontes to use by
 #'   proportion.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames metea check_integer dfm_group
+#' @importFrom quanteda featnames meta check_integer dfm_group
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
