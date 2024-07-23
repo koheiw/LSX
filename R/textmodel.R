@@ -109,7 +109,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         embed <- embed[,feat, drop = FALSE]
     }
     if (!is.null(prop_slice)) {
-        e <- rowSums(abs(embed[,names(seed)]))
+        e <- rowSums(abs(embed[,names(seed),drop = FALSE]))
         slice <- which(e > quantile(e, 1 - prop_slice))
     }
     if (is.null(slice)) {
