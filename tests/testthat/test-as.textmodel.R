@@ -75,7 +75,7 @@ test_that("as.textmodel_lss works with textmodel_lss", {
     expect_equal(lss$embedding, lss_test$embedding)
     expect_identical(lss$data, lss_test$data)
     expect_identical(lss$frequency, lss_test$frequency)
-    expect_identical(names(lss$frequency), names(lss$frequency))
+    expect_identical(lss$concatenator, lss_test$concatenator)
 
     expect_error(
         as.textmodel_lss(lss_test, seed, slice = 100),
