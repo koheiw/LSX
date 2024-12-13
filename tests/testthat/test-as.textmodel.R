@@ -96,6 +96,17 @@ test_that("as.textmodel_lss works with textmodel_lss", {
     )
 })
 
+test_that("as.textmodel_lss works with textmodel_wordvector", {
+
+  wdv <- readRDS("../data/word2vec_test.RDS")
+  lss <- as.textmodel_lss(wdv, seed)
+
+  expect_equal(lss$embedding, t(wdv$vectors))
+  expect_identical(lss$frequency, wdv$frequency)
+  expect_identical(names(lss$frequency), names(wdv$frequency))
+
+})
+
 test_that("as.textmodel_lss works with vector", {
     weight <- c("decision" = 0.1, "instance" = -0.1,
                 "foundations" = 0.3, "the" = 0)
