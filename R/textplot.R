@@ -98,8 +98,19 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
             case_insensitive = TRUE,
             concatenator = concatenator
         )
+
+        # flag nested patterns (see quanteda::dfm_lookup)
+        if (length(ids)) {
+          m <- factor(names(ids), levels = unique(names(ids)))
+          dup <- unlist(lapply(split(ids, m), duplicated), use.names = FALSE)
+        } else {
+          dup <- logical()
+        }
+
         key <- attr(ids, "key")
+        ids <- ids[lengths(ids) == 1 & !dup] # drop phrasal and nested patterns
         id <- unlist(ids)
+
         if (!is.null(key) && !is.null(id)) {
             temp$group <- factor(names(id[match(temp$id, id)]), levels = key)
         } else {
