@@ -1,3 +1,8 @@
+## Changes in v1.5.0
+
+* Add `as.textmodel_lss()` for objects from the **wordvector** package.
+* Reduce dependent packages by moving **rsparse**, **irlba** and *rsvd* to Suggest.
+
 ## Changes in v1.4.1
 
 * Add `group` to `smooth_lss()` to smooth LSS scores by group.
