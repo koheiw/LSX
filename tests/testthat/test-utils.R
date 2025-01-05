@@ -1,13 +1,6 @@
 require(quanteda)
 require(ggplot2)
 
-# toks_test <- readRDS("../data/tokens_test.RDS")
-# feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
-# dfmt_test <- dfm(toks_test)
-# seed_test <- as.seedwords(data_dictionary_sentiment)
-# lss_test <- textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300)
-# saveRDS(lss_test, "../data/lss_test.RDS")
-
 lss_test <- readRDS("../data/lss_test.RDS")
 
 test_that("diagnosys works", {

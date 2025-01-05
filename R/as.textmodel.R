@@ -103,11 +103,15 @@ as.textmodel_lss.textmodel_lss <- function(x, ...) {
 #' @export
 #' @method as.textmodel_lss textmodel_wordvector
 as.textmodel_lss.textmodel_wordvector <- function(x, ...) {
+  if (is.null(x$values) && is.null(x$vectors))
+    stop("x must be a valid textmodel_wordvector object")
   if (!requireNamespace("wordvector"))
     stop("wordvector package must be installed")
-  if (is.null(x$vectors))
-    stop("x must be a valid textmodel_wordvector object")
-  result <- as.textmodel_lss(t(x$vectors), ...)
+  if (!is.null(x$values)) {
+    result <- as.textmodel_lss(t(x$values), ...)
+  } else {
+    result <- as.textmodel_lss(t(x$vectors), ...) # for wordvector v0.1.0
+  }
   result$frequency <- x$frequency[names(result$beta)]
   return(result)
 }
