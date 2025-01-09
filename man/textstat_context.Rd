@@ -62,7 +62,7 @@ construct the \eqn{n}-gram.  Thus a "4-skip-n-gram" defined as \code{skip = 0:4}
 skips (where 0 skips are typical n-grams formed from adjacent words).  See
 Guthrie et al (2006).}
 
-\item{...}{additional arguments passed to \code{\link[=textstat_keyness]{textstat_keyness()}}.}
+\item{...}{additional arguments passed to \code{\link[quanteda.textstats:textstat_keyness]{quanteda.textstats::textstat_keyness()}}.}
 
 \item{p}{threshold for statistical significance of collocations.}
 }
@@ -70,5 +70,5 @@ Guthrie et al (2006).}
 Identify context words using user-provided patterns
 }
 \seealso{
-\code{\link[=tokens_select]{tokens_select()}} and \code{\link[=textstat_keyness]{textstat_keyness()}}
+\code{\link[quanteda.textstats:textstat_keyness]{quanteda.textstats::textstat_keyness()}}
 }

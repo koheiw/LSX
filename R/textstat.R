@@ -13,12 +13,12 @@
 #'   considered as collocations.
 #' @param remove_pattern if `TRUE`, keywords do not contain target words.
 #' @inheritParams quanteda::tokens_ngrams
-#' @param ... additional arguments passed to [textstat_keyness()].
+#' @param ... additional arguments passed to [quanteda.textstats::textstat_keyness()].
 #' @importFrom quanteda.textstats textstat_keyness
 #' @importFrom quanteda is.tokens tokens_remove tokens_select tokens_ngrams dfm
 #'   dfm_trim dfm_match featnames as.dfm dfm_remove
 #' @export
-#' @seealso [tokens_select()] and [textstat_keyness()]
+#' @seealso [quanteda.textstats::textstat_keyness()]
 textstat_context <- function(x, pattern, valuetype = c("glob", "regex", "fixed"),
                              case_insensitive = TRUE, window = 10, min_count = 10,
                              remove_pattern = TRUE, n = 1, skip = 0, ...) {
