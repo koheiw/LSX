@@ -1,4 +1,4 @@
-## Changes in v1.5.0
+## Changes in v1.4.2
 
 * Add `as.textmodel_lss()` for objects from the **wordvector** package.
 * Reduce dependent packages by moving **rsparse**, **irlba** and **rsvd** to Suggests.
