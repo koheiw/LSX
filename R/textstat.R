@@ -1,6 +1,7 @@
 
-#' Identify context words using user-provided patterns
+#' Identify context words
 #'
+#' Identify context words using user-provided patterns.
 #' @param x a tokens object created by [quanteda::tokens()].
 #' @param pattern [quanteda::pattern()] to specify target words.
 #' @param valuetype the type of pattern matching: `"glob"` for "glob"-style

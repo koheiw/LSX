@@ -3,7 +3,7 @@
 \name{textstat_context}
 \alias{textstat_context}
 \alias{char_context}
-\title{Identify context words using user-provided patterns}
+\title{Identify context words}
 \usage{
 textstat_context(
   x,
@@ -67,7 +67,7 @@ Guthrie et al (2006).}
 \item{p}{threshold for statistical significance of collocations.}
 }
 \description{
-Identify context words using user-provided patterns
+Identify context words using user-provided patterns.
 }
 \seealso{
 \code{\link[quanteda.textstats:textstat_keyness]{quanteda.textstats::textstat_keyness()}}
