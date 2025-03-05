@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{smooth_lss}
 \alias{smooth_lss}
-\title{Smooth predicted polarity scores by local polynomial regression}
+\title{Smooth predicted polarity scores}
 \usage{
 smooth_lss(
   x,
@@ -36,7 +36,7 @@ passed to \link{seq.Date}.}
 \item{...}{additional arguments passed to the smoothing function.}
 }
 \description{
-Smooth predicted polarity scores by local polynomial regression
+Smooth predicted polarity scores by local polynomial regression.
 }
 \details{
 Smoothing is performed using \code{\link[stats:loess]{stats::loess()}} or \code{\link[locfit:locfit]{locfit::locfit()}}.

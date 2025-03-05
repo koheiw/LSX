@@ -304,10 +304,25 @@ test_that("textmodel_lss works with non-existent seeds", {
                  "No seed word is found in the dfm")
 })
 
-test_that("RSpectra and irlba work", {
+test_that("rsvd and irlba work", {
 
-    expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "RSpectra"))
-    expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "irlba"))
+    if (requireNamespace("irlba")) {
+        expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "irlba"))
+    } else {
+        expect_error(
+            expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "irlba")),
+            "irlba package must be installed"
+        )
+    }
+
+    if (requireNamespace("rsvd")) {
+        expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "rsvd"))
+    } else {
+        expect_error(
+            expect_silent(textmodel_lss(dfmt_test, seedwords("pos-neg"), k = 10, engine = "rsvd")),
+            "rsvd package must be installed"
+        )
+    }
 
 })
 

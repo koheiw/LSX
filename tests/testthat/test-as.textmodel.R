@@ -75,7 +75,7 @@ test_that("as.textmodel_lss works with textmodel_lss", {
     expect_equal(lss$embedding, lss_test$embedding)
     expect_identical(lss$data, lss_test$data)
     expect_identical(lss$frequency, lss_test$frequency)
-    expect_identical(names(lss$frequency), names(lss$frequency))
+    expect_identical(lss$concatenator, lss_test$concatenator)
 
     expect_error(
         as.textmodel_lss(lss_test, seed, slice = 100),
@@ -94,6 +94,17 @@ test_that("as.textmodel_lss works with textmodel_lss", {
         as.textmodel_lss(lss_dummy, seed),
         "x must be a valid textmodel_lss object"
     )
+})
+
+test_that("as.textmodel_lss works with textmodel_wordvector", {
+
+  wdv <- readRDS("../data/word2vec_test.RDS")
+  lss <- as.textmodel_lss(wdv, seed)
+
+  expect_equal(lss$embedding, t(wdv$values))
+  expect_identical(lss$frequency, wdv$frequency)
+  expect_identical(names(lss$frequency), names(wdv$frequency))
+
 })
 
 test_that("as.textmodel_lss works with vector", {
