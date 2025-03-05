@@ -1,3 +1,8 @@
+## Changes in v1.4.3
+
+* Add `prop_slice` to `textmodel_lss()` an experimental argument.
+* Deprecate `auto_weight` in `textmodel_lss()`.
+
 ## Changes in v1.4.2
 
 * Add `as.textmodel_lss()` for objects from the **wordvector** package.
@@ -9,8 +14,6 @@
 
 * Add `group` to `smooth_lss()` to smooth LSS scores by group.
 * Add `optimize_lss()` as an experimental function.
-* Add `prop_slice` to `textmodel_lss()` an experimental argument.
-* Deprecate `auto_weight` in `textmodel_lss()`.
 
 ## Changes in v1.4.0
 
