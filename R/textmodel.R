@@ -22,7 +22,7 @@
 #'   from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and
 #'   [rsparse::GloVe()].
 #' @param auto_weight automatically determine weights to approximate the
-#'   polarity of terms to seed words. See details.
+#'   polarity of terms to seed words. Deprecated.
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional arguments passed to the underlying engine.
 #' @export
@@ -111,8 +111,10 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         slice <- seq_len(slice)
 
     simil <- get_simil(embed, names(seed), names(theta), slice, simil_method)
-    if (auto_weight)
+    if (auto_weight) {
+        .Deprecated(old = "auto_weight")
         seed <- optimize_weight(seed, simil, verbose)
+    }
     beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
@@ -184,8 +186,10 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     }
 
     simil <- get_simil(embed, names(seed), term, seq_len(w), simil_method)
-    if (auto_weight)
+    if (auto_weight) {
+        .Deprecated(old = "auto_weight")
         seed <- optimize_weight(seed, simil, verbose)
+    }
     beta <- get_beta(simil, seed)
 
     result <- build_lss(

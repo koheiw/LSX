@@ -44,6 +44,7 @@ et
 executives’
 fcm
 finland
+irlba
 locfit
 lss
 nato
@@ -56,6 +57,7 @@ quanteda
 rescale
 rescaling
 rsparse
+rsvd
 russia
 semisupervised
 stringi
@@ -68,4 +70,5 @@ unidimensional
 unipolar
 valuetype
 wordscore
+wordvector
 β

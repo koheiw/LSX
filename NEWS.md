@@ -1,3 +1,7 @@
+## Changes in v1.4.3
+
+* Deprecate `auto_weight` in `textmodel_lss()`.
+
 ## Changes in v1.4.2
 
 * Add `as.textmodel_lss()` for objects from the **wordvector** package.

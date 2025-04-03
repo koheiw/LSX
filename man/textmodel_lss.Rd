@@ -77,7 +77,7 @@ from \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link[irlba:irlba]{irl
 \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.}
 
 \item{auto_weight}{automatically determine weights to approximate the
-polarity of terms to seed words. See details.}
+polarity of terms to seed words. Deprecated.}
 
 \item{include_data}{if \code{TRUE}, fitted model includes the dfm supplied as \code{x}.}
 
