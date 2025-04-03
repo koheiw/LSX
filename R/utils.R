@@ -1,6 +1,6 @@
 #' Identify noisy documents in a corpus
-#' @param x character or [corpus] object whose texts will be diagnosed.
-#' @param ... extra arguments passed to `tokens`.
+#' @param x character or [quanteda::corpus()] object whose texts will be diagnosed.
+#' @param ... extra arguments passed to [quanteda::tokens()].
 #' @keywords internal
 #' @export
 #' @importFrom quanteda corpus tokens texts
@@ -17,7 +17,7 @@ diagnosys.character <- function(x, ...) {
 #' @importFrom quanteda dictionary ntoken dfm convert dfm_lookup
 diagnosys.corpus <- function(x, ...) {
 
-    .Deprecated("quanteda.textstats::textstat_summary")
+    .Deprecated("quanteda.textstats::textstat_summary()")
     dict <- dictionary(list(
         "number" = "\\p{N}",
         "punct" = "\\p{P}",
@@ -126,8 +126,9 @@ seedwords <- function(type) {
 }
 
 
-#' Smooth predicted polarity scores by local polynomial regression
+#' Smooth predicted polarity scores
 #'
+#' Smooth predicted polarity scores by local polynomial regression.
 #' @param x a [data.frame] containing polarity scores and dates.
 #' @param lss_var the name of the column in `x` for polarity scores.
 #' @param date_var the name of the column in `x` for dates.

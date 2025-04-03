@@ -318,12 +318,16 @@ cache_svd <- function(x, k, weight, engine, cache = TRUE, ...) {
         message("Reading cache file: ", file_cache)
         result <- readRDS(file_cache)
     } else {
-        if (engine == "RSpectra") {
-            result <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
-        } else if (engine == "rsvd") {
+        if (engine == "rsvd") {
+            if (!requireNamespace("rsvd"))
+                stop("wordvector package must be installed")
             result <- rsvd::rsvd(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
-        } else {
+        } else if (engine == "irlba") {
+            if (!requireNamespace("irlba"))
+                stop("irlba package must be installed")
             result <- irlba::irlba(as(x, "dgCMatrix"), nv = k, right_only = TRUE, ...)
+        } else {
+            result <- RSpectra::svds(as(x, "dgCMatrix"), k = k, nu = 0, nv = k, ...)
         }
         if (cache) {
             message("Writing cache file: ", file_cache)
@@ -348,6 +352,8 @@ cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
         message("Reading cache file: ", file_cache)
         result <- readRDS(file_cache)
     } else {
+        if (!requireNamespace("rsparse"))
+            stop("wordvector package must be installed")
         glove <- rsparse::GloVe$new(rank = w, x_max = x_max, ...)
         temp <- glove$fit_transform(Matrix::drop0(x), n_iter = n_iter,
                                     n_threads = getOption("quanteda_threads", 1L))
