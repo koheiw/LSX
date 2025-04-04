@@ -112,11 +112,12 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
   if (spatial) {
 
     if (x$version == as.numeric_version("0.1.0")) {
-      v <- t(x$values)
+      v <- t(x$vector)
     } else {
-      v <- t(as.matrix(x))
+      v <- t(x$values)
     }
     result <- as.textmodel_lss(v, seeds = seeds, terms = terms, ...)
+    result$frequency <- x$frequency[names(result$beta)]
     result$call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
 
   } else {
