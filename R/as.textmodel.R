@@ -131,7 +131,9 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
     seed <- unlist(unname(seeds))
     theta <- get_theta(terms, rownames(x$values))
 
-    prob <- wordvector::probability(x, names(seed), "values")
+    suppressWarnings({
+      prob <- wordvector::probability(x, names(seed), "values")
+    })
     beta <- rowSums(prob[names(theta),] %*% seed) * theta
 
     result <- build_lss(
