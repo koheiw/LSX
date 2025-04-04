@@ -98,12 +98,28 @@ test_that("as.textmodel_lss works with textmodel_lss", {
 
 test_that("as.textmodel_lss works with textmodel_wordvector", {
 
+  # spatial
   wdv <- readRDS("../data/word2vec_test.RDS")
   lss <- as.textmodel_lss(wdv, seed)
 
   expect_equal(lss$embedding, t(wdv$values))
   expect_identical(lss$frequency, wdv$frequency)
-  expect_identical(names(lss$frequency), names(wdv$frequency))
+  expect_identical(names(lss$frequency), names(lss$frequency))
+  expect_identical(names(lss$beta), names(lss$frequency))
+
+  expect_error(
+    as.textmodel_lss(wdv, seed, spatial = FALSE),
+    "must be trained with normalize = FALSE"
+  )
+
+  # probabilistic
+  wdv2 <- readRDS("../data/word2vec-prob_test.RDS")
+  lss2 <- as.textmodel_lss(wdv2, seed, spatial = FALSE)
+
+  expect_true(is.null(lss2$embedding))
+  expect_identical(lss2$frequency, wdv2$frequency)
+  expect_identical(names(lss2$frequency), names(wdv2$frequency))
+  expect_identical(names(lss2$beta), names(lss2$frequency))
 
 })
 
@@ -137,7 +153,9 @@ test_that("auto_weight is working", {
     skip_on_cran()
 
     lss1 <- as.textmodel_lss(mat_test, seed)
-    lss2 <- as.textmodel_lss(mat_test, seed, auto_weight = TRUE)
+    suppressWarnings({
+      lss2 <- as.textmodel_lss(mat_test, seed, auto_weight = TRUE)
+    })
     expect_true(
         all(lss1$seeds_weighted != lss2$seeds_weighted)
     )
@@ -147,9 +165,9 @@ test_that("auto_weight is working", {
     expect_true(
         all(abs(lss2$beta[names(lss2$seeds_weighted)] - lss1$seeds_weighted) < 0.05)
     )
-    expect_output(
-        as.textmodel_lss(mat_test, seed, auto_weight = TRUE, verbose = TRUE),
-        "Optimizing seed weights..."
+    expect_warning(
+        as.textmodel_lss(mat_test, seed, auto_weight = TRUE, verbose = FALSE),
+        "'auto_weight' is deprecated"
     )
 })
 
@@ -176,3 +194,4 @@ test_that("terms is working", {
                  "terms must be named")
 
 })
+
