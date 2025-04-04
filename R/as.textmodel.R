@@ -39,7 +39,6 @@ as.textmodel_lss.matrix <- function(x, seeds,
     seeds <- expand_seeds(seeds, colnames(x), verbose)
     seed <- unlist(unname(seeds))
     theta <- get_theta(terms, colnames(x))
-    feat <- union(names(theta), names(seed))
 
     if (is.null(slice)) {
         slice <- nrow(x)
@@ -101,17 +100,48 @@ as.textmodel_lss.textmodel_lss <- function(x, ...) {
 }
 
 #' @export
+#' @param spatial if `TRUE`, use spatial LSS. Otherwise, probabilistic LSS.
 #' @method as.textmodel_lss textmodel_wordvector
-as.textmodel_lss.textmodel_wordvector <- function(x, ...) {
-  if (is.null(x$values) && is.null(x$vectors))
-    stop("x must be a valid textmodel_wordvector object")
-  if (!requireNamespace("wordvector"))
-    stop("wordvector package must be installed")
-  if (!is.null(x$values)) {
-    result <- as.textmodel_lss(t(x$values), ...)
+as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
+                                                  terms = NULL,
+                                                  verbose = FALSE,
+                                                  spatial = TRUE,
+                                                  ...) {
+
+  args <- list(terms = terms, seeds = seeds)
+  if (spatial) {
+
+    if (x$version == as.numeric_version("0.1.0")) {
+      v <- t(x$values)
+    } else {
+      v <- t(as.matrix(x))
+    }
+    result <- as.textmodel_lss(v, seeds = seeds, terms = terms, ...)
+    result$call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
+
   } else {
-    result <- as.textmodel_lss(t(x$vectors), ...) # for wordvector v0.1.0
+
+    if (!requireNamespace("wordvector"))
+      stop("wordvector package must be installed")
+    if (x$version < as.numeric_version("0.2.0"))
+      stop("wordvector package must be v0.2.0 or newer")
+
+    seeds <- expand_seeds(seeds, rownames(x$values), verbose)
+    seed <- unlist(unname(seeds))
+    theta <- get_theta(terms, rownames(x$values))
+
+    prob <- wordvector::probability(x, names(seed), "values")
+    beta <- rowMeans(prob[names(theta),] %*% diag(seed)) * theta
+
+    result <- build_lss(
+      beta = beta,
+      k = x$dim,
+      terms = args$terms,
+      seeds = args$seeds,
+      seeds_weighted = seed,
+      frequency = x$frequency[names(beta)],
+      call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
+    )
   }
-  result$frequency <- x$frequency[names(result$beta)]
   return(result)
 }
