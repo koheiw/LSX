@@ -269,7 +269,7 @@ get_simil <- function(embed, seed, term, slice, method = "cosine") {
 get_beta <- function(simil, seed) {
     if (!identical(colnames(simil$terms), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
-    Matrix::rowMeans(simil$terms %*% seed)
+    Matrix::rowSums(simil$terms %*% seed)
 }
 
 get_theta <- function(terms, feature) {
