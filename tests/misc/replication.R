@@ -17,22 +17,23 @@ as.textmodel_lss0 <- function(x, seeds) {
 }
 
 toks <- tokens(data_corpus_news2014) %>%
+  tokens_remove(stopwords(), min_nchar = 2) %>%
   tokens_tolower()
 
 seed <- as.seedwords(data_dictionary_sentiment)
+
 wdv <- textmodel_word2vec(toks, dim = 100, type = "skip-gram", normalize = FALSE,
                           verbpse = TRUE)
-
-lss0 <- as.textmodel_lss0(wdv, seed)
-lss <- as.textmodel_lss(wdv, seed, spatial = FALSE)
+lss_wdv0 <- as.textmodel_lss0(wdv, seed)
+lss_wdv <- as.textmodel_lss(wdv, seed, spatial = FALSE)
 
 expect_setequal(
-  names(lss$beta),
-  names(lss0$beta)
+  names(lss_wdv0$beta),
+  names(lss_wdv$beta)
 )
 
 expect_equal(
-  cor(coef(lss0), coef(lss)),
+  cor(coef(lss_wdv0), coef(lss_wdv)),
   1.0
 )
 
