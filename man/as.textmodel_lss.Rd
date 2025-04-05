@@ -2,32 +2,49 @@
 % Please edit documentation in R/as.textmodel.R
 \name{as.textmodel_lss}
 \alias{as.textmodel_lss}
-\title{Create a dummy textmodel_lss object from external objects}
+\title{Create a Latent Semantic Scaling model from various objects}
 \usage{
 as.textmodel_lss(x, ...)
 }
 \arguments{
-\item{x}{an object from which a dummy \link{textmodel_lss} object is created.}
+\item{x}{an object from which a new \link{textmodel_lss} object is created. See details.}
 
-\item{...}{arguments used to create a dummy object. \code{seeds} must be given
-when \code{x} is a dense matrix.}
+\item{...}{arguments used to create a new object. \code{seeds} must be given
+when \code{x} is a dense matrix or a fitted textmodel_lss.}
 }
 \value{
 a dummy \link{textmodel_lss} object
 }
 \description{
-Create a dummy textmodel_lss object from a numeric vector, dense matrix or an
-existing textmodel_lss object. Pre-trained word-embedding models could used
-to perform LSS through this function.
+Create a new \link{textmodel_lss} object from an existing or foreign objects.
 }
 \details{
-A named numeric vector and a dense matrix are set to \code{beta} and
-\code{embedding} respectively. A dense matrix should have column names for
-words.
+If \code{x} is a \link{textmodel_lss}, original word vectors are reused to compute polarity
+scores with new seed words. It is also possible to use their subvectors via \code{slice}
+if it was trained originally using SVD.
+
+If \code{x} is a dense matrix, it is treated as a column-oriented word vectors with which
+polarity of words are computed. If \code{x} is a named numeric vector, the values are treated
+as polarity scores of the words in the names.
+
+If \code{x} is a normalized \link[wordvector:textmodel_word2vec]{wordvector::textmodel_word2vec}, it returns a spatial model;
+otherwise, a probabilistic model. While the polarity scores of words are
+their cosine similarity to seed words in spatial models, they are
+predicted probability that the seed words to occur in their proximity.
 }
 \examples{
-v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
-lss <- as.textmodel_lss(v)
+seed <- as.seedwords(data_dictionary_sentiment)
+
+# subset word vector
+lss_k300 <- readRDS("tests/data/lss_k300.RDS")
+lss_k200 <- as.textmodel_lss(lss_old, seeds = seed, slice = 200)
+
+# use pre-trained word vectors
+mat <- readRDS("tests/data/matrix_k100.RDS")
+lss_mat <- as.textmodel_lss(mat, seeds = seed)
+
+# use word2vec
+wdv <- readRDS("tests/data/word2vec.RDS")
+lss_wdv <- as.textmodel_lss(wdv, seeds = seed)
 
 }
-\keyword{internal}

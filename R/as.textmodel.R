@@ -1,19 +1,38 @@
-#' Create a dummy textmodel_lss object from external objects
+#' Create a Latent Semantic Scaling model from various objects
 #'
-#' Create a dummy textmodel_lss object from a numeric vector, dense matrix or an
-#' existing textmodel_lss object. Pre-trained word-embedding models could used
-#' to perform LSS through this function.
-#' @param x an object from which a dummy [textmodel_lss] object is created.
-#' @param ... arguments used to create a dummy object. `seeds` must be given
-#'   when `x` is a dense matrix.
-#' @details A named numeric vector and a dense matrix are set to `beta` and
-#'   `embedding` respectively. A dense matrix should have column names for
-#'   words.
-#' @keywords internal
+#' Create a new [textmodel_lss] object from an existing or foreign objects.
+#' @param x an object from which a new [textmodel_lss] object is created. See details.
+#' @param ... arguments used to create a new object. `seeds` must be given
+#'   when `x` is a dense matrix or a fitted textmodel_lss.
+#' @details
+#' If `x` is a [textmodel_lss], original word vectors are reused to compute polarity
+#' scores with new seed words. It is also possible to use their subvectors via `slice`
+#' if it was trained originally using SVD.
+#'
+#' If `x` is a dense matrix, it is treated as a column-oriented word vectors with which
+#' polarity of words are computed. If `x` is a named numeric vector, the values are treated
+#' as polarity scores of the words in the names.
+#'
+#' If `x` is a normalized [wordvector::textmodel_word2vec], it returns a spatial model;
+#' otherwise, a probabilistic model. While the polarity scores of words are
+#' their cosine similarity to seed words in spatial models, they are
+#' predicted probability that the seed words to occur in their proximity.
+#'
 #' @export
 #' @examples
-#' v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
-#' lss <- as.textmodel_lss(v)
+#' seed <- as.seedwords(data_dictionary_sentiment)
+#'
+#' # subset word vector
+#' lss_k300 <- readRDS("tests/data/lss_k300.RDS")
+#' lss_k200 <- as.textmodel_lss(lss_old, seeds = seed, slice = 200)
+#'
+#' # use pre-trained word vectors
+#' mat <- readRDS("tests/data/matrix_k100.RDS")
+#' lss_mat <- as.textmodel_lss(mat, seeds = seed)
+#'
+#' # use word2vec
+#' wdv <- readRDS("tests/data/word2vec.RDS")
+#' lss_wdv <- as.textmodel_lss(wdv, seeds = seed)
 #'
 #' @return a dummy [textmodel_lss] object
 as.textmodel_lss <- function(x, ...) {
@@ -100,16 +119,14 @@ as.textmodel_lss.textmodel_lss <- function(x, ...) {
 }
 
 #' @export
-#' @param spatial if `TRUE`, use spatial LSS. Otherwise, probabilistic LSS.
 #' @method as.textmodel_lss textmodel_wordvector
 as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
                                                   terms = NULL,
                                                   verbose = FALSE,
-                                                  spatial = TRUE,
                                                   ...) {
 
   args <- list(terms = terms, seeds = seeds)
-  if (spatial) {
+  if (x$normalize) {
 
     if (x$version == as.numeric_version("0.1.0")) {
       v <- t(x$vector)
@@ -138,6 +155,7 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
 
     result <- build_lss(
       beta = beta,
+      beta_type = "probability",
       k = x$dim,
       terms = args$terms,
       seeds = args$seeds,
