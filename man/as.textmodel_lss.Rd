@@ -28,23 +28,7 @@ polarity of words are computed. If \code{x} is a named numeric vector, the value
 as polarity scores of the words in the names.
 
 If \code{x} is a normalized \link[wordvector:textmodel_word2vec]{wordvector::textmodel_word2vec}, it returns a spatial model;
-otherwise, a probabilistic model. While the polarity scores of words are
+if not normalized, a probabilistic model. While the polarity scores of words are
 their cosine similarity to seed words in spatial models, they are
 predicted probability that the seed words to occur in their proximity.
-}
-\examples{
-seed <- as.seedwords(data_dictionary_sentiment)
-
-# subset word vectors
-lss_k300 <- readRDS("tests/data/lss_k300.RDS")
-lss_k200 <- as.textmodel_lss(lss_old, seeds = seed, slice = 200)
-
-# use pre-trained word vectors
-mat <- readRDS("tests/data/matrix_k100.RDS")
-lss_mat <- as.textmodel_lss(mat, seeds = seed)
-
-# use word2vec
-wdv <- readRDS("tests/data/word2vec.RDS")
-lss_wdv <- as.textmodel_lss(wdv, seeds = seed)
-
 }

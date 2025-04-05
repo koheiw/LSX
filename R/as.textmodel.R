@@ -14,7 +14,7 @@
 #' as polarity scores of the words in the names.
 #'
 #' If `x` is a normalized [wordvector::textmodel_word2vec], it returns a spatial model;
-#' otherwise, a probabilistic model. While the polarity scores of words are
+#' if not normalized, a probabilistic model. While the polarity scores of words are
 #' their cosine similarity to seed words in spatial models, they are
 #' predicted probability that the seed words to occur in their proximity.
 #'
