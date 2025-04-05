@@ -1,0 +1,74 @@
+---
+title: "TLSS using Word2vec"
+subtitle: "Russian state media's coverage of energy issues in the US and the EU"
+output: 
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", 
+                      fig.width = 8, fig.height = 4, dpi = 150, out.width = 760)
+```
+
+In this example, we will analyze how much the proposition of [the European Gas Demand Reduction Plan](https://ec.europa.eu/commission/presscorner/detail/en/ip_22_4608) on 20 July affected Sputnik's coverage of energy issues in the United States and the European Union.
+
+```{r setup}
+library(LSX)
+library(wordvector)
+library(quanteda)
+library(ggplot2)
+```
+
+### Preperation
+
+We will analyze the same [corpus](https://www.dropbox.com/s/abme18nlrwxgmz8/data_corpus_sputnik2022.rds?dl=1) as the [introduction](./introduction.html), so too the pre-processing.
+
+```{r include=FALSE}
+if (!file.exists("data_corpus_sputnik2022.rds")) {
+    download.file("https://www.dropbox.com/s/abme18nlrwxgmz8/data_corpus_sputnik2022.rds?dl=1",
+                  "data_corpus_sputnik2022.rds", mode = "wb")
+}
+```
+
+```{r}
+corp <- readRDS("data_corpus_sputnik2022.rds") |>
+    corpus_reshape()
+toks <- tokens(corp, remove_punct = TRUE, remove_symbols = TRUE, 
+               remove_numbers = TRUE, remove_url = TRUE) %>% 
+  tokens_remove(stopwords("en")) %>%
+  tokens_tolower()
+
+dfmt <- dfm(toks) |> 
+    dfm_remove(stopwords("en"))
+```
+
+```{r}
+seed <- as.seedwords(data_dictionary_sentiment)
+print(seed)
+```
+
+
+```{r}
+wdv_sp <- textmodel_word2vec(toks, dim = 200, type = "skip-gram", normalize = TRUE)
+wdv_pb <- textmodel_word2vec(toks, dim = 200, type = "skip-gram", normalize = FALSE)
+```
+
+```{r}
+lss_sp <- as.textmodel_lss(wdv_sp, seeds = seed)
+lss_pb <- as.textmodel_lss(wdv_pb, seeds = seed)
+```
+
+```{r}
+head(coef(lss_sp), 10)
+head(coef(lss_pb), 10)
+```
+
+
+```{r}
+textplot_terms(lss_sp, highlighted = data_dictionary_sentiment)
+```
+```{r}
+textplot_terms(lss_pb, highlighted = data_dictionary_sentiment)
+```
+
