@@ -1,7 +1,7 @@
 require(quanteda)
 require(ggplot2)
 
-lss_test <- readRDS("../data/lss_test.RDS")
+lss_test <- readRDS("../data/lss_k300.RDS")
 
 test_that("diagnosys works", {
     skip_on_travis()

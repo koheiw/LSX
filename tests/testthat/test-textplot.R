@@ -1,6 +1,6 @@
 
 require(quanteda)
-toks_test <- readRDS("../data/tokens_test.RDS")
+toks_test <- readRDS("../data/tokens.RDS")
 toks_test <- tokens_remove(toks_test, stopwords())
 feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dict <- dictionary(list("keywords" = c("positive", "bad", "xxxx")))
@@ -9,7 +9,9 @@ test_that("textplot_* works with SVD", {
     dfmt <- dfm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(dfmt, seed, k = 10)
-    expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
+    suppressWarnings({
+      expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
+    })
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, max_words = 2)),
@@ -42,7 +44,9 @@ test_that("textplot_* works with Glove", {
     fcmt <- fcm(toks_test)
     seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
     lss <- textmodel_lss(fcmt, seed, w = 10)
-    expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
+    suppressWarnings({
+      expect_equal(class(textplot_simil(lss)), c("gg", "ggplot"))
+    })
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords)),
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, highlighted = dict$keywords, max_words = 2)),
@@ -83,8 +87,10 @@ test_that("textplot_* raise error when attributes are missing", {
     coef <- rnorm(100)
     names(coef) <- topfeatures(dfmt, 100)
     lss <- as.textmodel_lss(coef)
-    expect_error(textplot_simil(lss),
-                 "textplot_simil() does not work with dummy models", fixed = TRUE)
+    suppressWarnings({
+      expect_error(textplot_simil(lss),
+                   "textplot_simil() does not work with dummy models", fixed = TRUE)
+    })
 })
 
 test_that("textplot_terms works even when frequency has zeros (#85)", {

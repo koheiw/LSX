@@ -1,6 +1,6 @@
 
 require(quanteda)
-toks_test <- readRDS("../data/tokens_test.RDS")
+toks_test <- readRDS("../data/tokens.RDS")
 
 test_that("textstat_context works", {
 

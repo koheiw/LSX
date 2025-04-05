@@ -1,7 +1,7 @@
 require(quanteda)
 
-mat_test <- readRDS("../data/matrix_embedding.RDS")
-toks_test <- readRDS("../data/tokens_test.RDS")
+mat_test <- readRDS("../data/matrix_k100.RDS")
+toks_test <- readRDS("../data/tokens.RDS")
 feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
 seed <- as.seedwords(data_dictionary_sentiment)
@@ -99,23 +99,20 @@ test_that("as.textmodel_lss works with textmodel_lss", {
 test_that("as.textmodel_lss works with textmodel_wordvector", {
 
   # spatial
-  wdv <- readRDS("../data/word2vec_test.RDS")
+  wdv <- readRDS("../data/word2vec.RDS")
   lss <- as.textmodel_lss(wdv, seed)
 
+  expect_equal(lss$beta_type, "similarity")
   expect_equal(lss$embedding, t(wdv$values))
   expect_identical(lss$frequency, wdv$frequency)
   expect_identical(names(lss$frequency), names(lss$frequency))
   expect_identical(names(lss$beta), names(lss$frequency))
 
-  expect_error(
-    as.textmodel_lss(wdv, seed, spatial = FALSE),
-    "must be trained with normalize = FALSE"
-  )
-
   # probabilistic
-  wdv2 <- readRDS("../data/word2vec-prob_test.RDS")
-  lss2 <- as.textmodel_lss(wdv2, seed, spatial = FALSE)
+  wdv2 <- readRDS("../data/word2vec-prob.RDS")
+  lss2 <- as.textmodel_lss(wdv2, seed)
 
+  expect_equal(lss2$beta_type, "probability")
   expect_true(is.null(lss2$embedding))
   expect_identical(lss2$frequency, wdv2$frequency)
   expect_identical(names(lss2$frequency), names(wdv2$frequency))

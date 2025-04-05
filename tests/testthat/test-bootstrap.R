@@ -1,9 +1,9 @@
 require(quanteda)
 
-toks_test <- readRDS("../data/tokens_test.RDS")
+toks_test <- readRDS("../data/tokens.RDS")
 dfmt_test <- dfm(toks_test) %>%
     dfm_group()
-lss_test <- readRDS("../data/lss_test.RDS")
+lss_test <- readRDS("../data/lss_k300.RDS")
 
 test_that("bootstrap_lss works with what = seeds", {
 
