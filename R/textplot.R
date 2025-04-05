@@ -10,6 +10,7 @@ textplot_simil <- function(x) {
 #' @export
 textplot_simil.textmodel_lss <- function(x) {
 
+    .Deprecated()
     if (is.null(x$similarity) || is.null(x$seeds_weighted))
         stop("textplot_simil() does not work with dummy models")
 
