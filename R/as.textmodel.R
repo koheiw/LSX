@@ -19,21 +19,6 @@
 #' predicted probability that the seed words to occur in their proximity.
 #'
 #' @export
-#' @examples
-#' seed <- as.seedwords(data_dictionary_sentiment)
-#'
-#' # subset word vectors
-#' lss_k300 <- readRDS("tests/data/lss_k300.RDS")
-#' lss_k200 <- as.textmodel_lss(lss_old, seeds = seed, slice = 200)
-#'
-#' # use pre-trained word vectors
-#' mat <- readRDS("tests/data/matrix_k100.RDS")
-#' lss_mat <- as.textmodel_lss(mat, seeds = seed)
-#'
-#' # use word2vec
-#' wdv <- readRDS("tests/data/word2vec.RDS")
-#' lss_wdv <- as.textmodel_lss(wdv, seeds = seed)
-#'
 #' @return a dummy [textmodel_lss] object
 as.textmodel_lss <- function(x, ...) {
     UseMethod("as.textmodel_lss")
