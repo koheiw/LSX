@@ -6,7 +6,7 @@
 #'   when `x` is a dense matrix or a fitted textmodel_lss.
 #' @details
 #' If `x` is a [textmodel_lss], original word vectors are reused to compute polarity
-#' scores with new seed words. It is also possible to use their subvectors via `slice`
+#' scores with new seed words. It is also possible to subset word vectors via `slice`
 #' if it was trained originally using SVD.
 #'
 #' If `x` is a dense matrix, it is treated as a column-oriented word vectors with which
@@ -22,7 +22,7 @@
 #' @examples
 #' seed <- as.seedwords(data_dictionary_sentiment)
 #'
-#' # subset word vector
+#' # subset word vectors
 #' lss_k300 <- readRDS("tests/data/lss_k300.RDS")
 #' lss_k200 <- as.textmodel_lss(lss_old, seeds = seed, slice = 200)
 #'

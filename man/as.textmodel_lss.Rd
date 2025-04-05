@@ -20,7 +20,7 @@ Create a new \link{textmodel_lss} object from an existing or foreign objects.
 }
 \details{
 If \code{x} is a \link{textmodel_lss}, original word vectors are reused to compute polarity
-scores with new seed words. It is also possible to use their subvectors via \code{slice}
+scores with new seed words. It is also possible to subset word vectors via \code{slice}
 if it was trained originally using SVD.
 
 If \code{x} is a dense matrix, it is treated as a column-oriented word vectors with which
@@ -35,7 +35,7 @@ predicted probability that the seed words to occur in their proximity.
 \examples{
 seed <- as.seedwords(data_dictionary_sentiment)
 
-# subset word vector
+# subset word vectors
 lss_k300 <- readRDS("tests/data/lss_k300.RDS")
 lss_k200 <- as.textmodel_lss(lss_old, seeds = seed, slice = 200)
 

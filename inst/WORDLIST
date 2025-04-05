@@ -58,6 +58,7 @@ rescale
 rescaling
 rsparse
 rsvd
+word2vec
 russia
 semisupervised
 stringi
@@ -72,3 +73,5 @@ valuetype
 wordscore
 wordvector
 β
+
+
