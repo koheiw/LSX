@@ -127,7 +127,7 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
     if (!requireNamespace("wordvector"))
       stop("wordvector package must be installed")
     if (x$version < as.numeric_version("0.2.0"))
-      stop("wordvector package must be v0.2.0 or newer")
+      stop("wordvector package must be v0.2.0 or later")
 
     seeds <- expand_seeds(seeds, rownames(x$values), verbose)
     seed <- unlist(unname(seeds))
