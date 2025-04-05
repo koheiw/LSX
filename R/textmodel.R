@@ -213,6 +213,7 @@ build_lss <- function(...) {
     result <- list(
         data = NULL,
         beta = NULL,
+        beta_type = "similarity",
         k = NULL,
         slice = NULL,
         frequency = NULL,
