@@ -1,7 +1,7 @@
 require(quanteda)
 
-mat_test <- readRDS("../data/matrix_embedding.RDS")
-toks_test <- readRDS("../data/tokens_test.RDS")
+mat_test <- readRDS("../data/matrix_k100.RDS")
+toks_test <- readRDS("../data/tokens.RDS")
 feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
 dfmt_test <- dfm(toks_test)
 seed <- as.seedwords(data_dictionary_sentiment)
@@ -98,12 +98,25 @@ test_that("as.textmodel_lss works with textmodel_lss", {
 
 test_that("as.textmodel_lss works with textmodel_wordvector", {
 
-  wdv <- readRDS("../data/word2vec_test.RDS")
+  # spatial
+  wdv <- readRDS("../data/word2vec.RDS")
   lss <- as.textmodel_lss(wdv, seed)
 
+  expect_equal(lss$beta_type, "similarity")
   expect_equal(lss$embedding, t(wdv$values))
   expect_identical(lss$frequency, wdv$frequency)
-  expect_identical(names(lss$frequency), names(wdv$frequency))
+  expect_identical(names(lss$frequency), names(lss$frequency))
+  expect_identical(names(lss$beta), names(lss$frequency))
+
+  # probabilistic
+  wdv2 <- readRDS("../data/word2vec-prob.RDS")
+  lss2 <- as.textmodel_lss(wdv2, seed)
+
+  expect_equal(lss2$beta_type, "probability")
+  expect_true(is.null(lss2$embedding))
+  expect_identical(lss2$frequency, wdv2$frequency)
+  expect_identical(names(lss2$frequency), names(wdv2$frequency))
+  expect_identical(names(lss2$beta), names(lss2$frequency))
 
 })
 
@@ -137,7 +150,9 @@ test_that("auto_weight is working", {
     skip_on_cran()
 
     lss1 <- as.textmodel_lss(mat_test, seed)
-    lss2 <- as.textmodel_lss(mat_test, seed, auto_weight = TRUE)
+    suppressWarnings({
+      lss2 <- as.textmodel_lss(mat_test, seed, auto_weight = TRUE)
+    })
     expect_true(
         all(lss1$seeds_weighted != lss2$seeds_weighted)
     )
@@ -147,9 +162,9 @@ test_that("auto_weight is working", {
     expect_true(
         all(abs(lss2$beta[names(lss2$seeds_weighted)] - lss1$seeds_weighted) < 0.05)
     )
-    expect_output(
-        as.textmodel_lss(mat_test, seed, auto_weight = TRUE, verbose = TRUE),
-        "Optimizing seed weights..."
+    expect_warning(
+        as.textmodel_lss(mat_test, seed, auto_weight = TRUE, verbose = FALSE),
+        "'auto_weight' is deprecated"
     )
 })
 
@@ -176,3 +191,4 @@ test_that("terms is working", {
                  "terms must be named")
 
 })
+

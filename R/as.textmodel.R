@@ -1,20 +1,24 @@
-#' Create a dummy textmodel_lss object from external objects
+#' Create a Latent Semantic Scaling model from various objects
 #'
-#' Create a dummy textmodel_lss object from a numeric vector, dense matrix or an
-#' existing textmodel_lss object. Pre-trained word-embedding models could used
-#' to perform LSS through this function.
-#' @param x an object from which a dummy [textmodel_lss] object is created.
-#' @param ... arguments used to create a dummy object. `seeds` must be given
-#'   when `x` is a dense matrix.
-#' @details A named numeric vector and a dense matrix are set to `beta` and
-#'   `embedding` respectively. A dense matrix should have column names for
-#'   words.
-#' @keywords internal
+#' Create a new [textmodel_lss] object from an existing or foreign objects.
+#' @param x an object from which a new [textmodel_lss] object is created. See details.
+#' @param ... arguments used to create a new object. `seeds` must be given
+#'   when `x` is a dense matrix or a fitted textmodel_lss.
+#' @details
+#' If `x` is a [textmodel_lss], original word vectors are reused to compute polarity
+#' scores with new seed words. It is also possible to subset word vectors via `slice`
+#' if it was trained originally using SVD.
+#'
+#' If `x` is a dense matrix, it is treated as a column-oriented word vectors with which
+#' polarity of words are computed. If `x` is a named numeric vector, the values are treated
+#' as polarity scores of the words in the names.
+#'
+#' If `x` is a normalized [wordvector::textmodel_word2vec], it returns a spatial model;
+#' if not normalized, a probabilistic model. While the polarity scores of words are
+#' their cosine similarity to seed words in spatial models, they are
+#' predicted probability that the seed words to occur in their proximity.
+#'
 #' @export
-#' @examples
-#' v <- c("a" = 0.1, "z" = -0.2, "d" = 0.3, "h" = -0.05)
-#' lss <- as.textmodel_lss(v)
-#'
 #' @return a dummy [textmodel_lss] object
 as.textmodel_lss <- function(x, ...) {
     UseMethod("as.textmodel_lss")
@@ -39,7 +43,6 @@ as.textmodel_lss.matrix <- function(x, seeds,
     seeds <- expand_seeds(seeds, colnames(x), verbose)
     seed <- unlist(unname(seeds))
     theta <- get_theta(terms, colnames(x))
-    feat <- union(names(theta), names(seed))
 
     if (is.null(slice)) {
         slice <- nrow(x)
@@ -102,16 +105,49 @@ as.textmodel_lss.textmodel_lss <- function(x, ...) {
 
 #' @export
 #' @method as.textmodel_lss textmodel_wordvector
-as.textmodel_lss.textmodel_wordvector <- function(x, ...) {
-  if (is.null(x$values) && is.null(x$vectors))
-    stop("x must be a valid textmodel_wordvector object")
-  if (!requireNamespace("wordvector"))
-    stop("wordvector package must be installed")
-  if (!is.null(x$values)) {
-    result <- as.textmodel_lss(t(x$values), ...)
+as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
+                                                  terms = NULL,
+                                                  verbose = FALSE,
+                                                  ...) {
+
+  args <- list(terms = terms, seeds = seeds)
+  if (x$normalize) {
+
+    if (x$version == as.numeric_version("0.1.0")) {
+      v <- t(x$vector)
+    } else {
+      v <- t(x$values)
+    }
+    result <- as.textmodel_lss(v, seeds = seeds, terms = terms, ...)
+    result$frequency <- x$frequency[names(result$beta)]
+    result$call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
+
   } else {
-    result <- as.textmodel_lss(t(x$vectors), ...) # for wordvector v0.1.0
+
+    if (!requireNamespace("wordvector"))
+      stop("wordvector package must be installed")
+    if (x$version < as.numeric_version("0.2.0"))
+      stop("wordvector package must be v0.2.0 or later")
+
+    seeds <- expand_seeds(seeds, rownames(x$values), verbose)
+    seed <- unlist(unname(seeds))
+    theta <- get_theta(terms, rownames(x$values))
+
+    suppressWarnings({
+      prob <- wordvector::probability(x, names(seed), "values")
+    })
+    beta <- rowSums(prob[names(theta),] %*% seed) * theta
+
+    result <- build_lss(
+      beta = beta,
+      beta_type = "probability",
+      k = x$dim,
+      terms = args$terms,
+      seeds = args$seeds,
+      seeds_weighted = seed,
+      frequency = x$frequency[names(beta)],
+      call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
+    )
   }
-  result$frequency <- x$frequency[names(result$beta)]
   return(result)
 }

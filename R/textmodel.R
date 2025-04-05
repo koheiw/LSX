@@ -111,10 +111,9 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         slice <- seq_len(slice)
 
     simil <- get_simil(embed, names(seed), names(theta), slice, simil_method)
-    if (auto_weight) {
-        .Deprecated(old = "auto_weight")
+    if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose)
-    }
+
     beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
@@ -186,10 +185,9 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     }
 
     simil <- get_simil(embed, names(seed), term, seq_len(w), simil_method)
-    if (auto_weight) {
-        .Deprecated(old = "auto_weight")
+    if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose)
-    }
+
     beta <- get_beta(simil, seed)
 
     result <- build_lss(
@@ -215,6 +213,7 @@ build_lss <- function(...) {
     result <- list(
         data = NULL,
         beta = NULL,
+        beta_type = "similarity",
         k = NULL,
         slice = NULL,
         frequency = NULL,
@@ -271,7 +270,7 @@ get_simil <- function(embed, seed, term, slice, method = "cosine") {
 get_beta <- function(simil, seed) {
     if (!identical(colnames(simil$terms), names(seed)))
         stop("Columns and seed words do not match", call. = FALSE)
-    Matrix::rowMeans(simil$terms %*% seed)
+    Matrix::rowSums(simil$terms %*% seed)
 }
 
 get_theta <- function(terms, feature) {
@@ -431,6 +430,7 @@ weight_seeds <- function(seeds, type) {
 
 # automatically align polarity score with original weight
 optimize_weight <- function(seed, simil, verbose) {
+    .Deprecated(old = "auto_weight")
     if (verbose)
         cat("Optimizing seed weights...\n")
     result <- optim(seed, function(x) {
