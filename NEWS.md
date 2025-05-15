@@ -1,3 +1,7 @@
+## Changes in v1.4.4
+
+* Fix a bug in `as.textmodel_lss()`.
+
 ## Changes in v1.4.3
 
 * Improve the handling of word2vec models from the **wordvector** package in `as.textmodel_lss()`.
