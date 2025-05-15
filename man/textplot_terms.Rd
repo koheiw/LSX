@@ -9,6 +9,7 @@ textplot_terms(
   highlighted = NULL,
   max_highlighted = 50,
   max_words = 1000,
+  sampling = c("absolute", "relative"),
   ...
 )
 }
@@ -20,11 +21,15 @@ textplot_terms(
 highlighted in different colors.}
 
 \item{max_highlighted}{the maximum number of words to highlight. When
-\code{highlighted = NULL}, words to highlight are randomly selected
-proportionally to \code{polarity ^ 2 * log(frequency)}.}
+\code{highlighted = NULL}, words are randomly sampled proportionally to
+\code{beta ^ 2 * log(frequency)} for highlighting.}
 
 \item{max_words}{the maximum number of words to plot. Words are randomly
 sampled to keep the number below the limit.}
+
+\item{sampling}{if "relative", words are sampled based on their squared deviation
+from the mean for highlighting; if "absolute", they are sampled
+based on the squared distance from zero.}
 
 \item{...}{passed to underlying functions. See the Details.}
 }

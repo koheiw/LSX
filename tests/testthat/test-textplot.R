@@ -26,10 +26,15 @@ test_that("textplot_* works with SVD", {
                  c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss)), c("gg", "ggplot"))
     expect_equal(class(textplot_terms(lss, max_highlighted = 10)), c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, sampling = "relative")), c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss, sampling = "absolute")), c("gg", "ggplot"))
+    expect_error(textplot_terms(lss, sampling = "xxx"))
 
     lss2 <- textmodel_lss(dfmt, seed, terms = feat_test, k = 10)
     expect_equal(class(textplot_terms(lss2)), c("gg", "ggplot"))
-
+    expect_equal(class(textplot_terms(lss2, sampling = "relative")), c("gg", "ggplot"))
+    expect_equal(class(textplot_terms(lss2, sampling = "absolute")), c("gg", "ggplot"))
+    expect_error(textplot_terms(lss2, sampling = "xxx"))
 })
 
 test_that("textplot_* works even when frequency and beta do not match (#71)", {

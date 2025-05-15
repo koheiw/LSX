@@ -37,10 +37,13 @@ textplot_simil.textmodel_lss <- function(x) {
 #'   [quanteda::dictionary] is passed, words in the top-level categories are
 #'   highlighted in different colors.
 #' @param max_highlighted the maximum number of words to highlight. When
-#'   `highlighted = NULL`, words to highlight are randomly selected
-#'   proportionally to `polarity ^ 2 * log(frequency)`.
+#'   `highlighted = NULL`, words are randomly sampled proportionally to
+#'   `beta ^ 2 * log(frequency)` for highlighting.
 #' @param max_words the maximum number of words to plot. Words are randomly
 #'   sampled to keep the number below the limit.
+#' @param sampling if "relative", words are sampled based on their squared deviation
+#'   from the mean for highlighting; if "absolute", they are sampled
+#'   based on the squared distance from zero.
 #' @param ... passed to underlying functions. See the Details.
 #' @details Users can customize the plots through `...`, which is
 #'   passed to [ggplot2::geom_text()] and [ggrepel::geom_text_repel()]. The
@@ -50,7 +53,8 @@ textplot_simil.textmodel_lss <- function(x) {
 #' @importFrom ggrepel geom_text_repel
 #' @export
 textplot_terms <- function(x, highlighted = NULL,
-                           max_highlighted = 50, max_words = 1000, ...) {
+                           max_highlighted = 50, max_words = 1000,
+                           sampling = c("absolute", "relative"), ...) {
     UseMethod("textplot_terms")
 }
 
@@ -59,10 +63,12 @@ textplot_terms <- function(x, highlighted = NULL,
 #' @importFrom quanteda is.dictionary meta check_integer
 #' @export
 textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
-                                         max_highlighted = 50, max_words = 1000, ...) {
+                                         max_highlighted = 50, max_words = 1000,
+                                         sampling = c("absolute", "relative"), ...) {
 
     max_words <- check_integer(max_words, min = 1)
     max_highlighted <- check_integer(max_highlighted, min = 0)
+    sampling <- match.arg(sampling)
 
     x$frequency <- x$frequency[names(x$beta)] # fix for < v1.1.4
     x$frequency[is.na(x$frequency)] <- 0
@@ -119,7 +125,12 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
                                  levels = "highlighted")
         }
     }
-    temp$p <- as.numeric(!is.na(temp$group)) * temp$beta ^ 2 * temp$freq
+    if (sampling == "relative") {
+      temp$s <- (temp$beta - mean(temp$beta)) ^ 2 # deviation from the mean
+    } else {
+      temp$s <- temp$beta ^ 2
+    }
+    temp$p <- as.numeric(!is.na(temp$group)) * temp$s * temp$freq
     if (all(temp$p == 0)) {
         l <- rep(FALSE, length(temp$id))
     } else {
