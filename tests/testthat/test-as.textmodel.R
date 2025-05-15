@@ -118,6 +118,12 @@ test_that("as.textmodel_lss works with textmodel_wordvector", {
   expect_identical(names(lss2$frequency), names(wdv2$frequency))
   expect_identical(names(lss2$beta), names(lss2$frequency))
 
+
+  lss3 <- as.textmodel_lss(wdv2, "good") # single seed
+  expect_true(is.null(lss3$embedding))
+  expect_identical(lss3$frequency, wdv2$frequency)
+  expect_identical(names(lss3$frequency), names(wdv2$frequency))
+  expect_identical(names(lss3$beta), names(lss3$frequency))
 })
 
 test_that("as.textmodel_lss works with vector", {
