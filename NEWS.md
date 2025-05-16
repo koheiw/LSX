@@ -1,6 +1,11 @@
+## Changes in v1.4.4
+
+* Fix a bug in `as.textmodel_lss()` when a `textmodel_wordvector` object is given.
+* Add the `sampling` argument to `textplot_terms()` to improve highlighting of words.
+
 ## Changes in v1.4.3
 
-* Improve the handling of word2vec models from the **wordvector** package in `as.textmodel_lss()`.
+* Improve the handling of `textmodel_wordvector` objects from the **wordvector** package in `as.textmodel_lss()`.
 * Deprecate `auto_weight` in `textmodel_lss()`.
 * Deprecate `textplot_simil()`.
 
