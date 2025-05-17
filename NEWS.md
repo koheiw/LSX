@@ -1,7 +1,7 @@
 ## Changes in v1.4.4
 
 * Fix a bug in `as.textmodel_lss()` when a `textmodel_wordvector` object is given.
-* Add the `sampling` argument to `textplot_terms()` to improve highlighting of words.
+* Add `sampling` to `textplot_terms()` to improve highlighting of words when the distribution of polarity scores is asymmetric.
 
 ## Changes in v1.4.3
 
