@@ -134,7 +134,7 @@ seedwords <- function(type) {
 #' @param date_var the name of the column in `x` for dates.
 #' @param span the level of smoothing.
 #' @param group specify the columns in `x` to smooth separately
-#'   by the group; the columns must be a factor or character.
+#'   by the group; the columns must be factor, character or logical.
 #' @param from,to,by the the range and the internal of the smoothed scores;
 #'   passed to [seq.Date].
 #' @param engine specifies the function to be used for smoothing.
@@ -185,8 +185,8 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date",
     if (any(b))
       stop(group[b], " does not exist in x")
 
-    if (!all(sapply(x[group], function(y) is.factor(y) || is.character(y))))
-      stop("columns for grouping must be a character or factor")
+    if (any(sapply(x[group], function(y) is.numeric(y))))
+      stop("columns for grouping cannot be numeric")
 
     x[group] <- droplevels(x[group])
     lis <- split(x, x[group])
