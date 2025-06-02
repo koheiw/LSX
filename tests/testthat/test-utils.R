@@ -133,7 +133,8 @@ test_that("smooth_lss works with multiple grouping variables", {
   dat <- data.frame(fit = rnorm(n),
                     date = sample(date, n, replace = TRUE),
                     class1 = factor(sample(letters[1:3], n, replace = TRUE)),
-                    class2 = sample(LETTERS[1:2], n, replace = TRUE))
+                    class2 = sample(LETTERS[1:2], n, replace = TRUE),
+                    number = sample(1:10000, n))
   smo1 <- smooth_lss(dat)
   smo2 <- smooth_lss(dat, group = "class1")
   smo3 <- smooth_lss(dat, group = c("class1", "class2"))
@@ -165,8 +166,14 @@ test_that("smooth_lss works with multiple grouping variables", {
     31 * 3 * 2
   )
 
+  # error
   expect_error(
     smooth_lss(dat, group = c("class1", "xxxx")),
     "xxxx does not exist in x"
+  )
+
+  expect_error(
+    smooth_lss(dat, group = c("class1", "number")),
+    "columns for grouping must be a character or factor"
   )
 })

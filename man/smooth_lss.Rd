@@ -26,8 +26,8 @@ smooth_lss(
 
 \item{span}{the level of smoothing.}
 
-\item{group}{if the names of columns in \code{x} is provided, smooth separately
-by the group.}
+\item{group}{specify the columns in \code{x} to smooth separately
+by the group; the columns must be a factor or character.}
 
 \item{from, to, by}{the the range and the internal of the smoothed scores;
 passed to \link{seq.Date}.}
