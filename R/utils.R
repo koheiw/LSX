@@ -133,7 +133,7 @@ seedwords <- function(type) {
 #' @param lss_var the name of the column in `x` for polarity scores.
 #' @param date_var the name of the column in `x` for dates.
 #' @param span the level of smoothing.
-#' @param group specify the columns in `x` to smooth separately
+#' @param groups specify the columns in `x` to smooth separately
 #'   by the group; the columns must be factor, character or logical.
 #' @param from,to,by the the range and the internal of the smoothed scores;
 #'   passed to [seq.Date].
@@ -148,13 +148,13 @@ seedwords <- function(type) {
 #' @import stats locfit
 #' @importFrom quanteda check_character
 smooth_lss <- function(x, lss_var = "fit", date_var = "date",
-                       span = 0.1, group = NULL,
+                       span = 0.1, groups = NULL,
                        from = NULL, to = NULL, by = 'day',
                        engine = c("loess", "locfit"), ...) {
 
   lss_var <- check_character(lss_var)
   date_var <- check_character(date_var)
-  group <- check_character(group, max_len = 5, allow_null = TRUE)
+  groups <- check_character(groups, max_len = 5, allow_null = TRUE)
   engine <- match.arg(engine)
 
   if (!lss_var %in% names(x)) {
@@ -180,21 +180,21 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date",
   dummy$time <- as.numeric(difftime(dummy$date, from, units = "days"))
   dummy$fit <- rep(NA_real_, nrow(dummy))
 
-  if (!is.null(group)) {
-    b <- !group %in% names(x)
+  if (!is.null(groups)) {
+    b <- !groups %in% names(x)
     if (any(b))
-      stop(group[b], " does not exist in x")
+      stop(groups[b], " does not exist in x")
 
-    if (any(sapply(x[group], function(y) is.numeric(y))))
+    if (any(sapply(x[groups], function(y) is.numeric(y))))
       stop("columns for grouping cannot be numeric")
 
-    x[group] <- droplevels(x[group])
-    lis <- split(x, x[group])
+    x[groups] <- droplevels(x[groups])
+    lis <- split(x, x[groups])
     lis <- lapply(lis, function(y) {
       if (nrow(y) == 0)
         return(NULL)
       temp <- smooth_data(y, dummy, span, engine, ...)
-      temp[group] <- as.data.frame(lapply(y[group], function(z) {
+      temp[groups] <- as.data.frame(lapply(y[groups], function(z) {
         rep(head(z, 1), nrow(temp))
       }))
       return(temp)

@@ -75,7 +75,7 @@ test_that("smooth_lss works", {
   dat$date <- as.Date(paste0(dat$Year, "-01-20"))
 
   smo_le <- smooth_lss(dat, lss_var = "lss", by = "year",
-                          span = 0.1, engine = "loess")
+                       span = 0.1, engine = "loess")
   expect_equal(colnames(smo_le),
                c("date", "time", "fit", "se.fit"))
 
@@ -88,14 +88,14 @@ test_that("smooth_lss works", {
 
   # group by variable
   smo_gr_le <- smooth_lss(dat, lss_var = "lss", by = "year",
-                       span = 0.1, group = "Party", engine = "loess")
+                       span = 0.1, groups = "Party", engine = "loess")
   expect_equal(colnames(smo_gr_le),
                c("date", "time", "fit", "se.fit", "Party"))
   expect_equal(levels(smo_gr_le$Party),
                c("Democratic", "Republican"))
 
   smo_gr_lf <- smooth_lss(dat, lss_var = "lss", by = "year",
-                    span = 0.1, group = "Party", engine = "locfit")
+                    span = 0.1, groups = "Party", engine = "locfit")
   expect_equal(colnames(smo_gr_lf),
                c("date", "time", "fit", "se.fit", "Party"))
   expect_equal(levels(smo_gr_lf$Party),
@@ -121,7 +121,7 @@ test_that("smooth_lss works", {
     "date_var must be a date column"
   )
   expect_error(
-    smooth_lss(dat, lss_var = "lss", group = "xxx"),
+    smooth_lss(dat, lss_var = "lss", groups = "xxx"),
     "xxx does not exist in x"
   )
 })
@@ -136,8 +136,8 @@ test_that("smooth_lss works with multiple grouping variables", {
                     class2 = sample(LETTERS[1:2], n, replace = TRUE),
                     number = sample(1:10000, n))
   smo1 <- smooth_lss(dat)
-  smo2 <- smooth_lss(dat, group = "class1")
-  smo3 <- smooth_lss(dat, group = c("class1", "class2"))
+  smo2 <- smooth_lss(dat, groups = "class1")
+  smo3 <- smooth_lss(dat, groups = c("class1", "class2"))
 
   expect_equal(
     nrow(smo1), 31
@@ -168,12 +168,12 @@ test_that("smooth_lss works with multiple grouping variables", {
 
   # error
   expect_error(
-    smooth_lss(dat, group = c("class1", "xxxx")),
+    smooth_lss(dat, groups = c("class1", "xxxx")),
     "xxxx does not exist in x"
   )
 
   expect_error(
-    smooth_lss(dat, group = c("class1", "number")),
-    "columns for grouping must be a character or factor"
+    smooth_lss(dat, groups = c("class1", "number")),
+    "columns for grouping cannot be numeric"
   )
 })

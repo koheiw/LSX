@@ -9,7 +9,7 @@ smooth_lss(
   lss_var = "fit",
   date_var = "date",
   span = 0.1,
-  group = NULL,
+  groups = NULL,
   from = NULL,
   to = NULL,
   by = "day",
@@ -26,7 +26,7 @@ smooth_lss(
 
 \item{span}{the level of smoothing.}
 
-\item{group}{specify the columns in \code{x} to smooth separately
+\item{groups}{specify the columns in \code{x} to smooth separately
 by the group; the columns must be factor, character or logical.}
 
 \item{from, to, by}{the the range and the internal of the smoothed scores;
