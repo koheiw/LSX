@@ -191,8 +191,9 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date",
     x[groups] <- droplevels(x[groups])
     lis <- split(x, x[groups])
     lis <- lapply(lis, function(y) {
-      if (nrow(y) == 0)
-        return(NULL)
+      # NOTE: unnecessary thakns to droplevels
+      #if (nrow(y) == 0)
+      #  return(NULL)
       temp <- smooth_data(y, dummy, span, engine, ...)
       temp[groups] <- as.data.frame(lapply(y[groups], function(z) {
         rep(head(z, 1), nrow(temp))

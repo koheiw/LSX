@@ -132,8 +132,9 @@ test_that("smooth_lss works with multiple grouping variables", {
   n <- 1000
   dat <- data.frame(fit = rnorm(n),
                     date = sample(date, n, replace = TRUE),
-                    class1 = factor(sample(letters[1:3], n, replace = TRUE)),
-                    class2 = sample(LETTERS[1:2], n, replace = TRUE),
+                    class1 = factor(sample(c("a", "b", "c"), n, replace = TRUE),
+                                    levels = c("a", "b", "c", "d")),
+                    class2 = sample(c("A", "B"), n, replace = TRUE),
                     number = sample(1:10000, n))
   smo1 <- smooth_lss(dat)
   smo2 <- smooth_lss(dat, groups = "class1")
@@ -155,6 +156,10 @@ test_that("smooth_lss works with multiple grouping variables", {
   expect_equal(
     nrow(smo2), 31 * 3,
   )
+  expect_equal(
+    levels(smo2$class1),
+    c("a", "b", "c")
+  )
 
   expect_equal(
     sapply(smo3, class),
@@ -164,6 +169,10 @@ test_that("smooth_lss works with multiple grouping variables", {
   expect_equal(
     nrow(smo3),
     31 * 3 * 2
+  )
+  expect_equal(
+    levels(smo3$class1),
+    c("a", "b", "c")
   )
 
   # error
