@@ -57,7 +57,7 @@ test_that("as.seedwords works", {
 
 
 
-test_that("test smooth_lss", {
+test_that("smooth_lss works", {
 
   skip_on_cran() # takes to much time
 
@@ -75,7 +75,7 @@ test_that("test smooth_lss", {
   dat$date <- as.Date(paste0(dat$Year, "-01-20"))
 
   smo_le <- smooth_lss(dat, lss_var = "lss", by = "year",
-                          span = 0.1, engine = "loess")
+                       span = 0.1, engine = "loess")
   expect_equal(colnames(smo_le),
                c("date", "time", "fit", "se.fit"))
 
@@ -88,14 +88,14 @@ test_that("test smooth_lss", {
 
   # group by variable
   smo_gr_le <- smooth_lss(dat, lss_var = "lss", by = "year",
-                       span = 0.1, group = "Party", engine = "loess")
+                       span = 0.1, groups = "Party", engine = "loess")
   expect_equal(colnames(smo_gr_le),
                c("date", "time", "fit", "se.fit", "Party"))
   expect_equal(levels(smo_gr_le$Party),
                c("Democratic", "Republican"))
 
   smo_gr_lf <- smooth_lss(dat, lss_var = "lss", by = "year",
-                    span = 0.1, group = "Party", engine = "locfit")
+                    span = 0.1, groups = "Party", engine = "locfit")
   expect_equal(colnames(smo_gr_lf),
                c("date", "time", "fit", "se.fit", "Party"))
   expect_equal(levels(smo_gr_lf$Party),
@@ -121,29 +121,68 @@ test_that("test smooth_lss", {
     "date_var must be a date column"
   )
   expect_error(
-    smooth_lss(dat, lss_var = "lss", group = "xxx"),
+    smooth_lss(dat, lss_var = "lss", groups = "xxx"),
     "xxx does not exist in x"
   )
 })
 
+test_that("smooth_lss works with multiple grouping variables", {
 
-corp <- corpus_reshape(data_corpus_inaugural)
-toks <- tokens(corp)
-dfmt <- dfm(toks, remove_padding = TRUE) %>%
-  dfm_subset(Party %in% c("Democratic", "Republican")) %>%
-  dfm_trim()
-seed <- as.seedwords(data_dictionary_ideology)
-lss <- textmodel_lss(dfmt, seed, k = 300, include_data = TRUE, group_data = TRUE,
-                     cache = TRUE)
+  date <- seq(as.Date("2025-01-01"), as.Date("2025-01-31"), by = "1 day")
+  n <- 1000
+  dat <- data.frame(fit = rnorm(n),
+                    date = sample(date, n, replace = TRUE),
+                    class1 = factor(sample(c("a", "b", "c"), n, replace = TRUE),
+                                    levels = c("a", "b", "c", "d")),
+                    class2 = sample(c("A", "B"), n, replace = TRUE),
+                    number = sample(1:10000, n))
+  smo1 <- smooth_lss(dat)
+  smo2 <- smooth_lss(dat, groups = "class1")
+  smo3 <- smooth_lss(dat, groups = c("class1", "class2"))
 
-dat <- docvars(lss$data)
-dat$lss <- predict(lss)
-dat$time <- as.Date(paste0(dat$Year, "-01-01"))
-smo <- smooth_lss(dat, lss_var = "lss", date_var = "time", by = "year",
-                  span = 0.1,
-                  group = "Party", engine = "locfit")
+  expect_equal(
+    nrow(smo1), 31
+  )
+  expect_equal(
+    sapply(smo1, class),
+    c(date = "Date", time = "numeric", fit = "numeric", se.fit = "numeric")
+  )
 
-smo <- smooth_lss(dat, lss_var = "lss", date_var = "time", by = "year",
-                  span = 0.1,
-                  group = "Party")
+  expect_equal(
+    sapply(smo2, class),
+    c(date = "Date", time = "numeric", fit = "numeric", se.fit = "numeric",
+      class1 = "factor")
+  )
+  expect_equal(
+    nrow(smo2), 31 * 3,
+  )
+  expect_equal(
+    levels(smo2$class1),
+    c("a", "b", "c")
+  )
 
+  expect_equal(
+    sapply(smo3, class),
+    c(date = "Date", time = "numeric", fit = "numeric", se.fit = "numeric",
+      class1 = "factor", class2 = "character")
+  )
+  expect_equal(
+    nrow(smo3),
+    31 * 3 * 2
+  )
+  expect_equal(
+    levels(smo3$class1),
+    c("a", "b", "c")
+  )
+
+  # error
+  expect_error(
+    smooth_lss(dat, groups = c("class1", "xxxx")),
+    "xxxx does not exist in x"
+  )
+
+  expect_error(
+    smooth_lss(dat, groups = c("class1", "number")),
+    "columns for grouping cannot be numeric"
+  )
+})

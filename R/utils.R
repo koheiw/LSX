@@ -133,7 +133,8 @@ seedwords <- function(type) {
 #' @param lss_var the name of the column in `x` for polarity scores.
 #' @param date_var the name of the column in `x` for dates.
 #' @param span the level of smoothing.
-#' @param group the name of the column in `x` to smooth the data by group.
+#' @param groups specify the columns in `x` to smooth separately
+#'   by the group; the columns must be factor, character or logical.
 #' @param from,to,by the the range and the internal of the smoothed scores;
 #'   passed to [seq.Date].
 #' @param engine specifies the function to be used for smoothing.
@@ -147,13 +148,13 @@ seedwords <- function(type) {
 #' @import stats locfit
 #' @importFrom quanteda check_character
 smooth_lss <- function(x, lss_var = "fit", date_var = "date",
-                       span = 0.1, group = NULL,
+                       span = 0.1, groups = NULL,
                        from = NULL, to = NULL, by = 'day',
                        engine = c("loess", "locfit"), ...) {
 
   lss_var <- check_character(lss_var)
   date_var <- check_character(date_var)
-  group <- check_character(group, allow_null = TRUE)
+  groups <- check_character(groups, max_len = 5, allow_null = TRUE)
   engine <- match.arg(engine)
 
   if (!lss_var %in% names(x)) {
@@ -179,23 +180,31 @@ smooth_lss <- function(x, lss_var = "fit", date_var = "date",
   dummy$time <- as.numeric(difftime(dummy$date, from, units = "days"))
   dummy$fit <- rep(NA_real_, nrow(dummy))
 
-  if (!is.null(group)) {
-    if (!group %in% names(x)) {
-      stop(group, " does not exist in x")
-    } else {
-      x$group <- factor(x[[group]])
-    }
+  if (!is.null(groups)) {
+    b <- !groups %in% names(x)
+    if (any(b))
+      stop(groups[b], " does not exist in x")
 
-    lis <- split(x, x$group)
-    result <- do.call(rbind, lapply(seq_along(lis), function(i) {
-      temp <- smooth_data(lis[[i]], dummy, span, engine, ...)
-      temp[[group]] <- factor(rep(i, nrow(temp)), levels = seq_along(lis),
-                              labels = levels(x$group))
+    if (any(sapply(x[groups], function(y) is.numeric(y))))
+      stop("columns for grouping cannot be numeric")
+
+    x[groups] <- droplevels(x[groups])
+    lis <- split(x, x[groups])
+    lis <- lapply(lis, function(y) {
+      # NOTE: unnecessary thakns to droplevels
+      #if (nrow(y) == 0)
+      #  return(NULL)
+      temp <- smooth_data(y, dummy, span, engine, ...)
+      temp[groups] <- as.data.frame(lapply(y[groups], function(z) {
+        rep(head(z, 1), nrow(temp))
+      }))
       return(temp)
-    }))
+    })
+    result <- do.call(rbind, lis)
   } else {
     result <- smooth_data(x, dummy, span, engine, ...)
   }
+  rownames(result) <- NULL
   return(result)
 }
 
