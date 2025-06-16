@@ -35,7 +35,7 @@ textmodel_pss.tokens <- function(x, seeds, terms = NULL, k = 200,
 
   w2v <- wordvector::textmodel_word2vec(x, dim = k, type = "skip-gram", tolower = tolower,
                                         normalize = FALSE, verbose = verbose, ...)
-  result <- as.textmodel_lss(w2v, seeds = seeds, terms = terms, verbose = verbose)
+  result <- as.textmodel_lss(w2v, seeds = seeds, terms = terms, verbose = FALSE)
   result$call <- try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
 
   if (include_data) {
