@@ -58,6 +58,13 @@ test_that("textmodel_pss works", {
   expect_s3_class(pss4, "textmodel_lss")
   expect_equal(docnames(pss4$data), docnames(toks_test))
 
+  # warning
+  expect_warning(
+    textmodel_pss(toks_test, seed, k = 10,
+                  include_data = FALSE, group_data = TRUE),
+    "group_data is ignored when include_data = FALSE"
+  )
+
   # error
   expect_error(
     textmodel_pss(toks_test, k = -1),
