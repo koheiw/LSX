@@ -6,19 +6,19 @@
 #' @param engine currently only supports the word2vec model with the skip-gram algorithm.
 #' @export
 #' @inheritParams textmodel_lss
-textmodel_pss <- function(x, seeds, terms = NULL, k = 200,
+textmodel_plss <- function(x, seeds, terms = NULL, k = 200,
                           engine = c("word2vec"),
                           tolower = TRUE,
                           include_data = FALSE,
                           group_data = FALSE,
                           verbose = FALSE, ...) {
-  UseMethod("textmodel_pss")
+  UseMethod("textmodel_plss")
 }
 
 
 #' @export
 #' @importFrom quanteda dfm dfm_group
-textmodel_pss.tokens <- function(x, seeds, terms = NULL, k = 200,
+textmodel_plss.tokens <- function(x, seeds, terms = NULL, k = 200,
                                  engine = c("word2vec"),
                                  tolower = TRUE,
                                  include_data = FALSE,
