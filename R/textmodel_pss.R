@@ -1,9 +1,9 @@
-#' \[experimental\] Fit a Probabilistic Semantic Scaling model
+#' \[experimental\] Fit a Probabilistic Latent Semantic Scaling model
 #'
-#' Probabilistic Semantic Scaling (PSS) is an algorithm for
+#' Probabilistic Latent Semantic Scaling (PLSS) is a semi-supervised algorithm
 #' document scaling based on language models.
 #' @param x a [quanteda::tokens] or [quanteda::tokens_xptr] object.
-#' @param engine currently only support the word2vec model with the skip-gram algorithm.
+#' @param engine currently only supports the word2vec model with the skip-gram algorithm.
 #' @export
 #' @inheritParams textmodel_lss
 textmodel_pss <- function(x, seeds, terms = NULL, k = 200,
@@ -17,6 +17,7 @@ textmodel_pss <- function(x, seeds, terms = NULL, k = 200,
 
 
 #' @export
+#' @importFrom quanteda dfm dfm_group
 textmodel_pss.tokens <- function(x, seeds, terms = NULL, k = 200,
                                  engine = c("word2vec"),
                                  tolower = TRUE,

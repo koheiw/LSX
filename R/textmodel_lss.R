@@ -1,7 +1,7 @@
 #' Fit a Latent Semantic Scaling model
 #'
-#' Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
-#' for document scaling.
+#' Latent Semantic Scaling (LSS) is a semi-supervised algorithm for document scaling based on
+#' word embedding.
 #' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
 #' @param seeds a character vector or named numeric vector that contains seed
 #'   words. If seed words contain "*", they are interpreted as glob patterns.
@@ -27,7 +27,7 @@
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional arguments passed to the underlying engine.
 #' @export
-#' @details Latent Semantic Scaling (LSS) is a semisupervised document scaling
+#' @details Latent Semantic Scaling (LSS) is a semi-supervised document scaling
 #'   method. `textmodel_lss()` constructs word vectors from use-provided
 #'   documents (`x`) and weights words (`terms`) based on their semantic
 #'   proximity to seed words (`seeds`). Seed words are any known polarity words
@@ -69,7 +69,7 @@ textmodel_lss <- function(x, ...) {
 #' @param include_data if `TRUE`, fitted model includes the dfm supplied as `x`.
 #' @param group_data if `TRUE`, apply `dfm_group(x)` before saving the dfm.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta check_integer dfm_group
+#' @importFrom quanteda featnames meta check_integer dfm_group dfm_tolower
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,

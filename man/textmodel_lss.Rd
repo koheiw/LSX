@@ -95,11 +95,11 @@ counts are ceiled to this threshold. It should be changed according to the
 size of the corpus. Used only when \code{x} is a \code{fcm}.}
 }
 \description{
-Latent Semantic Scaling (LSS) is a word embedding-based semisupervised algorithm
-for document scaling.
+Latent Semantic Scaling (LSS) is a semi-supervised algorithm for document scaling based on
+word embedding.
 }
 \details{
-Latent Semantic Scaling (LSS) is a semisupervised document scaling
+Latent Semantic Scaling (LSS) is a semi-supervised document scaling
 method. \code{textmodel_lss()} constructs word vectors from use-provided
 documents (\code{x}) and weights words (\code{terms}) based on their semantic
 proximity to seed words (\code{seeds}). Seed words are any known polarity words

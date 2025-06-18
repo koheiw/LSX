@@ -2,7 +2,7 @@
 % Please edit documentation in R/textmodel_pss.R
 \name{textmodel_pss}
 \alias{textmodel_pss}
-\title{[experimental] Fit a Probabilistic Semantic Scaling model}
+\title{[experimental] Fit a Probabilistic Latent Semantic Scaling model}
 \usage{
 textmodel_pss(
   x,
@@ -32,7 +32,7 @@ scores will be weighted accordingly; if \code{NULL}, all the features of
 \item{k}{the number of singular values requested to the SVD engine. Only used
 when \code{x} is a \code{dfm}.}
 
-\item{engine}{currently only support the word2vec model with the skip-gram algorithm.}
+\item{engine}{currently only supports the word2vec model with the skip-gram algorithm.}
 
 \item{tolower}{if \code{TRUE}, lower-case all the words in the model.}
 
@@ -45,6 +45,6 @@ when \code{x} is a \code{dfm}.}
 \item{...}{additional arguments passed to the underlying engine.}
 }
 \description{
-Probabilistic Semantic Scaling (PSS) is an algorithm for
+Probabilistic Latent Semantic Scaling (PLSS) is a semi-supervised algorithm
 document scaling based on language models.
 }

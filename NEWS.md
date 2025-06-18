@@ -1,6 +1,6 @@
 ## Changes in v1.4.5
 
-* Add `textmodel_pss()` experimentally to make probabilistic semantic scaling more accessible.
+* Add `textmodel_pss()` experimentally to make probabilistic latent semantic scaling more accessible.
 * Enable grouping by multiple variables using `smooth_lss()`.
 
 ## Changes in v1.4.4
