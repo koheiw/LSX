@@ -1,6 +1,7 @@
 ## Changes in v1.4.5
 
 * Enable grouping by multiple variables using `smooth_lss()`.
+* Fix tests for `textplot_*()` for upcoming **ggplot2**.
 
 ## Changes in v1.4.4
 
