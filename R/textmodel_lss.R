@@ -29,7 +29,7 @@
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional arguments passed to the underlying engine.
 #' @export
-#' @details Latent Semantic Scaling (LSS) is a semi-supervised document scaling
+#' @details Latent Semantic Scaling (LSS) is a semisupervised document scaling
 #'   method. `textmodel_lss()` constructs word vectors from use-provided
 #'   documents (`x`) and weights words (`terms`) based on their semantic
 #'   proximity to seed words (`seeds`). Seed words are any known polarity words
@@ -71,14 +71,13 @@ textmodel_lss <- function(x, ...) {
 #' @param include_data if `TRUE`, fitted model includes the dfm supplied as `x`.
 #' @param group_data if `TRUE`, apply `dfm_group(x)` before saving the dfm.
 #' @method textmodel_lss dfm
-#' @importFrom quanteda featnames meta check_integer dfm_group dfm_tolower
+#' @importFrom quanteda featnames meta check_integer dfm_group
 #' @importFrom Matrix colSums
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("RSpectra", "irlba", "rsvd"),
-                              tolower = TRUE,
                               auto_weight = FALSE,
                               include_data = FALSE,
                               group_data = FALSE,
@@ -90,16 +89,12 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         terms <- args$terms <- args$features
     }
 
-    k <- check_integer(k, min = 2, max = nrow(x))
+    k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
     engine <- match.arg(engine)
-    tolower <- check_logical(tolower)
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
     theta <- get_theta(terms, featnames(x))
     feat <- union(names(theta), names(seed))
-
-    if (tolower)
-      x <- dfm_tolower(x)
 
     if (engine %in% c("RSpectra", "irlba", "rsvd")) {
         if (verbose)
