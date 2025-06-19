@@ -1,5 +1,6 @@
 ## Changes in v1.4.5
 
+* Add `textmodel_plss()` experimentally to make probabilistic latent semantic scaling more accessible.
 * Enable grouping by multiple variables using `smooth_lss()`.
 * Fix tests for `textplot_*()` for upcoming **ggplot2**.
 

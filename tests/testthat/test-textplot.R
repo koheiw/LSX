@@ -8,6 +8,7 @@ feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 
 dict <- dictionary(list("keywords" = c("positive", "bad", "xxxx")))
 
 test_that("textplot_* works with SVD", {
+
   dfmt <- dfm(toks_test)
   seed <- c("nice*" = 1, "positive*" = 1, "bad*" = -1, "negative*" = -1)
   lss <- textmodel_lss(dfmt, seed, k = 10)
