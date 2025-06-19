@@ -108,9 +108,14 @@ test_that("as.textmodel_lss works with textmodel_wordvector", {
   expect_identical(names(lss$frequency), names(lss$frequency))
   expect_identical(names(lss$beta), names(lss$frequency))
 
+  expect_error(
+    as.textmodel_lss(wdv, seed, spatial = FALSE),
+    "textmodel_wordvector must be trained with normalize = FALSE"
+  )
+
   # probabilistic
   wdv2 <- readRDS("../data/word2vec-prob.RDS")
-  lss2 <- as.textmodel_lss(wdv2, seed)
+  lss2 <- as.textmodel_lss(wdv2, seed, spatial = FALSE)
 
   expect_equal(lss2$beta_type, "probability")
   expect_true(is.null(lss2$embedding))
@@ -119,7 +124,7 @@ test_that("as.textmodel_lss works with textmodel_wordvector", {
   expect_identical(names(lss2$beta), names(lss2$frequency))
 
 
-  lss3 <- as.textmodel_lss(wdv2, "good") # single seed
+  lss3 <- as.textmodel_lss(wdv2, "good", spatial = FALSE) # single seed
   expect_true(is.null(lss3$embedding))
   expect_identical(lss3$frequency, wdv2$frequency)
   expect_identical(names(lss3$frequency), names(wdv2$frequency))

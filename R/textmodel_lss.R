@@ -237,6 +237,7 @@ build_lss <- function(...) {
         similarity = NULL,
         concatenator = "_",
         type = NULL,
+        spatial = TRUE,
         call = NULL,
         version = utils::packageVersion("LSX")
     )
