@@ -1,25 +1,15 @@
-#' \[experimental\] Fit a Probabilistic Latent Semantic Scaling model
+#' @rdname textmodel_lss
+#' @details
+#' When `x` is a tokens (or tokenx_xptr) object, [wordvector::textmodel_word2vec]
+#' is called internally with `type = "skip-gram"` and `normalize = FALSE`. Use `...` to
+#' customize other arguments of the function.
 #'
-#' Probabilistic Latent Semantic Scaling (PLSS) is a semi-supervised algorithm
-#' document scaling based on language models.
-#' @param x a [quanteda::tokens] or [quanteda::tokens_xptr] object.
-#' @param engine currently only supports the word2vec model with the skip-gram algorithm.
 #' @export
-#' @inheritParams textmodel_lss
-textmodel_plss <- function(x, seeds, terms = NULL, k = 200,
-                          engine = c("word2vec"),
-                          tolower = TRUE,
-                          include_data = FALSE,
-                          group_data = FALSE,
-                          verbose = FALSE, ...) {
-  UseMethod("textmodel_plss")
-}
-
-
-#' @export
+#' @inheritParams wordvector::textmodel_word2vec
 #' @importFrom quanteda dfm dfm_group
-textmodel_plss.tokens <- function(x, seeds, terms = NULL, k = 200,
-                                 engine = c("word2vec"),
+textmodel_lss.tokens <- function(x, seeds, terms = NULL, k = 200,
+                                 min_count = 5,
+                                 engine = "wordvector",
                                  tolower = TRUE,
                                  include_data = FALSE,
                                  group_data = FALSE,
@@ -34,7 +24,8 @@ textmodel_plss.tokens <- function(x, seeds, terms = NULL, k = 200,
   if (utils::packageVersion("wordvector") < as.numeric_version("0.5.0"))
     stop("wordvector package must be v0.5.0 or later")
 
-  w2v <- wordvector::textmodel_word2vec(x, dim = k, type = "skip-gram", tolower = tolower,
+  w2v <- wordvector::textmodel_word2vec(x, dim = k, min_count = min_count,
+                                        type = "skip-gram", tolower = tolower,
                                         normalize = FALSE, verbose = verbose, ...)
   result <- as.textmodel_lss(w2v, seeds = seeds, terms = terms, verbose = FALSE)
   result$call <- try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
