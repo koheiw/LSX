@@ -1,6 +1,6 @@
 #' @rdname textmodel_lss
 #' @details
-#' When `x` is a tokens (or tokenx_xptr) object, [wordvector::textmodel_word2vec]
+#' When `x` is a tokens or tokend_xptr object, [wordvector::textmodel_word2vec]
 #' is called internally with `type = "skip-gram"` and `normalize = FALSE`. Use `...` to
 #' customize other arguments of the function.
 #'
@@ -28,6 +28,7 @@ textmodel_lss.tokens <- function(x, seeds, terms = NULL, k = 200,
                                         type = "skip-gram", tolower = tolower,
                                         normalize = FALSE, verbose = verbose, ...)
   result <- as.textmodel_lss(w2v, seeds = seeds, terms = terms, verbose = FALSE)
+  result$type <- "word2vec"
   result$call <- try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
 
   if (include_data) {

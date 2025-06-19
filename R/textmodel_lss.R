@@ -2,16 +2,17 @@
 #'
 #' Latent Semantic Scaling (LSS) is a semi-supervised algorithm for document scaling based on
 #' word embedding.
-#' @param x a dfm or fcm created by [quanteda::dfm()] or [quanteda::fcm()]
+#' @param x a dfm or fcm created by [quanteda::dfm()], [quanteda::fcm()], [quanteda::tokens] or [quanteda::tokens_xptr] object.
+#' @param k the size of word vectors.
 #' @param seeds a character vector or named numeric vector that contains seed
 #'   words. If seed words contain "*", they are interpreted as glob patterns.
 #'   See [quanteda::valuetype].
 #' @param terms a character vector or named numeric vector that specify words
 #'   for which polarity scores will be computed; if a numeric vector, words' polarity
-#'   scores will be weighted accordingly; if `NULL`, all the features of
-#'   [quanteda::dfm()] or [quanteda::fcm()] will be used.
+#'   scores will be weighted accordingly; if `NULL`, all the features in `x` except
+#'   those less frequent than `min_count` will be used.
 #' @param weight weighting scheme passed to [quanteda::dfm_weight()]. Ignored
-#'   when `engine` is "rsparse".
+#'   when `engine = "rsparse"`.
 #' @param simil_method specifies method to compute similarity between features.
 #'   The value is passed to [quanteda.textstats::textstat_simil()], "cosine" is
 #'   used otherwise.
@@ -19,9 +20,10 @@
 #'   `x` and settings. Use the `base::options(lss_cache_dir)` to change the
 #'   location cache files to be save.
 #' @param tolower if `TRUE`, lower-case all the words in the model.
-#' @param engine select the engine to factorize `x` to generate word vectors. Choose
-#'   from [RSpectra::svds()], [irlba::irlba()], [rsvd::rsvd()], and
-#'   [rsparse::GloVe()].
+#' @param engine select the engine to factorize `x` to generate word vectors.
+#'    If `x` is a dfm, [RSpectra::svds()], [irlba::irlba()] or [rsvd::rsvd()].
+#'    If `x` is a fcm, [rsparse::GloVe()].
+#'    If `x` is a tokens (or tokens_xptr), [wordvector::textmodel_word2vec()].
 #' @param auto_weight automatically determine weights to approximate the
 #'   polarity of terms to seed words. Deprecated.
 #' @param verbose show messages if `TRUE`.
@@ -133,6 +135,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         embedding = embed,
         similarity = simil$seed,
         concatenator = meta(x, field = "concatenator", type = "object"),
+        type = "svd",
         call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),
         version = utils::packageVersion("LSX")
     )
@@ -151,18 +154,17 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 }
 
 #' @rdname textmodel_lss
-#' @param w the size of word vectors. Used only when `x` is a `fcm`.
 #' @param max_count passed to `x_max` in `rsparse::GloVe$new()` where cooccurrence
 #'   counts are ceiled to this threshold. It should be changed according to the
 #'   size of the corpus. Used only when `x` is a `fcm`.
 #' @method textmodel_lss fcm
 #' @importFrom quanteda featnames
 #' @export
-textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
+textmodel_lss.fcm <- function(x, seeds, terms = NULL, k = 50,
                               max_count = 10,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
-                              engine = c("rsparse"),
+                              engine = "rsparse",
                               auto_weight = FALSE,
                               verbose = FALSE, ...) {
 
@@ -175,6 +177,10 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         .Deprecated(msg = "GloVe engine has been moved to from text2vec to rsparse.\n")
         engine <- "rsparse"
     }
+    if ("w" %in% names(args)) {
+        .Deprecated(msg = "'w' is deprecated; use 'k'.\n")
+        k <- args$w
+    }
 
     seeds <- expand_seeds(seeds, featnames(x), verbose)
     seed <- unlist(unname(seeds))
@@ -184,13 +190,13 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
     if (engine == "rsparse") {
         if (verbose)
             cat("Fitting GloVe model by rsparse...\n")
-        embed <- (function(x, w, max_count, cache, features, ...) {
-            cache_glove(x, w, x_max = max_count, cache = cache, ...)
-        })(x, w, max_count, cache, ...) # trap old argument
+        embed <- (function(x, k, max_count, cache, features, w, ...) {
+            cache_glove(x, w = k, x_max = max_count, cache = cache, ...)
+        })(x, k, max_count, cache, ...) # trap old argument
         embed <- embed[,feat, drop = FALSE]
     }
 
-    simil <- get_simil(embed, names(seed), term, seq_len(w), simil_method)
+    simil <- get_simil(embed, names(seed), term, seq_len(k), simil_method)
     if (auto_weight)
         seed <- optimize_weight(seed, simil, verbose)
 
@@ -198,7 +204,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
 
     result <- build_lss(
         beta = beta,
-        w = w,
+        k = k,
         frequency = x@meta$object$margin[names(beta)],
         terms = args$terms,
         seeds = args$seeds,
@@ -206,6 +212,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, w = 50,
         embedding = embed,
         similarity = simil$seed,
         concatenator = meta(x, field = "concatenator", type = "object"),
+        type = "glove",
         call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),
         version = utils::packageVersion("LSX")
     )
@@ -229,6 +236,7 @@ build_lss <- function(...) {
         embedding = NULL,
         similarity = NULL,
         concatenator = "_",
+        type = NULL,
         call = NULL,
         version = utils::packageVersion("LSX")
     )

@@ -188,7 +188,7 @@ textplot_components.textmodel_lss <- function(x, n = 5, method = "ward.D2",
                                               scale = c("absolute", "relative")) {
 
 
-    if (is.null(x$k))
+    if (!identical(x$type, "svd"))
         stop("SVD must be used to generate word vectors", call. = FALSE)
 
     n <- check_integer(n, min_len = 1, max_len = 1, min = 2, max = x$k)
