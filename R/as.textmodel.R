@@ -5,6 +5,7 @@
 #' @param spatial if `TRUE`, return a spatial model. Otherwise, a probabilistic model.
 #' @param ... arguments used to create a new object. `seeds` must be given
 #'   when `x` is a dense matrix or a fitted textmodel_lss.
+#' @inheritParams textmodel_lss
 #' @details
 #' If `x` is a [textmodel_lss], original word vectors are reused to compute polarity
 #' scores with new seed words. It is also possible to subset word vectors via `slice`

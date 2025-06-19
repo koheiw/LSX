@@ -1,14 +1,5 @@
 #' @rdname textmodel_lss
-#' @param spatial if `TRUE`, return a spatial model. Otherwise, a probabilistic model.
-#'   See the details.
-#' @details
-#' When `x` is a tokens or tokend_xptr object, [wordvector::textmodel_word2vec]
-#' is called internally with `type = "skip-gram"` and other arguments passed via `...`.
-#' If `spatial = TRUE`, it return a spatial model; othereise a probabilistic model.
-#' While the polarity scores of words are their cosine similarity to seed words in
-#' spatial models, they are predicted probability that the seed words to occur in
-#' their contexts. The probabilistic models are still experimental, so use them with caution.
-#'
+#' @param spatial \[experimental\] if `FALSE`, return a probabilistic model. See the details.
 #' @export
 #' @inheritParams wordvector::textmodel_word2vec
 #' @importFrom quanteda dfm dfm_group
