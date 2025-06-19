@@ -1,7 +1,8 @@
 ## Changes in v1.4.5
 
-* Add `textmodel_plss()` experimentally to make probabilistic latent semantic scaling more accessible.
+* Add `textmodel_lss.tokens()` to fit a latent semantic analysis model based on Word2vec's skip-gram algorithm. It uses `wordvector::textmodel_word2vec()` as the underlying engine.
 * Enable grouping by multiple variables using `smooth_lss()`.
+* Rename `w` to `k` in `textmodel_lss.fcm()` to make it consistent with other methods.
 
 ## Changes in v1.4.4
 
