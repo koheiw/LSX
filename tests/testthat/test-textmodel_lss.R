@@ -16,7 +16,7 @@ lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
 lss_test_nd <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
                              include_data = FALSE)
 lss_test_ss <- textmodel_lss(dfmt_test, seed[1], terms = feat_test, k = 300)
-lss_test_fcm <- textmodel_lss(fcmt_test, seed, terms = feat_test, w = 50)
+lss_test_fcm <- textmodel_lss(fcmt_test, seed, terms = feat_test, k = 50)
 
 test_that("char_context is working", {
 
@@ -41,7 +41,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_equal(
         names(lss_test),
         c("data", "beta", "beta_type", "k", "slice", "frequency", "terms", "seeds", "seeds_weighted",
-          "embedding", "similarity", "concatenator", "call", "version")
+          "embedding", "similarity", "concatenator", "type", "spatial", "call", "version")
     )
 
     expect_true(is.numeric(lss_test$beta))
@@ -54,7 +54,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_equal(
         names(lss_test_fcm),
         c("data", "beta", "beta_type", "k", "slice", "frequency", "terms", "seeds", "seeds_weighted",
-          "embedding", "similarity", "concatenator", "call", "version")
+          "embedding", "similarity", "concatenator", "type", "spatial", "call", "version")
     )
 
     expect_true(is.numeric(lss_test_fcm$beta))
@@ -67,7 +67,7 @@ test_that("textmodel_lss has all the attributes", {
     expect_equal(
         names(lss_test_nd),
         c("data", "beta", "beta_type", "k", "slice", "frequency", "terms", "seeds", "seeds_weighted",
-          "embedding", "similarity", "concatenator", "call", "version")
+          "embedding", "similarity", "concatenator", "type", "spatial", "call", "version")
     )
 
 })
