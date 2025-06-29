@@ -2,15 +2,60 @@
 % Please edit documentation in R/as.textmodel.R
 \name{as.textmodel_lss}
 \alias{as.textmodel_lss}
+\alias{as.textmodel_lss.matrix}
+\alias{as.textmodel_lss.numeric}
+\alias{as.textmodel_lss.textmodel_lss}
+\alias{as.textmodel_lss.textmodel_wordvector}
 \title{Create a Latent Semantic Scaling model from various objects}
 \usage{
 as.textmodel_lss(x, ...)
+
+\method{as.textmodel_lss}{matrix}(
+  x,
+  seeds,
+  terms = NULL,
+  slice = NULL,
+  simil_method = "cosine",
+  auto_weight = FALSE,
+  verbose = FALSE,
+  ...
+)
+
+\method{as.textmodel_lss}{numeric}(x, ...)
+
+\method{as.textmodel_lss}{textmodel_lss}(x, ...)
+
+\method{as.textmodel_lss}{textmodel_wordvector}(x, seeds, terms = NULL, verbose = FALSE, spatial = TRUE, ...)
 }
 \arguments{
 \item{x}{an object from which a new \link{textmodel_lss} object is created. See details.}
 
 \item{...}{arguments used to create a new object. \code{seeds} must be given
 when \code{x} is a dense matrix or a fitted textmodel_lss.}
+
+\item{seeds}{a character vector or named numeric vector that contains seed
+words. If seed words contain "*", they are interpreted as glob patterns.
+See \link[quanteda:valuetype]{quanteda::valuetype}.}
+
+\item{terms}{a character vector or named numeric vector that specify words
+for which polarity scores will be computed; if a numeric vector, words' polarity
+scores will be weighted accordingly; if \code{NULL}, all the features in \code{x} except
+those less frequent than \code{min_count} will be used.}
+
+\item{slice}{a number or indices of the components of word vectors used to
+compute similarity; \code{slice < k} to further truncate word vectors; useful
+for diagnosys and simulation.}
+
+\item{simil_method}{specifies method to compute similarity between features.
+The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is
+used otherwise.}
+
+\item{auto_weight}{automatically determine weights to approximate the
+polarity of terms to seed words. Deprecated.}
+
+\item{verbose}{show messages if \code{TRUE}.}
+
+\item{spatial}{if \code{TRUE}, return a spatial model. Otherwise, a probabilistic model.}
 }
 \value{
 a dummy \link{textmodel_lss} object
@@ -26,9 +71,4 @@ if it was trained originally using SVD.
 If \code{x} is a dense matrix, it is treated as a column-oriented word vectors with which
 polarity of words are computed. If \code{x} is a named numeric vector, the values are treated
 as polarity scores of the words in the names.
-
-If \code{x} is a normalized \link[wordvector:textmodel_word2vec]{wordvector::textmodel_word2vec}, it returns a spatial model;
-if not normalized, a probabilistic model. While the polarity scores of words are
-their cosine similarity to seed words in spatial models, they are
-predicted probability that the seed words to occur in their proximity.
 }

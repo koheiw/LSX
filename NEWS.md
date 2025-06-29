@@ -1,3 +1,8 @@
+## Changes in v1.5.0
+
+* Add `textmodel_lss.tokens()` to use `wordvector::textmodel_word2vec()` as the underlying engine.
+* Rename `w` to `k` in `textmodel_lss.fcm()` to make it consistent with other methods.
+
 ## Changes in v1.4.5
 
 * Enable grouping by multiple variables using `smooth_lss()`.
