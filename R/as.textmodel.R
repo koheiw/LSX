@@ -117,11 +117,13 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
   if (spatial) {
 
     if (x$version == as.numeric_version("0.1.0")) {
-      v <- t(x$vector)
+      values <- x$vector
+    } else if (x$version >= as.numeric_version("0.6.0")) {
+      values <- x$values$word
     } else {
-      v <- t(x$values)
+      values <- x$values
     }
-    result <- as.textmodel_lss(v, seeds = seeds, terms = terms, ...)
+    result <- as.textmodel_lss(t(values), seeds = seeds, terms = terms, ...)
     result$frequency <- x$frequency[names(result$beta)]
     result$type = "word2vec"
     result$call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
@@ -133,12 +135,17 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
     if (x$version < as.numeric_version("0.2.0"))
       stop("wordvector package must be v0.2.0 or later")
 
-    seeds <- expand_seeds(seeds, rownames(x$values), verbose)
+    if (x$version >= as.numeric_version("0.6.0")) {
+      values <- x$values$word
+    } else {
+      values <- x$values
+    }
+    seeds <- expand_seeds(seeds, rownames(values), verbose)
     seed <- unlist(unname(seeds))
-    theta <- get_theta(terms, rownames(x$values))
+    theta <- get_theta(terms, rownames(values))
 
     suppressWarnings({
-      prob <- wordvector::probability(x, names(seed), "values")
+      prob <- wordvector::probability(x, names(seed), mode = "numeric")
     })
     beta <- rowSums(prob[names(theta),,drop = FALSE] %*% seed) * theta
 
