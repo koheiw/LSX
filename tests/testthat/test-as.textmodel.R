@@ -110,7 +110,7 @@ test_that("as.textmodel_lss works with textmodel_wordvector", {
 
   expect_error(
     as.textmodel_lss(wdv, seed, spatial = FALSE),
-    "textmodel_wordvector must be trained with normalize = FALSE"
+    "x must be trained with normalize = FALSE"
   )
 
   # probabilistic
