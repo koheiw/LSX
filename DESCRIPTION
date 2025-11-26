@@ -30,7 +30,7 @@ Suggests:
     spelling,
     knitr,
     rmarkdown,
-    wordvector (>= 0.6.0),
+    wordvector (>= 0.5.0),
     irlba,
     rsvd,
     rsparse
