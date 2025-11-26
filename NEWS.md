@@ -1,3 +1,7 @@
+## Changes in v1.5.1
+
+* Support `textmodel_wordvector` objects from **wordvector** v0.6.0.
+
 ## Changes in v1.5.0
 
 * Add `textmodel_lss.tokens()` to use `wordvector::textmodel_word2vec()` as the underlying engine.
