@@ -363,7 +363,7 @@ cache_glove <- function(x, w, x_max = 10, n_iter = 10, cache = TRUE, ...) {
         result <- readRDS(file_cache)
     } else {
         if (!requireNamespace("rsparse"))
-            stop("wordvector package must be installed")
+            stop("rsparse package must be installed")
         utils::capture.output({
             glove <- rsparse::GloVe$new(rank = w, x_max = x_max, ...)
             temp <- glove$fit_transform(Matrix::drop0(x), n_iter = n_iter,
