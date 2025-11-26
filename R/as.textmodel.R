@@ -135,17 +135,16 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
     if (x$version < as.numeric_version("0.2.0"))
       stop("wordvector package must be v0.2.0 or later")
 
-    if (x$version >= as.numeric_version("0.6.0")) {
-      values <- x$values$word
-    } else {
-      values <- x$values
-    }
-    seeds <- expand_seeds(seeds, rownames(values), verbose)
+    seeds <- expand_seeds(seeds, names(x$frequency), verbose)
     seed <- unlist(unname(seeds))
-    theta <- get_theta(terms, rownames(values))
+    theta <- get_theta(terms, names(x$frequency))
 
     suppressWarnings({
-      prob <- wordvector::probability(x, names(seed), mode = "numeric")
+      if (packageVersion("wordvector") >= "0.6.0") {
+        prob <- wordvector::probability(x, names(seed), mode = "numeric")
+      } else {
+        prob <- wordvector::probability(x, names(seed), mode = "values")
+      }
     })
     beta <- rowSums(prob[names(theta),,drop = FALSE] %*% seed) * theta
 
