@@ -98,6 +98,8 @@ test_that("as.textmodel_lss works with textmodel_lss", {
 
 test_that("as.textmodel_lss works with textmodel_wordvector", {
 
+  skip_if_not(packageVersion("wordvector") >= "0.6.0")
+
   # spatial
   wdv <- readRDS("../data/word2vec.RDS")
   lss <- as.textmodel_lss(wdv, seed)
@@ -110,7 +112,7 @@ test_that("as.textmodel_lss works with textmodel_wordvector", {
 
   expect_error(
     as.textmodel_lss(wdv, seed, spatial = FALSE),
-    "textmodel_wordvector must be trained with normalize = FALSE"
+    "x must be trained with normalize = FALSE"
   )
 
   # probabilistic
