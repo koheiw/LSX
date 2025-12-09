@@ -130,6 +130,7 @@ test_that("smooth_lss works with multiple grouping variables", {
 
   date <- seq(as.Date("2025-01-01"), as.Date("2025-01-31"), by = "1 day")
   n <- 1000
+  set.seed(1234)
   dat <- data.frame(fit = rnorm(n),
                     date = sample(date, n, replace = TRUE),
                     class1 = factor(sample(c("a", "b", "c"), n, replace = TRUE),
