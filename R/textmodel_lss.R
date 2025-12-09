@@ -81,6 +81,7 @@ textmodel_lss <- function(x, ...) {
 #' @method textmodel_lss dfm
 #' @importFrom quanteda featnames meta check_integer dfm_group
 #' @importFrom Matrix colSums
+#' @importFrom utils packageVersion
 #' @export
 textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
