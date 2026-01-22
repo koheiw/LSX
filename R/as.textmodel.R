@@ -110,6 +110,7 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
                                                   terms = NULL,
                                                   verbose = FALSE,
                                                   spatial = TRUE,
+                                                  uniform = FALSE,
                                                   ...) {
 
   #args <- list(terms = terms, seeds = seeds)
@@ -137,6 +138,8 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
 
     seeds <- expand_seeds(seeds, names(x$frequency), verbose)
     seed <- unlist(unname(seeds))
+    if (uniform)
+      seed[] <- 1 / length(seed)
     theta <- get_theta(terms, names(x$frequency))
 
     suppressWarnings({
