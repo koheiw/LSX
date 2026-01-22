@@ -27,7 +27,7 @@ as.textmodel_lss <- function(x, ...) {
 as.textmodel_lss.matrix <- function(x, seeds,
                                     terms = NULL, slice = NULL,
                                     simil_method = "cosine",
-                                    auto_weight = FALSE,
+                                    adjust_weight = TRUE,
                                     verbose = FALSE, ...) {
 
   args <- list(terms = terms, seeds = seeds)
@@ -38,7 +38,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
   if (any(is.na(x)))
     stop("x must not have NA")
 
-  seeds <- expand_seeds(seeds, colnames(x), verbose)
+  seeds <- expand_seeds(seeds, colnames(x), adjust_weight, verbose)
   seed <- unlist(unname(seeds))
   theta <- get_theta(terms, colnames(x))
 
@@ -51,8 +51,6 @@ as.textmodel_lss.matrix <- function(x, seeds,
     slice <- seq_len(slice)
 
   simil <- get_simil(x, names(seed), names(theta), slice, simil_method)
-  if (auto_weight)
-    seed <- optimize_weight(seed, simil, verbose)
   beta <- get_beta(simil, seed) * theta
 
   result <- build_lss(
@@ -108,9 +106,9 @@ as.textmodel_lss.textmodel_lss <- function(x, ...) {
 #' @method as.textmodel_lss textmodel_wordvector
 as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
                                                   terms = NULL,
+                                                  adjust_weight = TRUE,
                                                   verbose = FALSE,
                                                   spatial = TRUE,
-                                                  uniform = FALSE,
                                                   ...) {
 
   #args <- list(terms = terms, seeds = seeds)
@@ -136,10 +134,8 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
     if (x$version < as.numeric_version("0.2.0"))
       stop("wordvector package must be v0.2.0 or later")
 
-    seeds <- expand_seeds(seeds, names(x$frequency), verbose)
+    seeds <- expand_seeds(seeds, names(x$frequency), adjust_weight, verbose)
     seed <- unlist(unname(seeds))
-    if (uniform)
-      seed[] <- 1 / length(seed)
     theta <- get_theta(terms, names(x$frequency))
 
     suppressWarnings({

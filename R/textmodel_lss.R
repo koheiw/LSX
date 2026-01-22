@@ -123,9 +123,6 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         slice <- seq_len(slice)
 
     simil <- get_simil(embed, names(seed), names(theta), slice, simil_method)
-    if (auto_weight)
-        seed <- optimize_weight(seed, simil, verbose)
-
     beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
@@ -201,9 +198,6 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, k = 50,
     }
 
     simil <- get_simil(embed, names(seed), term, seq_len(k), simil_method)
-    if (auto_weight)
-        seed <- optimize_weight(seed, simil, verbose)
-
     beta <- get_beta(simil, seed)
 
     result <- build_lss(
@@ -262,10 +256,10 @@ expand_terms <- function(terms, features) {
     return(result)
 }
 
-expand_seeds <- function(seeds, features, verbose = FALSE) {
+expand_seeds <- function(seeds, features, adjust_weight = TRUE, verbose = FALSE) {
 
     seeds <- get_seeds(seeds)
-    seeds_weighted <- weight_seeds(seeds, features)
+    seeds_weighted <- weight_seeds(seeds, features, adjust_weight)
 
     if (all(lengths(seeds_weighted) == 0))
         stop("No seed word is found in the dfm", call. = FALSE)
@@ -431,7 +425,7 @@ coefficients.textmodel_lss <- function(object, ...) {
 #' Internal function to generate equally-weighted seed set
 #'
 #' @keywords internal
-weight_seeds <- function(seeds, type) {
+weight_seeds <- function(seeds, type, weight_seeds) {
     seeds_fix <- lapply(names(seeds), function(x) {
         s <- unlist(quanteda::pattern2fixed(x, type, "glob", FALSE))
         if (is.null(s))
@@ -449,15 +443,5 @@ weight_seeds <- function(seeds, type) {
            }, seeds, seeds_fix, SIMPLIFY = FALSE)
 }
 
-# automatically align polarity score with original weight
-optimize_weight <- function(seed, simil, verbose) {
-    .Deprecated(old = "auto_weight")
-    if (verbose)
-        cat("Optimizing seed weights...\n")
-    result <- optim(seed, function(x) {
-        sum((rowSums(simil$seeds %*% x) - seed) ^ 2)
-    })
-    return(result$par)
-}
 
 
