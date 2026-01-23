@@ -159,28 +159,6 @@ test_that("as.textmodel_lss errors with vector", {
                  "x must not have NA")
 })
 
-test_that("auto_weight is working", {
-    skip_on_cran()
-
-    lss1 <- as.textmodel_lss(mat_test, seed)
-    suppressWarnings({
-      lss2 <- as.textmodel_lss(mat_test, seed, auto_weight = TRUE)
-    })
-    expect_true(
-        all(lss1$seeds_weighted != lss2$seeds_weighted)
-    )
-    expect_true(
-        all(sign(lss1$seeds_weighted) == sign(lss2$seeds_weighted))
-    )
-    expect_true(
-        all(abs(lss2$beta[names(lss2$seeds_weighted)] - lss1$seeds_weighted) < 0.05)
-    )
-    expect_warning(
-        as.textmodel_lss(mat_test, seed, auto_weight = TRUE, verbose = FALSE),
-        "'auto_weight' is deprecated"
-    )
-})
-
 test_that("terms is working", {
     skip_on_cran()
 
