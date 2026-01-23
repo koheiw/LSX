@@ -427,14 +427,14 @@ coefficients.textmodel_lss <- function(object, ...) {
 #' Internal function to generate equally-weighted seed set
 #'
 #' @keywords internal
-weight_seeds <- function(seeds, type, weight_seeds) {
+weight_seeds <- function(seeds, type, nested_weight = TRUE) {
     seeds_fix <- lapply(names(seeds), function(x) {
         s <- unlist(quanteda::pattern2fixed(x, type, "glob", FALSE))
         if (is.null(s))
             return(character())
         return(s)
     })
-    if (weight_seeds) {
+    if (nested_weight) {
       weight <- 1 / xtabs(~ seeds > 0)
     } else {
       weight <- 1 / xtabs(lengths(seeds_fix) ~ seeds > 0)
@@ -442,7 +442,7 @@ weight_seeds <- function(seeds, type, weight_seeds) {
     mapply(function(x, y) {
               if (!length(y))
                   return(numeric())
-              if (weight_seeds) {
+              if (nested_weight) {
                 v <- unname(x * weight[as.character(x > 0)]) / length(y)
               } else {
                 v <- unname(x * weight[as.character(x > 0)])
