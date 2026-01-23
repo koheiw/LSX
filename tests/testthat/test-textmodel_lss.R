@@ -495,7 +495,7 @@ test_that("textmodel_lss print messages", {
 
 })
 
-test_that("textmodel_lss print messages", {
+test_that("nested_weight works", {
 
   seed <- c("good*" = 1, "bad*" = -1, "poor*" = -1)
 

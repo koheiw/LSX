@@ -146,3 +146,25 @@ test_that("textmodel_lss works when spatial = FALSE", {
 
 })
 
+test_that("nested_weight works", {
+
+  seed <- c("good*" = 1, "bad*" = -1, "poor*" = -1)
+
+  lss1 <- textmodel_lss(toks_test, seed, k = 10, min_count = 1)
+  expect_equal(
+    lss1$seeds_weighted,
+    c(good = 0.25, goodness = 0.25, goods = 0.25, goodwill = 0.25,
+      badge = -0.166, bad = -0.166, badly = -0.16,
+      poor = -0.5), tolerance = 0.01
+  )
+
+  lss2 <- textmodel_lss(toks_test, seed, k = 10, , min_count = 1,
+                        nested_weight = FALSE)
+  expect_equal(
+    lss2$seeds_weighted,
+    c(good = 0.25, goodness = 0.25, goods = 0.25, goodwill = 0.25,
+      badge = -0.25, bad = -0.25, badly = -0.25,
+      poor = -0.25)
+  )
+})
+
