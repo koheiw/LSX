@@ -374,41 +374,6 @@ test_that("cohesion works", {
     expect_error(cohesion(list()), "x must be a textmodel_lss object")
 })
 
-test_that("weight_seeds() works", {
-    expect_equal(
-        LSX:::weight_seeds(c("a*" = 1, "b*" = -1), c("aa", "aaa", "bb", "bbb")),
-        list("a*" = c("aa" = 0.5, "aaa" = 0.5),
-             "b*" = c("bb" = -0.5, "bbb" = -0.5))
-    )
-    expect_equal(
-        LSX:::weight_seeds(c("a*" = 1), c("aa", "aaa", "bb", "bbb")),
-        list("a*" = c("aa" = 0.5, "aaa" = 0.5))
-    )
-    expect_equal(
-        LSX:::weight_seeds(c("a*" = 1, "c*" = -1), c("aa", "aaa", "bb", "bbb")),
-        list("a*" = c("aa" = 0.5, "aaa" = 0.5),
-             "c*" = numeric())
-    )
-    expect_equal(
-        LSX:::weight_seeds(c("a*" = 1, "b*" = 1), c("aa", "aaa", "bb", "bbb")),
-        list("a*" = c("aa" = 0.25, "aaa" = 0.25),
-             "b*" = c("bb" = 0.25, "bbb" = 0.25))
-    )
-    expect_equal(
-        LSX:::weight_seeds(c("aa" = 1, "aaa" = 1, "bb" = 1), c("aa", "aaa", "bb", "bbb")),
-        list("aa" = c("aa" = 0.333),
-             "aaa" = c("aaa" = 0.333),
-             "bb" = c("bb" = 0.333)),
-        tolerance = 0.01
-    )
-    expect_equal(
-        LSX:::weight_seeds(c("aa" = 1, "aaa" = 1, "bb" = -1), c("aa", "aaa", "bb", "bbb")),
-        list("aa" = c("aa" = 0.5),
-             "aaa" = c("aaa" = 0.5),
-             "bb" = c("bb" = -1)),
-    )
-})
-
 test_that("old argument still works", {
 
     skip_on_cran() # takes to much time
@@ -527,9 +492,27 @@ test_that("textmodel_lss print messages", {
     textmodel_lss(dfmt_test, seed, features = feat_test, k = 100),
     "'features' is deprecated; use 'terms'", fixed = TRUE
   )
-  expect_warning(
-    textmodel_lss(dfmt_test, seed, k = 100, auto_weight = TRUE),
-    "'auto_weight' is deprecated", fixed = TRUE
-  )
 
 })
+
+test_that("nested_weight works", {
+
+  seed <- c("good*" = 1, "bad*" = -1, "poor*" = -1)
+
+  lss1 <- textmodel_lss(dfmt_test, seed, k = 100)
+  expect_equal(
+    lss1$seeds_weighted,
+    c(good = 0.25, goodness = 0.25, goods = 0.25, goodwill = 0.25,
+      badge = -0.166, bad = -0.166, badly = -0.16,
+      poor = -0.5), tolerance = 0.01
+  )
+
+  lss2 <- textmodel_lss(dfmt_test, seed, k = 100, nested_weight = FALSE)
+  expect_equal(
+    lss2$seeds_weighted,
+    c(good = 0.25, goodness = 0.25, goods = 0.25, goodwill = 0.25,
+      badge = -0.25, bad = -0.25, badly = -0.25,
+      poor = -0.25)
+  )
+})
+

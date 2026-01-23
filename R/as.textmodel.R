@@ -27,7 +27,7 @@ as.textmodel_lss <- function(x, ...) {
 as.textmodel_lss.matrix <- function(x, seeds,
                                     terms = NULL, slice = NULL,
                                     simil_method = "cosine",
-                                    auto_weight = FALSE,
+                                    nested_weight = TRUE,
                                     verbose = FALSE, ...) {
 
   args <- list(terms = terms, seeds = seeds)
@@ -38,7 +38,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
   if (any(is.na(x)))
     stop("x must not have NA")
 
-  seeds <- expand_seeds(seeds, colnames(x), verbose)
+  seeds <- expand_seeds(seeds, colnames(x), nested_weight, verbose)
   seed <- unlist(unname(seeds))
   theta <- get_theta(terms, colnames(x))
 
@@ -51,8 +51,6 @@ as.textmodel_lss.matrix <- function(x, seeds,
     slice <- seq_len(slice)
 
   simil <- get_simil(x, names(seed), names(theta), slice, simil_method)
-  if (auto_weight)
-    seed <- optimize_weight(seed, simil, verbose)
   beta <- get_beta(simil, seed) * theta
 
   result <- build_lss(
@@ -108,6 +106,7 @@ as.textmodel_lss.textmodel_lss <- function(x, ...) {
 #' @method as.textmodel_lss textmodel_wordvector
 as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
                                                   terms = NULL,
+                                                  nested_weight = TRUE,
                                                   verbose = FALSE,
                                                   spatial = TRUE,
                                                   ...) {
@@ -123,7 +122,8 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
     } else {
       values <- x$values
     }
-    result <- as.textmodel_lss(t(values), seeds = seeds, terms = terms, ...)
+    result <- as.textmodel_lss(t(values), seeds = seeds, terms = terms,
+                               nested_weight = nested_weight, ...)
     result$frequency <- x$frequency[names(result$beta)]
     result$type = "word2vec"
     result$call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
@@ -135,7 +135,7 @@ as.textmodel_lss.textmodel_wordvector <- function(x, seeds,
     if (x$version < as.numeric_version("0.2.0"))
       stop("wordvector package must be v0.2.0 or later")
 
-    seeds <- expand_seeds(seeds, names(x$frequency), verbose)
+    seeds <- expand_seeds(seeds, names(x$frequency), nested_weight, verbose)
     seed <- unlist(unname(seeds))
     theta <- get_theta(terms, names(x$frequency))
 

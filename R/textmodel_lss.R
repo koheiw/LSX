@@ -25,8 +25,8 @@
 #'    If `x` is a dfm, [RSpectra::svds()], [irlba::irlba()] or [rsvd::rsvd()].
 #'    If `x` is a fcm, [rsparse::GloVe()].
 #'    If `x` is a tokens (or tokens_xptr), [wordvector::textmodel_word2vec()].
-#' @param auto_weight automatically determine weights to approximate the
-#'   polarity of terms to seed words. Deprecated.
+#' @param nested_weight if `TRUE`, assign smaller weights to seed words based on
+#'    the number of glob pattern matches.
 #' @param verbose show messages if `TRUE`.
 #' @param ... additional arguments passed to the underlying engine.
 #' @export
@@ -56,6 +56,12 @@
 #'   While the polarity scores of words are their cosine similarity to seed words in
 #'   spatial models, they are predicted probability that the seed words to occur in
 #'   their contexts. The probabilistic models are still experimental, so use them with caution.
+#'
+#'   `nested_weight = TRUE` to limit the impact of glob patterns used in seed words.
+#'   When it is `FALSE`, the weights of the seed words are all equal being the inverse of
+#'   the number of seed words matched. When it is `TRUE`, the weights are equally distributed
+#'   within the same glob pattern. LSS becomes more similar to dictionary analysis
+#'   when it is `FALSE`.
 #'
 #'   Please visit the [package website](https://koheiw.github.io/LSX/) for examples.
 #' @references Watanabe, Kohei. 2020. "Latent Semantic Scaling: A Semisupervised
@@ -87,7 +93,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = c("RSpectra", "irlba", "rsvd"),
-                              auto_weight = FALSE,
+                              nested_weight = TRUE,
                               include_data = FALSE,
                               group_data = FALSE,
                               verbose = FALSE, ...) {
@@ -100,7 +106,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
     engine <- match.arg(engine)
-    seeds <- expand_seeds(seeds, featnames(x), verbose)
+    seeds <- expand_seeds(seeds, featnames(x), nested_weight, verbose)
     seed <- unlist(unname(seeds))
     theta <- get_theta(terms, featnames(x))
     feat <- union(names(theta), names(seed))
@@ -123,9 +129,6 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         slice <- seq_len(slice)
 
     simil <- get_simil(embed, names(seed), names(theta), slice, simil_method)
-    if (auto_weight)
-        seed <- optimize_weight(seed, simil, verbose)
-
     beta <- get_beta(simil, seed) * theta
 
     result <- build_lss(
@@ -169,7 +172,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, k = 50,
                               weight = "count", cache = FALSE,
                               simil_method = "cosine",
                               engine = "rsparse",
-                              auto_weight = FALSE,
+                              nested_weight = TRUE,
                               verbose = FALSE, ...) {
 
     args <- list(terms = terms, seeds = seeds, ...)
@@ -186,7 +189,7 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, k = 50,
         k <- args$w
     }
 
-    seeds <- expand_seeds(seeds, featnames(x), verbose)
+    seeds <- expand_seeds(seeds, featnames(x), nested_weight, verbose)
     seed <- unlist(unname(seeds))
     term <- expand_terms(terms, featnames(x))
     feat <- union(term, names(seed))
@@ -201,9 +204,6 @@ textmodel_lss.fcm <- function(x, seeds, terms = NULL, k = 50,
     }
 
     simil <- get_simil(embed, names(seed), term, seq_len(k), simil_method)
-    if (auto_weight)
-        seed <- optimize_weight(seed, simil, verbose)
-
     beta <- get_beta(simil, seed)
 
     result <- build_lss(
@@ -262,17 +262,13 @@ expand_terms <- function(terms, features) {
     return(result)
 }
 
-expand_seeds <- function(seeds, features, verbose = FALSE) {
+expand_seeds <- function(seeds, features, nested_weight = TRUE, verbose = FALSE) {
 
     seeds <- get_seeds(seeds)
-    seeds_weighted <- weight_seeds(seeds, features)
+    seeds_weighted <- weight_seeds(seeds, features, nested_weight)
 
     if (all(lengths(seeds_weighted) == 0))
         stop("No seed word is found in the dfm", call. = FALSE)
-
-    if (verbose)
-        cat(sprintf("Calculating term-term similarity to %d seed words...\n",
-            sum(lengths(seeds_weighted))))
 
     return(seeds_weighted)
 }
@@ -431,33 +427,31 @@ coefficients.textmodel_lss <- function(object, ...) {
 #' Internal function to generate equally-weighted seed set
 #'
 #' @keywords internal
-weight_seeds <- function(seeds, type) {
+weight_seeds <- function(seeds, type, nested_weight = TRUE) {
     seeds_fix <- lapply(names(seeds), function(x) {
         s <- unlist(quanteda::pattern2fixed(x, type, "glob", FALSE))
         if (is.null(s))
             return(character())
         return(s)
     })
-    weight <- 1 / table(seeds > 0)
+    if (nested_weight) {
+      weight <- 1 / xtabs(~ seeds > 0)
+    } else {
+      weight <- 1 / xtabs(lengths(seeds_fix) ~ seeds > 0)
+    }
     mapply(function(x, y) {
               if (!length(y))
                   return(numeric())
-              v <- unname(x * weight[as.character(x > 0)]) / length(y)
+              if (nested_weight) {
+                v <- unname(x * weight[as.character(x > 0)]) / length(y)
+              } else {
+                v <- unname(x * weight[as.character(x > 0)])
+              }
               v <- rep(v, length(y))
               names(v) <- y
               return(v)
            }, seeds, seeds_fix, SIMPLIFY = FALSE)
 }
 
-# automatically align polarity score with original weight
-optimize_weight <- function(seed, simil, verbose) {
-    .Deprecated(old = "auto_weight")
-    if (verbose)
-        cat("Optimizing seed weights...\n")
-    result <- optim(seed, function(x) {
-        sum((rowSums(simil$seeds %*% x) - seed) ^ 2)
-    })
-    return(result$par)
-}
 
 

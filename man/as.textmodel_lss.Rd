@@ -16,7 +16,7 @@ as.textmodel_lss(x, ...)
   terms = NULL,
   slice = NULL,
   simil_method = "cosine",
-  auto_weight = FALSE,
+  nested_weight = TRUE,
   verbose = FALSE,
   ...
 )
@@ -25,7 +25,15 @@ as.textmodel_lss(x, ...)
 
 \method{as.textmodel_lss}{textmodel_lss}(x, ...)
 
-\method{as.textmodel_lss}{textmodel_wordvector}(x, seeds, terms = NULL, verbose = FALSE, spatial = TRUE, ...)
+\method{as.textmodel_lss}{textmodel_wordvector}(
+  x,
+  seeds,
+  terms = NULL,
+  nested_weight = TRUE,
+  verbose = FALSE,
+  spatial = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{an object from which a new \link{textmodel_lss} object is created. See details.}
@@ -50,8 +58,8 @@ for diagnosys and simulation.}
 The value is passed to \code{\link[quanteda.textstats:textstat_simil]{quanteda.textstats::textstat_simil()}}, "cosine" is
 used otherwise.}
 
-\item{auto_weight}{automatically determine weights to approximate the
-polarity of terms to seed words. Deprecated.}
+\item{nested_weight}{if \code{TRUE}, assign smaller weights to seed words based on
+the number of glob pattern matches.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 

@@ -7,6 +7,7 @@ textmodel_lss.tokens <- function(x, seeds, terms = NULL, k = 200,
                                  min_count = 5,
                                  engine = "wordvector",
                                  tolower = TRUE,
+                                 nested_weight = TRUE,
                                  include_data = FALSE,
                                  group_data = FALSE,
                                  spatial = TRUE,
@@ -25,7 +26,7 @@ textmodel_lss.tokens <- function(x, seeds, terms = NULL, k = 200,
                                         type = "skip-gram", tolower = tolower,
                                         normalize = FALSE, verbose = verbose, ...)
   result <- as.textmodel_lss(w2v, seeds = seeds, terms = terms, spatial = spatial,
-                             verbose = FALSE)
+                             nested_weight = nested_weight, verbose = FALSE)
   result$type <- "word2vec"
   result$call <- try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
 
