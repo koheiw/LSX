@@ -264,10 +264,6 @@ expand_seeds <- function(seeds, features, adjust_weight = TRUE, verbose = FALSE)
     if (all(lengths(seeds_weighted) == 0))
         stop("No seed word is found in the dfm", call. = FALSE)
 
-    if (verbose)
-        cat(sprintf("Calculating term-term similarity to %d seed words...\n",
-            sum(lengths(seeds_weighted))))
-
     return(seeds_weighted)
 }
 
@@ -432,11 +428,19 @@ weight_seeds <- function(seeds, type, weight_seeds) {
             return(character())
         return(s)
     })
-    weight <- 1 / table(seeds > 0)
+    if (weight_seeds) {
+      weight <- 1 / xtabs(~ seeds > 0)
+    } else {
+      weight <- 1 / xtabs(lengths(seeds_fix) ~ seeds > 0)
+    }
     mapply(function(x, y) {
               if (!length(y))
                   return(numeric())
-              v <- unname(x * weight[as.character(x > 0)]) / length(y)
+              if (weight_seeds) {
+                v <- unname(x * weight[as.character(x > 0)]) / length(y)
+              } else {
+                v <- unname(x * weight[as.character(x > 0)])
+              }
               v <- rep(v, length(y))
               names(v) <- y
               return(v)
