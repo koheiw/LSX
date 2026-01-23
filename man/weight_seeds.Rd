@@ -4,7 +4,7 @@
 \alias{weight_seeds}
 \title{Internal function to generate equally-weighted seed set}
 \usage{
-weight_seeds(seeds, type)
+weight_seeds(seeds, type, weight_seeds)
 }
 \description{
 Internal function to generate equally-weighted seed set

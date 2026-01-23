@@ -19,7 +19,7 @@ textmodel_lss(x, ...)
   cache = FALSE,
   simil_method = "cosine",
   engine = c("RSpectra", "irlba", "rsvd"),
-  auto_weight = FALSE,
+  nested_weight = TRUE,
   include_data = FALSE,
   group_data = FALSE,
   verbose = FALSE,
@@ -36,7 +36,7 @@ textmodel_lss(x, ...)
   cache = FALSE,
   simil_method = "cosine",
   engine = "rsparse",
-  auto_weight = FALSE,
+  nested_weight = TRUE,
   verbose = FALSE,
   ...
 )
@@ -49,6 +49,7 @@ textmodel_lss(x, ...)
   min_count = 5,
   engine = "wordvector",
   tolower = TRUE,
+  nested_weight = TRUE,
   include_data = FALSE,
   group_data = FALSE,
   spatial = TRUE,
@@ -94,8 +95,8 @@ If \code{x} is a dfm, \code{\link[RSpectra:svds]{RSpectra::svds()}}, \code{\link
 If \code{x} is a fcm, \code{\link[rsparse:GloVe]{rsparse::GloVe()}}.
 If \code{x} is a tokens (or tokens_xptr), \code{\link[wordvector:textmodel_word2vec]{wordvector::textmodel_word2vec()}}.}
 
-\item{auto_weight}{automatically determine weights to approximate the
-polarity of terms to seed words. Deprecated.}
+\item{nested_weight}{if \code{TRUE}, assign smaller weights to seed words based on
+the number of glob pattern matches.}
 
 \item{include_data}{if \code{TRUE}, the fitted model includes the dfm supplied as \code{x}.}
 
@@ -145,6 +146,12 @@ If \code{spatial = TRUE}, it return a spatial model; otherwise a probabilistic m
 While the polarity scores of words are their cosine similarity to seed words in
 spatial models, they are predicted probability that the seed words to occur in
 their contexts. The probabilistic models are still experimental, so use them with caution.
+
+\code{nested_weight = TRUE} to limit the impact of glob patterns used in seed words.
+When it is \code{FALSE}, the weights of the seed words are all equal being the inverse of
+the number of seed words matched. When it is \code{TRUE}, the weights are equally distributed
+within the same glob pattern. LSS becomes more similar to dictionary analysis
+when it is \code{FALSE}.
 
 Please visit the \href{https://koheiw.github.io/LSX/}{package website} for examples.
 }
