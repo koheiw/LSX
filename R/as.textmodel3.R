@@ -10,6 +10,7 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = FALSE) {
 
   max_prob <- check_logical(max_prob)
 
+  # NOTE: seeds_weighted must be 1 or -1
   seeds_weighted <- expand_seeds(seeds, names(x$frequency), nested_weight = FALSE)
   seed <- unlist(unname(seeds_weighted))
   prob <- wordvector::probability(x, seed, layer = "document", mode = "numeric")
@@ -28,6 +29,8 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = FALSE) {
   beta <- colSums(data * alpha) / freq
 
   result <- build_lss(
+    seeds = seeds,
+    seeds_weighted = seeds_weighted,
     beta = beta,
     beta_type = "dummy",
     terms = names(beta),
