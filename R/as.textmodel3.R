@@ -13,12 +13,14 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = FALSE) {
   # NOTE: seeds_weighted must be 1 or -1
   seeds_weighted <- expand_seeds(seeds, names(x$frequency), nested_weight = FALSE)
   seed <- unlist(unname(seeds_weighted))
+  if (max_prob)
+    seed <- sign(seed)
   prob <- wordvector::probability(x, seed, layer = "document", mode = "numeric")
 
   if (max_prob) {
     alpha <- rowMaxs(prob)
   } else {
-    alpha <- rowMeans(prob)
+    alpha <- rowSums(prob)
   }
 
   # pseudo beta
