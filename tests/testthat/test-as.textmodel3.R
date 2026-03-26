@@ -30,7 +30,7 @@ test_that("as.textmodel_lss is working", {
   )
   expect_equal(lss2$seeds, "good")
   expect_equal(lss2$seeds_weighted,
-               list("good" = c("good" = 1)))
+               c("good" = 1))
   expect_identical(
     predict(lss1),
     predict(lss2)
@@ -54,9 +54,8 @@ test_that("as.textmodel_lss is working", {
   )
   expect_equal(
     lss5$seeds_weighted,
-    list("america" = c("america" = 0.25),
-         "nation*" = c("nations" = 0.25, "nation" = 0.25,  "national" = 0.25),
-         "foreign*" = c("foreign" = -1))
+    c("america" = 0.25, "nations" = 0.25, "nation" = 0.25,  "national" = 0.25,
+      "foreign" = -1)
   )
   expect_true(
     ggplot2::is_ggplot(textplot_terms(lss5))

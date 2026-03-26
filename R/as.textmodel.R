@@ -37,8 +37,8 @@ as.textmodel_lss.matrix <- function(x, seeds,
   if (any(is.na(x)))
     stop("x must not have NA")
 
-  seeds_weighted <- expand_seeds(seeds, colnames(x), nested_weight, verbose)
-  seed <- unlist(unname(seeds_weighted))
+  s <- expand_seeds(seeds, colnames(x), nested_weight, verbose)
+  seed <- unlist(unname(s))
   theta <- get_theta(terms, colnames(x))
 
   if (is.null(slice)) {
@@ -58,7 +58,7 @@ as.textmodel_lss.matrix <- function(x, seeds,
     slice = slice,
     terms = terms,
     seeds = seeds,
-    seeds_weighted = seeds_weighted,
+    seeds_weighted = seed,
     embedding = x,
     similarity = simil$seed,
     call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),

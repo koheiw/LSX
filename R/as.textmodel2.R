@@ -34,8 +34,8 @@ as.textmodel_lss.textmodel_word2vec <- function(x, seeds,
     if (x$version < as.numeric_version("0.2.0"))
       stop("wordvector package must be v0.2.0 or later")
 
-    seeds <- expand_seeds(seeds, names(x$frequency), nested_weight, verbose)
-    seed <- unlist(unname(seeds))
+    s <- expand_seeds(seeds, names(x$frequency), nested_weight, verbose)
+    seed <- unlist(unname(s))
     theta <- get_theta(terms, names(x$frequency))
 
     suppressWarnings({
