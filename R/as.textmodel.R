@@ -30,7 +30,6 @@ as.textmodel_lss.matrix <- function(x, seeds,
                                     nested_weight = TRUE,
                                     verbose = FALSE, ...) {
 
-  args <- list(terms = terms, seeds = seeds)
   if (is.null(colnames(x)))
     stop("x must have column names for features")
   if (any(is.na(colnames(x))))
@@ -38,8 +37,8 @@ as.textmodel_lss.matrix <- function(x, seeds,
   if (any(is.na(x)))
     stop("x must not have NA")
 
-  seeds <- expand_seeds(seeds, colnames(x), nested_weight, verbose)
-  seed <- unlist(unname(seeds))
+  seeds_weighted <- expand_seeds(seeds, colnames(x), nested_weight, verbose)
+  seed <- unlist(unname(seeds_weighted))
   theta <- get_theta(terms, colnames(x))
 
   if (is.null(slice)) {
@@ -57,9 +56,9 @@ as.textmodel_lss.matrix <- function(x, seeds,
     beta = beta,
     k = nrow(x),
     slice = slice,
-    terms = args$terms,
-    seeds = args$seeds,
-    seeds_weighted = seed,
+    terms = terms,
+    seeds = seeds,
+    seeds_weighted = seeds_weighted,
     embedding = x,
     similarity = simil$seed,
     call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),

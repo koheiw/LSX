@@ -106,8 +106,8 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
     engine <- match.arg(engine)
-    seeds <- expand_seeds(seeds, featnames(x), nested_weight, verbose)
-    seed <- unlist(unname(seeds))
+    seeds_weighted <- expand_seeds(seeds, featnames(x), nested_weight, verbose)
+    seed <- unlist(unname(seeds_weighted))
     theta <- get_theta(terms, featnames(x))
     feat <- union(names(theta), names(seed))
 
@@ -136,9 +136,9 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         k = k,
         slice = slice,
         frequency = colSums(x)[names(beta)],
-        terms = args$terms,
-        seeds = args$seeds,
-        seeds_weighted = seed,
+        terms = terms,
+        seeds = seeds,
+        seeds_weighted = seeds_weighted,
         embedding = embed,
         similarity = simil$seed,
         concatenator = meta(x, field = "concatenator", type = "object"),
