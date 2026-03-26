@@ -140,7 +140,7 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         seeds = seeds,
         seeds_weighted = seeds_weighted,
         embedding = embed,
-        similarity = simil$seed,
+        similarity = simil$seed, # TODO: remove
         concatenator = meta(x, field = "concatenator", type = "object"),
         type = "svd",
         call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),
