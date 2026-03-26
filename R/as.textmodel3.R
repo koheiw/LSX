@@ -51,7 +51,7 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = FALSE) {
 #' @keywords internal
 #' @method predict textmodel_lss3
 predict.textmodel_lss3 <- function(x, min_n = 0L) {
-  p <- x$alphalss
+  p <- x$alpha
   if (min_n > 0)
     p <- p * (x$length / pmax(x$length, min_n))
   return(p)
