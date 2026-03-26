@@ -1,26 +1,25 @@
 rowMaxs <- function(x) {
-  structure(x[cbind(seq_len(nrow(x))), max.col(x, "first")],
+  structure(x[cbind(seq_len(nrow(x)), max.col(x, "first"))],
             names = rownames(x))
 }
 
 #' @export
 #' @keywords internal
 #' @method as.textmodel_lss textmodel_doc2vec
-as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = FALSE) {
+as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = TRUE) {
 
   max_prob <- check_logical(max_prob)
 
-  # NOTE: seeds_weighted must be 1 or -1
   seeds_weighted <- expand_seeds(seeds, names(x$frequency), nested_weight = FALSE)
   seed <- unlist(unname(seeds_weighted))
   if (max_prob)
     seed <- sign(seed)
-  prob <- wordvector::probability(x, seed, layer = "document", mode = "numeric")
+  prob <- wordvector::probability(x, names(seed), layer = "document", mode = "numeric")
 
   if (max_prob) {
-    alpha <- rowMaxs(prob)
+    alpha <- rowMaxs(prob %*% diag(seed))
   } else {
-    alpha <- rowSums(prob)
+    alpha <- rowSums(prob %*% diag(seed))
   }
 
   # pseudo beta
@@ -39,6 +38,8 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = FALSE) {
     frequency = freq,
     call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
   )
+  # extra information
+  result$max_prob <- max_prob
   result$alpha <- alpha
   result$length <- rowSums(data)
 
