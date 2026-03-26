@@ -386,7 +386,7 @@ get_seeds <- function(seeds) {
         seeds <- structure(rep(1, length(seeds)), names = seeds)
 
     if (is.null(names(seeds)))
-        stop("y must be a named-numerid vector\n", call. = FALSE)
+        stop("seeds must be a character or named-numeric vector\n", call. = FALSE)
 
     return(seeds)
 }

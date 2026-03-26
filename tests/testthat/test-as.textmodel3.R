@@ -62,4 +62,15 @@ test_that("as.textmodel_lss is working", {
     ggplot2::is_ggplot(textplot_terms(lss5))
   )
 
+  # errors
+  expect_error(
+    as.textmodel_lss(dov_test, c(1, 2)),
+    "seeds must be a character or named-numeric vector"
+  )
+
+  expect_error(
+    as.textmodel_lss(dov_test, max_prob = c(TRUE, FALSE)),
+    "The length of max_prob must be 1"
+  )
+
 })
