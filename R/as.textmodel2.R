@@ -63,3 +63,10 @@ as.textmodel_lss.textmodel_word2vec <- function(x, seeds,
   }
   return(result)
 }
+
+#' Suport wordvector version 0.5.1 or earlier
+#' @export
+#' @method as.textmodel_lss textmodel_wordvector
+#' @keywords internal
+as.textmodel_lss.textmodel_wordvector <- as.textmodel_lss.textmodel_word2vec
+

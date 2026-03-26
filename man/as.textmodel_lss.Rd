@@ -5,7 +5,7 @@
 \alias{as.textmodel_lss.matrix}
 \alias{as.textmodel_lss.numeric}
 \alias{as.textmodel_lss.textmodel_lss}
-\alias{as.textmodel_lss.textmodel_wordvector}
+\alias{as.textmodel_lss.textmodel_word2vec}
 \title{Create a Latent Semantic Scaling model from various objects}
 \usage{
 as.textmodel_lss(x, ...)
@@ -25,7 +25,7 @@ as.textmodel_lss(x, ...)
 
 \method{as.textmodel_lss}{textmodel_lss}(x, ...)
 
-\method{as.textmodel_lss}{textmodel_wordvector}(
+\method{as.textmodel_lss}{textmodel_word2vec}(
   x,
   seeds,
   terms = NULL,
