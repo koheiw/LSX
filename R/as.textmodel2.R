@@ -23,8 +23,9 @@ as.textmodel_lss.textmodel_word2vec <- function(x, seeds,
     result <- as.textmodel_lss(t(values), seeds = seeds, terms = terms,
                                nested_weight = nested_weight, ...)
     result$frequency <- x$frequency[names(result$beta)]
-    result$type = "word2vec"
-    result$call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
+    result$concatenator <- x$concatenator
+    result$type <- "word2vec"
+    result$call <- try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
 
   } else {
 
@@ -54,6 +55,7 @@ as.textmodel_lss.textmodel_word2vec <- function(x, seeds,
       seeds = seeds,
       seeds_weighted = seed,
       frequency = x$frequency[names(beta)],
+      concatenator = x$concatenator,
       type = "word2vec",
       spatial = FALSE,
       call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)

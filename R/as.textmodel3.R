@@ -36,6 +36,9 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = TRUE) {
     beta_type = "dummy",
     terms = names(beta),
     frequency = freq,
+    concatenator = x$concatenator,
+    type = "doc2vec",
+    spatial = FALSE,
     call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
   )
   # extra information
