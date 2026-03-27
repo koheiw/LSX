@@ -10,6 +10,11 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, max_prob = TRUE) {
 
   max_prob <- check_logical(max_prob)
 
+  if (!requireNamespace("wordvector"))
+    stop("wordvector package must be installed")
+  if (x$version < as.numeric_version("0.6.0"))
+    stop("wordvector package must be v0.6.0 or later")
+
   s <- expand_seeds(seeds, names(x$frequency), nested_weight = FALSE)
   seed <- unlist(unname(s))
   prob <- wordvector::probability(x, names(seed), layer = "document", mode = "numeric")
