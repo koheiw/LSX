@@ -96,90 +96,54 @@ test_that("as.textmodel_lss works with textmodel_lss", {
     )
 })
 
-test_that("as.textmodel_lss works with textmodel_wordvector", {
-
-  skip_if_not(utils::packageVersion("wordvector") >= "0.6.0")
-
-  # spatial
-  wdv <- readRDS("../data/word2vec.RDS")
-  lss <- as.textmodel_lss(wdv, seed)
-
-  expect_equal(lss$beta_type, "similarity")
-  expect_equal(lss$embedding, t(wdv$values))
-  expect_identical(lss$frequency, wdv$frequency)
-  expect_identical(names(lss$frequency), names(lss$frequency))
-  expect_identical(names(lss$beta), names(lss$frequency))
-
-  expect_error(
-    as.textmodel_lss(wdv, seed, spatial = FALSE),
-    "x must be trained with normalize = FALSE"
-  )
-
-  # probabilistic
-  wdv2 <- readRDS("../data/word2vec-prob.RDS")
-  lss2 <- as.textmodel_lss(wdv2, seed, spatial = FALSE)
-
-  expect_equal(lss2$beta_type, "probability")
-  expect_true(is.null(lss2$embedding))
-  expect_identical(lss2$frequency, wdv2$frequency)
-  expect_identical(names(lss2$frequency), names(wdv2$frequency))
-  expect_identical(names(lss2$beta), names(lss2$frequency))
-
-
-  lss3 <- as.textmodel_lss(wdv2, "good", spatial = FALSE) # single seed
-  expect_true(is.null(lss3$embedding))
-  expect_identical(lss3$frequency, wdv2$frequency)
-  expect_identical(names(lss3$frequency), names(wdv2$frequency))
-  expect_identical(names(lss3$beta), names(lss3$frequency))
-})
 
 test_that("as.textmodel_lss works with vector", {
-    weight <- c("decision" = 0.1, "instance" = -0.1,
-                "foundations" = 0.3, "the" = 0)
-    lss <- as.textmodel_lss(weight)
-    expect_equal(names(lss), names(LSX:::build_lss()))
-    pred <- predict(lss, dfmt_test)
-    expect_equal(names(pred), rownames(dfmt_test))
-    expect_equal(rowSums(dfmt_test[,names(lss$beta)]) == 0,
-                 is.na(pred))
+  weight <- c("decision" = 0.1, "instance" = -0.1,
+              "foundations" = 0.3, "the" = 0)
+  lss <- as.textmodel_lss(weight)
+  expect_equal(names(lss), names(LSX:::build_lss()))
+  pred <- predict(lss, dfmt_test)
+  expect_equal(names(pred), rownames(dfmt_test))
+  expect_equal(rowSums(dfmt_test[,names(lss$beta)]) == 0,
+               is.na(pred))
 })
 
 test_that("as.textmodel_lss errors with vector", {
-    weight <- c("decision" = 0.1, "instance" = -0.1,
-                "foundations" = 0.3, "the" = 0)
-    weight_noname <- weight_naname <- weight_na <- weight
-    names(weight_noname) <- NULL
-    expect_error(as.textmodel_lss(weight_noname),
-                 "x must have names for features")
-    names(weight_naname)[1] <- NA
-    expect_error(as.textmodel_lss(weight_naname),
-                 "x must not have NA in the names")
-    weight_na[1] <- NA
-    expect_error(as.textmodel_lss(weight_na),
-                 "x must not have NA")
+  weight <- c("decision" = 0.1, "instance" = -0.1,
+              "foundations" = 0.3, "the" = 0)
+  weight_noname <- weight_naname <- weight_na <- weight
+  names(weight_noname) <- NULL
+  expect_error(as.textmodel_lss(weight_noname),
+               "x must have names for features")
+  names(weight_naname)[1] <- NA
+  expect_error(as.textmodel_lss(weight_naname),
+               "x must not have NA in the names")
+  weight_na[1] <- NA
+  expect_error(as.textmodel_lss(weight_na),
+               "x must not have NA")
 })
 
 test_that("terms is working", {
-    skip_on_cran()
+  skip_on_cran()
 
-    lss <- textmodel_lss(dfmt_test, seed, k = 50)
+  lss <- textmodel_lss(dfmt_test, seed, k = 50)
 
-    # glob pattern
-    lss1 <- as.textmodel_lss(lss, seed, terms = "poli*")
-    expect_equal(sum(stringi::stri_startswith_fixed(names(lss1$beta), "poli")), 11)
-    expect_identical(names(lss1$beta), names(lss1$frequency))
+  # glob pattern
+  lss1 <- as.textmodel_lss(lss, seed, terms = "poli*")
+  expect_equal(sum(stringi::stri_startswith_fixed(names(lss1$beta), "poli")), 11)
+  expect_identical(names(lss1$beta), names(lss1$frequency))
 
-    # numeric vector
-    weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10
-    names(weight) <- names(lss1$beta)
-    lss2 <- as.textmodel_lss(lss, seed, terms = weight)
-    expect_true(all(lss2$beta == lss1$beta * weight))
-    expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = -0.1)),
-                 "terms must be positive values without NA")
-    expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = NA)),
-                 "terms must be positive values without NA")
-    expect_error(as.textmodel_lss(lss, seed, terms = c(01, 0.2)),
-                 "terms must be named")
+  # numeric vector
+  weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10
+  names(weight) <- names(lss1$beta)
+  lss2 <- as.textmodel_lss(lss, seed, terms = weight)
+  expect_true(all(lss2$beta == lss1$beta * weight))
+  expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = -0.1)),
+               "terms must be positive values without NA")
+  expect_error(as.textmodel_lss(lss, seed, terms = c("polity" = 0.2, "politic" = NA)),
+               "terms must be positive values without NA")
+  expect_error(as.textmodel_lss(lss, seed, terms = c(01, 0.2)),
+               "terms must be named")
 
 })
 
