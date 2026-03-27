@@ -71,5 +71,8 @@ test_that("as.textmodel_lss is working", {
     as.textmodel_lss(dov_test, max_prob = c(TRUE, FALSE)),
     "The length of max_prob must be 1"
   )
-
+  expect_error(
+    as.textmodel_lss(dov_test, "xxxx"),
+    "Seed words are not found in x"
+  )
 })

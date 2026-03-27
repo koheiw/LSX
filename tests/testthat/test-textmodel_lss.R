@@ -301,7 +301,7 @@ test_that("textmodel_lss works with non-existent seeds", {
 
     seed2 <- c("xyz", "xxx")
     expect_error(textmodel_lss(dfmt_test, seed2, k = 10),
-                 "No seed word is found in the dfm")
+                 "Seed words are not found in x")
 })
 
 test_that("rsvd and irlba work", {

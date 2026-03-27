@@ -268,7 +268,7 @@ expand_seeds <- function(seeds, features, nested_weight = TRUE, verbose = FALSE)
     seeds_weighted <- weight_seeds(seeds, features, nested_weight)
 
     if (all(lengths(seeds_weighted) == 0))
-        stop("No seed word is found in the dfm", call. = FALSE)
+        stop("Seed words are not found in x", call. = FALSE)
 
     return(seeds_weighted)
 }
