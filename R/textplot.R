@@ -70,6 +70,9 @@ textplot_terms.textmodel_lss <- function(x, highlighted = NULL,
     max_highlighted <- check_integer(max_highlighted, min = 0)
     sampling <- match.arg(sampling)
 
+    if (x$type == "doc2vec" && is.null(x$beta))
+      stop("x must be trained with include_data = TRUE to compute pseudo word polarity")
+
     x$frequency <- x$frequency[names(x$beta)] # fix for < v1.1.4
     x$frequency[is.na(x$frequency)] <- 0
 
