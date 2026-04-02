@@ -230,3 +230,13 @@ print.textmodel_lss <- function(x, ...) {
   print(x$call)
   cat("\n")
 }
+
+#' Maximum values in each row of a matrix
+#' @export
+#' @keywords internal
+rowMaxs <- function(x) {
+  stopifnot(is.matrix(x))
+  structure(x[cbind(seq_len(nrow(x)), max.col(x, "first"))],
+            names = rownames(x))
+}
+

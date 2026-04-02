@@ -187,3 +187,22 @@ test_that("smooth_lss works with multiple grouping variables", {
     "columns for grouping cannot be numeric"
   )
 })
+
+test_that("rowMaxs works", {
+
+  mat <- matrix(c( 0.1, 0.1, 0.9,
+                   0.2, 0.2, -0.1,
+                   -0.1, -0.1, 0.0), nrow = 3, byrow = TRUE)
+  rownames(mat) <- c("a", "b", "c")
+
+  expect_equal(
+    rowMaxs(mat),
+    c("a" = 0.9, "b" = 0.2, "c" = 0.0)
+  )
+  expect_error(
+    rowMaxs(as.data.frame(mat)),
+    "is.matrix(x) is not TRUE",
+    fixed = TRUE
+  )
+
+})
