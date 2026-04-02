@@ -1,17 +1,15 @@
+#' @noRd
 #' @export
 #' @keywords internal
-rowMaxs <- function(x) {
-  structure(x[cbind(seq_len(nrow(x)), max.col(x, "first"))],
-            names = rownames(x))
-}
-
-#' @export
-#' @keywords internal
-#' @param prob_mode average the probabilities for seed words if `mean`. If `max`
-#'   keep only the highest probability one of the seed words.
+#' @param prob_mode select how to compute polarity for documents. See details.
+#' @details
+#' If `x` is a [wordvector::textmodel_doc2vec] object, it computes
+#' polarity scores of documents based on their probabilities for seed words.
+#' If `prob_mode = "mean"`, it averages the probabilities, but it keeps used only
+#' the highest probability for one of the seed words if `"max"`.
+#'
 #' @method as.textmodel_lss textmodel_doc2vec
-as.textmodel_lss.textmodel_doc2vec <- function(x, seeds,
-                                               prob_mode = c("mean", "max")) {
+as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, prob_mode = c("mean", "max")) {
 
   prob_mode <- match.arg(prob_mode)
 
