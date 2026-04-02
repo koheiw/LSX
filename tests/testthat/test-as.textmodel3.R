@@ -17,8 +17,9 @@ test_that("as.textmodel_lss is working", {
     c(good = 0.5, superior = 0.5,
       wrong = -0.5, inferior = -0.5)
   )
-  expect_true(
-    lss$max_prob
+  expect_equal(
+    lss$prob_mode,
+    "mean"
   )
   expect_equal(
     lss$beta_type, "dummy"
@@ -52,8 +53,8 @@ test_that("as.textmodel_lss is working", {
     "seeds must be a character or named-numeric vector"
   )
   expect_error(
-    as.textmodel_lss(dov_test, max_prob = c(TRUE, FALSE)),
-    "The length of max_prob must be 1"
+    as.textmodel_lss(dov_test, prob_mode = "xxx"),
+    "'arg' should be one of"
   )
   expect_error(
     as.textmodel_lss(dov_test, "xxxx"),
@@ -61,7 +62,7 @@ test_that("as.textmodel_lss is working", {
   )
 
   # single seed
-  lss2 <- as.textmodel_lss(dov_test, "good", max_prob = TRUE)
+  lss2 <- as.textmodel_lss(dov_test, "good", prob_type = "max")
   expect_true(
     lss2$max_prob
   )
@@ -71,7 +72,7 @@ test_that("as.textmodel_lss is working", {
 
   # glob seeds
   seed <- c("america" = 1, "nation*" = 1, "foreign*" = -1)
-  lss3 <- as.textmodel_lss(dov_test, seed, max_prob = FALSE)
+  lss3 <- as.textmodel_lss(dov_test, seed, prob_type = "mean")
   expect_equal(
     lss3$seeds,
     c("america" = 1, "nation*" = 1, "foreign*" = -1)
@@ -80,6 +81,20 @@ test_that("as.textmodel_lss is working", {
     lss3$seeds_weighted,
     c("america" = 0.25, "nations" = 0.25, "nation" = 0.25,  "national" = 0.25,
       "foreign" = -1)
+  )
+
+  # docvec has no data
+  dov_test_nd <- dov_test
+  dov_test_nd$data <- NULL
+  lss4 <- as.textmodel_lss(dov_test_nd, seed)
+
+  expect_error(
+    textplot_terms(lss4),
+    "x must be trained with include_data = TRUE"
+  )
+
+  expect_true(
+    all(predict(lss4) != predict(lss4, min_n = 1000))
   )
 
 })
