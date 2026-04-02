@@ -9,7 +9,8 @@
 #' the highest probability for one of the seed words if `"max"`.
 #'
 #' @method as.textmodel_lss textmodel_doc2vec
-as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, prob_mode = c("mean", "max")) {
+as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, prob_mode = c("mean", "max"),
+                                               ...) {
 
   prob_mode <- match.arg(prob_mode)
 
@@ -65,9 +66,9 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, prob_mode = c("mean", "
 #' @export
 #' @keywords internal
 #' @method predict textmodel_lss3
-predict.textmodel_lss3 <- function(x, min_n = 0L) {
-  p <- x$alpha
+predict.textmodel_lss3 <- function(object, min_n = 0L, ...) {
+  p <- object$alpha
   if (min_n > 0)
-    p <- p * (x$length / pmax(x$length, min_n))
+    p <- p * (object$length / pmax(object$length, min_n))
   return(p)
 }

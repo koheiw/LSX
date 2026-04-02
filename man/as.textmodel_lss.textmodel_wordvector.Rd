@@ -2,7 +2,7 @@
 % Please edit documentation in R/as.textmodel2.R
 \name{as.textmodel_lss.textmodel_wordvector}
 \alias{as.textmodel_lss.textmodel_wordvector}
-\title{Suport wordvector version 0.5.1 or earlier}
+\title{Support wordvector version 0.5.1 or earlier}
 \usage{
 \method{as.textmodel_lss}{textmodel_wordvector}(
   x,
@@ -15,6 +15,6 @@
 )
 }
 \description{
-Suport wordvector version 0.5.1 or earlier
+Support wordvector version 0.5.1 or earlier
 }
 \keyword{internal}
