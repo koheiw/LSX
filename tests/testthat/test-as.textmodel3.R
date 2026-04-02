@@ -62,9 +62,9 @@ test_that("as.textmodel_lss is working", {
   )
 
   # single seed
-  lss2 <- as.textmodel_lss(dov_test, "good", prob_type = "max")
-  expect_true(
-    lss2$max_prob
+  lss2 <- as.textmodel_lss(dov_test, "good", prob_mode = "max")
+  expect_equal(
+    lss2$prob_mode, "max"
   )
   expect_equal(lss2$seeds, "good")
   expect_equal(lss2$seeds_weighted,
@@ -72,7 +72,7 @@ test_that("as.textmodel_lss is working", {
 
   # glob seeds
   seed <- c("america" = 1, "nation*" = 1, "foreign*" = -1)
-  lss3 <- as.textmodel_lss(dov_test, seed, prob_type = "mean")
+  lss3 <- as.textmodel_lss(dov_test, seed, prob_mode = "mean")
   expect_equal(
     lss3$seeds,
     c("america" = 1, "nation*" = 1, "foreign*" = -1)
