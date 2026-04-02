@@ -24,7 +24,7 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, prob_mode = c("mean", "
   prob <- wordvector::probability(x, names(seed), layer = "document", mode = "numeric")
 
   if (prob_mode == "max") {
-    alpha <- rowMaxs(prob %*% diag(sign(seed)))
+    alpha <- rowMaxs(prob %*% diag(sign(seed)), absolute = TRUE)
   } else {
     alpha <- rowSums(prob %*% diag(seed))
   }

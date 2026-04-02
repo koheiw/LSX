@@ -62,9 +62,9 @@ test_that("as.textmodel_lss is working", {
   )
 
   # single seed
-  lss2 <- as.textmodel_lss(dov_test, "good", prob_mode = "max")
+  lss2 <- as.textmodel_lss(dov_test, "good")
   expect_equal(
-    lss2$prob_mode, "max"
+    lss2$prob_mode, "mean"
   )
   expect_equal(lss2$seeds, "good")
   expect_equal(lss2$seeds_weighted,
@@ -83,18 +83,29 @@ test_that("as.textmodel_lss is working", {
       "foreign" = -1)
   )
 
+  # prob_mode
+  seed <- c("government" = 1, "citizen" = -1)
+  lss4 <- as.textmodel_lss(dov_test, seed, prob_mode = "mean")
+  lss5 <- as.textmodel_lss(dov_test, seed, prob_mode = "max")
+  expect_true(
+    any(predict(lss4) < 0)
+  )
+  expect_true(
+    any(predict(lss5) < 0)
+  )
+
   # docvec has no data
   dov_test_nd <- dov_test
   dov_test_nd$data <- NULL
-  lss4 <- as.textmodel_lss(dov_test_nd, seed)
+  lss6 <- as.textmodel_lss(dov_test_nd, seed)
 
   expect_error(
-    textplot_terms(lss4),
+    textplot_terms(lss6),
     "x must be trained with include_data = TRUE"
   )
 
   expect_true(
-    all(predict(lss4) != predict(lss4, min_n = 1000))
+    all(predict(lss6) != predict(lss6, min_n = 1000))
   )
 
 })

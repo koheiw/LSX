@@ -4,7 +4,12 @@
 \alias{rowMaxs}
 \title{Maximum values in each row of a matrix}
 \usage{
-rowMaxs(x)
+rowMaxs(x, absolute = FALSE)
+}
+\arguments{
+\item{x}{a matrix object.}
+
+\item{absolute}{if \code{TRUE}, return largest positive or negative values.}
 }
 \description{
 Maximum values in each row of a matrix
