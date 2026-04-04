@@ -7,7 +7,7 @@ test_that("as.textmodel_lss works with textmodel_wordvector", {
 
   # spatial
   wdv <- readRDS("../data/word2vec.RDS")
-  lss <- as.textmodel_lss(wdv, seed)
+  lss <- as.textmodel_lss(wdv, seed, spatial = TRUE)
 
   expect_equal(lss$beta_type, "similarity")
   expect_equal(lss$embedding, t(wdv$values))

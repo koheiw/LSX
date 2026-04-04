@@ -1,5 +1,4 @@
 #' @rdname textmodel_lss
-#' @param spatial \[experimental\] if `FALSE`, return a probabilistic model. See the details.
 #' @export
 #' @inheritParams wordvector::textmodel_word2vec
 #' @importFrom quanteda dfm dfm_group
@@ -10,7 +9,6 @@ textmodel_lss.tokens <- function(x, seeds, terms = NULL, k = 200,
                                  nested_weight = TRUE,
                                  include_data = FALSE,
                                  group_data = FALSE,
-                                 spatial = TRUE,
                                  verbose = FALSE, ...) {
 
 
@@ -25,8 +23,8 @@ textmodel_lss.tokens <- function(x, seeds, terms = NULL, k = 200,
   w2v <- wordvector::textmodel_word2vec(x, dim = k, min_count = min_count,
                                         type = "skip-gram", tolower = tolower,
                                         normalize = FALSE, verbose = verbose, ...)
-  result <- as.textmodel_lss(w2v, seeds = seeds, terms = terms, spatial = spatial,
-                             nested_weight = nested_weight, verbose = FALSE)
+  result <- as.textmodel_lss(w2v, seeds = seeds, terms = terms,
+                             nested_weight = nested_weight, verbose = FALSE, ...)
   result$type <- "word2vec"
   result$call <- try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE)
 
