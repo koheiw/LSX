@@ -52,7 +52,6 @@ textmodel_lss(x, ...)
   nested_weight = TRUE,
   include_data = FALSE,
   group_data = FALSE,
-  spatial = TRUE,
   verbose = FALSE,
   ...
 )
@@ -112,8 +111,6 @@ size of the corpus. Used only when \code{x} is a \code{fcm}.}
 this in \code{x} are removed before training.}
 
 \item{tolower}{if \code{TRUE}, lower-case all the words in the model.}
-
-\item{spatial}{[experimental] if \code{FALSE}, return a probabilistic model. See the details.}
 }
 \description{
 Latent Semantic Scaling (LSS) is a semi-supervised algorithm for document scaling based on
@@ -141,11 +138,8 @@ between seed words' computed and original scores. Weighted scores are saved
 in \code{seed_weighted} in the object.
 
 When \code{x} is a tokens or tokens_xptr object, \link[wordvector:textmodel_word2vec]{wordvector::textmodel_word2vec}
-is called internally with \code{type = "skip-gram"} and other arguments passed via \code{...}.
-If \code{spatial = TRUE}, it return a spatial model; otherwise a probabilistic model.
-While the polarity scores of words are their cosine similarity to seed words in
-spatial models, they are predicted probability that the seed words to occur in
-their contexts. The probabilistic models are still experimental, so use them with caution.
+is called internally with \code{type = "skip-gram"} and other arguments passed via
+\code{...}.
 
 \code{nested_weight = TRUE} to limit the impact of glob patterns used in seed words.
 When it is \code{FALSE}, the weights of the seed words are all equal being the inverse of

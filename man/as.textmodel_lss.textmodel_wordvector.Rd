@@ -9,8 +9,8 @@
   seeds,
   terms = NULL,
   nested_weight = TRUE,
+  spatial = FALSE,
   verbose = FALSE,
-  spatial = TRUE,
   ...
 )
 }
