@@ -31,7 +31,7 @@ as.textmodel_lss(x, ...)
   terms = NULL,
   nested_weight = TRUE,
   verbose = FALSE,
-  spatial = TRUE,
+  spatial = FALSE,
   ...
 )
 }
@@ -63,7 +63,8 @@ the number of glob pattern matches.}
 
 \item{verbose}{show messages if \code{TRUE}.}
 
-\item{spatial}{if \code{TRUE}, return a spatial model. Otherwise, a probabilistic model.}
+\item{spatial}{[experimental] if \code{FALSE}, return a probabilistic model.
+See the details.}
 }
 \value{
 a dummy \link{textmodel_lss} object
@@ -79,4 +80,9 @@ if it was trained originally using SVD.
 If \code{x} is a dense matrix, it is treated as a column-oriented word vectors with which
 polarity of words are computed. If \code{x} is a named numeric vector, the values are treated
 as polarity scores of the words in the names.
+
+If \code{spatial = TRUE}, it return a spatial model; otherwise a probabilistic model.
+While the polarity scores of words are their cosine similarity to seed words in
+spatial models, they are predicted probability that the seed words to occur in
+their contexts.
 }

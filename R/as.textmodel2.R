@@ -1,12 +1,20 @@
 
 #' @rdname as.textmodel_lss
 #' @export
+#' @param spatial \[experimental\] if `FALSE`, return a probabilistic model.
+#'   See the details.
+#' @details
+#'   If `spatial = TRUE`, it return a spatial model; otherwise a probabilistic model.
+#'   While the polarity scores of words are their cosine similarity to seed words in
+#'   spatial models, they are predicted probability that the seed words to occur in
+#'   their contexts.
+#'
 #' @method as.textmodel_lss textmodel_word2vec
 as.textmodel_lss.textmodel_word2vec <- function(x, seeds,
                                                   terms = NULL,
                                                   nested_weight = TRUE,
                                                   verbose = FALSE,
-                                                  spatial = TRUE,
+                                                  spatial = FALSE,
                                                   ...) {
 
   #args <- list(terms = terms, seeds = seeds)

@@ -10,7 +10,7 @@
   terms = NULL,
   nested_weight = TRUE,
   verbose = FALSE,
-  spatial = TRUE,
+  spatial = FALSE,
   ...
 )
 }

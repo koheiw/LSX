@@ -51,11 +51,8 @@
 #'   in `seed_weighted` in the object.
 #'
 #'   When `x` is a tokens or tokens_xptr object, [wordvector::textmodel_word2vec]
-#'   is called internally with `type = "skip-gram"` and other arguments passed via `...`.
-#'   If `spatial = TRUE`, it return a spatial model; otherwise a probabilistic model.
-#'   While the polarity scores of words are their cosine similarity to seed words in
-#'   spatial models, they are predicted probability that the seed words to occur in
-#'   their contexts. The probabilistic models are still experimental, so use them with caution.
+#'   is called internally with `type = "skip-gram"` and other arguments passed via
+#'   `...`.
 #'
 #'   `nested_weight = TRUE` to limit the impact of glob patterns used in seed words.
 #'   When it is `FALSE`, the weights of the seed words are all equal being the inverse of

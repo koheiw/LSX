@@ -14,7 +14,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
   skip_on_cran()
 
   # without data
-  lss1 <- textmodel_lss(toks_test, seed_test, k = 10)
+  lss1 <- textmodel_lss(toks_test, seed_test, k = 10, spatial = TRUE)
 
   expect_s3_class(lss1, "textmodel_lss")
   expect_equal(lss1$k, 10)
@@ -30,7 +30,8 @@ test_that("textmodel_lss works when spatial = TRUE", {
   )
 
   # with data
-  lss2 <- textmodel_lss(toks_test, seed_test, k = 10, include_data = TRUE)
+  lss2 <- textmodel_lss(toks_test, seed_test, k = 10, include_data = TRUE,
+                        spatial = TRUE)
 
   expect_s3_class(lss2, "textmodel_lss")
   expect_equal(lss2$concatenator, concatenator(toks_test))
@@ -42,7 +43,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
 
   # with terms
   lss3 <- textmodel_lss(toks_test, seed_test, k = 10, terms = feat_test,
-                         include_data = TRUE, group_data = TRUE)
+                        include_data = TRUE, group_data = TRUE, spatial = TRUE)
 
   expect_s3_class(lss3, "textmodel_lss")
   expect_true(all(names(lss3$beta) %in% feat_test))
@@ -53,7 +54,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
 
   # with tokens_xptr
   lss4 <- textmodel_lss(as.tokens_xptr(toks_test), seed_test, k = 10,
-                         include_data = TRUE)
+                        include_data = TRUE, spatial = TRUE)
 
   expect_s3_class(lss4, "textmodel_lss")
   expect_equal(docnames(lss4$data), docnames(toks_test))
@@ -61,7 +62,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
   # warning
   expect_warning(
     textmodel_lss(toks_test, seed_test, k = 10,
-                   include_data = FALSE, group_data = TRUE),
+                  include_data = FALSE, group_data = TRUE, spatial = TRUE),
     "group_data is ignored when include_data = FALSE"
   )
 
@@ -99,7 +100,8 @@ test_that("textmodel_lss works when spatial = FALSE", {
   )
 
   # with data
-  lss2 <- textmodel_lss(toks_test, seed_test, k = 10, include_data = TRUE, spatial = FALSE)
+  lss2 <- textmodel_lss(toks_test, seed_test, k = 10, include_data = TRUE,
+                        spatial = FALSE)
 
   expect_s3_class(lss2, "textmodel_lss")
   expect_equal(lss2$concatenator, concatenator(toks_test))
