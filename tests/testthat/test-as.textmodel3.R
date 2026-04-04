@@ -94,7 +94,7 @@ test_that("as.textmodel_lss is working", {
     any(predict(lss5) < 0)
   )
 
-  # docvec has no data
+  # doc2vec has no data
   dov_test_nd <- dov_test
   dov_test_nd$data <- NULL
   lss6 <- as.textmodel_lss(dov_test_nd, seed)
@@ -106,6 +106,18 @@ test_that("as.textmodel_lss is working", {
 
   expect_true(
     all(predict(lss6) != predict(lss6, min_n = 1000))
+  )
+
+  # empty document
+  dov_test_empty <- dov_test
+  dov_test_empty$ntoken[c(10, 20, 30)] <- 0
+  lss7 <- as.textmodel_lss(dov_test_empty, seed)
+
+  expect_equal(
+    predict(lss7)[c(10, 20, 30)],
+    c("1789-Washington.10" = NA_real_,
+      "1789-Washington.20" = NA_real_,
+      "1797-Adams.3" = NA_real_)
   )
 
 })

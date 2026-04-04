@@ -67,8 +67,10 @@ as.textmodel_lss.textmodel_doc2vec <- function(x, seeds, prob_mode = c("mean", "
 #' @keywords internal
 #' @method predict textmodel_lss3
 predict.textmodel_lss3 <- function(object, min_n = 0L, ...) {
+  n <- object$length
   p <- object$alpha
   if (min_n > 0)
-    p <- p * (object$length / pmax(object$length, min_n))
+    p <- p * (n / pmax(n, min_n))
+  p[n == 0] <- NA_real_
   return(p)
 }
