@@ -106,8 +106,8 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
 
     k <- check_integer(k, min_len = 1, max_len = 1, min = 2, max = nrow(x))
     engine <- match.arg(engine)
-    seeds <- expand_seeds(seeds, featnames(x), nested_weight, verbose)
-    seed <- unlist(unname(seeds))
+    s <- expand_seeds(seeds, featnames(x), nested_weight, verbose)
+    seed <- unlist(unname(s))
     theta <- get_theta(terms, featnames(x))
     feat <- union(names(theta), names(seed))
 
@@ -136,11 +136,11 @@ textmodel_lss.dfm <- function(x, seeds, terms = NULL, k = 300, slice = NULL,
         k = k,
         slice = slice,
         frequency = colSums(x)[names(beta)],
-        terms = args$terms,
-        seeds = args$seeds,
+        terms = terms,
+        seeds = seeds,
         seeds_weighted = seed,
         embedding = embed,
-        similarity = simil$seed,
+        similarity = simil$seed, # TODO: remove
         concatenator = meta(x, field = "concatenator", type = "object"),
         type = "svd",
         call = try(match.call(sys.function(-1), call = sys.call(-1)), silent = TRUE),
@@ -268,7 +268,7 @@ expand_seeds <- function(seeds, features, nested_weight = TRUE, verbose = FALSE)
     seeds_weighted <- weight_seeds(seeds, features, nested_weight)
 
     if (all(lengths(seeds_weighted) == 0))
-        stop("No seed word is found in the dfm", call. = FALSE)
+        stop("Seed words are not found in x", call. = FALSE)
 
     return(seeds_weighted)
 }
@@ -386,7 +386,7 @@ get_seeds <- function(seeds) {
         seeds <- structure(rep(1, length(seeds)), names = seeds)
 
     if (is.null(names(seeds)))
-        stop("y must be a named-numerid vector\n", call. = FALSE)
+        stop("seeds must be a character or named-numeric vector\n", call. = FALSE)
 
     return(seeds)
 }

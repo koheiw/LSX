@@ -10,13 +10,13 @@ feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 
 dfmt_test <- dfm(toks_test)
 fcmt_test <- fcm(dfmt_test)
 
-seed <- as.seedwords(data_dictionary_sentiment)
-lss_test <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
+seed_test <- as.seedwords(data_dictionary_sentiment)
+lss_test <- textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300,
                           include_data = TRUE)
-lss_test_nd <- textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300,
+lss_test_nd <- textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300,
                              include_data = FALSE)
-lss_test_ss <- textmodel_lss(dfmt_test, seed[1], terms = feat_test, k = 300)
-lss_test_fcm <- textmodel_lss(fcmt_test, seed, terms = feat_test, k = 50)
+lss_test_ss <- textmodel_lss(dfmt_test, seed_test[1], terms = feat_test, k = 300)
+lss_test_fcm <- textmodel_lss(fcmt_test, seed_test, terms = feat_test, k = 50)
 
 test_that("char_context is working", {
 
@@ -200,25 +200,25 @@ test_that("terms is working", {
     skip_on_cran()
 
     # glob pattern
-    lss1 <- textmodel_lss(dfmt_test, seed, terms = "poli*", k = 300)
+    lss1 <- textmodel_lss(dfmt_test, seed_test, terms = "poli*", k = 300)
     expect_true(all(stringi::stri_startswith_fixed(names(lss1$beta), "poli")))
 
     # numeric vector
     weight <- sample(1:10, length(lss1$beta), replace = TRUE) / 10
     names(weight) <- names(lss1$beta)
-    lss2 <- textmodel_lss(dfmt_test, seed, terms = weight, k = 300)
+    lss2 <- textmodel_lss(dfmt_test, seed_test, terms = weight, k = 300)
     expect_true(all(lss2$beta == lss1$beta * weight))
-    expect_error(textmodel_lss(dfmt_test, seed, terms = c("polity" = 0.2, "politic" = -0.1), k = 300),
+    expect_error(textmodel_lss(dfmt_test, seed_test, terms = c("polity" = 0.2, "politic" = -0.1), k = 300),
                  "terms must be positive values without NA")
-    expect_error(textmodel_lss(dfmt_test, seed, terms = c("polity" = 0.2, "politic" = NA), k = 300),
+    expect_error(textmodel_lss(dfmt_test, seed_test, terms = c("polity" = 0.2, "politic" = NA), k = 300),
                  "terms must be positive values without NA")
-    expect_error(textmodel_lss(dfmt_test, seed, terms = c(01, 0.2), k = 300),
+    expect_error(textmodel_lss(dfmt_test, seed_test, terms = c(01, 0.2), k = 300),
                  "terms must be named")
 
 })
 
 test_that("terms work with numeric vector", {
-    lss <- textmodel_lss(dfmt_test, seed, terms = "poli*", k = 300)
+    lss <- textmodel_lss(dfmt_test, seed_test, terms = "poli*", k = 300)
     expect_true(all(stringi::stri_startswith_fixed(names(coef(lss)), "poli")))
 })
 
@@ -301,7 +301,7 @@ test_that("textmodel_lss works with non-existent seeds", {
 
     seed2 <- c("xyz", "xxx")
     expect_error(textmodel_lss(dfmt_test, seed2, k = 10),
-                 "No seed word is found in the dfm")
+                 "Seed words are not found in x")
 })
 
 test_that("rsvd and irlba work", {
@@ -355,14 +355,14 @@ test_that("weight is working", {
 
 test_that("slice argument is working", {
     expect_identical(
-        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 100)$embedding),
-        dim(textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:100)$embedding)
+        dim(textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300, slice = 100)$embedding),
+        dim(textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300, slice = 1:100)$embedding)
     )
     expect_silent(
-        textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:100)
+        textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300, slice = 1:100)
     )
     expect_error(
-        textmodel_lss(dfmt_test, seed, terms = feat_test, k = 300, slice = 1:400),
+        textmodel_lss(dfmt_test, seed_test, terms = feat_test, k = 300, slice = 1:400),
         "The length of slice must be between 1 and 300"
     )
 })
@@ -379,12 +379,12 @@ test_that("old argument still works", {
     skip_on_cran() # takes to much time
 
     suppressWarnings({
-        lss <- textmodel_lss(dfmt_test, seed, features = feat_test, k = 300)
+        lss <- textmodel_lss(dfmt_test, seed_test, features = feat_test, k = 300)
     })
     expect_equal(lss_test$terms, lss$terms)
 
     suppressWarnings({
-        lss_fcm <- textmodel_lss(fcmt_test, seed, features = feat_test, w = 50)
+        lss_fcm <- textmodel_lss(fcmt_test, seed_test, features = feat_test, w = 50)
     })
     expect_equal(lss_test$terms, lss_fcm$terms)
 })
@@ -485,11 +485,11 @@ test_that("rescaling still works", {
 test_that("textmodel_lss print messages", {
 
   expect_output(
-    textmodel_lss(dfmt_test, seed, k = 100, verbose = TRUE),
+    textmodel_lss(dfmt_test, seed_test, k = 100, verbose = TRUE),
     "Performing SVD by RSpectra", fixed = TRUE
   )
   expect_warning(
-    textmodel_lss(dfmt_test, seed, features = feat_test, k = 100),
+    textmodel_lss(dfmt_test, seed_test, features = feat_test, k = 100),
     "'features' is deprecated; use 'terms'", fixed = TRUE
   )
 

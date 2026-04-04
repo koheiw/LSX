@@ -7,14 +7,14 @@ require(quanteda)
 
 toks_test <- readRDS("../data/tokens.RDS")
 feat_test <- head(char_context(toks_test, "america*", min_count = 1, p = 0.05), 100)
-seed <- as.seedwords(data_dictionary_sentiment)
+seed_test <- as.seedwords(data_dictionary_sentiment)
 
 test_that("textmodel_lss works when spatial = TRUE", {
 
   skip_on_cran()
 
   # without data
-  lss1 <- textmodel_lss(toks_test, seed, k = 10)
+  lss1 <- textmodel_lss(toks_test, seed_test, k = 10)
 
   expect_s3_class(lss1, "textmodel_lss")
   expect_equal(lss1$k, 10)
@@ -30,7 +30,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
   )
 
   # with data
-  lss2 <- textmodel_lss(toks_test, seed, k = 10, include_data = TRUE)
+  lss2 <- textmodel_lss(toks_test, seed_test, k = 10, include_data = TRUE)
 
   expect_s3_class(lss2, "textmodel_lss")
   expect_equal(lss2$concatenator, concatenator(toks_test))
@@ -41,7 +41,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
   )
 
   # with terms
-  lss3 <- textmodel_lss(toks_test, seed, k = 10, terms = feat_test,
+  lss3 <- textmodel_lss(toks_test, seed_test, k = 10, terms = feat_test,
                          include_data = TRUE, group_data = TRUE)
 
   expect_s3_class(lss3, "textmodel_lss")
@@ -52,7 +52,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
   )
 
   # with tokens_xptr
-  lss4 <- textmodel_lss(as.tokens_xptr(toks_test), seed, k = 10,
+  lss4 <- textmodel_lss(as.tokens_xptr(toks_test), seed_test, k = 10,
                          include_data = TRUE)
 
   expect_s3_class(lss4, "textmodel_lss")
@@ -60,7 +60,7 @@ test_that("textmodel_lss works when spatial = TRUE", {
 
   # warning
   expect_warning(
-    textmodel_lss(toks_test, seed, k = 10,
+    textmodel_lss(toks_test, seed_test, k = 10,
                    include_data = FALSE, group_data = TRUE),
     "group_data is ignored when include_data = FALSE"
   )
@@ -83,7 +83,7 @@ test_that("textmodel_lss works when spatial = FALSE", {
   skip_on_cran()
 
   # without data
-  lss1 <- textmodel_lss(toks_test, seed, k = 10, spatial = FALSE)
+  lss1 <- textmodel_lss(toks_test, seed_test, k = 10, spatial = FALSE)
 
   expect_s3_class(lss1, "textmodel_lss")
   expect_equal(lss1$k, 10)
@@ -99,7 +99,7 @@ test_that("textmodel_lss works when spatial = FALSE", {
   )
 
   # with data
-  lss2 <- textmodel_lss(toks_test, seed, k = 10, include_data = TRUE, spatial = FALSE)
+  lss2 <- textmodel_lss(toks_test, seed_test, k = 10, include_data = TRUE, spatial = FALSE)
 
   expect_s3_class(lss2, "textmodel_lss")
   expect_equal(lss2$concatenator, concatenator(toks_test))
@@ -110,7 +110,7 @@ test_that("textmodel_lss works when spatial = FALSE", {
   )
 
   # with terms
-  lss3 <- textmodel_lss(toks_test, seed, k = 10, terms = feat_test,
+  lss3 <- textmodel_lss(toks_test, seed_test, k = 10, terms = feat_test,
                         include_data = TRUE, group_data = TRUE, spatial = FALSE)
 
   expect_s3_class(lss3, "textmodel_lss")
@@ -121,7 +121,7 @@ test_that("textmodel_lss works when spatial = FALSE", {
   )
 
   # with tokens_xptr
-  lss4 <- textmodel_lss(as.tokens_xptr(toks_test), seed, k = 10,
+  lss4 <- textmodel_lss(as.tokens_xptr(toks_test), seed_test, k = 10,
                         include_data = TRUE, spatial = FALSE)
 
   expect_s3_class(lss4, "textmodel_lss")
@@ -129,7 +129,7 @@ test_that("textmodel_lss works when spatial = FALSE", {
 
   # warning
   expect_warning(
-    textmodel_lss(toks_test, seed, k = 10,
+    textmodel_lss(toks_test, seed_test, k = 10,
                   include_data = FALSE, group_data = TRUE, spatial = FALSE),
     "group_data is ignored when include_data = FALSE"
   )

@@ -230,3 +230,16 @@ print.textmodel_lss <- function(x, ...) {
   print(x$call)
   cat("\n")
 }
+
+#' Maximum values in each row of a matrix
+#' @param x a matrix object.
+#' @param absolute if `TRUE`, return largest positive or negative values.
+#' @export
+#' @keywords internal
+rowMaxs <- function(x, absolute = FALSE) {
+  stopifnot(is.matrix(x))
+  y <- if (absolute) abs(x) else x
+  structure(x[cbind(seq_len(nrow(x)), max.col(y, "first"))],
+            names = rownames(x))
+}
+
