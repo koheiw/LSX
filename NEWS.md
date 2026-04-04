@@ -1,7 +1,7 @@
 ## Changes in v1.5.2
 
-* Add `nested_weight` in `textmodel_lss()` and `as.textmodel_lss()` to perform dictionary-like analysis.
-* Remove `auto_weight` in `textmodel_lss()`.
+* Add `nested_weight` to `textmodel_lss()` and `as.textmodel_lss()` to perform dictionary-like analysis.
+* Remove `auto_weight` from `textmodel_lss()`.
 
 ## Changes in v1.5.1
 
