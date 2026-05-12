@@ -79,6 +79,14 @@ test_that("summary.textmodel_lss is working", {
 
 })
 
+test_that("summary.textmodel_lss is working", {
+
+  expect_equal(length(coef(lss_test)), 20)
+  expect_equal(length(coef(lss_test, 100)), 100)
+
+})
+
+
 test_that("predict.textmodel_lss is working", {
 
     expect_warning(predict(lss_test, xxx = TRUE),
@@ -219,7 +227,7 @@ test_that("terms is working", {
 
 test_that("terms work with numeric vector", {
     lss <- textmodel_lss(dfmt_test, seed_test, terms = "poli*", k = 300)
-    expect_true(all(stringi::stri_startswith_fixed(names(coef(lss)), "poli")))
+    expect_true(all(stringi::stri_startswith_fixed(names(lss$beta), "poli")))
 })
 
 test_that("simil_method works", {
@@ -340,7 +348,7 @@ test_that("text2vec works", {
         predict(lss),
         "The model includes no data"
     )
-    expect_true(setequal(names(coef(lss)), colnames(fcmt)))
+    expect_true(setequal(names(lss$beta), colnames(fcmt)))
 })
 
 test_that("weight is working", {

@@ -16,7 +16,7 @@ test_that("as.textmodel_lss works with matrix", {
     lss1 <- as.textmodel_lss(mat_test, seed_test, term)
     expect_equal(names(lss1), names(LSX:::build_lss()))
     expect_identical(lss1$embedding, mat_test)
-    expect_false(any(duplicated(names(coef(lss1)))))
+    expect_false(any(duplicated(names(lss1$beta))))
     pred1 <- predict(lss1, dfmt_test)
     expect_equal(names(pred1), rownames(dfmt_test))
     expect_equal(rowSums(dfmt_test[,names(lss1$beta)]) == 0,
@@ -26,7 +26,7 @@ test_that("as.textmodel_lss works with matrix", {
     lss2 <- as.textmodel_lss(mat_test, seed_test)
     expect_equal(names(lss2), names(LSX:::build_lss()))
     expect_identical(lss2$embedding, mat_test)
-    expect_false(any(duplicated(names(coef(lss2)))))
+    expect_false(any(duplicated(names(lss2$beta))))
     pred2 <- predict(lss2, dfmt_test)
     expect_equal(names(pred2), rownames(dfmt_test))
     expect_equal(rowSums(dfmt_test[,names(lss2$beta)]) == 0,
@@ -36,8 +36,8 @@ test_that("as.textmodel_lss works with matrix", {
     mat_special <- mat_test
     colnames(mat_special)[1:2] <- c("", "*")
     lss3 <- as.textmodel_lss(mat_special, seed_test)
-    expect_equal(sum("" == names(coef(lss3))), 0)
-    expect_equal(sum("*" == names(coef(lss3))), 1)
+    expect_equal(sum("" == names(lss3$beta)), 0)
+    expect_equal(sum("*" == names(lss3$beta)), 1)
 
     # with slice
     lss4 <- as.textmodel_lss(mat_test, seed_test, slice = 50)
