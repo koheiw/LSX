@@ -5,12 +5,14 @@
 \alias{coefficients.textmodel_lss}
 \title{Extract model coefficients from a fitted textmodel_lss object}
 \usage{
-\method{coef}{textmodel_lss}(object, ...)
+\method{coef}{textmodel_lss}(object, n = 20L, ...)
 
 coefficients.textmodel_lss(object, ...)
 }
 \arguments{
 \item{object}{a fitted \link{textmodel_lss} object.}
+
+\item{n}{the number of coefficients to return.}
 
 \item{...}{not used.}
 }

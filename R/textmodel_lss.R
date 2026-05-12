@@ -409,6 +409,7 @@ summary.textmodel_lss <- function(object, n = 20L, ...) {
 #' `coef()` extract model coefficients from a fitted `textmodel_lss`
 #' object.  `coefficients()` is an alias.
 #' @param object a fitted [textmodel_lss] object.
+#' @param n the number of coefficients to return.
 #' @param ... not used.
 #' @export
 coef.textmodel_lss <- function(object, n = 20L, ...) {
