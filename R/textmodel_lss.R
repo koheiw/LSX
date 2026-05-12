@@ -393,11 +393,11 @@ get_seeds <- function(seeds) {
 #' @importFrom stats coef
 #' @importFrom utils head
 #' @method summary textmodel_lss
-summary.textmodel_lss <- function(object, n = 30L, ...) {
+summary.textmodel_lss <- function(object, n = 20L, ...) {
     result <- list(
         "call" = object$call,
         "seeds" = object$seeds,
-        "beta" = as.coefficients_textmodel(head(coef(object), n))
+        "beta" = as.coefficients_textmodel(coef(object, n))
     )
     if (!is.null(object$data))
         result$data.dimension <- dim(object$data)
@@ -411,8 +411,8 @@ summary.textmodel_lss <- function(object, n = 30L, ...) {
 #' @param object a fitted [textmodel_lss] object.
 #' @param ... not used.
 #' @export
-coef.textmodel_lss <- function(object, ...) {
-    sort(object$beta, decreasing = TRUE)
+coef.textmodel_lss <- function(object, n = 20L, ...) {
+    head(sort(object$beta, decreasing = TRUE), n)
 }
 
 #' @rdname coef.textmodel_lss
