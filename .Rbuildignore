@@ -12,3 +12,5 @@
 ^_pkgdown\.yml$
 ^docs$
 ^vignettes/pkgdown$
+^\.positai$
+^\.claude$
